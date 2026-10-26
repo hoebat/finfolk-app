@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {dataLocations,groupDataPins} from '../web/data-pins.js';
+
+const region={bbox:[0,0,10,10],rasters:[]};
+const feature=(depth,coordinates,type='LineString')=>({properties:{depth_m:depth},geometry:{type,coordinates}});
+const features=[feature(5,[[1,1],[2,2],[3,3]]),feature(10,[[2.1,2.1],[2.2,2.2]]),feature(20,[[20,20],[21,21]]),feature(-5,[[1,1],[2,2]])];
+const pins=dataLocations(region,features);
+assert.equal(pins.length,2,'Only published underwater geometry inside the area gets a pin');
+assert.deepEqual(pins[0].point,[2,2]);
+assert.equal(pins[0].feature,features[0]);
+const groups=groupDataPins(pins,p=>[p[0]*30,p[1]*30],400,300,128);
+assert.equal(groups.length,1);assert.equal(groups[0].members.length,2);
+assert.ok(pins.some(p=>p.point[0]===groups[0].point[0]&&p.point[1]===groups[0].point[1]),'Group anchors stay on actual data');
+const separate=groupDataPins(pins,p=>[p[0]*300,p[1]*300],1000,1000,32);assert.equal(separate.length,2);
+assert.equal(groupDataPins(pins,()=>[-1,50],400,300).length,0,'Offscreen pins are omitted');
+const raster={title:'Test raster',data_location:[4,5],bounds:[1,1,9,9]};
+assert.deepEqual(dataLocations({...region,rasters:[raster]},[])[0],{point:[4,5],kind:'raster',source:raster});
+const footprint={title:'Older raster',bounds:[1,1,9,9]};
+assert.equal(dataLocations({...region,rasters:[footprint]},[])[0].kind,'footprint','Unverified centres are labelled as file footprints');
+console.log('Data pin checks passed: real source anchors, viewport grouping, zoom separation, raster cells and footprint fallback.');

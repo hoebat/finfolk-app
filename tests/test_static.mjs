@@ -23,10 +23,21 @@ build(store,root/'site',max_zoom=5)
 `;
   execFileSync(process.env.PYTHON||'python3',['-c',code,temp],{cwd:new URL('..',import.meta.url),stdio:'pipe'});
   let requests=0;const urls=[];
-  const client=new StaticData(new URL('https://example.test/shore-depth-explorer/'),async url=>{
+  const base=new URL('https://example.test/shore-depth-explorer/');
+  const fetcher=async function(url){
+    assert.equal(this,globalThis,'Browser fetch requires its Window/global receiver');
     urls.push(url);requests++;const parsed=new URL(url);assert.ok(parsed.pathname.startsWith('/shore-depth-explorer/'),'Every request must retain the Pages repository prefix');const path=parsed.pathname.slice('/shore-depth-explorer/'.length);
     try{return new Response(await readFile(join(temp,'site',path)),{status:200});}catch{return new Response('',{status:404});}
-  });
+  };
+  const client=new StaticData(base,fetcher);
+  // Exercise the production constructor path, not just an injected arrow mock.
+  const originalFetch=globalThis.fetch;
+  try{
+    globalThis.fetch=fetcher;
+    const defaultClient=new StaticData(base);
+    await defaultClient.catalog();
+    assert.equal((await defaultClient.sample('bondi',[151.2725,-33.8975])).depth_m,10);
+  }finally{globalThis.fetch=originalFetch;}
   await client.catalog();assert.equal(client.region('bondi').status,'raster');
   const values=await client.sampleMany('bondi',[[151.2705,-33.8975],[151.2715,-33.8975],[151.2725,-33.8975],[151.2715,-33.8985],[151.30,-33.9]]);
   assert.deepEqual(values.map(v=>v.depth_m),[-2,0,10,null,null]);

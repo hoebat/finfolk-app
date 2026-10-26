@@ -33,6 +33,7 @@ def chunk_bytes(values):
 def export_raster(store, meta, output, write):
     raster = Raster(store.root, meta)
     chunks = {}
+    data_location = None
     factor = -1 if meta["value_kind"] == "elevation" else 1
     if raster.ascii:
         width, height = raster.width, raster.height
@@ -67,6 +68,19 @@ def export_raster(store, meta, output, write):
         for row in range(0, height, CHUNK_SIZE):
             for col in range(0, width, CHUNK_SIZE):
                 values = block(row, col)
+                if data_location is None:
+                    first = next((i for i, v in enumerate(values) if math.isfinite(v) and v > 0), None)
+                    if first is not None:
+                        y, x = divmod(first, CHUNK_SIZE)
+                        a, b, c, d, e, f = affine
+                        native_x = a * (col + x + .5) + b * (row + y + .5) + c
+                        native_y = d * (col + x + .5) + e * (row + y + .5) + f
+                        if raster.ascii:
+                            data_location = [native_x, native_y]
+                        else:
+                            from rasterio.warp import transform
+                            lon, lat = transform(dataset.crs, "EPSG:4326", [native_x], [native_y])
+                            data_location = [lon[0], lat[0]]
                 if not any(math.isfinite(v) for v in values):
                     continue
                 key = f"{col // CHUNK_SIZE}/{row // CHUNK_SIZE}"
@@ -77,7 +91,7 @@ def export_raster(store, meta, output, write):
         if dataset:
             dataset.close()
     # Native coordinates and cells are retained; only the display PNGs are reprojected.
-    return {**{k: v for k, v in meta.items() if k not in ("file", "originals")},
+    return {**{k: v for k, v in meta.items() if k not in ("file", "originals")}, "data_location": data_location,
             "grid": {"width": width, "height": height, "transform": affine, "projection": projection,
                      "chunk_size": CHUNK_SIZE, "encoding": "gzip-float32-le-positive-depth", "chunks": chunks}}
 

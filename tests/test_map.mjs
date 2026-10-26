@@ -1,9 +1,7 @@
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
 
 // Test map coordinates and interactions without a browser or a listening socket.
-const source=await readFile(new URL('../web/map.js',import.meta.url),'utf8');
-const module=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+const module=await import('../web/map.js');
 for(const point of [[151.28,-33.89],[144.86,-38.08],[0,0]])for(const zoom of [5,10,14,20]){
   const roundtrip=module.unproject(module.project(point,zoom),zoom);
   assert.ok(Math.abs(roundtrip[0]-point[0])<1e-9);
@@ -29,4 +27,12 @@ map.contours=[{properties:{depth_m:10},geometry:{type:'LineString',coordinates:[
 assert.equal(map.hitContour(150,103).properties.depth_m,10);
 assert.equal(map.hitContour(150,120),null);
 map.layers.contours=false;assert.equal(map.hitContour(150,103),null);
+const pin={point:[151.28,-33.89],x:300,y:200,members:[{kind:'contour'}]};
+map.pinHits=[pin];let selected;
+map.onclick=(point,contour,location)=>selected={point,location};
+events.pointerdown({button:0,pointerId:3,offsetX:300,offsetY:183});
+events.pointerup({offsetX:300,offsetY:183});
+assert.deepEqual(selected.point,pin.point,'Pin clicks inspect the actual source coordinate');
+assert.equal(selected.location,pin);
+map.layers.pins=false;assert.equal(map.hitDataPin(300,183),null);
 console.log('Map checks passed: projection, anchor zoom, pan/click separation, contour hit testing.');

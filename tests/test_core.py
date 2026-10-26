@@ -148,6 +148,9 @@ class StaticBuildTests(FixtureCase):
         catalog = json.loads((site / "data/catalog.json").read_text())
         region = catalog["regions"][1]
         grid = region["rasters"][0]["grid"]
+        location = region["rasters"][0]["data_location"]
+        self.assertAlmostEqual(location[0], 151.2725)
+        self.assertAlmostEqual(location[1], -33.8975)
         self.assertEqual(grid["projection"], "EPSG:4326")
         values = struct.unpack("<65536f", gzip.decompress((site / grid["chunks"]["0/0"]).read_bytes()))
         self.assertEqual(values[:4], (-2, 0, 10, 20))

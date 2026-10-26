@@ -4,6 +4,8 @@ A **backend-free GitHub Pages map** for Port Phillip Bay and Bondi Beach: colour
 
 The deployed site is plain HTML, CSS, JavaScript, JSON, PNG and compressed numeric chunks. Point inspection, profiles and contours run in the browser. Python/GDAL is used **only to acquire and prepare data before publishing**. The optional street basemap uses OpenStreetMap; bathymetry requests stay on the static site.
 
+**Data location pins** mark published contour vertices and verified underwater raster cells. Nearby pins are grouped at overview zoom; click a numbered group to zoom in, then click a single pin for its depth reference and source. The **Data locations** switch hides or shows pins independently of contour lines. A raster without a verified cell location is labelled as a file footprint, which may contain gaps.
+
 ## Deploy on GitHub Pages
 
 1. In [repository Settings → Pages](https://github.com/hoebat/shore-depth-explorer/settings/pages), set **Build and deployment → Source → GitHub Actions**.

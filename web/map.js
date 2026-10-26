@@ -1,4 +1,5 @@
 // A dependency-free slippy map. All bathymetry tiles and vectors are local.
+import {groupDataPins} from './data-pins.js';
 export const R = 6378137, HALF = Math.PI * R;
 export function project([lon,lat], z) {
   const size=256*2**z, clamped=Math.max(-85.05112878,Math.min(85.05112878,lat));
@@ -8,11 +9,11 @@ export function unproject([x,y],z) {const size=256*2**z;return [x/size*360-180,M
 export class DepthMap {
   constructor(canvas) {
     this.canvas=canvas;this.ctx=canvas.getContext('2d');this.center=[144.86,-38.08];this.zoom=10;
-    this.layers={depth:true,contours:true,coverage:false,basemap:false};this.contours=[];this.derived=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';
+    this.layers={depth:true,contours:true,pins:true,coverage:false,basemap:false};this.contours=[];this.derived=[];this.sourcePins=[];this.pinHits=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';
     new ResizeObserver(()=>this.resize()).observe(canvas);
     canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);this.drag={x:e.offsetX,y:e.offsetY,start:project(this.center,this.zoom),distance:0};});
     canvas.addEventListener('pointermove',e=>{const point=[e.offsetX,e.offsetY];this.onmove?.(this.fromScreen(point));if(!this.drag)return;const dx=point[0]-this.drag.x,dy=point[1]-this.drag.y;this.drag.distance=Math.max(this.drag.distance,Math.hypot(dx,dy));if(this.drag.distance>4){this.center=unproject([this.drag.start[0]-dx,this.drag.start[1]-dy],this.zoom);this.draw();}});
-    canvas.addEventListener('pointerup',e=>{if(!this.drag)return;const moved=this.drag.distance;this.drag=null;if(moved<5)this.onclick?.(this.fromScreen([e.offsetX,e.offsetY]),this.hitContour(e.offsetX,e.offsetY));else this.onview?.();});
+    canvas.addEventListener('pointerup',e=>{if(!this.drag)return;const moved=this.drag.distance;this.drag=null;if(moved<5){const pin=this.hitDataPin(e.offsetX,e.offsetY);this.onclick?.(pin?.point||this.fromScreen([e.offsetX,e.offsetY]),pin?.feature||this.hitContour(e.offsetX,e.offsetY),pin);}else this.onview?.();});
     canvas.addEventListener('pointercancel',()=>{this.drag=null;});
     canvas.addEventListener('wheel',e=>{e.preventDefault();if(this.wheelTime&&Date.now()-this.wheelTime<100)return;this.wheelTime=Date.now();this.zoomBy(e.deltaY<0?1:-1,[e.offsetX,e.offsetY]);},{passive:false});
     canvas.addEventListener('keydown',e=>{const shifts={ArrowLeft:[-80,0],ArrowRight:[80,0],ArrowUp:[0,-80],ArrowDown:[0,80]};if(shifts[e.key]){e.preventDefault();const p=project(this.center,this.zoom),d=shifts[e.key];this.center=unproject([p[0]+d[0],p[1]+d[1]],this.zoom);this.draw();this.onview?.();}else if(e.key==='+'||e.key==='=')this.zoomBy(1);else if(e.key==='-')this.zoomBy(-1);});
@@ -21,7 +22,7 @@ export class DepthMap {
   toScreen(point){const p=project(point,this.zoom),c=project(this.center,this.zoom);return [p[0]-c[0]+this.width/2,p[1]-c[1]+this.height/2];}
   fromScreen(point){const c=project(this.center,this.zoom);return unproject([c[0]+point[0]-this.width/2,c[1]+point[1]-this.height/2],this.zoom);}
   bounds(){const a=this.fromScreen([0,this.height]),b=this.fromScreen([this.width,0]);return [...a,...b];}
-  setRegion(region){this.region=region.id;this.center=region.center;this.zoom=region.zoom;this.rasters=region.rasters;this.tileFiles=region.tiles||{};this.tileMaxZoom=region.tile_max_zoom||this.zoom;this.contours=[];this.derived=[];this.line=[];this.marker=null;this.images.clear();this.draw();}
+  setRegion(region){this.region=region.id;this.center=region.center;this.zoom=region.zoom;this.rasters=region.rasters;this.tileFiles=region.tiles||{};this.tileMaxZoom=region.tile_max_zoom||this.zoom;this.contours=[];this.derived=[];this.sourcePins=[];this.pinHits=[];this.line=[];this.marker=null;this.images.clear();this.draw();}
   zoomBy(delta,anchor=[this.width/2,this.height/2]){const before=this.fromScreen(anchor);const z=Math.max(5,Math.min(20,this.zoom+delta));if(z===this.zoom)return;this.zoom=z;const p=project(before,z);this.center=unproject([p[0]-anchor[0]+this.width/2,p[1]-anchor[1]+this.height/2],z);this.draw();this.onview?.();}
   image(url){if(this.images.has(url))return this.images.get(url);const image=new Image();image.crossOrigin='anonymous';image.onload=()=>this.schedule();image.onerror=()=>{image.failed=true;if(!url.includes('tile.openstreetmap.org'))this.onerror?.('A published depth tile could not be loaded. Refresh the page or check the dataset build.');};image.src=url;this.images.set(url,image);if(this.images.size>384)this.images.delete(this.images.keys().next().value);return image;}
   schedule(){if(this.frame)return;this.frame=requestAnimationFrame(()=>{this.frame=null;this.draw();});}
@@ -40,8 +41,11 @@ export class DepthMap {
     this.labels=[];if(this.layers.contours){let labels=0;for(const feature of [...this.contours,...this.derived]){const g=feature.geometry,depth=feature.properties.depth_m;if(depth<0)continue;const lines=g.type==='LineString'?[g.coordinates]:g.coordinates;c.strokeStyle=depth<10?'#368a88':depth<25?'#287292':'#314f80';c.lineWidth=depth%10===0?1.3:.8;c.globalAlpha=.9;let labelled=false;for(const line of lines){const points=line.map(p=>this.toScreen(p));c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.stroke();if(labels<90&&!labelled){const p=points[Math.floor(points.length/2)];if(p&&p[0]>45&&p[0]<w-45&&p[1]>60&&p[1]<h-50&&!this.labels.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<50)){c.font='10px system-ui';c.lineWidth=3;c.strokeStyle='#f5faf2';c.strokeText(`${depth} m`,p[0]+4,p[1]-4);c.fillStyle='#285a6e';c.fillText(`${depth} m`,p[0]+4,p[1]-4);this.labels.push(p);labelled=true;labels++;}}}}c.globalAlpha=1;}
     if(this.line.length){c.strokeStyle='#d59143';c.lineWidth=2.5;c.beginPath();this.line.map(p=>this.toScreen(p)).forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.stroke();for(const p of this.line){const [x,y]=this.toScreen(p);c.fillStyle='#fff';c.strokeStyle='#c17a30';c.lineWidth=2;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();c.stroke();}}
     if(this.marker){const [x,y]=this.toScreen(this.marker);c.strokeStyle='#b57028';c.fillStyle='#fff';c.lineWidth=2;c.beginPath();c.arc(x,y,6,0,Math.PI*2);c.fill();c.stroke();}
+    this.pinHits=this.layers.pins?groupDataPins(this.sourcePins,p=>this.toScreen(p),w,h):[];
+    c.save();for(const pin of this.pinHits){const {x,y,members}=pin;c.fillStyle=pin.kind==='footprint'?'#8b795f':'#135e64';c.strokeStyle='#fff';c.lineWidth=2;c.beginPath();c.moveTo(x,y);c.lineTo(x-10,y-13);c.arc(x,y-17,13,Math.PI*.9,Math.PI*2.1);c.closePath();c.fill();c.stroke();c.fillStyle='#fff';c.font='bold 10px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillText(members.length>1?(members.length>99?'99+':String(members.length)):'•',x,y-17);}c.restore();
     const metresPerPixel=2*Math.PI*R*Math.cos(this.center[1]*Math.PI/180)/(256*2**this.zoom),ideal=100*metresPerPixel,magnitude=10**Math.floor(Math.log10(ideal)),length=[1,2,5,10].map(x=>x*magnitude).find(x=>x>=ideal)||magnitude*10,pixels=length/metresPerPixel;
     c.fillStyle='#395f63';c.font='9px system-ui';c.fillText(length>=1000?`${length/1000} km`:`${length} m`,17,h-53);c.fillRect(17,h-46,pixels,2);c.fillRect(17,h-50,1,6);c.fillRect(17+pixels,h-50,1,6);
   }
+  hitDataPin(x,y){if(!this.layers.pins)return null;return this.pinHits.slice().reverse().find(pin=>Math.hypot(pin.x-x,pin.y-17-y)<=17)||null;}
   hitContour(x,y){if(!this.layers.contours)return null;let closest=null,best=7;for(const f of [...this.contours,...this.derived]){const lines=f.geometry.type==='LineString'?[f.geometry.coordinates]:f.geometry.coordinates;for(const line of lines){for(let i=1;i<line.length;i++){const a=this.toScreen(line[i-1]),b=this.toScreen(line[i]),dx=b[0]-a[0],dy=b[1]-a[1],len=dx*dx+dy*dy,t=len?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/len)):0,d=Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy);if(d<best){best=d;closest=f;}}}}return closest;}
 }

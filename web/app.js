@@ -1,5 +1,6 @@
 import {DepthMap} from './map.js';
 import {StaticData,profileCSV} from './data-client.js';
+import {dataLocations} from './data-pins.js';
 const $=id=>document.getElementById(id), map=new DepthMap($('map'));
 const data=new StaticData();map.dataBase=data.base;
 let catalog,region,profile=null,drawing=false,vertices=[],viewTimer,inspectionRequest=0,profileRequest=0,viewRequest=0,loadRequest=0;
@@ -22,10 +23,10 @@ async function load(selected,retainView=false){
   $('datum-tag').textContent=region.rasters.length?`Depth below ${region.rasters[0].datum}`:region.contours?`Contours · ${region.contours.datum}`:'Reference datum shown per source';
   $('map-attribution').textContent=`${region.state} government data${map.layers.basemap?' · © OpenStreetMap contributors':''}`;
   const canFine=region.rasters.length&&region.rasters.every(r=>r.resolution_m<=5&&r.quality==='measured');$('interval').options[1].disabled=!canFine;if(!canFine)$('interval').value='5';
-  const requestedRegion=region.id;const collection=await data.contours(requestedRegion);if(region.id!==requestedRegion)return;map.contours=collection.features;map.derived=[];map.draw();updateDerived();
+  const requestedRegion=region.id;const collection=await data.contours(requestedRegion);if(region.id!==requestedRegion)return;map.contours=collection.features;map.sourcePins=dataLocations(region,collection.features);map.derived=[];map.draw();updateDerived();
 }
 document.querySelectorAll('[data-region]').forEach(button=>button.onclick=()=>{notice('');load(button.dataset.region).catch(e=>notice(e.message));});
-for(const [id,key] of [['depth-layer','depth'],['contour-layer','contours'],['coverage-layer','coverage'],['basemap-layer','basemap']])$(id).onchange=()=>{map.layers[key]=$(id).checked;map.draw();$('map-attribution').textContent=`${region.state} government data${map.layers.basemap?' · © OpenStreetMap contributors':''}`;if(key==='contours')updateDerived();};
+for(const [id,key] of [['depth-layer','depth'],['contour-layer','contours'],['pin-layer','pins'],['coverage-layer','coverage'],['basemap-layer','basemap']])$(id).onchange=()=>{map.layers[key]=$(id).checked;map.draw();$('map-attribution').textContent=`${region.state} government data${map.layers.basemap?' · © OpenStreetMap contributors':''}`;if(key==='contours')updateDerived();};
 $('zoom-in').onclick=()=>map.zoomBy(1);$('zoom-out').onclick=()=>map.zoomBy(-1);$('home').onclick=()=>{map.center=region.center;map.zoom=region.zoom;map.draw();updateDerived();};
 $('refresh').onclick=()=>load(region.id,true).catch(e=>notice(e.message));
 map.onmove=([lon,lat])=>{$('coordinates').textContent=`${Math.abs(lat).toFixed(5)}°${lat<0?'S':'N'}   ${Math.abs(lon).toFixed(5)}°${lon<0?'W':'E'}`;};
@@ -39,16 +40,25 @@ async function updateDerived(){
   catch(e){if(request===viewRequest)notice(e.message);}
 }
 $('interval').onchange=updateDerived;
-map.onclick=async(point,contour)=>{
+map.onclick=async(point,contour,pin)=>{
   if(drawing){vertices.push(point);map.line=vertices;map.draw();$('finish-profile').disabled=vertices.length<2;return;}
   map.marker=point;map.draw();$('inspection').hidden=false;const request=++inspectionRequest,selectedRegion=region.id;
   $('inspection-kind').textContent='REFERENCE DEPTH';$('inspection-value').textContent='Inspecting…';$('inspection-details').replaceChildren();
+  if(pin?.members.length>1){
+    $('inspection-kind').textContent='DATA AVAILABLE HERE';$('inspection-value').textContent=`${pin.members.length} data locations`;
+    const depths=pin.members.filter(p=>p.kind==='contour').map(p=>p.feature.properties.depth_m);
+    if(depths.length)$('inspection-details').append(elem('p',`${depths.length} published contours, with labels from ${number(Math.min(...depths))} to ${number(Math.max(...depths))} m. These are reference depths on the contour lines.`));
+    $('inspection-details').append(elem('p','Zoomed in to separate nearby pins. Click a pin for its depth reference and source.'));
+    map.center=point;map.zoom=Math.min(20,map.zoom+2);map.draw();map.onview?.();return;
+  }
+  if(pin?.kind==='footprint'){$('inspection-kind').textContent='RASTER FILE FOOTPRINT';$('inspection-value').textContent=pin.source.title;$('inspection-details').append(elem('p','This pin marks the file extent. Its centre may contain a data gap; click the raster to inspect an actual cell.'),link('Source dataset ↗',pin.source.source_url));return;}
   try{const result=await data.sample(selectedRegion,point);if(request!==inspectionRequest||region.id!==selectedRegion)return;
     const details=$('inspection-details');details.replaceChildren();
     if(result.status==='no-data'){
-      $('inspection-kind').textContent=contour?'CONTOUR LABEL · NEAR CLICK':'NO RASTER COVERAGE';
+      $('inspection-kind').textContent=contour?(pin?'PUBLISHED CONTOUR':'CONTOUR LABEL · NEAR CLICK'):'NO RASTER COVERAGE';
       $('inspection-value').textContent=contour?`${number(contour.properties.depth_m)} m`:'No depth data';
       details.append(elem('p',contour?`Published/derived contour relative to ${contour.properties.datum_label}. This is a line label; point depth is unavailable.`:'There is no numeric raster cell here. This may be outside a survey or inside a data gap.'));
+      if(contour&&pin)details.append(elem('p',region.contour_survey),link('Government contour dataset ↗',region.contour_catalog));
     }else{
       const source=result.source;$('inspection-kind').textContent=result.status==='above-datum'?'ELEVATION ABOVE DATUM':'SURVEYED REFERENCE DEPTH';$('inspection-value').textContent=`${number(Math.abs(result.depth_m))} m`;
       const dl=elem('dl');for(const [label,value] of [['Datum',source.datum],['Grid',`${source.resolution_m} m source spacing`],['Survey',source.survey_date],['Coverage',source.quality],['Source',source.title]]){dl.append(elem('dt',label),elem('dd',value));}details.append(dl,link('Source dataset ↗',source.source_url));
