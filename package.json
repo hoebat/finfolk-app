@@ -1,0 +1,13 @@
+{
+  "name": "shore-depth-explorer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static bathymetry explorer for Port Phillip Bay and Bondi Beach",
+  "scripts": {
+    "build": "python3 -m depth_explorer build-static",
+    "test": "node tests/test_map.mjs && node tests/test_static.mjs"
+  },
+  "dependencies": {"proj4": "2.22.0"},
+  "overrides": {"wkt-parser": "1.5.5"}
+}

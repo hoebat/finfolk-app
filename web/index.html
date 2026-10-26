@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#102a35">
+  <title>Depth Atlas · Port Phillip & Bondi</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="./" aria-label="Depth Atlas home"><span class="brand-mark">≋</span><span>DEPTH ATLAS<small>A closer look beneath the surface</small></span></a>
+    <div class="eyebrow">YOUR WATERS</div>
+    <div class="region-picker" role="group" aria-label="Choose location">
+      <button class="region active" data-region="port-phillip"><span>Port Phillip Bay</span><small>VICTORIA</small><b>↗</b></button>
+      <button class="region" data-region="bondi"><span>Bondi Beach</span><small>NEW SOUTH WALES</small><b>↗</b></button>
+    </div>
+    <section class="layer-section"><div class="section-label">MAP LAYERS</div>
+      <label class="toggle"><span><b>Seabed depths</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
+      <label class="toggle"><span><b>Depth contours</b><small>Published or raster-derived lines</small></span><input id="contour-layer" type="checkbox" checked></label>
+      <label class="toggle"><span><b>Raster footprints</b><small>File extents may contain gaps</small></span><input id="coverage-layer" type="checkbox"></label>
+      <label class="toggle"><span><b>Street basemap</b><small>OpenStreetMap · requires internet</small></span><input id="basemap-layer" type="checkbox"></label>
+      <label class="interval">Derived contour interval <select id="interval"><option value="5">5 m</option><option value="2">2 m · measured ≤5 m grids</option></select></label>
+    </section>
+    <section class="legend"><div class="section-label">REFERENCE DEPTH · METRES</div><div class="gradient"></div><div class="ticks"><span>0</span><span>5</span><span>10</span><span>20</span><span>30</span><span>50+</span></div><div class="legend-key"><span><i class="land"></i>Above datum</span><span><i class="missing"></i>No raster data</span></div></section>
+    <section class="source-card"><div class="section-label">SURVEY DATA</div><div id="data-status" class="data-status">Checking coverage…</div><p id="source-summary"></p><button id="fetch" class="secondary">↓ Download contour GeoJSON</button><button id="data-guide" class="text-button">View survey data & sources ↗</button></section>
+    <div class="sidebar-bottom"><span class="local-dot"></span> RUNS IN YOUR BROWSER <button id="refresh" class="text-button">Refresh data</button></div>
+  </aside>
+  <main>
+    <header><div><div class="eyebrow">SEABED EXPLORER</div><h1 id="place-title">Port Phillip Bay</h1></div><div class="header-actions"><button id="profile-tool" class="primary">⌁ Draw depth profile</button><button id="export-map" class="secondary">Export map ↗</button></div></header>
+    <div id="notice" role="status" aria-live="polite" hidden></div>
+    <section class="map-wrap" aria-label="Interactive depth map">
+      <canvas id="map" tabindex="0" aria-label="Depth map. Drag to pan, scroll or use plus and minus to zoom. Click to inspect. Arrow keys pan the map."></canvas>
+      <div class="map-top"><span class="map-tag">SURVEYED SEABED</span><span id="datum-tag" class="map-tag subtle">Reference datum shown per source</span></div>
+      <div class="zoom"><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="home" aria-label="Fit region">⌂</button></div>
+      <div id="empty-state" class="empty-state"><div class="empty-icon">≋</div><h2>Your seabed map starts here</h2><p>No survey data has been published for this area yet. View the government sources and data status.</p><button id="empty-guide" class="primary">View data sources ↗</button><small>No depth values have been estimated or filled in.</small></div>
+      <div id="drawing-help" class="drawing-help" hidden><span>Click to add profile points. Drag to pan.</span><button id="finish-profile">Finish profile</button><button id="cancel-profile" aria-label="Cancel profile">Cancel</button></div>
+      <div id="inspection" class="inspection" hidden><button id="close-inspection" aria-label="Close inspection">×</button><div class="eyebrow" id="inspection-kind">REFERENCE DEPTH</div><div id="inspection-value" class="inspection-value"></div><div id="inspection-details"></div></div>
+      <div class="map-bottom"><span id="coordinates">Click the map to inspect a location</span><span id="map-attribution">Depth Atlas · local data</span></div>
+    </section>
+    <section class="profile-panel"><div class="profile-header"><div><div class="eyebrow">ALONG THE SEABED</div><h2>Depth profile</h2></div><span id="profile-stats">Draw a line to explore the change in depth</span><button id="export-csv" class="secondary" disabled>↓ Export CSV</button></div><div class="chart-wrap"><canvas id="profile-chart" aria-label="Seabed reference depth against distance"></canvas><p id="profile-empty">From the shore to deeper water.<br><span>Add a raster, then draw a line on the map.</span></p></div></section>
+    <footer>Surveyed reference depths · no tide adjustment. <span>These datasets are not supplied for navigation and do not establish dive safety.</span></footer>
+  </main>
+  <dialog id="guide"><div class="dialog-header"><div><div class="eyebrow">GOVERNMENT SOURCES</div><h2 id="guide-title">Get the data</h2></div><button id="close-guide" aria-label="Close data guide">×</button></div><div id="guide-content"></div></dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

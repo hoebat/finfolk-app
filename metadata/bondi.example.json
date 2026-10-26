@@ -1,0 +1,14 @@
+{
+  "title": "NSW Marine LiDAR Topo-Bathy 2018 — Bondi tiles",
+  "datum": "AHD",
+  "datum_verified": false,
+  "units": "m",
+  "value_kind": "elevation",
+  "resolution_m": 5,
+  "survey_date": "July–December 2018; confirm tile-specific survey dates",
+  "quality": "unknown",
+  "source_url": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+  "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+  "licence": "Creative Commons Attribution — verify licence version in supplied metadata",
+  "notes": "Replace fields using delivered survey metadata. Use measured only when source footprints establish this. Do not import an RGB-rendered TIFF, terrestrial-only DEM, or coverage-index ZIP as bathymetry."
+}

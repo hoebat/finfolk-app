@@ -1,0 +1,47 @@
+// A dependency-free slippy map. All bathymetry tiles and vectors are local.
+export const R = 6378137, HALF = Math.PI * R;
+export function project([lon,lat], z) {
+  const size=256*2**z, clamped=Math.max(-85.05112878,Math.min(85.05112878,lat));
+  return [(lon+180)/360*size,(1-Math.log(Math.tan(Math.PI/4+clamped*Math.PI/360))/Math.PI)/2*size];
+}
+export function unproject([x,y],z) {const size=256*2**z;return [x/size*360-180,Math.atan(Math.sinh(Math.PI*(1-2*y/size)))*180/Math.PI];}
+export class DepthMap {
+  constructor(canvas) {
+    this.canvas=canvas;this.ctx=canvas.getContext('2d');this.center=[144.86,-38.08];this.zoom=10;
+    this.layers={depth:true,contours:true,coverage:false,basemap:false};this.contours=[];this.derived=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';
+    new ResizeObserver(()=>this.resize()).observe(canvas);
+    canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);this.drag={x:e.offsetX,y:e.offsetY,start:project(this.center,this.zoom),distance:0};});
+    canvas.addEventListener('pointermove',e=>{const point=[e.offsetX,e.offsetY];this.onmove?.(this.fromScreen(point));if(!this.drag)return;const dx=point[0]-this.drag.x,dy=point[1]-this.drag.y;this.drag.distance=Math.max(this.drag.distance,Math.hypot(dx,dy));if(this.drag.distance>4){this.center=unproject([this.drag.start[0]-dx,this.drag.start[1]-dy],this.zoom);this.draw();}});
+    canvas.addEventListener('pointerup',e=>{if(!this.drag)return;const moved=this.drag.distance;this.drag=null;if(moved<5)this.onclick?.(this.fromScreen([e.offsetX,e.offsetY]),this.hitContour(e.offsetX,e.offsetY));else this.onview?.();});
+    canvas.addEventListener('pointercancel',()=>{this.drag=null;});
+    canvas.addEventListener('wheel',e=>{e.preventDefault();if(this.wheelTime&&Date.now()-this.wheelTime<100)return;this.wheelTime=Date.now();this.zoomBy(e.deltaY<0?1:-1,[e.offsetX,e.offsetY]);},{passive:false});
+    canvas.addEventListener('keydown',e=>{const shifts={ArrowLeft:[-80,0],ArrowRight:[80,0],ArrowUp:[0,-80],ArrowDown:[0,80]};if(shifts[e.key]){e.preventDefault();const p=project(this.center,this.zoom),d=shifts[e.key];this.center=unproject([p[0]+d[0],p[1]+d[1]],this.zoom);this.draw();this.onview?.();}else if(e.key==='+'||e.key==='=')this.zoomBy(1);else if(e.key==='-')this.zoomBy(-1);});
+  }
+  resize(){this.width=this.canvas.clientWidth;this.height=this.canvas.clientHeight;const ratio=devicePixelRatio||1;this.canvas.width=this.width*ratio;this.canvas.height=this.height*ratio;this.ctx.setTransform(ratio,0,0,ratio,0,0);this.draw();}
+  toScreen(point){const p=project(point,this.zoom),c=project(this.center,this.zoom);return [p[0]-c[0]+this.width/2,p[1]-c[1]+this.height/2];}
+  fromScreen(point){const c=project(this.center,this.zoom);return unproject([c[0]+point[0]-this.width/2,c[1]+point[1]-this.height/2],this.zoom);}
+  bounds(){const a=this.fromScreen([0,this.height]),b=this.fromScreen([this.width,0]);return [...a,...b];}
+  setRegion(region){this.region=region.id;this.center=region.center;this.zoom=region.zoom;this.rasters=region.rasters;this.tileFiles=region.tiles||{};this.tileMaxZoom=region.tile_max_zoom||this.zoom;this.contours=[];this.derived=[];this.line=[];this.marker=null;this.images.clear();this.draw();}
+  zoomBy(delta,anchor=[this.width/2,this.height/2]){const before=this.fromScreen(anchor);const z=Math.max(5,Math.min(20,this.zoom+delta));if(z===this.zoom)return;this.zoom=z;const p=project(before,z);this.center=unproject([p[0]-anchor[0]+this.width/2,p[1]-anchor[1]+this.height/2],z);this.draw();this.onview?.();}
+  image(url){if(this.images.has(url))return this.images.get(url);const image=new Image();image.crossOrigin='anonymous';image.onload=()=>this.schedule();image.onerror=()=>{image.failed=true;if(!url.includes('tile.openstreetmap.org'))this.onerror?.('A published depth tile could not be loaded. Refresh the page or check the dataset build.');};image.src=url;this.images.set(url,image);if(this.images.size>384)this.images.delete(this.images.keys().next().value);return image;}
+  schedule(){if(this.frame)return;this.frame=requestAnimationFrame(()=>{this.frame=null;this.draw();});}
+  draw(){if(!this.width)return;const c=this.ctx,w=this.width,h=this.height;c.clearRect(0,0,w,h);c.fillStyle='#eaf0f0';c.fillRect(0,0,w,h);
+    const center=project(this.center,this.zoom),left=center[0]-w/2,top=center[1]-h/2;
+    for(let x=Math.floor(left/256);x<=Math.floor((left+w)/256);x++)for(let y=Math.floor(top/256);y<=Math.floor((top+h)/256);y++){
+      if(x<0||y<0||x>=2**this.zoom||y>=2**this.zoom)continue;const dx=x*256-left,dy=y*256-top;
+      if(this.layers.basemap){const image=this.image(`https://tile.openstreetmap.org/${this.zoom}/${x}/${y}.png`);if(image.complete&&image.naturalWidth)c.drawImage(image,Math.floor(dx),Math.floor(dy),257,257);}
+      if(this.layers.depth&&this.rasters.length){const z=Math.min(this.zoom,this.tileMaxZoom),factor=2**(this.zoom-z),sx=Math.floor(x/factor),sy=Math.floor(y/factor),file=this.tileFiles?.[`${z}/${sx}/${sy}`];if(file){const image=this.image(new URL(file,this.dataBase||new URL('./',import.meta.url)).href);if(image.complete&&image.naturalWidth){c.imageSmoothingEnabled=false;c.drawImage(image,(x%factor)*256/factor,(y%factor)*256/factor,256/factor,256/factor,Math.floor(dx),Math.floor(dy),257,257);}}}
+    }
+    c.strokeStyle='#cbdcda66';c.lineWidth=.6;c.fillStyle='#8ba6a3';c.font='9px system-ui';
+    const bounds=this.bounds(),step=this.zoom>13?.005:this.zoom>10?.05:.2;
+    for(let lon=Math.ceil(bounds[0]/step)*step;lon<bounds[2];lon+=step){const p=this.toScreen([lon,this.center[1]]);c.beginPath();c.moveTo(p[0],0);c.lineTo(p[0],h);c.stroke();if(this.zoom<14)c.fillText(lon.toFixed(2)+'°E',p[0]+5,h-38);}
+    for(let lat=Math.ceil(bounds[1]/step)*step;lat<bounds[3];lat+=step){const p=this.toScreen([this.center[0],lat]);c.beginPath();c.moveTo(0,p[1]);c.lineTo(w,p[1]);c.stroke();if(this.zoom<14)c.fillText(Math.abs(lat).toFixed(2)+'°S',w-62,p[1]-5);}
+    if(this.layers.coverage){c.save();c.setLineDash([5,4]);c.strokeStyle='#715c42';c.lineWidth=1.5;for(const r of this.rasters){const a=this.toScreen([r.bounds[0],r.bounds[3]]),b=this.toScreen([r.bounds[2],r.bounds[1]]);c.strokeRect(...a,b[0]-a[0],b[1]-a[1]);}c.restore();}
+    this.labels=[];if(this.layers.contours){let labels=0;for(const feature of [...this.contours,...this.derived]){const g=feature.geometry,depth=feature.properties.depth_m;if(depth<0)continue;const lines=g.type==='LineString'?[g.coordinates]:g.coordinates;c.strokeStyle=depth<10?'#368a88':depth<25?'#287292':'#314f80';c.lineWidth=depth%10===0?1.3:.8;c.globalAlpha=.9;let labelled=false;for(const line of lines){const points=line.map(p=>this.toScreen(p));c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.stroke();if(labels<90&&!labelled){const p=points[Math.floor(points.length/2)];if(p&&p[0]>45&&p[0]<w-45&&p[1]>60&&p[1]<h-50&&!this.labels.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<50)){c.font='10px system-ui';c.lineWidth=3;c.strokeStyle='#f5faf2';c.strokeText(`${depth} m`,p[0]+4,p[1]-4);c.fillStyle='#285a6e';c.fillText(`${depth} m`,p[0]+4,p[1]-4);this.labels.push(p);labelled=true;labels++;}}}}c.globalAlpha=1;}
+    if(this.line.length){c.strokeStyle='#d59143';c.lineWidth=2.5;c.beginPath();this.line.map(p=>this.toScreen(p)).forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.stroke();for(const p of this.line){const [x,y]=this.toScreen(p);c.fillStyle='#fff';c.strokeStyle='#c17a30';c.lineWidth=2;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();c.stroke();}}
+    if(this.marker){const [x,y]=this.toScreen(this.marker);c.strokeStyle='#b57028';c.fillStyle='#fff';c.lineWidth=2;c.beginPath();c.arc(x,y,6,0,Math.PI*2);c.fill();c.stroke();}
+    const metresPerPixel=2*Math.PI*R*Math.cos(this.center[1]*Math.PI/180)/(256*2**this.zoom),ideal=100*metresPerPixel,magnitude=10**Math.floor(Math.log10(ideal)),length=[1,2,5,10].map(x=>x*magnitude).find(x=>x>=ideal)||magnitude*10,pixels=length/metresPerPixel;
+    c.fillStyle='#395f63';c.font='9px system-ui';c.fillText(length>=1000?`${length/1000} km`:`${length} m`,17,h-53);c.fillRect(17,h-46,pixels,2);c.fillRect(17,h-50,1,6);c.fillRect(17+pixels,h-50,1,6);
+  }
+  hitContour(x,y){if(!this.layers.contours)return null;let closest=null,best=7;for(const f of [...this.contours,...this.derived]){const lines=f.geometry.type==='LineString'?[f.geometry.coordinates]:f.geometry.coordinates;for(const line of lines){for(let i=1;i<line.length;i++){const a=this.toScreen(line[i-1]),b=this.toScreen(line[i]),dx=b[0]-a[0],dy=b[1]-a[1],len=dx*dx+dy*dy,t=len?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/len)):0,d=Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy);if(d<best){best=d;closest=f;}}}}return closest;}
+}

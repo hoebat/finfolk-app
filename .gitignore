@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+data/
+.DS_Store
+test-results/
+metadata/*.local.json
+node_modules/
+_site/
+.cache/
+*.log

@@ -1,0 +1,65 @@
+name: Test, build and deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Install build dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          npm install --ignore-scripts --no-audit --no-fund
+      - name: Test source sampling, static build and browser calculations
+        run: |
+          python -m unittest discover -s tests -v
+          npm test
+          node --check web/app.js
+      - name: Acquire missing government contours at build time
+        if: github.event_name != 'pull_request'
+        run: python -m scripts.fetch_missing_contours
+      - name: Build backend-free site
+        run: python -m depth_explorer build-static --output _site
+      - name: Upload Pages artifact with materialized LFS data
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy static artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

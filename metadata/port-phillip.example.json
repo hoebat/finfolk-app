@@ -1,0 +1,14 @@
+{
+  "title": "Victorian Coastal DEM 2021 — Port Phillip Bay tiles",
+  "datum": "REPLACE WITH VERIFIED VERTICAL DATUM",
+  "datum_verified": false,
+  "units": "m",
+  "value_kind": "elevation",
+  "resolution_m": 10,
+  "survey_date": "REPLACE WITH SOURCE SURVEY DATES; 2021 is the compilation version",
+  "quality": "mixed",
+  "source_url": "https://discover.data.vic.gov.au/dataset/victorian-coastal-digital-elevation-model-2021-vcdem-10m",
+  "attribution": "© State of Victoria, Department of Energy, Environment and Climate Action",
+  "licence": "CC BY 4.0",
+  "notes": "Verify whether the delivered model is the high-resolution or seamless product. Seamless grids can contain coarse-source/interpolated areas. Horizontal pixel spacing does not establish vertical accuracy."
+}
