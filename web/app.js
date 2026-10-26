@@ -1,18 +1,29 @@
 import {DepthMap} from './map.js';
 import {StaticData,profileCSV} from './data-client.js';
 import {dataLocations} from './data-pins.js';
+import {nearestContour,edithvaleMeasurement} from './measure.js';
 const $=id=>document.getElementById(id), map=new DepthMap($('map'));
 const data=new StaticData();map.dataBase=data.base;
-let catalog,region,profile=null,drawing=false,vertices=[],viewTimer,inspectionRequest=0,profileRequest=0,viewRequest=0,loadRequest=0;
+let catalog,region,profile=null,drawing=false,measuring=false,vertices=[],viewTimer,inspectionRequest=0,profileRequest=0,viewRequest=0,loadRequest=0;
 const number=(value,places=1)=>Number(value).toLocaleString('en-AU',{maximumFractionDigits:places});
 function notice(message){$('notice').textContent=message;$('notice').hidden=!message;}
 function elem(tag,text,className){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(className)e.className=className;return e;}
 function link(text,url){const a=elem('a',text);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
 function download(blob,name){const url=URL.createObjectURL(blob),a=elem('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function resetProfile(){profileRequest++;profile=null;vertices=[];drawing=false;map.line=[];$('profile-tool').classList.remove('active');$('profile-tool').textContent='⌁ Draw depth profile';$('drawing-help').hidden=true;$('export-csv').disabled=true;$('profile-stats').textContent='Draw a line to explore the change in depth';drawProfile();}
+function resetProfile(){profileRequest++;profile=null;vertices=[];drawing=false;map.pointPicking=measuring;map.line=[];$('profile-tool').classList.remove('active');$('profile-tool').textContent='⌁ Draw depth profile';$('drawing-help').hidden=true;$('export-csv').disabled=true;$('profile-stats').textContent='Draw a line to explore the change in depth';drawProfile();}
+function stopMeasuring(){if(measuring)notice('');measuring=false;map.pointPicking=drawing;$('measure-start').classList.remove('active');$('measure-start').textContent='Pick a beach start point';}
+function clearMeasurement(){stopMeasuring();map.measurement=null;$('measure-result').textContent='Choose a start point to measure the straight-line distance to a published contour.';$('measure-reference').textContent='Contour reference depth only. The straight line does not assess an open-water route, tides or current conditions.';$('measure-clear').hidden=true;}
+function showMeasurement(result,label='Selected start point'){
+  stopMeasuring();map.measurement={...result,start_label:label};map.marker=null;$('inspection').hidden=true;inspectionRequest++;
+  $('measure-result').textContent=`About ${number(result.distance_m/1000,2)} km one way · ${number(result.return_distance_m/1000,2)} km return · nearest published ${result.depth_m} m contour`;
+  $('measure-reference').textContent=`${label}. ${result.feature.properties.datum_label}; survey ${result.feature.properties.survey_date||region.contour_survey}. Straight-line estimate with no tide adjustment; actual water depth and route conditions are not established.`;
+  $('measure-clear').hidden=false;map.fitPoints([result.start,result.target],90);notice('');
+}
+function measureFrom(point,label){try{showMeasurement(nearestContour(point,map.contours,Number($('measure-depth').value)),label);}catch(e){stopMeasuring();notice(e.message);}}
+function measureEdithvale(){resetProfile();try{const result=edithvaleMeasurement(map.contours,Number($('measure-depth').value));showMeasurement(result,result.start_label);}catch(e){notice(e.message);}}
 async function load(selected,retainView=false){
   const generation=++loadRequest;viewRequest++;const previous=region?.id,nextCatalog=await data.catalog();if(generation!==loadRequest)return;catalog=nextCatalog;region=catalog.regions.find(r=>r.id===(selected||previous))||catalog.regions[0];
-  if(!retainView||previous!==region.id){map.setRegion(region);resetProfile();$('inspection').hidden=true;inspectionRequest++;}else{map.rasters=region.rasters;map.tileFiles=region.tiles;map.tileMaxZoom=region.tile_max_zoom||map.zoom;map.images.clear();}
+  if(!retainView||previous!==region.id){map.setRegion(region);resetProfile();clearMeasurement();$('inspection').hidden=true;inspectionRequest++;}else{map.rasters=region.rasters;map.tileFiles=region.tiles;map.tileMaxZoom=region.tile_max_zoom||map.zoom;map.images.clear();}
   map.version=catalog.updated_at||0;$('place-title').textContent=region.name;document.title=`${region.name} · Depth Atlas`;
   document.querySelectorAll('[data-region]').forEach(b=>b.classList.toggle('active',b.dataset.region===region.id));
   $('data-status').textContent=region.status==='raster'?`${region.rasters.length} raster source${region.rasters.length===1?'':'s'} available`:region.status==='contours'?`${region.contours.count} published contours`:'No depth data published yet';
@@ -23,7 +34,10 @@ async function load(selected,retainView=false){
   $('datum-tag').textContent=region.rasters.length?`Depth below ${region.rasters[0].datum}`:region.contours?`Contours · ${region.contours.datum}`:'Reference datum shown per source';
   $('map-attribution').textContent=`${region.state} government data${map.layers.basemap?' · © OpenStreetMap contributors':''}`;
   const canFine=region.rasters.length&&region.rasters.every(r=>r.resolution_m<=5&&r.quality==='measured');$('interval').options[1].disabled=!canFine;if(!canFine)$('interval').value='5';
-  const requestedRegion=region.id;const collection=await data.contours(requestedRegion);if(region.id!==requestedRegion)return;map.contours=collection.features;map.sourcePins=dataLocations(region,collection.features);map.derived=[];map.draw();updateDerived();
+  $('measure-start').disabled=true;$('edithvale').disabled=true;$('edithvale').hidden=region.id!=='port-phillip';
+  const requestedRegion=region.id;const collection=await data.contours(requestedRegion);if(region.id!==requestedRegion)return;map.contours=collection.features;map.setDataPins(dataLocations(region,collection.features));map.derived=[];
+  const depths=[...new Set(collection.features.map(f=>f.properties.depth_m).filter(d=>Number.isFinite(d)&&d>0&&d<=200))].sort((a,b)=>a-b),selectedDepth=Number($('measure-depth').value);$('measure-depth').replaceChildren(...depths.map(depth=>{const option=elem('option',`${number(depth)} m`);option.value=depth;return option;}));if(depths.includes(selectedDepth))$('measure-depth').value=selectedDepth;else if(depths.includes(10))$('measure-depth').value='10';
+  $('measure-start').disabled=!depths.length;$('measure-depth').disabled=!depths.length;$('edithvale').disabled=!depths.length;map.draw();updateDerived();
 }
 document.querySelectorAll('[data-region]').forEach(button=>button.onclick=()=>{notice('');load(button.dataset.region).catch(e=>notice(e.message));});
 for(const [id,key] of [['depth-layer','depth'],['contour-layer','contours'],['pin-layer','pins'],['coverage-layer','coverage'],['basemap-layer','basemap']])$(id).onchange=()=>{map.layers[key]=$(id).checked;map.draw();$('map-attribution').textContent=`${region.state} government data${map.layers.basemap?' · © OpenStreetMap contributors':''}`;if(key==='contours')updateDerived();};
@@ -41,15 +55,15 @@ async function updateDerived(){
 }
 $('interval').onchange=updateDerived;
 map.onclick=async(point,contour,pin)=>{
+  if(measuring){measureFrom(point);return;}
   if(drawing){vertices.push(point);map.line=vertices;map.draw();$('finish-profile').disabled=vertices.length<2;return;}
   map.marker=point;map.draw();$('inspection').hidden=false;const request=++inspectionRequest,selectedRegion=region.id;
   $('inspection-kind').textContent='REFERENCE DEPTH';$('inspection-value').textContent='Inspecting…';$('inspection-details').replaceChildren();
   if(pin?.members.length>1){
-    $('inspection-kind').textContent='DATA AVAILABLE HERE';$('inspection-value').textContent=`${pin.members.length} data locations`;
-    const depths=pin.members.filter(p=>p.kind==='contour').map(p=>p.feature.properties.depth_m);
-    if(depths.length)$('inspection-details').append(elem('p',`${depths.length} published contours, with labels from ${number(Math.min(...depths))} to ${number(Math.max(...depths))} m. These are reference depths on the contour lines.`));
-    $('inspection-details').append(elem('p','Zoomed in to separate nearby pins. Click a pin for its depth reference and source.'));
-    map.center=point;map.zoom=Math.min(20,map.zoom+2);map.draw();map.onview?.();return;
+    $('inspection-kind').textContent='GROUPED DATA RECORDS';$('inspection-value').textContent=`${pin.members.length} records`;
+    const details=$('inspection-details'),pageSize=8;
+    function renderPage(page){details.replaceChildren(elem('p','The number counts published data records, not metres of depth. Choose a record to see its source.'));const items=elem('div',undefined,'pin-records');for(const member of pin.members.slice(page*pageSize,(page+1)*pageSize)){const label=member.kind==='contour'?`${number(member.feature.properties.depth_m)} m contour`:member.kind==='footprint'?'Raster footprint':'Raster cell',button=elem('button',label,'pin-record');button.onclick=()=>map.onclick(member.point,member.feature,{...member,members:[member]});items.append(button);}details.append(items);const controls=elem('div',undefined,'pin-pages'),prev=elem('button','Previous'),next=elem('button','Next');prev.disabled=page===0;next.disabled=(page+1)*pageSize>=pin.members.length;prev.onclick=()=>renderPage(page-1);next.onclick=()=>renderPage(page+1);controls.append(prev,elem('span',`${page+1} / ${Math.ceil(pin.members.length/pageSize)}`),next);details.append(controls);}
+    renderPage(0);const screen=map.toScreen(point),spread=Math.max(...pin.members.map(p=>{const q=map.toScreen(p.point);return Math.hypot(q[0]-screen[0],q[1]-screen[1]);}));if(spread>4&&map.zoom<20)map.fitPoints(pin.members.map(p=>p.point),90);return;
   }
   if(pin?.kind==='footprint'){$('inspection-kind').textContent='RASTER FILE FOOTPRINT';$('inspection-value').textContent=pin.source.title;$('inspection-details').append(elem('p','This pin marks the file extent. Its centre may contain a data gap; click the raster to inspect an actual cell.'),link('Source dataset ↗',pin.source.source_url));return;}
   try{const result=await data.sample(selectedRegion,point);if(request!==inspectionRequest||region.id!==selectedRegion)return;
@@ -67,10 +81,14 @@ map.onclick=async(point,contour,pin)=>{
   }catch(e){if(request===inspectionRequest){$('inspection-value').textContent='Unavailable';$('inspection-details').textContent=e.message;}}
 };
 $('close-inspection').onclick=()=>{inspectionRequest++;$('inspection').hidden=true;map.marker=null;map.draw();};
-$('profile-tool').onclick=()=>{if(drawing){resetProfile();map.draw();return;}resetProfile();drawing=true;$('inspection').hidden=true;$('drawing-help').hidden=false;$('finish-profile').disabled=true;$('profile-tool').classList.add('active');$('profile-tool').textContent='⌁ Drawing profile…';notice('');};
+$('profile-tool').onclick=()=>{stopMeasuring();if(drawing){resetProfile();map.draw();return;}resetProfile();drawing=true;map.pointPicking=true;$('inspection').hidden=true;$('drawing-help').hidden=false;$('finish-profile').disabled=true;$('profile-tool').classList.add('active');$('profile-tool').textContent='⌁ Drawing profile…';notice('');};
 $('cancel-profile').onclick=()=>{resetProfile();map.draw();};
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drawing){resetProfile();map.draw();}});
-$('finish-profile').onclick=async()=>{if(vertices.length<2)return;drawing=false;$('drawing-help').hidden=true;$('profile-tool').classList.remove('active');$('profile-tool').textContent='⌁ Draw depth profile';const request=++profileRequest,points=vertices.slice(),selectedRegion=region.id;$('profile-stats').textContent='Sampling native raster cells…';try{const result=await data.profile(selectedRegion,points);if(request!==profileRequest)return;profile={...result,points,region:selectedRegion};$('export-csv').disabled=false;const valid=result.samples.filter(s=>s.status==='depth').length;$('profile-stats').textContent=`${number(result.length_m/1000,2)} km · ${number(result.spacing_m)} m sampling · ${number(valid/result.samples.length*100,0)}% below-datum coverage · ${result.datum}`;drawProfile();}catch(e){if(request===profileRequest){$('profile-stats').textContent='Profile unavailable';notice(e.message);}}};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(measuring)stopMeasuring();if(drawing){resetProfile();map.draw();}}});
+$('measure-start').onclick=()=>{if(measuring){stopMeasuring();return;}resetProfile();measuring=true;map.pointPicking=true;$('measure-start').classList.add('active');$('measure-start').textContent='Click your start point · Esc to cancel';notice('Click the beach entry point on the map. The measurement goes to the closest matching published contour.');};
+$('measure-depth').onchange=()=>{if(map.measurement)measureFrom(map.measurement.start,map.measurement.start_label);};
+$('measure-clear').onclick=()=>{clearMeasurement();map.draw();};
+$('edithvale').onclick=measureEdithvale;
+$('finish-profile').onclick=async()=>{if(vertices.length<2)return;drawing=false;map.pointPicking=measuring;$('drawing-help').hidden=true;$('profile-tool').classList.remove('active');$('profile-tool').textContent='⌁ Draw depth profile';const request=++profileRequest,points=vertices.slice(),selectedRegion=region.id;$('profile-stats').textContent='Sampling native raster cells…';try{const result=await data.profile(selectedRegion,points);if(request!==profileRequest)return;profile={...result,points,region:selectedRegion};$('export-csv').disabled=false;const valid=result.samples.filter(s=>s.status==='depth').length;$('profile-stats').textContent=`${number(result.length_m/1000,2)} km · ${number(result.spacing_m)} m sampling · ${number(valid/result.samples.length*100,0)}% below-datum coverage · ${result.datum}`;drawProfile();}catch(e){if(request===profileRequest){$('profile-stats').textContent='Profile unavailable';notice(e.message);}}};
 const chart=$('profile-chart'),ctx=chart.getContext('2d');
 new ResizeObserver(drawProfile).observe(chart);
 function drawProfile(){
@@ -108,4 +126,5 @@ function showGuide(){
 }
 $('data-guide').onclick=showGuide;$('empty-guide').onclick=showGuide;document.querySelector('.map-tag').onclick=showGuide;$('close-guide').onclick=()=>$('guide').close();
 $('fetch').onclick=async()=>{try{const collection=await data.contours(region.id);download(new Blob([JSON.stringify(collection)],{type:'application/geo+json'}),`${region.id}-contours.geojson`);}catch(e){notice(e.message);}};
-load().catch(e=>notice(`Cannot load published data: ${e.message}`));
+const edithvaleRequested=new URLSearchParams(location.search).get('site')==='edithvale';
+load(edithvaleRequested?'port-phillip':undefined).then(()=>{if(edithvaleRequested)measureEdithvale();}).catch(e=>notice(`Cannot load published data: ${e.message}`));

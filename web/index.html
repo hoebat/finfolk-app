@@ -17,7 +17,7 @@
     <section class="layer-section"><div class="section-label">MAP LAYERS</div>
       <label class="toggle"><span><b>Seabed depths</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
       <label class="toggle"><span><b>Depth contours</b><small>Published or raster-derived lines</small></span><input id="contour-layer" type="checkbox" checked></label>
-      <label class="toggle"><span><b>Data locations</b><small>Clickable pins · nearby pins are grouped</small></span><input id="pin-layer" type="checkbox" checked></label>
+      <label class="toggle"><span><b>Data locations</b><small>Pin counts are data records, not depths</small></span><input id="pin-layer" type="checkbox" checked></label>
       <label class="toggle"><span><b>Raster footprints</b><small>File extents may contain gaps</small></span><input id="coverage-layer" type="checkbox"></label>
       <label class="toggle"><span><b>Street basemap</b><small>OpenStreetMap · requires internet</small></span><input id="basemap-layer" type="checkbox"></label>
       <label class="interval">Derived contour interval <select id="interval"><option value="5">5 m</option><option value="2">2 m · measured ≤5 m grids</option></select></label>
@@ -38,6 +38,7 @@
       <div id="inspection" class="inspection" hidden><button id="close-inspection" aria-label="Close inspection">×</button><div class="eyebrow" id="inspection-kind">REFERENCE DEPTH</div><div id="inspection-value" class="inspection-value"></div><div id="inspection-details"></div></div>
       <div class="map-bottom"><span id="coordinates">Click the map to inspect a location</span><span id="map-attribution">Depth Atlas · local data</span></div>
     </section>
+    <section class="measure-panel" aria-label="Distance to a published depth contour"><div><div class="eyebrow">HOW FAR TO DEEPER WATER?</div><h2>Distance to depth</h2></div><div class="measure-actions"><label>Target contour <select id="measure-depth"><option value="10">10 m</option></select></label><button id="measure-start" class="primary" disabled>Pick a beach start point</button><button id="edithvale" class="secondary">Edithvale example</button><button id="measure-clear" class="text-button" hidden>Clear</button></div><p id="measure-result" aria-live="polite">Choose a start point to measure the straight-line distance to a published contour.</p><small id="measure-reference">Contour reference depth only. The straight line does not assess an open-water route, tides or current conditions.</small></section>
     <section class="profile-panel"><div class="profile-header"><div><div class="eyebrow">ALONG THE SEABED</div><h2>Depth profile</h2></div><span id="profile-stats">Draw a line to explore the change in depth</span><button id="export-csv" class="secondary" disabled>↓ Export CSV</button></div><div class="chart-wrap"><canvas id="profile-chart" aria-label="Seabed reference depth against distance"></canvas><p id="profile-empty">From the shore to deeper water.<br><span>Add a raster, then draw a line on the map.</span></p></div></section>
     <footer>Surveyed reference depths · no tide adjustment. <span>These datasets are not supplied for navigation and do not establish dive safety.</span></footer>
   </main>

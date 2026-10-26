@@ -15,12 +15,24 @@ export function dataLocations(region,features){
   return pins;
 }
 
-export function groupDataPins(pins,toScreen,width,height,spacing=64){
-  const buckets=new Map();
-  for(const pin of pins){const [x,y]=toScreen(pin.point);if(x<0||x>width||y<25||y>height-25)continue;const key=`${Math.floor(x/spacing)}/${Math.floor(y/spacing)}`;if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push({...pin,x,y});}
-  return [...buckets.values()].map(members=>{
-    const x=members.reduce((sum,p)=>sum+p.x,0)/members.length,y=members.reduce((sum,p)=>sum+p.y,0)/members.length;
-    const anchor=members.reduce((best,p)=>Math.hypot(p.x-x,p.y-y)<Math.hypot(best.x-x,best.y-y)?p:best);
-    return {...anchor,members}; // Anchor remains on real source geometry, not an averaged location.
+// Cluster all records in world coordinates before viewport filtering. Grouping
+// therefore does not depend on panning, canvas size, or which members are visible.
+export function clusterDataPins(pins,toWorld,radius=80){
+  const ordered=pins.map(pin=>({...pin,world:toWorld(pin.point)})).filter(pin=>pin.world.every(Number.isFinite)).sort((a,b)=>a.world[0]-b.world[0]||a.world[1]-b.world[1]||a.kind.localeCompare(b.kind)||String(a.feature?.id??a.feature?.properties?.OBJECTID??a.source?.id??'').localeCompare(String(b.feature?.id??b.feature?.properties?.OBJECTID??b.source?.id??'')));
+  const buckets=new Map(),groups=[];
+  for(const pin of ordered){
+    const [x,y]=pin.world,cx=Math.floor(x/radius),cy=Math.floor(y/radius);let nearest=null,best=radius;
+    for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++)for(const group of buckets.get(`${cx+dx}/${cy+dy}`)||[]){const d=Math.hypot(group.seed[0]-x,group.seed[1]-y);if(d<best){nearest=group;best=d;}}
+    if(nearest)nearest.members.push(pin);
+    else{const group={seed:pin.world,members:[pin]};groups.push(group);const key=`${cx}/${cy}`;if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(group);}
+  }
+  return groups.map(({members})=>{
+    const x=members.reduce((s,p)=>s+p.world[0],0)/members.length,y=members.reduce((s,p)=>s+p.world[1],0)/members.length;
+    const anchor=members.reduce((a,b)=>Math.hypot(b.world[0]-x,b.world[1]-y)<Math.hypot(a.world[0]-x,a.world[1]-y)?b:a);
+    return {...anchor,members};
   });
+}
+
+export function visibleDataPins(groups,toScreen,width,height){
+  return groups.map(group=>({...group,x:toScreen(group.point)[0],y:toScreen(group.point)[1]})).filter(pin=>pin.x>=0&&pin.x<=width&&pin.y>=30&&pin.y<=height-30);
 }

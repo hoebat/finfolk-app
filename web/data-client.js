@@ -23,7 +23,7 @@ export function profileCSV(profile){const columns=['distance_m','longitude','lat
 export class StaticData {
   constructor(base=new URL('./',import.meta.url),fetcher=globalThis.fetch,projector=nativePoint){this.base=base;this.fetcher=fetcher.bind(globalThis);this.projector=projector;this.cache=new Map();}
   url(path){return new URL(path,this.base).href;}
-  async json(path){const response=await this.fetcher(this.url(path));if(!response.ok)throw Error(`Static data unavailable (${response.status}): ${path}`);const text=await response.text();if(text.startsWith('version https://git-lfs.github.com/spec/v1'))throw Error('An unresolved Git LFS pointer was deployed; rebuild with LFS checkout enabled');return JSON.parse(text);}
+  async json(path){const response=await this.fetcher(this.url(path),{cache:'no-cache'});if(!response.ok)throw Error(`Static data unavailable (${response.status}): ${path}`);const text=await response.text();if(text.startsWith('version https://git-lfs.github.com/spec/v1'))throw Error('An unresolved Git LFS pointer was deployed; rebuild with LFS checkout enabled');return JSON.parse(text);}
   async catalog(){const catalog=await this.json('data/catalog.json');if(catalog.format_version!==1)throw Error('Unsupported static dataset version');this.current=catalog;return catalog;}
   region(id){const region=this.current?.regions.find(r=>r.id===id);if(!region)throw Error('Unknown region');return region;}
   async contours(id){return this.json(this.region(id).contour_file);}

@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {nearestOnSegment,nearestContour,edithvaleMeasurement} from '../web/measure.js';
+const close=(a,b,tolerance=1e-8)=>assert.ok(Math.abs(a-b)<tolerance,`${a} should be close to ${b}`);
+const p=nearestOnSegment([1,1],[0,0],[2,0]);close(p[0],1);close(p[1],0);
+assert.deepEqual(nearestOnSegment([-1,1],[0,0],[2,0]),[0,0]);
+assert.deepEqual(nearestOnSegment([3,1],[0,0],[2,0]),[2,0]);
+assert.deepEqual(nearestOnSegment([1,1],[0,0],[0,0]),[0,0]);
+const line=(depth,coordinates,type='LineString')=>({type:'Feature',properties:{depth_m:depth,datum_label:'TEST'},geometry:{type,coordinates}});
+const features=[line(5,[[0,.5],[2,.5]]),line(10,[[0,0],[2,0]]),line(10,[[[0,-2],[2,-2]]],'MultiLineString')];
+const result=nearestContour([1,1],features,10);close(result.distance_m,111195.0802335329,.01);close(result.return_distance_m,result.distance_m*2);assert.equal(result.depth_m,10);assert.equal(result.feature,features[1]);
+assert.throws(()=>nearestContour([1,1],features,9),/No published 9 m contour/);
+assert.throws(()=>nearestContour([NaN,1],features,10));
+assert.throws(()=>edithvaleMeasurement(features),/local mapped low-water line|No published 0 m contour/);
+const crossing=nearestOnSegment([180,1],[179,0],[-179,0]);assert.ok(Math.abs(Math.abs(crossing[0])-180)<1e-8);close(crossing[1],0);
+console.log('Measurement checks passed: spherical nearest-segment distance, endpoints, zero-length lines, MultiLineString, exact depth selection and missing data.');

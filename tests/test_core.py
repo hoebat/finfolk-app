@@ -160,6 +160,10 @@ class StaticBuildTests(FixtureCase):
         self.assertGreater(len(region["tiles"]), 0)
         self.assertNotIn("/api/", (site / "app.js").read_text())
         self.assertNotIn("/api/", (site / "map.js").read_text())
+        app_asset = report["assets"]["app.js"]
+        self.assertIn(app_asset, (site / "index.html").read_text())
+        self.assertIn(report["assets"]["measure.js"], (site / app_asset).read_text())
+        self.assertIn(report["assets"]["data-client.js"], (site / report["assets"]["measure.js"]).read_text())
 
     def test_unresolved_lfs_pointers_fail_build(self):
         from depth_explorer.static import build
@@ -224,7 +228,7 @@ class HTTPTests(FixtureCase):
     def test_static_assets_are_project_path_relative(self):
         status, body = self.request("/")
         self.assertEqual(status, 200)
-        self.assertIn(b'src="./app.js"', body)
+        self.assertRegex(body, rb'src="\./app\.[a-f0-9]{12}\.js"')
         self.assertNotIn(b'src="/app.js"', body)
         self.assertEqual(self.request("/data/")[0], 404)
 

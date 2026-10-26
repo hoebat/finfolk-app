@@ -4,7 +4,7 @@ A **backend-free GitHub Pages map** for Port Phillip Bay and Bondi Beach: colour
 
 The deployed site is plain HTML, CSS, JavaScript, JSON, PNG and compressed numeric chunks. Point inspection, profiles and contours run in the browser. Python/GDAL is used **only to acquire and prepare data before publishing**. The optional street basemap uses OpenStreetMap; bathymetry requests stay on the static site.
 
-**Data location pins** mark published contour vertices and verified underwater raster cells. Nearby pins are grouped at overview zoom; click a numbered group to zoom in, then click a single pin for its depth reference and source. The **Data locations** switch hides or shows pins independently of contour lines. A raster without a verified cell location is labelled as a file footprint, which may contain gaps.
+**Data location pins** mark published contour vertices and verified underwater raster cells. Nearby pins are grouped in stable world coordinates, so panning and resizing do not change group membership. Group numbers count data records, not depth. Click a group to fit its extent or choose an individual record from a paginated list; overlapping records can be inspected without repeatedly zooming. The **Data locations** switch hides or shows pins independently of contour lines. A raster without a verified cell location is labelled as a file footprint, which may contain gaps.
 
 ## Deploy on GitHub Pages
 
@@ -94,6 +94,12 @@ Repeat for `port-phillip`. `.gitattributes` tracks GeoTIFF, ZIP, LAS/LAZ, ASCII 
 - Imports clip to the region envelope and mosaic compatible input rasters in their native CRS/resolution. Scale/offset and validity masks are retained in a numeric Cloud Optimized GeoTIFF. Within one import, first-valid input pixels win. Later imports override earlier imports only where the later raster is valid.
 - All layers in one region must share a verified vertical datum. No vertical datum conversion is guessed. Use separate archives for incompatible datums.
 - Original files are copied unchanged with SHA-256 checksums. Keep `datasets/inventory.json`, its referenced processed files and provenance archives together.
+
+## Measure the distance to a depth contour
+
+The **Distance to depth** panel works with published contour data; a numeric raster is not required. Choose an available contour depth, then pick a beach entry point. The app calculates the nearest point on the actual contour segments using spherical geometry, draws the straight line, and displays one-way and return distances. It does not interpolate an absent contour, infer current water depth, or assess whether the line is a suitable swimming route.
+
+The **Edithvale example** uses [Kingston Council’s Life Saving Club location](https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club), snaps to the nearest published **0 m / low-water-mark** line, then measures to the chosen contour. [Open the Edithvale example](https://hoebat.github.io/shore-depth-explorer/?site=edithvale). Using the currently published Port Phillip dataset, the 10 m contour is approximately **1.9 km from the mapped low-water mark** near the club, or about **3.8 km return**. The survey catalogue spans 1971–2000 and its vertical datum remains unverified. The mapped low-water mark is not the current beach waterline.
 
 ## Static data format
 
