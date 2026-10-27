@@ -6,7 +6,7 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: "15 17 * * *"
+    - cron: "15 17 * * 0"
 
 permissions:
   contents: read
@@ -42,16 +42,13 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: |
-            .cache/transit
-            config/journeys.json
+            .cache/national
             datasets
-          key: coastal-data-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-${{ github.run_id }}
-          restore-keys: coastal-data-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-
-      - name: Prepare scheduled public transport comparisons
+          key: coastal-v2-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-${{ github.run_id }}
+          restore-keys: coastal-v2-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-
+      - name: Refresh national beaches, stays and survey inventory
         if: github.event_name != 'pull_request'
-        env:
-          TFNSW_API_KEY: ${{ secrets.TFNSW_API_KEY }}
-        run: python -m scripts.build_transport
+        run: python -m scripts.acquire_national
       - name: Acquire missing government contours at build time
         if: github.event_name != 'pull_request'
         run: python -m scripts.fetch_missing_contours

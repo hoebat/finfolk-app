@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "note": "Curated public social posts. Location associations are checked against the cited publisher; embed availability can change. Historical images do not establish current conditions.",
+  "posts": [
+    {"id":"hyams-wanderlust","beach_ids":["hyams-beach"],"platform":"instagram","url":"https://www.instagram.com/p/Bnlcd2dFLFC/","title":"Hyams Beach · photographer’s location post","author":"The Ginger Wanderlust","location_context":"Hyams Beach, as identified in the photographer’s own location guide","association_source":"https://thegingerwanderlust.com/2019/12/29/most-instagrammable-places-in-australia/","reviewed_at":"2026-10-27"},
+    {"id":"bondi-icebergs-wanderlust","beach_ids":["bondi"],"platform":"instagram","url":"https://www.instagram.com/p/BkU3pGzFRP6/","title":"Bondi Icebergs · beside Bondi Beach","author":"The Ginger Wanderlust","location_context":"Nearby ocean pool, not a photo of the whole beach or a current conditions report","association_source":"https://thegingerwanderlust.com/2019/12/29/most-instagrammable-places-in-australia/","reviewed_at":"2026-10-27"},
+    {"id":"jervis-sea-cave-australia","area_ids":["nsw-jervis-bay","jbt-booderee"],"platform":"instagram","url":"https://www.instagram.com/p/BfC6m5EAOHS/","title":"Around Jervis Bay · sea-cave photograph","author":"Australia / Jordan Robins","location_context":"Regional Jervis Bay image; not necessarily the selected beach. Referenced in a 2018 council tourism report.","association_source":"https://shoalhaven.infocouncil.biz/Open/2018/04/TA_20180430_AGN_8844_AT.PDF","reviewed_at":"2026-10-27"}
+  ]
+}

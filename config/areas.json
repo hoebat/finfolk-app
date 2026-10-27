@@ -1,0 +1,804 @@
+{
+  "version": 1,
+  "note": "Curated browsing regions assigned by state and nearest coastal centre, with existing reviewed assignments preserved. These are not legal or administrative boundaries.",
+  "states": [
+    {
+      "id": "NSW",
+      "name": "New South Wales"
+    },
+    {
+      "id": "NT",
+      "name": "Northern Territory"
+    },
+    {
+      "id": "QLD",
+      "name": "Queensland"
+    },
+    {
+      "id": "SA",
+      "name": "South Australia"
+    },
+    {
+      "id": "TAS",
+      "name": "Tasmania"
+    },
+    {
+      "id": "VIC",
+      "name": "Victoria"
+    },
+    {
+      "id": "WA",
+      "name": "Western Australia"
+    },
+    {
+      "id": "JBT",
+      "name": "Jervis Bay Territory"
+    },
+    {
+      "id": "EXT",
+      "name": "External territories"
+    }
+  ],
+  "areas": [
+    {
+      "id": "vic-port-phillip",
+      "state_id": "VIC",
+      "name": "Port Phillip Bay",
+      "center": [
+        144.85,
+        -38.1
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "vic-western-port",
+      "state_id": "VIC",
+      "name": "Western Port & Phillip Island",
+      "center": [
+        145.28,
+        -38.4
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "vic-surf-coast",
+      "state_id": "VIC",
+      "name": "Bellarine & Surf Coast",
+      "center": [
+        144.28,
+        -38.31
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "vic-great-ocean-road",
+      "state_id": "VIC",
+      "name": "Great Ocean Road",
+      "center": [
+        143.2,
+        -38.65
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "vic-south-west-vic",
+      "state_id": "VIC",
+      "name": "South West Coast",
+      "center": [
+        142.0,
+        -38.35
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "vic-prom-coast",
+      "state_id": "VIC",
+      "name": "Wilsons Promontory & Prom Coast",
+      "center": [
+        146.28,
+        -38.93
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "vic-gippsland",
+      "state_id": "VIC",
+      "name": "Gippsland Lakes & Ninety Mile Beach",
+      "center": [
+        147.5,
+        -38.1
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "vic-east-gippsland",
+      "state_id": "VIC",
+      "name": "East Gippsland",
+      "center": [
+        149.4,
+        -37.7
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-sydney-east",
+      "state_id": "NSW",
+      "name": "Sydney Eastern Beaches",
+      "center": [
+        151.27,
+        -33.92
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-sydney-north",
+      "state_id": "NSW",
+      "name": "Sydney Northern Beaches",
+      "center": [
+        151.3,
+        -33.63
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-sydney-south",
+      "state_id": "NSW",
+      "name": "Sydney Southern Beaches",
+      "center": [
+        151.13,
+        -34.06
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-jervis-bay",
+      "state_id": "NSW",
+      "name": "Jervis Bay & Shoalhaven",
+      "center": [
+        150.75,
+        -35.05
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-illawarra",
+      "state_id": "NSW",
+      "name": "Illawarra",
+      "center": [
+        150.86,
+        -34.5
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-eurobodalla",
+      "state_id": "NSW",
+      "name": "Eurobodalla",
+      "center": [
+        150.16,
+        -35.9
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-sapphire",
+      "state_id": "NSW",
+      "name": "Sapphire Coast",
+      "center": [
+        149.94,
+        -36.8
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-central-coast",
+      "state_id": "NSW",
+      "name": "Central Coast",
+      "center": [
+        151.47,
+        -33.35
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-hunter",
+      "state_id": "NSW",
+      "name": "Newcastle & Port Stephens",
+      "center": [
+        152.0,
+        -32.8
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-mid-north",
+      "state_id": "NSW",
+      "name": "Mid North Coast",
+      "center": [
+        152.8,
+        -31.2
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-north-coast",
+      "state_id": "NSW",
+      "name": "Coffs Coast & Clarence",
+      "center": [
+        153.2,
+        -29.8
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nsw-northern-rivers",
+      "state_id": "NSW",
+      "name": "Northern Rivers & Tweed",
+      "center": [
+        153.55,
+        -28.6
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "qld-gold-coast",
+      "state_id": "QLD",
+      "name": "Gold Coast",
+      "center": [
+        153.44,
+        -28.0
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-moreton",
+      "state_id": "QLD",
+      "name": "Brisbane & Moreton Bay",
+      "center": [
+        153.3,
+        -27.4
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-sunshine",
+      "state_id": "QLD",
+      "name": "Sunshine Coast",
+      "center": [
+        153.09,
+        -26.55
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-fraser",
+      "state_id": "QLD",
+      "name": "Fraser Coast & K’gari",
+      "center": [
+        153.0,
+        -25.3
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-bundaberg",
+      "state_id": "QLD",
+      "name": "Bundaberg & Southern Great Barrier Reef",
+      "center": [
+        152.4,
+        -24.5
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-capricorn",
+      "state_id": "QLD",
+      "name": "Capricorn Coast",
+      "center": [
+        150.8,
+        -23.2
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-mackay",
+      "state_id": "QLD",
+      "name": "Mackay & Whitsundays",
+      "center": [
+        149.0,
+        -20.8
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-townsville",
+      "state_id": "QLD",
+      "name": "Townsville & Magnetic Island",
+      "center": [
+        146.8,
+        -19.2
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-cassowary",
+      "state_id": "QLD",
+      "name": "Cassowary Coast",
+      "center": [
+        146.0,
+        -17.9
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-cairns",
+      "state_id": "QLD",
+      "name": "Cairns & Port Douglas",
+      "center": [
+        145.6,
+        -16.5
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-cape-york",
+      "state_id": "QLD",
+      "name": "Cape York & Torres Strait",
+      "center": [
+        142.5,
+        -12
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "qld-gulf-qld",
+      "state_id": "QLD",
+      "name": "Gulf Country",
+      "center": [
+        140.8,
+        -17.3
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-perth",
+      "state_id": "WA",
+      "name": "Perth & Rottnest",
+      "center": [
+        115.65,
+        -32.0
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-peel",
+      "state_id": "WA",
+      "name": "Peel & Mandurah",
+      "center": [
+        115.65,
+        -32.6
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-south-west-wa",
+      "state_id": "WA",
+      "name": "Bunbury & Margaret River",
+      "center": [
+        115.0,
+        -33.8
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-great-southern",
+      "state_id": "WA",
+      "name": "Great Southern",
+      "center": [
+        117.5,
+        -35.0
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-esperance",
+      "state_id": "WA",
+      "name": "Esperance & Nullarbor",
+      "center": [
+        122.2,
+        -33.8
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-mid-west",
+      "state_id": "WA",
+      "name": "Mid West Coast",
+      "center": [
+        114.8,
+        -29.0
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-shark-bay",
+      "state_id": "WA",
+      "name": "Shark Bay & Gascoyne",
+      "center": [
+        113.7,
+        -25.7
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-ningaloo",
+      "state_id": "WA",
+      "name": "Ningaloo & Exmouth",
+      "center": [
+        113.9,
+        -22.5
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-pilbara",
+      "state_id": "WA",
+      "name": "Pilbara Coast",
+      "center": [
+        117.5,
+        -20.3
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-broome",
+      "state_id": "WA",
+      "name": "Broome & Dampier Peninsula",
+      "center": [
+        122.4,
+        -17.5
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "wa-kimberley",
+      "state_id": "WA",
+      "name": "Kimberley Coast",
+      "center": [
+        125.5,
+        -14.8
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "sa-adelaide",
+      "state_id": "SA",
+      "name": "Adelaide & Fleurieu",
+      "center": [
+        138.4,
+        -35.0
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "sa-kangaroo-island",
+      "state_id": "SA",
+      "name": "Kangaroo Island",
+      "center": [
+        137.2,
+        -35.8
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "sa-yorke",
+      "state_id": "SA",
+      "name": "Yorke Peninsula",
+      "center": [
+        137.6,
+        -34.8
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "sa-eyre",
+      "state_id": "SA",
+      "name": "Eyre Peninsula",
+      "center": [
+        135.5,
+        -34.1
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "sa-far-west-sa",
+      "state_id": "SA",
+      "name": "Far West Coast",
+      "center": [
+        132.8,
+        -32.1
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "sa-limestone",
+      "state_id": "SA",
+      "name": "Limestone Coast",
+      "center": [
+        139.9,
+        -37.0
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "sa-spencer",
+      "state_id": "SA",
+      "name": "Spencer Gulf",
+      "center": [
+        137.4,
+        -33.0
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-hobart",
+      "state_id": "TAS",
+      "name": "Hobart & South East",
+      "center": [
+        147.5,
+        -43.0
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-east-tas",
+      "state_id": "TAS",
+      "name": "East Coast",
+      "center": [
+        148.2,
+        -41.8
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-north-east-tas",
+      "state_id": "TAS",
+      "name": "North East & Bay of Fires",
+      "center": [
+        148.2,
+        -41.0
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-north-tas",
+      "state_id": "TAS",
+      "name": "North Coast",
+      "center": [
+        146.3,
+        -41.0
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-north-west-tas",
+      "state_id": "TAS",
+      "name": "North West Coast",
+      "center": [
+        145.0,
+        -40.8
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-west-tas",
+      "state_id": "TAS",
+      "name": "West Coast",
+      "center": [
+        145.1,
+        -42.1
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-south-west-tas",
+      "state_id": "TAS",
+      "name": "South West Coast",
+      "center": [
+        146.2,
+        -43.5
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "tas-bass-islands",
+      "state_id": "TAS",
+      "name": "Bass Strait Islands",
+      "center": [
+        147.7,
+        -40.0
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "nt-darwin",
+      "state_id": "NT",
+      "name": "Darwin & Top End",
+      "center": [
+        130.8,
+        -12.4
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "nt-tiwi",
+      "state_id": "NT",
+      "name": "Tiwi Islands",
+      "center": [
+        130.8,
+        -11.6
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "nt-west-arnhem",
+      "state_id": "NT",
+      "name": "West Arnhem Land",
+      "center": [
+        132.8,
+        -11.7
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "nt-east-arnhem",
+      "state_id": "NT",
+      "name": "East Arnhem Land",
+      "center": [
+        136.5,
+        -12.5
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "nt-gulf-nt",
+      "state_id": "NT",
+      "name": "Gulf of Carpentaria",
+      "center": [
+        136.5,
+        -15.1
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "jbt-booderee",
+      "state_id": "JBT",
+      "name": "Booderee & Jervis Bay Territory",
+      "center": [
+        150.72,
+        -35.16
+      ],
+      "max_distance_km": 180
+    },
+    {
+      "id": "ext-indian-ocean-islands",
+      "state_id": "EXT",
+      "name": "Indian Ocean Territories",
+      "center": [
+        101.9,
+        -11.4
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "ext-norfolk",
+      "state_id": "EXT",
+      "name": "Norfolk Island",
+      "center": [
+        167.95,
+        -29.05
+      ],
+      "max_distance_km": 350
+    },
+    {
+      "id": "nsw-other-coast",
+      "state_id": "NSW",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "nt-other-coast",
+      "state_id": "NT",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "qld-other-coast",
+      "state_id": "QLD",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "sa-other-coast",
+      "state_id": "SA",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "tas-other-coast",
+      "state_id": "TAS",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "vic-other-coast",
+      "state_id": "VIC",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "wa-other-coast",
+      "state_id": "WA",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "jbt-other-coast",
+      "state_id": "JBT",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "ext-other-coast",
+      "state_id": "EXT",
+      "name": "Other coastal locations",
+      "center": [
+        134,
+        -27
+      ],
+      "fallback": true
+    },
+    {
+      "id": "nsw-lord-howe",
+      "state_id": "NSW",
+      "name": "Lord Howe Island",
+      "center": [
+        159.07,
+        -31.55
+      ],
+      "max_distance_km": 100
+    }
+  ]
+}

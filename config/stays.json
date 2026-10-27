@@ -1,0 +1,389 @@
+{
+  "version": 1,
+  "note": "Source-checked operators and parks listings. Review dates do not establish current availability. Location and optional mapped amenities retain separate provenance.",
+  "stays": [
+    {
+      "id": "osm-node-4333395901",
+      "name": "Bristol Point Camping Ground",
+      "type": "campground",
+      "point": [
+        150.7283395,
+        -35.1378881
+      ],
+      "source_url": "https://booderee.gov.au/camping/",
+      "operator_url": "https://booderee.gov.au/camping/",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/node/4333395901",
+      "amenities_source_url": "https://www.openstreetmap.org/node/4333395901",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-459554627",
+      "name": "Cave Beach Camping Area",
+      "type": "campground",
+      "point": [
+        150.6671875,
+        -35.1608031
+      ],
+      "source_url": "https://booderee.gov.au/camping/",
+      "operator_url": "https://booderee.gov.au/camping/",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/459554627",
+      "amenities_source_url": "https://www.openstreetmap.org/way/459554627",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-1212505382",
+      "name": "Tidal River Campground",
+      "type": "campground",
+      "point": [
+        146.3198583,
+        -39.0316462
+      ],
+      "source_url": "https://www.parks.vic.gov.au/places-to-see/parks/wilsons-promontory-national-park/where-to-stay/tidal-river-campground",
+      "operator_url": "https://www.parks.vic.gov.au/places-to-see/parks/wilsons-promontory-national-park/where-to-stay/tidal-river-campground",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground",
+        "cabin"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/1212505382",
+      "amenities_source_url": "https://www.openstreetmap.org/way/1212505382",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-node-1808394519",
+      "name": "Rosebud Foreshore Camping",
+      "type": "campground",
+      "point": [
+        144.88361,
+        -38.36139
+      ],
+      "source_url": "https://www.mornpen.vic.gov.au/Things-to-do/Camping/Rosebud-and-McCrae-foreshore-camping",
+      "operator_url": "https://www.mornpen.vic.gov.au/Things-to-do/Camping/Rosebud-and-McCrae-foreshore-camping",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/node/1808394519",
+      "amenities_source_url": "https://www.openstreetmap.org/node/1808394519",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-201214879",
+      "name": "Pretty Beach Campground",
+      "type": "campground",
+      "point": [
+        150.3657942,
+        -35.5674978
+      ],
+      "source_url": "https://www.environment.nsw.gov.au/about-us/contact-us/office-locations/pretty-beach-campground",
+      "operator_url": "https://www.environment.nsw.gov.au/about-us/contact-us/office-locations/pretty-beach-campground",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/201214879",
+      "amenities_source_url": "https://www.openstreetmap.org/way/201214879",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-785033260",
+      "name": "Depot Beach Campground & Cabins",
+      "type": "campground",
+      "point": [
+        150.3217872,
+        -35.6287156
+      ],
+      "source_url": "https://www.nationalparks.nsw.gov.au/camping-and-accommodation/accommodation/depot-beach-cabins",
+      "operator_url": "https://www.nationalparks.nsw.gov.au/camping-and-accommodation/accommodation/depot-beach-cabins",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": true,
+        "showers": true,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground",
+        "cabin"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/785033260",
+      "amenities_source_url": "https://www.openstreetmap.org/way/785033260",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-871455793",
+      "name": "Cylinder Beach Camping Ground",
+      "type": "campground",
+      "point": [
+        153.5322733,
+        -27.4267676
+      ],
+      "source_url": "https://minjerribahcamping.com.au/camp-grounds/cylinder-beach/",
+      "operator_url": "https://minjerribahcamping.com.au/camp-grounds/cylinder-beach/",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": true,
+        "showers": true,
+        "drinking_water": null,
+        "power": true
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/871455793",
+      "amenities_source_url": "https://www.openstreetmap.org/way/871455793",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-195258121",
+      "name": "Noosa North Shore Beach Campground",
+      "type": "campground",
+      "point": [
+        153.0612009,
+        -26.333533
+      ],
+      "source_url": "https://www.noosaholidayparks.com.au/Our-Parks/Noosa-North-Shore-Beach-Campground",
+      "operator_url": "https://www.noosaholidayparks.com.au/Our-Parks/Noosa-North-Shore-Beach-Campground",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": true,
+        "showers": true,
+        "drinking_water": true,
+        "power": true
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground",
+        "caravan-park"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/195258121",
+      "amenities_source_url": "https://www.openstreetmap.org/way/195258121",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-node-316592746",
+      "name": "Lucky Bay Campground · Cape Le Grand",
+      "type": "campground",
+      "point": [
+        122.2196011,
+        -33.9918914
+      ],
+      "source_url": "https://exploreparks.dbca.wa.gov.au/site/lucky-bay",
+      "operator_url": "https://exploreparks.dbca.wa.gov.au/site/lucky-bay",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/node/316592746",
+      "amenities_source_url": "https://www.openstreetmap.org/node/316592746",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-310199076",
+      "name": "Conto Campground",
+      "type": "campground",
+      "point": [
+        115.0147544,
+        -34.0806353
+      ],
+      "source_url": "https://exploreparks.dbca.wa.gov.au/site/conto-campground",
+      "operator_url": "https://exploreparks.dbca.wa.gov.au/site/conto-campground",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": true,
+        "showers": false,
+        "drinking_water": true,
+        "power": false
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/310199076",
+      "amenities_source_url": "https://www.openstreetmap.org/way/310199076",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-852240175",
+      "name": "Pondalowie Caravan & Trailer Campground",
+      "type": "campground",
+      "point": [
+        136.8395984,
+        -35.2377177
+      ],
+      "source_url": "https://www.parks.sa.gov.au/parks/dhilba-guuranda-innes-national-park/booking/69782",
+      "operator_url": "https://www.parks.sa.gov.au/parks/dhilba-guuranda-innes-national-park/booking/69782",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground",
+        "caravan-park"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/852240175",
+      "amenities_source_url": "https://www.openstreetmap.org/way/852240175",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-834631050",
+      "name": "Cosy Corner North Campground",
+      "type": "campground",
+      "point": [
+        148.2817784,
+        -41.2210048
+      ],
+      "source_url": "https://www.spiritoftasmania.com.au/things-to-do/cosy-corner-north-campground/",
+      "operator_url": "https://www.spiritoftasmania.com.au/things-to-do/cosy-corner-north-campground/",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/834631050",
+      "amenities_source_url": "https://www.openstreetmap.org/way/834631050",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    },
+    {
+      "id": "osm-way-75609561",
+      "name": "Lee Point Village Resort",
+      "type": "caravan-park",
+      "point": [
+        130.8935596,
+        -12.3439219
+      ],
+      "source_url": "https://www.leepointvillageresort.com.au/",
+      "operator_url": "https://www.leepointvillageresort.com.au/",
+      "verified": true,
+      "reviewed_at": "2026-10-27",
+      "status": "Operator or parks listing checked; confirm opening, access and bookings with the provider",
+      "amenities": {
+        "toilets": null,
+        "showers": null,
+        "drinking_water": null,
+        "power": null
+      },
+      "vehicle_access": null,
+      "season": null,
+      "attribution": "© OpenStreetMap contributors · ODbL",
+      "types": [
+        "campground",
+        "caravan-park",
+        "cabin"
+      ],
+      "location_source_url": "https://www.openstreetmap.org/way/75609561",
+      "amenities_source_url": "https://www.openstreetmap.org/way/75609561",
+      "point_note": "Mapped site reference; consult the operator site map for the exact pitch or cabin location."
+    }
+  ]
+}

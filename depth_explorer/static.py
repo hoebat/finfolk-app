@@ -132,7 +132,8 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
         total = 0
         def write(relative, data):
             nonlocal total
-            total += len(data)
+            path = stage / relative
+            total += len(data) - (path.stat().st_size if path.exists() else 0)
             if total > budget_mb * 1024**2:
                 raise ValueError("Static site exceeds configured Pages size budget; reduce tile zoom or coverage")
             path = stage / relative
@@ -200,28 +201,14 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
                         write(f"vendor/licenses/{name}-{licence.name}", licence.read_bytes())
         elif needs_projection:
             raise ValueError("Projected rasters require the bundled Proj4js library. Run npm install --ignore-scripts before building")
+        from .national import prepare, finish
+        directory = prepare(stage, write, catalog)
         catalog.update(mode="static", built_at=timestamp(), format_version=1)
         payload = json.dumps(catalog, allow_nan=False, separators=(",", ":")).encode()
         write("data/catalog.json", payload)
         prepared = subprocess.run(["node", str(PROJECT / "scripts/build_beach_summaries.mjs"), str(stage), "--stdout"], check=True, capture_output=True)
         write("data/beach-summaries.json", prepared.stdout)
-        journeys = PROJECT / "config/journeys.json"
-        if journeys.is_file():
-            transport_data = json.loads(journeys.read_text())
-            write("data/walking-routes.json", json.dumps(transport_data.pop("walking_routes", {}), separators=(",", ":")).encode())
-            written_itineraries = set()
-            for journey in transport_data.get("journeys", []):
-                detail = {"outbound": journey.pop("outbound", []), "return_legs": journey["return"].pop("legs", [])}
-                encoded = json.dumps(detail, separators=(",", ":")).encode()
-                path = "data/journey-itineraries/" + hashlib.sha256(encoded).hexdigest()[:20] + ".json"
-                if path not in written_itineraries:
-                    write(path, encoded)
-                    written_itineraries.add(path)
-                journey["itinerary_file"] = path
-            write("data/journeys.json", json.dumps(transport_data, separators=(",", ":")).encode())
-        else:
-            transport = json.loads((PROJECT / "config/transport.json").read_text())
-            write("data/journeys.json", json.dumps({"version": 1, "origins": transport["origins"], "dates": [], "journeys": [], "sources": []}).encode())
+        finish(directory, stage, write)
         report = {"bytes": total, "assets": assets, "regions": {r["id"]: {"rasters": len(r["rasters"]), "tiles": len(r["tiles"]), "status": r["status"]} for r in catalog["regions"]}, "built_at": catalog["built_at"]}
         write("build-report.json", json.dumps(report, indent=2).encode())
         if output.exists():

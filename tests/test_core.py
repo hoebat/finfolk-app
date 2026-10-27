@@ -213,7 +213,7 @@ class HTTPTests(FixtureCase):
     def test_catalog_and_static_app(self):
         status, body = self.request("/data/catalog.json")
         self.assertEqual(status, 200)
-        self.assertEqual(len(json.loads(body)["regions"]), len(REGIONS))
+        self.assertTrue(set(REGIONS).issubset({r["id"] for r in json.loads(body)["regions"]}))
         status, body = self.request("/")
         self.assertEqual(status, 200)
         self.assertIn(b"Depth Atlas", body)

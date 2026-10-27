@@ -37,4 +37,5 @@ assert.equal(selected.location,pin);
 map.layers.pins=false;assert.equal(map.hitDataPin(300,183),null);
 const beach={id:'test',name:'Test beach'};map.beachHits=[{x:300,y:183,beach}];let beachSelected;map.onBeach=b=>beachSelected=b;events.pointerdown({button:0,pointerId:4,offsetX:300,offsetY:183});events.pointerup({offsetX:300,offsetY:183});assert.equal(beachSelected,beach);
 map.pointPicking=true;beachSelected=null;events.pointerdown({button:0,pointerId:5,offsetX:300,offsetY:183});events.pointerup({offsetX:300,offsetY:183});assert.equal(beachSelected,null,'Measurement starts bypass beach pins');
+map.pointPicking=false;const stay={id:'test-stay',name:'TEST stay'};map.stayHits=[{x:400,y:200,stay}];let staySelected;map.onStay=s=>staySelected=s;events.pointerdown({button:0,pointerId:6,offsetX:400,offsetY:200});events.pointerup({offsetX:400,offsetY:200});assert.equal(staySelected,stay);
 console.log('Map checks passed: projection, anchor zoom, pan/click separation, contour hit testing.');

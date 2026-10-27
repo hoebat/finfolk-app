@@ -1,50 +1,53 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
 import {Window} from 'happy-dom';
-const window=new Window({url:'https://example.test/shore-depth-explorer/'});
+const window=new Window({url:'https://example.test/shore-depth-explorer/',settings:{disableIframePageLoading:true,disableJavaScriptFileLoading:true,disableCSSFileLoading:true}});
 window.document.write(await readFile(new URL('../web/index.html',import.meta.url),'utf8'));
-const beaches=JSON.parse(await readFile(new URL('../web/beaches.json',import.meta.url),'utf8'));
+const directory=JSON.parse(execFileSync(process.env.PYTHON||'python3',['-c',`import json
+from pathlib import Path
+from depth_explorer.national import directory
+from depth_explorer.catalog import REGIONS
+print(json.dumps(directory(json.loads(Path('web/beaches.json').read_text()),{},json.loads(Path('config/areas.json').read_text()),list(REGIONS.values()))))`],{cwd:new URL('..',import.meta.url)}));
+for(const b of directory.beaches){b.entry_documented=!!b.entry?.verified;b.has_access_facts=b.facts.some(f=>['Access','Entry'].includes(f.label));b.restricted_activities=(b.restrictions||[]).map(r=>r.activity);b.fact_count=b.facts.length;b.detail_file='data/areas/'+b.area_id+'.json';}
+for(const area of directory.areas){area.detail_file='data/areas/'+area.id+'.json';area.depth_count=2;area.survey_count=1;}
 const regions=JSON.parse(await readFile(new URL('../depth_explorer/regions.json',import.meta.url),'utf8')).map(r=>({...r,rasters:[],tiles:{},contour_file:`data/contours/${r.id}.geojson`,status:'contours',contours:{count:2,datum:r.contour_datum}}));
+const guides=await readFile(new URL('../web/guides.json',import.meta.url),'utf8'),social=await readFile(new URL('../web/social.json',import.meta.url),'utf8');
 for(const name of ['document','location','history','Event','MouseEvent','HTMLCanvasElement'])globalThis[name]=window[name];
 globalThis.devicePixelRatio=1;globalThis.ResizeObserver=class{observe(){}};
-const ctx=new Proxy({measureText:text=>({width:text.length*7})},{get:(target,key)=>target[key]||(()=>{})});
-window.HTMLCanvasElement.prototype.getContext=()=>ctx;
-const originalFetch=globalThis.fetch;let stepRequests=0;
+const ctx=new Proxy({measureText:text=>({width:text.length*7})},{get:(target,key)=>target[key]||(()=>{})});window.HTMLCanvasElement.prototype.getContext=()=>ctx;
+const originalFetch=globalThis.fetch;let contourRequests=0,areaRequests=0;
 globalThis.fetch=async url=>{
  const path=new URL(url).pathname;
- if(path.endsWith('/beaches.json'))return new Response(JSON.stringify(beaches));
+ if(path.endsWith('/beaches.json'))return new Response(JSON.stringify(directory));
+ if(path.endsWith('/guides.json'))return new Response(guides);
+ if(path.endsWith('/social.json'))return new Response(social);
  if(path.endsWith('/data/catalog.json'))return new Response(JSON.stringify({format_version:1,regions}));
- if(path.endsWith('/data/beach-summaries.json'))return new Response(JSON.stringify({beaches:beaches.beaches.map(b=>({id:b.id,depths:{10:{status:'available',distance_m:350}},datum:'TEST',survey_date:'TEST',start_label:'SYNTHETIC TEST REFERENCE'}))}));
- if(path.endsWith('/data/journeys.json'))return new Response(JSON.stringify({origins:[{id:'test',name:'TEST origin',point:[145,-38]}],dates:['2030-01-05'],journeys:[{beach_id:'greenfield',origin_id:'test',date:'2030-01-05',trip_type:'day',status:'available',valid_until:'2030-01-05',walk_verified:true,walk_max_leg_min:10,walking_min:10,transfers:1,outbound_min:60,time_at_destination_min:300,itinerary_file:'data/journey-itineraries/test.json',return:{duration_min:65}}],sources:[]}));
- if(path.endsWith('/data/journey-itineraries/test.json')){stepRequests++;return stepRequests===1?new Response('',{status:404}):new Response(JSON.stringify({outbound:[{label:'TEST outbound train'}],return_legs:[{label:'TEST return bus'}]}));}
+ if(path.endsWith('/data/beach-summaries.json'))return new Response(JSON.stringify({beaches:directory.beaches.map(b=>({id:b.id,depths:{10:{status:'available',distance_m:350}},datum:'TEST',survey_date:'TEST',start_label:'SYNTHETIC TEST REFERENCE'}))}));
+ const area=directory.areas.find(a=>path.endsWith('/'+a.detail_file));
+ if(area){areaRequests++;const b=directory.beaches.find(b=>b.area_id===area.id),p=b.point;return new Response(JSON.stringify({beaches:directory.beaches.filter(b=>b.area_id===area.id),coastline:[],surveys:[{name:'TEST source survey',metadata_url:'https://example.test/source'}],stays:[{id:'checked',name:'TEST checked stay',types:['campground','cabin'],type:'campground',point:p,verified:true,source_url:'https://example.test/operator',amenities:{toilets:true},reviewed_at:'TEST',status:'TEST source'}, {id:'mapped',name:'TEST mapped stay',type:'caravan-park',point:p,verified:false,source_url:'https://example.test/mapped',amenities:{}}]}));}
  const region=regions.find(r=>path.endsWith('/'+r.contour_file));
- if(region){const [x,y]=region.center;return new Response(JSON.stringify({features:[0,10].map(depth=>({properties:{depth_m:depth,datum_label:'TEST'},geometry:{type:'LineString',coordinates:[[x-.01,y],[x+.01,y]]}}))}));}
+ if(region){contourRequests++;const [x,y]=region.center;return new Response(JSON.stringify({features:[0,10].map(depth=>({properties:{depth_m:depth,datum_label:'TEST'},geometry:{type:'LineString',coordinates:[[x-.01,y],[x+.01,y]]}}))}));}
  return new Response('',{status:404});
 };
-const $=id=>document.getElementById(id),waitFor=async predicate=>{for(let i=0;i<100;i++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,5));}throw Error('App condition timed out: '+$('notice').textContent);};
+const $=id=>document.getElementById(id),waitFor=async predicate=>{for(let i=0;i<150;i++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,5));}throw Error('App timed out: '+$('notice').textContent);};
 try{
- await import('../web/app.js');await waitFor(()=>$('data-status').textContent==='2 published contours');
- assert.equal(document.querySelectorAll('[data-region]').length,4);
- for(const id of ['profile-tool','profile-panel','raster-legend'])assert.equal($(id).hidden,true,id+' should be hidden without raster data');
- assert.equal($('coverage-layer').closest('label').hidden,true);assert.equal($('interval').closest('label').hidden,true);
- assert.equal($('measure-panel').hidden,false);
+ await import('../web/app.js');await waitFor(()=>document.querySelectorAll('.area-button').length>0);
+ assert.equal(contourRequests,0,'Discovery must not preload large survey files');assert.equal(areaRequests,0,'Regional detail files load only when selected');assert.equal($('origin-filter'),null);assert.equal($('transport-status'),null);
+ for(const id of ['profile-tool','profile-panel','raster-legend'])assert.equal($(id).hidden,true);
+ const states=[...document.querySelectorAll('#region-picker .state-group>summary')].map(s=>s.textContent);assert.deepEqual(states,states.slice().sort((a,b)=>a.localeCompare(b)));
+ $('beach-search').value='greenfield';$('beach-search').dispatchEvent(new window.Event('input'));document.querySelector('#beach-results .beach-open').click();
+ await waitFor(()=>$('place-title').textContent==='Greenfield Beach');assert.equal(new URL(location.href).searchParams.get('site'),'greenfield');assert.equal($('explorer').hidden,false);assert.ok($('beach-summary').textContent.includes('Camping, caravan parks & cabins nearby'));
+ assert.equal(document.querySelectorAll('.stay-card').length,1);document.querySelector('.stay-filters input').click();assert.equal(document.querySelectorAll('.stay-card').length,2);
+ const amenity=document.querySelector('select[aria-label="Stay amenities"]');amenity.value='showers';amenity.dispatchEvent(new window.Event('change'));assert.equal(document.querySelectorAll('.stay-card').length,0);
  $('beach-search').value='jervis';$('beach-search').dispatchEvent(new window.Event('input'));
- assert.equal(document.querySelectorAll('.beach-card').length,12);
- const greenfield=[...document.querySelectorAll('.beach-open')].find(b=>b.textContent==='Greenfield Beach');assert.ok(greenfield);greenfield.click();
- await waitFor(()=>$('place-title').textContent==='Greenfield Beach');assert.ok($('beach-summary').textContent.includes('Getting there by public transport'));assert.equal(new URL(location.href).searchParams.get('site'),'greenfield');
- $('beach-search').value='edithvale';$('beach-search').dispatchEvent(new window.Event('input'));document.querySelector('.beach-open').click();
- $('beach-search').value='greenfield';$('beach-search').dispatchEvent(new window.Event('input'));document.querySelector('.beach-open').click();
- await new Promise(resolve=>setTimeout(resolve,30));assert.equal($('place-title').textContent,'Greenfield Beach');assert.equal(document.querySelector('.region.active').dataset.region,'jervis-bay','Stale region downloads must not override the latest beach');
- $('beach-search').value='jervis';$('beach-search').dispatchEvent(new window.Event('input'));
- assert.equal(stepRequests,0,'Itinerary detail must not load during search or selection');
- [...$('beach-summary').querySelectorAll('button')].find(b=>b.textContent==='Show journey steps').click();
- await waitFor(()=>$('beach-summary').textContent.includes('Journey steps unavailable'));
- [...$('beach-summary').querySelectorAll('button')].find(b=>b.textContent.includes('retry')).click();
- await waitFor(()=>$('beach-summary').textContent.includes('TEST outbound train'));assert.equal(stepRequests,2);assert.ok($('beach-summary').textContent.includes('TEST return bus'));
- for(let i=0;i<3;i++){const check=[...document.querySelectorAll('.compare-toggle input')].find(c=>!c.checked);check.click();}
- assert.equal(document.querySelectorAll('.compare-card').length,3);assert.ok([...document.querySelectorAll('.compare-toggle input')].filter(c=>!c.checked).every(c=>c.disabled));
- $('transit-filter').click();assert.equal(document.querySelectorAll('.beach-card').length,1);assert.ok($('beach-results').textContent.includes('Greenfield Beach'));
- $('transit-filter').click();$('beach-search').value='';$('beach-search').dispatchEvent(new window.Event('input'));$('state-filter').value='Victoria';$('state-filter').dispatchEvent(new window.Event('change'));assert.ok([...document.querySelectorAll('.beach-card')].every(c=>c.textContent.includes('Victoria')));
- assert.equal($('notice').textContent.includes('Cannot load'),false);
- console.log('Application DOM checks passed: startup, global Jervis Bay search, region selection, deep links, hidden raster controls, three-beach comparison and transport filters.');
+ for(let i=0;i<3;i++){[...document.querySelectorAll('#beach-results .compare-toggle input')].find(c=>!c.checked).click();}
+ assert.equal(document.querySelectorAll('.compare-card').length,3);assert.ok([...document.querySelectorAll('#beach-results .compare-toggle input')].filter(c=>!c.checked).every(c=>c.disabled));
+ document.querySelector('[data-view="guides"]').click();assert.equal($('guides-page').hidden,false);assert.equal($('explorer').hidden,true);assert.ok($('guides-content').textContent.includes('Ocean swimming'));assert.ok($('guides-content').textContent.includes('Spearfishing'));
+ document.querySelector('[data-view="areas"]').click();assert.equal($('areas-page').hidden,false);const summary=document.querySelector('.area-group>summary');summary.click();summary.parentElement.dispatchEvent(new window.Event('toggle'));assert.ok(document.querySelector('.area-beaches'));
+ $('beach-search').value='hyams';$('beach-search').dispatchEvent(new window.Event('input'));document.querySelector('#beach-results .beach-open').click();await waitFor(()=>$('place-title').textContent==='Hyams Beach');assert.ok($('beach-summary').textContent.includes('sanctuary'));
+ assert.equal(document.querySelectorAll('.social-gallery iframe').length,0);const load=[...document.querySelectorAll('.social-gallery button')].find(b=>b.textContent.includes('Load Instagram'));assert.ok(load);load.click();assert.equal(document.querySelectorAll('.social-gallery iframe').length,1);
+ assert.ok(document.querySelector('.social-gallery a').href.startsWith('https://www.instagram.com/'));
+ assert.equal(document.body.textContent.toLowerCase().includes('public transport'),false);
+ console.log('Application DOM checks passed: sorted area tree, lazy data, beach selection, source-checked stays, comparison, guides, restriction facts and opt-in social embeds.');
 }finally{globalThis.fetch=originalFetch;await window.happyDOM.close();}

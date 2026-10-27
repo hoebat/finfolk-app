@@ -9,5 +9,3 @@ node_modules/
 _site/
 .cache/
 *.log
-# Generated from current transport feeds; restored through the Actions cache.
-config/journeys.json

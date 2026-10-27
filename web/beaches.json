@@ -1556,14 +1556,7 @@
         "Vincentia",
         "Jervis Bay"
       ],
-      "facts": [
-        {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
-          "reviewed_at": "2026-10-27"
-        }
-      ]
+      "facts": []
     },
     {
       "id": "shark-net",
@@ -1605,14 +1598,7 @@
         "Vincentia",
         "Jervis Bay"
       ],
-      "facts": [
-        {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
-          "reviewed_at": "2026-10-27"
-        }
-      ]
+      "facts": []
     },
     {
       "id": "orion-beach",
@@ -1633,14 +1619,7 @@
         "Vincentia",
         "Jervis Bay"
       ],
-      "facts": [
-        {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
-          "reviewed_at": "2026-10-27"
-        }
-      ]
+      "facts": []
     },
     {
       "id": "blenheim",
@@ -1661,14 +1640,7 @@
         "Vincentia",
         "Jervis Bay"
       ],
-      "facts": [
-        {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
-          "reviewed_at": "2026-10-27"
-        }
-      ]
+      "facts": []
     },
     {
       "id": "greenfield",
@@ -1694,12 +1666,6 @@
           "label": "Access",
           "text": "Pedestrian access starts at the Elizabeth Drive cul-de-sac in Vincentia.",
           "source_url": "https://www.nationalparks.nsw.gov.au/things-to-do/picnic-areas/greenfield-beach-picnic-area/visitor-info",
-          "reviewed_at": "2026-10-27"
-        },
-        {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
           "reviewed_at": "2026-10-27"
         }
       ],
@@ -1750,12 +1716,6 @@
       ],
       "facts": [
         {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
-          "reviewed_at": "2026-10-27"
-        },
-        {
           "label": "Access",
           "text": "The government visitor listing identifies Cyrus Street as the beach location.",
           "source_url": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/hyams-beach",
@@ -1765,7 +1725,16 @@
       "access_streets": [
         "Cyrus Street"
       ],
-      "access_source": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/hyams-beach"
+      "access_source": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/hyams-beach",
+      "restrictions": [
+        {
+          "activity": "spearfishing",
+          "status": "restricted",
+          "text": "NPWS identifies sanctuary-zone water around Hyams Beach. Check the exact current marine-park zoning before selecting any fishing location.",
+          "source_url": "https://www.nationalparks.nsw.gov.au/things-to-do/walking-tracks/hyams-beach-trail/visitor-info",
+          "reviewed_at": "2026-10-27"
+        }
+      ]
     },
     {
       "id": "nelson-beach",
@@ -1807,14 +1776,7 @@
         "Vincentia",
         "Jervis Bay"
       ],
-      "facts": [
-        {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
-          "reviewed_at": "2026-10-27"
-        }
-      ]
+      "facts": []
     },
     {
       "id": "cave-beach",
@@ -1835,14 +1797,7 @@
         "Vincentia",
         "Jervis Bay"
       ],
-      "facts": [
-        {
-          "label": "Regional transport",
-          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
-          "source_url": "https://booderee.gov.au/plan/getting-here/",
-          "reviewed_at": "2026-10-27"
-        }
-      ]
+      "facts": []
     },
     {
       "id": "abrahams-bosom",

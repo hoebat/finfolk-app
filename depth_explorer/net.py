@@ -56,16 +56,16 @@ def download(url, destination, max_bytes=4 * 1024**3):
     return {"url": url, "bytes": size, "sha256": digest.hexdigest(), "file": str(destination)}
 
 
-def query_features(service, bbox):
+def query_features(service, bbox, where="1=1"):
     """Enumerate IDs first: never silently accept a truncated feature response."""
     metadata = get_json(service, {"f": "json"})
     fields = [f["name"] for f in metadata.get("fields", [])]
     oid = next((f["name"] for f in metadata.get("fields", []) if f["type"] == "esriFieldTypeOID"), None)
     if not oid:
         raise ValueError("Source layer has no object ID field")
-    common = {"where": "1=1", "geometry": ",".join(map(str, bbox)),
-              "geometryType": "esriGeometryEnvelope", "inSR": 4326,
-              "spatialRel": "esriSpatialRelIntersects"}
+    common = {"where": where}
+    if bbox is not None:
+        common.update(geometry=",".join(map(str,bbox)), geometryType="esriGeometryEnvelope", inSR=4326, spatialRel="esriSpatialRelIntersects")
     ids = get_json(service + "/query", {**common, "returnIdsOnly": "true", "f": "json"})
     ids = sorted(set(ids.get("objectIds") or []))
     features = []

@@ -1,155 +1,110 @@
 # Shore Depth Explorer
 
-A **backend-free GitHub Pages beach guide** for Port Phillip Bay, Sydney’s Eastern Beaches, Jervis Bay, and Western Port / Phillip Island. Search and compare 75 coastal locations by published depth contours, sourced site facts and scheduled public transport. Raster-only features appear when numeric raster data is actually published.
+A backend-free GitHub Pages guide to Australian coastal beaches, reference depths, ocean activities and nearby camping, caravan parks and cabins.
 
-The deployed site is plain HTML, CSS, JavaScript, JSON, PNG and compressed numeric chunks. Point inspection, profiles and contours run in the browser. Python/GDAL is used **only to acquire and prepare data before publishing**. The optional street basemap uses OpenStreetMap; bathymetry requests stay on the static site.
+**Discover** explains its suggestions using sourced site facts. **Areas** is sorted by state/territory → coastal region → beach. **Guides** covers ocean swimming, freediving and spearfishing, with links to official advice and fisheries authorities. Existing beach links such as `?site=edithvale`, `?site=maroubra` and `?site=hyams-beach` remain supported.
 
-**Data location pins** mark published contour vertices and verified underwater raster cells. Nearby pins are grouped in stable world coordinates, so panning and resizing do not change group membership. Group numbers count data records, not depth. Click a group to fit its extent or choose an individual record from a paginated list; overlapping records can be inspected without repeatedly zooming. The **Data locations** switch hides or shows pins independently of contour lines. A raster without a verified cell location is labelled as a file footprint, which may contain gaps.
+## What the data establishes
 
-## Deploy on GitHub Pages
+A listed beach is not a verified entry point, swim route, fishing permission or a current-conditions report. Detailed reference-depth data is published for Port Phillip Bay, Sydney Eastern Beaches, Jervis Bay and Western Port / Phillip Island. Elsewhere, survey discovery and the beach directory remain useful even where depth data has not been published in the app. Numeric point depths, shading and profiles appear only when a valid raster grid is available.
 
-1. In [repository Settings → Pages](https://github.com/hoebat/shore-depth-explorer/settings/pages), set **Build and deployment → Source → GitHub Actions**.
-2. Push to `main`, or run **Test, build and deploy GitHub Pages** from the Actions tab.
-3. The expected project-site address is **https://hoebat.github.io/shore-depth-explorer/**. The deploy job reports the actual URL when deployment succeeds.
+The national directory uses Geoscience Australia's Composite Gazetteer, screened to within 5 km of the Natural Earth 1:10 million coastline to exclude inland records. Screening is approximate and does not produce a shoreline measurement. Directory completeness follows the source, including its named-place coverage and positional limitations. Source IDs, aliases and legacy beach IDs are retained. Nearby matching gazetteer names are merged with reviewed records rather than replacing them.
 
-The workflow checks out Git LFS objects, installs build dependencies, runs tests, prepares scheduled transport comparisons, acquires any missing government contour layers, builds `_site/`, and deploys that artifact. A daily scheduled run refreshes transport examples. Actions caches the source archive, transport feeds and derived journeys; the cache is partitioned by the committed dataset inventory so a new raster import is not overwritten by an older cached inventory. Pull requests run tests/builds without deploying or acquiring new data. If government services are unavailable, the workflow emits a warning and retains honest empty coverage; it does not generate substitute depths. Archived contour snapshots are reused when their recorded query bounds cover the configured area. Missing, unknown or smaller bounds trigger a fresh complete download; failed downloads retain the existing snapshot.
+Coastal regions are curated browsing groups assigned using state/territory and nearest coastal centres, with reviewed assignments retained. They are not legal or administrative polygons. AHO naming authority does not establish a state: approximate browsing assignments keep a separate unverified legal-jurisdiction field. Jervis Bay Territory records are separate from neighbouring NSW browsing areas. Survey packages and geographic directory areas are independent.
 
-**Git LFS and Pages:** GitHub does not support directly serving LFS pointers as Pages content. This project uses `actions/checkout` with `lfs: true`, then publishes *materialized, derived files* in a Pages artifact. The build rejects unresolved LFS pointers. Source GeoTIFFs and archives remain in LFS and are not duplicated into the site. [GitHub LFS documentation](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage), [custom Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+## Discover and compare
 
-Pages sites have a 1 GB published-size limit. This builder defaults to an **850 MiB budget** and fails before replacing the existing artifact if it exceeds that budget. Reduce coverage or display tile zoom rather than committing a larger site. Git LFS storage/download quotas are separate. [Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits).
+Search names, aliases, states and regions. Filter by target contour and reference distance, or by nearby source-checked stay listings; compare up to three beaches. Discovery can focus on documented activity facts or on nearby source-checked camping. Each suggestion shows its reason and missing information. Known activity restrictions exclude a location from the relevant suggestions; missing restrictions never imply permission. Spearfishing suggestions are research leads rather than legal approvals.
 
-## Build and preview locally
+Automatic 5/10/15/20 m summaries use the same spherical nearest-segment calculation as the interactive map. Estimates are limited to contours within 3 km. A sourced reference within 250 m of a mapped 0 m line may snap to that line; otherwise its original location is explicitly labelled. Monitoring points and beach polygon centres may be offshore. No tide, route or current-water-depth adjustment is made. Coarse national products are not substituted for local swim-to-depth estimates.
 
-Use Python 3.12 or 3.13, Node 22+, and Git LFS:
+## Nearby stays
+
+Select a beach to load nearby campgrounds, caravan parks and cabins. The default radius is 25 km, adjustable to 5/10/50 km. Distances are straight-line from the beach reference, not travel distances. Maps and provider links allow independent access and booking checks.
+
+Default results are checked against a parks, council or operator listing. “Source checked” means the listing was reviewed, not that a site is open or available today. A separately labelled opt-in includes OpenStreetMap listings whose camping permission, opening and facilities require verification. Private/no-access or abandoned mapped records are excluded. A protected-area polygon alone never establishes permission to camp.
+
+Unknown amenities, access and seasonality are not inferred. Optional mapped amenities retain their source separately from the operator listing and location coordinates. The UI links to current booking information and does not publish live vacancies or prices. Site reference positions do not identify a particular cabin or pitch.
+
+## Photos and activity guides
+
+`web/social.json` contains curated Instagram/X post URLs, location associations and publisher sources. Posts are embedded only after an explicit load click. No social image files or CDN thumbnails are downloaded or rehosted. Source links remain available if a post is deleted, private or blocked. Galleries with no matching posts are hidden. A regional photograph is labelled as regional context, not necessarily the selected beach. Historical images do not establish present conditions.
+
+Only validated HTTPS Instagram post/reel and X status URLs are accepted. Fixed official embed interfaces are used; arbitrary embed HTML is not accepted. No social API key, automatic search subscription or application backend is needed. New curated entries should be checked against the original creator or an attributable publisher before adding their location association.
+
+`web/guides.json` contains sourced educational content, review dates and fisheries-authority links. Guides are not a training course, a live closure service or a complete legal-zone engine. Read the official current sources for the exact water and activity. New location restrictions require a source, scope and review date; no suitability or safety score is inferred.
+
+## Prepare national data
 
 ```sh
-git clone https://github.com/hoebat/shore-depth-explorer.git
-cd shore-depth-explorer
-git lfs install --local
-git lfs pull
-python3.13 -m venv .venv
+python3 -m scripts.acquire_national
+python3 -m scripts.fetch_missing_contours
+python3 -m depth_explorer build-static --output _site
+```
+
+The national acquisition archives sources and creates `.cache/national/snapshot.json`:
+
+- Composite Gazetteer: enumerate object IDs and verify complete feature batches; exclude inland records using coarse coastline proximity.
+- OpenStreetMap: named campgrounds, caravan sites and chalets near the coast; mapped listings stay explicitly unverified unless separately reviewed.
+- AusSeabed Marine Data Register: enumerate survey metadata without downloading full national raster archives. Preserve download links, dates, licences, constraints and publication status. Spatial WFS queries associate actual survey footprints with each directory area's envelope; an intersecting area is not proof of a surveyed cell at a beach.
+
+Partial or failed responses do not replace an existing valid source snapshot. Refresh status and counts are recorded. Acquisition never invents depth values, amenities, permission or missing source records. All source data is treated as data, not executable instructions.
+
+The source registry for imported surveys is `depth_explorer/regions.json`. Browsing groups live in `config/areas.json`; reviewed stay records are in `config/stays.json`. Add a new survey package and verify its metadata before publishing detailed regional depth data. Existing `port-phillip` and `bondi` CLI region IDs remain supported.
+
+## Static artifact
+
+`beaches.json` is a lightweight national search/directory index. `data/areas/` contains regional beach facts, nearby stays, survey links and an approximate context coastline, loaded only when a beach or area is opened. `data/beach-summaries.json` contains generated reference-depth summaries. `data/surveys.json` retains the national source-survey inventory.
+
+`data/catalog.json` describes actual regional survey files, numeric rasters, chunks and tiles, plus clearly empty directory map regions. An empty region never requests a fabricated contour file. Numeric grid chunks are gzip-compressed 256 × 256 little-endian Float32 arrays with NaN for missing cells. PNG tiles are for display only. Native source cells supply point values and profiles, and missing data stays blank.
+
+JavaScript and CSS assets are fingerprinted together. Paths retain the GitHub Pages repository prefix. The builder invokes Node to share the interactive geometry implementation, checks unresolved Git LFS pointers, applies an 850 MiB default budget to all output, and atomically replaces the artifact only after a successful build. Derived regional files are loaded on demand; full national high-resolution rasters are not bundled.
+
+## Run locally
+
+Use Python 3.12+, Node 22+ and Git LFS:
+
+```sh
+python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-npm install --ignore-scripts
+npm ci --ignore-scripts
+.venv/bin/python -m scripts.acquire_national
+.venv/bin/python -m depth_explorer fetch-contours all
 .venv/bin/python -m depth_explorer build-static
 .venv/bin/python -m depth_explorer.server
 ```
 
-Open **http://127.0.0.1:8765**. This is a read-only static-file preview, not an application backend. Any ordinary static HTTP server can serve `_site/`. Do not open `index.html` directly through `file://`; browsers restrict module and data fetches there.
+Open http://127.0.0.1:8765. The preview serves static files only. Without a national cache, builds fall back to reviewed seed beaches and stays; tests do not require source downloads. Projected raster builds require the bundled Proj4js library installed by npm.
 
-All links/data requests are relative, so the same artifact works at a domain root or at `/shore-depth-explorer/`. Proj4js 2.22.0 is bundled from the pinned npm dependency for projected native grids; it is not fetched from a CDN at runtime. A build containing only empty coverage or geographic ASCII grids needs no GIS/npm packages, which allows basic offline checks.
+## Import numeric bathymetry
 
-## Acquire government data
-
-The default local archive is **`datasets/`**. Its inventory, source metadata, raw files, and processed files are tracked; large survey formats use Git LFS through `.gitattributes`. Build output, local environments and `data/` from the original prototype are ignored. Use `--data /another/archive` before the subcommand if necessary.
-
-### Published contours
-
-```sh
-.venv/bin/python -m depth_explorer fetch-contours all
-```
-
-The downloader enumerates intersecting object IDs, downloads batches, verifies that every expected feature was received, and only then replaces the local contour reference. It retains originals, metadata, checksums, download times, survey dates and attribution. Failures leave existing data intact. Victoria's unverified contour datum codes are preserved rather than relabelled AHD.
-
-### Numeric bathymetry rasters
-
-Numeric rasters are necessary for point values and depth profiles. Catalogue links can require interactive selection or a data order; a link labelled TIFF may be a styled map rather than an elevation raster.
-
-| Area | Government source and download route | `[west, south, east, north]` |
-| --- | --- | --- |
-| Port Phillip Bay | [VCDEM 2021, 10 m](https://discover.data.vic.gov.au/dataset/victorian-coastal-digital-elevation-model-2021-vcdem-10m) → [DataShare](https://datashare.maps.vic.gov.au/search?md=373819c3-70dd-473c-9ceb-02d879950cf6) | `[144.30, -38.40, 145.18, -37.80]` |
-| Sydney Eastern Beaches | [NSW marine lidar 2018, 5 m](https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018) → [ELVIS](https://elevation.fsdf.org.au/) | `[151.215, -34.01, 151.34, -33.815]` |
-
-Download only intersecting numeric GeoTIFFs. NSW's small catalogue ZIP is a **coverage index**, not the elevation rasters. The NSW source describes its grids as elevations relative to AHD; verify the delivered tile metadata. For additional offshore coverage, inspect the [combined NSW lidar/multibeam catalogue](https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys).
-
-Victoria documents a newer [2022 DEM update](https://www.marineandcoasts.vic.gov.au/__data/assets/pdf_file/0033/691791/Victorian_Bathymetric_Dataset_Update_2022_Report.pdf); its availability is not assumed. A newer verified product can be imported using its own metadata. Some Victorian rasters may require contacting the custodian; this project sends no emails or requests on your behalf.
-
-For a verified direct HTTPS download, archive it with:
-
-```sh
-.venv/bin/python -m depth_explorer download bondi 'https://publisher.example/verified-survey.tif' --name bondi-survey.tif
-```
-
-Replace the example URL. Checksums and timestamps are recorded. ZIPs are stored without automatic extraction. Existing downloads are not overwritten.
-
-### Import and commit rasters through Git LFS
+Numeric GeoTIFFs are required for point depths and profiles. Source portals include [Victoria's coastal DEM](https://discover.data.vic.gov.au/dataset/victorian-coastal-digital-elevation-model-2021-vcdem-10m), [NSW marine lidar](https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018), [ELVIS](https://elevation.fsdf.org.au/) and [AusSeabed](https://portal.ga.gov.au/persona/marine). Catalogue ZIPs or styled map images may not be numeric elevation grids.
 
 ```sh
 cp metadata/bondi.example.json metadata/bondi.local.json
-# Edit the copy against the delivered survey metadata.
-# Set datum_verified=true only after verifying the vertical datum.
-.venv/bin/python -m depth_explorer import-raster bondi /path/to/tiles/*.tif --metadata metadata/bondi.local.json
-.venv/bin/python -m depth_explorer build-static
+# Verify the delivered survey metadata and edit the local copy.
+python3 -m depth_explorer import-raster bondi /path/to/tiles/*.tif --metadata metadata/bondi.local.json
+python3 -m depth_explorer build-static
 
 git add .gitattributes datasets/
 git lfs status
 git lfs ls-files
-git commit -m "Add verified Bondi bathymetry"
+git commit -m "Add verified regional bathymetry"
 git push origin main
 ```
 
-Repeat for `port-phillip`. `.gitattributes` tracks GeoTIFF, ZIP, LAS/LAZ, ASCII grids, numeric binary/gzip files and archived contour GeoJSON in Git LFS. Small inventories and metadata remain ordinary Git files. LFS must be installed **before adding survey files**. The build never publishes an unresolved pointer.
+Confirm metre units, value sign, datum, source resolution, source quality, date, licence and attribution before import. Set `datum_verified=true` only after checking the source. Incompatible vertical datums are not mixed or guessed. Imports preserve originals/checksums and validity masks; later raster sources override earlier ones only where valid.
 
-- Units must be metres. `value_kind=elevation` means positive up, so displayed reference depth is its negative. `value_kind=depth` is already positive down.
-- `resolution_m` is effective source horizontal spacing, not vertical accuracy. `quality` is `measured`, `mixed`, or `unknown`, determined from source documentation.
-- Imports clip to the region envelope and mosaic compatible input rasters in their native CRS/resolution. Scale/offset and validity masks are retained in a numeric Cloud Optimized GeoTIFF. Within one import, first-valid input pixels win. Later imports override earlier imports only where the later raster is valid.
-- All layers in one region must share a verified vertical datum. No vertical datum conversion is guessed. Use separate archives for incompatible datums.
-- Original files are copied unchanged with SHA-256 checksums. Keep `datasets/inventory.json`, its referenced processed files and provenance archives together.
+Large source rasters and archives use Git LFS. Materialised derived files are published through an Actions Pages artifact; unresolved LFS pointers are rejected. Small source configuration stays ordinary Git. National acquisition caches and `_site/` are ignored rather than committed. Stay within GitHub Pages and LFS quotas as regional coverage expands.
 
-## Choose a beach
+## Deploy and verify
 
-Search across all 75 locations by name, alias, state or region. Filter by reference depth and distance, sort by name/depth/public transport, or compare up to three beaches. Existing `?site=edithvale`, `?site=maroubra` and other beach links remain supported. New examples include `?site=hyams-beach`, `?site=greenfield`, and `?site=cowes`.
-
-Locations and sourced access/habitat/exposure facts live in `web/beaches.json`. EPA Victoria, NSW Beachwatch, councils, parks agencies and government tourism pages are cited individually. New beach reference locations derived from OpenStreetMap carry ODbL attribution. Beach polygon centres and monitoring stations are not automatically classified as entry points. Missing site facts stay unknown.
-
-Automatic summaries show distances to 5/10/15/20 m contours within **3 km**, using the same spherical geometry as the interactive tool. Where a published 0 m line is within 250 m of the source reference, the measurement starts there. Otherwise it starts at the labelled reference location. Distances do not verify a swimming route. Categories state their criteria, such as “10 m contour within 500 m”; no skill or safety score is inferred.
-
-Regions are defined in `depth_explorer/regions.json`. Add a region and sourced beach records without hardcoding new UI buttons. Region IDs `port-phillip` and `bondi` remain compatible with existing commands. Western Port combines major/minor CoastKit layers atomically, deduplicates overlapping geometry, and preserves unverified datum codes. Missing ocean-side coverage stays blank.
-
-## Public transport
+Repository Settings → Pages must use GitHub Actions. Pushes to `main`, manual runs and weekly refreshes run the build and publish to https://hoebat.github.io/shore-depth-explorer/. Pull requests test and build without refreshing external sources or deploying. Actions caches survey archives and national sources, partitioned by the committed dataset inventory so new imported data is not overwritten by an incompatible cached inventory.
 
 ```sh
-python3 -m scripts.build_transport
-python3 -m depth_explorer build-static --output _site
-```
-
-The transport build reads official GTFS ZIPs, including Victoria’s nested mode archives. It publishes scheduled examples for the next four Saturdays, with same-day or Sunday returns. Origins include Southern Cross, Sydney Central, Geelong, Frankston, Ballarat, Bendigo, Wollongong, Kiama, Bomaderry and Newcastle Interchange. The client searches the compact derived index and loads regional bathymetry only when selected. Generated `config/journeys.json` and feed caches are ignored by Git.
-
-**NSW setup:** add a Transport for NSW Open Data API key as the repository Actions secret **`TFNSW_API_KEY`**. Never put it in client JavaScript, a URL, or a committed file. Without it, NSW beaches and planner links work but scheduled NSW rankings are labelled unavailable. For local builds, supply the key through a securely configured environment or use `--nsw-feed /path/to/official.zip`. `--vic-feed`, `--cache`, and `--date YYYY-MM-DD` support reproducible preparation. Downloaded credentials and request headers are never logged or published.
-
-The connection-scan router respects service calendars and exceptions, previous-day GTFS times after 24:00, pickup/drop-off restrictions, same-vehicle continuity and published transfers. School-only services are excluded. Missing cross-feed interchange connections are added only after pedestrian-network verification. Routes outside the supported origin/destination envelope plus a 0.5° margin are excluded.
-
-Comparison examples use earliest-arrival searches at 06:00/07:00/08:00/09:00/10:00. At least four hours at the destination and a return by 23:00 are required; overnight return starts after 14:00 Sunday. The displayed return is the **latest feasible return**, not a recommendation to remain until late evening. Ranking compares generated examples rather than every possible departure. Tradeoffs in duration, transfers and walking are retained; redundant dominated examples are removed.
-
-Final walking legs require sourced access coordinates or a documented access street near the mapped endpoint. Forward and return pedestrian routes are checked independently, using OpenStreetMap-based routing. Estimates use 4 km/h and include endpoint offsets only for sourced on-land access points; beach-centre offsets are never represented as walks across water. Station/coach walks use published GTFS transfer information or verified pedestrian links. Mapped steps may be present; this is not wheelchair routing. Walking geometry is published separately from the search index, with attribution. A 30-minute maximum per walking leg is the UI default.
-
-A missing comparison means **insufficient verified data or no suitable generated option**, not that no service exists. The UI retains trip-planner links for every beach, shows schedule dates and freshness, and hides departed/expired examples using Australian local dates. There are no live disruption, tide, swell or visibility feeds. Feed failures retain previous still-valid comparisons. Network walking refreshes have bounded time budgets so a provider outage cannot hang the daily build.
-
-## Measure the distance to a depth contour
-
-The **Distance to depth** panel works with published contour data; a numeric raster is not required. Choose an available contour depth, then pick a beach entry point. The app calculates the nearest point on the actual contour segments using spherical geometry, draws the straight line, and displays one-way and return distances. It does not interpolate an absent contour, infer current water depth, or assess whether the line is a suitable swimming route.
-
-The **Edithvale beach selection** uses [Kingston Council’s Life Saving Club location](https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club), snaps to the nearest published **0 m / low-water-mark** line, then measures to the chosen contour. [Open the Edithvale example](https://hoebat.github.io/shore-depth-explorer/?site=edithvale). Using the currently published Port Phillip dataset, the 10 m contour is approximately **1.9 km from the mapped low-water mark** near the club, or about **3.8 km return**. The survey catalogue spans 1971–2000 and its vertical datum remains unverified. The mapped low-water mark is not the current beach waterline.
-
-## Static data format
-
-`_site/data/beach-summaries.json` contains generated beach-depth summaries, `data/journeys.json` contains a small dated comparison index, `data/journey-itineraries/` contains journey steps loaded on demand, and `data/walking-routes.json` contains deduplicated walking geometry. The builder runs Node to reuse the browser measurement module and includes all generated assets in the size budget.
-
-`_site/data/catalog.json` lists sources, native grid dimensions/affine transforms/projections, sparse chunk paths, contour GeoJSON paths, and display tile paths. Each numeric chunk is a gzip-compressed **256 × 256 little-endian Float32 array**, with positive-down reference depth and NaN for missing cells. The last chunk of a grid is padded with NaN. Whole missing chunks are omitted from the manifest.
-
-The browser transforms clicked coordinates into each native grid and reads the appropriate cell. Chunks are fetched lazily with a bounded cache; a profile groups reads by chunk. Referenced files that fail to load produce an error, not a zero or a fabricated gap. NaN/missing chunks remain gaps. PNG tiles are display-only and are never sampled for depths. High zooms reuse the highest available display tile; inspection still reads native cells.
-
-Browser-derived contours use a bounded viewport sampling grid and marching triangles, rejecting cells with missing corners. They are illustrative and can be coarser than native source detail. Fine 2 m contour intervals require measured sources with horizontal spacing ≤5 m. Profiles follow a spherical transect, retain gaps, include source/datum fields, and are capped at 5,000 samples.
-
-## Tests
-
-```sh
-.venv/bin/python -m unittest discover -s tests -v
-PYTHON=.venv/bin/python npm test
+python3 -m unittest discover -s tests -v
+npm test
 node --check web/app.js
 ```
 
-Tests use synthetic grids inside temporary directories. They cover sign, zero versus missing data, source priority, datum compatibility, complete contour downloads, static build safety/size limits, unresolved LFS pointers, native Python-to-browser chunk decoding, repository-relative URLs, cache behaviour, profile gaps, CSV and contours. The GIS integration test checks projected GeoTIFF clipping, masks, scales and COG output when Rasterio/Numpy are installed; the Pages workflow installs these dependencies before testing.
-
-## Depth reference
-
-This is surveyed seabed **reference depth**, not current water depth. AHD, chart datum and the sea surface at a selected tide are different references. There is no tide adjustment, live-condition forecast or dive-safety assessment. Survey dates differ from catalogue update dates; seabeds, sand and dredged channels may have changed. Preserve the source publishers' navigation limitations when using or exporting these datasets.
+Tests cover numeric sampling, datum handling, complete downloads, atomic multi-layer acquisition, build safety and size limits, directory ordering and jurisdictions, failed-source retention, activity restriction handling, stay proximity/unknown amenities, social URL validation and app DOM flows. Synthetic fixtures are not published as survey data. The GIS test runs when Rasterio/Numpy are available and is enabled in Actions.

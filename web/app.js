@@ -7,7 +7,7 @@ import {installDiscovery,capabilities} from './discovery.js';
 const $=id=>document.getElementById(id), map=new DepthMap($('map'));
 const data=new StaticData();map.dataBase=data.base;
 let catalog,region,profile=null,drawing=false,measuring=false,vertices=[],viewTimer,inspectionRequest=0,profileRequest=0,viewRequest=0,loadRequest=0;
-let beachCatalog={beaches:[]},selectedBeachId='',contoursReady=false,discovery,selectionRequest=0;
+let beachCatalog={beaches:[]},selectedBeachId='',contoursReady=false,discovery,selectionRequest=0,activeAreaId='';
 const number=(value,places=1)=>Number(value).toLocaleString('en-AU',{maximumFractionDigits:places});
 function notice(message){$('notice').textContent=message;$('notice').hidden=!message;}
 function elem(tag,text,className){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(className)e.className=className;return e;}
@@ -28,22 +28,23 @@ function updateBeachPicker(){discovery?.render();}
 function updateCapabilities(){
   const c=capabilities(region,map.contours);
   for(const [id,available] of [['depth-layer',c.raster],['coverage-layer',c.raster],['contour-layer',c.raster||c.contours],['pin-layer',!!map.sourcePins.length],['interval',c.fine]])$(id).closest('label').hidden=!available;
-  $('raster-legend').hidden=!c.raster;$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!c.measure;$('fetch').hidden=!c.contours;
+  document.querySelector('.map-tag').textContent=c.raster||c.contours?'SURVEYED SEABED':'COASTAL DIRECTORY';$('raster-legend').hidden=!c.raster;$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!c.measure;$('fetch').hidden=!c.contours;
 }
 async function chooseBeach(id,{writeURL=true,depth=Number($('target-filter').value)}={}){
-  const request=++selectionRequest;const beach=findBeach(beachCatalog,id);if(id&&!beach){notice('That beach is not in the location list. Choose a beach from the picker.');return;}
+  const request=++selectionRequest;let beach=findBeach(beachCatalog,id);if(beach&&discovery){try{beach=await discovery.getBeach(beach.id);}catch{notice('Detailed site facts are unavailable; using the listed reference position.');}}if(request!==selectionRequest)return;if(id&&!beach){notice('That beach is not in the location list. Choose a beach from the picker.');return;}
+  if(beach){activeAreaId=beach.area_id;discovery?.setFilters(beach.state_id,beach.area_id);}
   if(beach&&(beach.region!==region.id||!contoursReady))await load(beach.region);else loadRequest++;if(request!==selectionRequest)return;
-  selectedBeachId=beach?.id||'';discovery?.select(selectedBeachId);map.selectedBeach=selectedBeachId;resetProfile();clearMeasurement();$('inspection').hidden=true;inspectionRequest++;notice('');
+  selectedBeachId=beach?.id||'';await discovery?.select(selectedBeachId);if(request!==selectionRequest)return;map.selectedBeach=selectedBeachId;resetProfile();clearMeasurement();$('inspection').hidden=true;inspectionRequest++;notice('');
   if(beach){
     $('place-title').textContent=beach.name;document.title=`${beach.name} · Depth Atlas`;map.center=beach.point;map.zoom=15;map.marker=beach.point;map.draw();map.onview?.();
     try{if([...$('measure-depth').options].some(o=>Number(o.value)===depth))$('measure-depth').value=depth;const result=beachMeasurement(map.contours,beach,depth);if(result.distance_m>3000)throw Error('No matching mapped contour within 3 km of this beach reference.');showMeasurement(result,result.start_label);}
     catch(e){$('measure-result').textContent=`${beach.name}: automatic distance is unavailable.`;$('measure-reference').textContent='The selected beach location is shown on the map. Pick your exact entry point to measure against the available published contours.';notice(e.message);}
   }else{map.marker=null;map.center=region.center;map.zoom=region.zoom;map.draw();map.onview?.();$('place-title').textContent=region.name;document.title=`${region.name} · Depth Atlas`;}
-  updateBeachPicker();if(writeURL){const url=new URL(location.href);if(beach)url.searchParams.set('site',beach.id);else url.searchParams.delete('site');history.replaceState(null,'',url);}
+  updateBeachPicker();if(writeURL){const url=new URL(location.href);if(beach){url.searchParams.set('site',beach.id);url.searchParams.set('state',beach.state_id);url.searchParams.set('area',beach.area_id);}else url.searchParams.delete('site');history.replaceState(null,'',url);}
 }
 async function load(selected,retainView=false){
   const generation=++loadRequest;viewRequest++;const previous=region?.id,nextCatalog=await data.catalog();if(generation!==loadRequest)return;catalog=nextCatalog;region=catalog.regions.find(r=>r.id===(selected||previous))||catalog.regions[0];
-  contoursReady=false;if(!retainView||previous!==region.id){selectedBeachId='';map.setRegion(region);map.beaches=beachCatalog.beaches.filter(b=>b.region===region.id);discovery?.select('');resetProfile();clearMeasurement();$('inspection').hidden=true;inspectionRequest++;}else{map.rasters=region.rasters;map.tileFiles=region.tiles;map.tileMaxZoom=region.tile_max_zoom||map.zoom;map.images.clear();}
+  contoursReady=false;if(!retainView||previous!==region.id){selectedBeachId='';map.setRegion(region);map.beaches=beachCatalog.beaches.filter(b=>activeAreaId?b.area_id===activeAreaId:b.region===region.id);discovery?.select('');resetProfile();clearMeasurement();$('inspection').hidden=true;inspectionRequest++;}else{map.rasters=region.rasters;map.tileFiles=region.tiles;map.tileMaxZoom=region.tile_max_zoom||map.zoom;map.images.clear();}
   map.version=catalog.updated_at||0;const title=findBeach(beachCatalog,selectedBeachId)?.name||region.name;$('place-title').textContent=title;document.title=`${title} · Depth Atlas`;updateBeachPicker();
   document.querySelectorAll('[data-region]').forEach(b=>b.classList.toggle('active',b.dataset.region===region.id));
   $('data-status').textContent=region.status==='raster'?`${region.rasters.length} raster source${region.rasters.length===1?'':'s'} available`:region.status==='contours'?`${region.contours.count} published contours`:'No depth data published yet';
@@ -139,8 +140,8 @@ $('export-map').onclick=()=>{
 function showGuide(){
   $('guide-title').textContent=`Survey data for ${region.name}`;const content=$('guide-content');content.replaceChildren();
   function step(title,text){const div=elem('section',undefined,'guide-step');div.append(elem('h3',title),elem('p',text));content.append(div);return div;}
-  const first=step('Published survey coverage',region.status==='empty'?'No survey files are currently published for this area. The map leaves coverage blank.':region.status==='contours'?'Published contour lines are available. Point depths and numeric profiles are unavailable until a raster is published.':'Point values and profiles use numeric survey cells. Transparent areas are data gaps; grey areas have elevations above the reference datum.');first.append(link('Government contour dataset ↗',region.contour_catalog));
-  const second=step('Original elevation data',region.notes);second.append(link('Government dataset ↗',region.raster_catalog),document.createTextNode(' · '),link('Publisher download portal ↗',region.raster_portal));
+  const first=step('Published survey coverage',region.status==='empty'?'No survey files are currently published for this area. The map leaves coverage blank.':region.status==='contours'?'Published contour lines are available. Point depths and numeric profiles are unavailable until a raster is published.':'Point values and profiles use numeric survey cells. Transparent areas are data gaps; grey areas have elevations above the reference datum.');if(region.contour_catalog)first.append(link('Government contour dataset ↗',region.contour_catalog));
+  const second=step('Original elevation data',region.notes);if(region.raster_catalog)second.append(link('Government dataset ↗',region.raster_catalog));if(region.raster_portal)second.append(document.createTextNode(' · '),link('Publisher download portal ↗',region.raster_portal));
   step('Depth reference','Depth is measured below the datum listed with each survey. AHD and chart datums are different references. Survey spacing describes horizontal detail, not vertical accuracy.');
   step('Explore and export','Click the map for source details. Where rasters are available, draw a seabed profile and export it as CSV. PNG map exports include depth references and attribution. This map does not estimate current water depth or determine whether a dive is safe.');
   const locations=step('Beach reference locations',beachCatalog.location_note||'Government monitoring and council reference locations.');
@@ -154,11 +155,15 @@ $('fetch').onclick=async()=>{try{const collection=await data.contours(region.id)
 async function start(){
   const site=new URLSearchParams(location.search).get('site');
   try{beachCatalog=await data.json('beaches.json');}catch(e){notice(`Beach locations are unavailable: ${e.message}`);}
-  const [summaries,journeys]=await Promise.all([data.json('data/beach-summaries.json').catch(()=>({beaches:[]})),data.json('data/journeys.json').catch(()=>({origins:[],dates:[],journeys:[]}))]);
-  const regions=await data.catalog();
-  for(const item of regions.regions){const button=elem('button',undefined,'region');button.dataset.region=item.id;button.append(elem('span',item.name),elem('small',item.state.toUpperCase()));button.onclick=()=>{selectionRequest++;const url=new URL(location.href);url.searchParams.delete('site');history.replaceState(null,'',url);load(item.id).catch(e=>notice(e.message));};$('region-picker').append(button);}
-  discovery=installDiscovery({catalog:beachCatalog,summaries,journeys,loadJSON:path=>data.json(path),onSelect:id=>chooseBeach(id).then(()=>$('beach-summary').scrollIntoView?.({behavior:'smooth',block:'start'})).catch(e=>notice(e.message))});
+  const [summaries,guides,social]=await Promise.all([data.json('data/beach-summaries.json').catch(()=>({beaches:[]})),data.json('guides.json'),data.json('social.json').catch(()=>({posts:[]}))]);
+  catalog=await data.catalog();region=catalog.regions[0];map.setRegion(region);
+  discovery=installDiscovery({catalog:beachCatalog,summaries,guides,social,loadJSON:path=>data.json(path),onSelect:id=>chooseBeach(id).then(()=>$('beach-summary').scrollIntoView?.({behavior:'smooth',block:'start'})).catch(e=>notice(e.message)),onArea:async area=>{
+    const request=++selectionRequest;activeAreaId=area.id;try{await load(area.map_region);}catch(error){notice(error.message);return;}if(request!==selectionRequest)return;
+    try{const context=await discovery.getAreaData(area);if(request!==selectionRequest)return;map.coastline=context.coastline||[];}catch{map.coastline=[];}
+    $('explorer').hidden=false;map.beaches=beachCatalog.beaches.filter(b=>b.area_id===area.id);map.center=area.center;map.zoom=10;map.draw();map.onview?.();
+  },onContext:coastline=>{map.coastline=coastline;map.draw();},onStays:stays=>{map.stays=stays;map.draw();}});
   map.onBeach=beach=>chooseBeach(beach.id).catch(e=>notice(e.message));
-  const requested=findBeach(beachCatalog,site);await load(requested?.region);if(requested)await chooseBeach(requested.id,{writeURL:false});else if(site==='edithvale')measureEdithvale();
+  map.onStay=stay=>{$('inspection').hidden=false;$('inspection-kind').textContent='NEARBY STAY';$('inspection-value').textContent=stay.name;$('inspection-details').replaceChildren(elem('p',`${(stay.distance_m/1000).toFixed(1)} km straight-line from beach reference`),elem('p',stay.status),link(stay.operator_url?'Provider & bookings ↗':'Mapped listing ↗',stay.operator_url||stay.source_url));};
+  const requested=findBeach(beachCatalog,site);if(requested)await chooseBeach(requested.id,{writeURL:false});
 }
 start().catch(e=>notice(`Cannot load published data: ${e.message}`));

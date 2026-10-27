@@ -1,0 +1,279 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-10-27",
+  "guides": [
+    {
+      "id": "ocean-swimming",
+      "title": "Ocean swimming",
+      "intro": "Choose the setting, check the conditions and plan both entry and exit. A location listing is a starting point for research, not a swim route or a conditions report.",
+      "sections": [
+        {
+          "title": "Start with local advice",
+          "text": "Choose a patrolled beach and swim between the red and yellow flags where possible. Read the signs and ask a lifesaver or lifeguard about the conditions before entering.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.healthdirect.gov.au/healthy-living/weather-and-environment/beach-safety"
+            }
+          ]
+        },
+        {
+          "title": "Check the sea on the day",
+          "text": "Check the official marine forecast and warnings before leaving and again at the beach. Wind, waves and tide can change your entry and exit; a clear-water photo may be from a very different day.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.bom.gov.au/marine/marine_warnings.shtml"
+            }
+          ]
+        },
+        {
+          "title": "Plan an exit before a distance",
+          "text": "Identify where you will get in, get out and leave the water early if conditions change. Do not treat a straight line on the depth map as an established ocean-swimming course.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.healthdirect.gov.au/healthy-living/weather-and-environment/beach-safety"
+            }
+          ]
+        },
+        {
+          "title": "Swim with support",
+          "text": "Arrange company and let someone know your plan. Choose conditions within your experience; if unsure, seek advice from the local lifesaving service or an organised ocean-swimming group.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.healthdirect.gov.au/healthy-living/weather-and-environment/beach-safety"
+            }
+          ]
+        },
+        {
+          "title": "Understand rips and exposure",
+          "text": "Learn rip-current recognition and response from Surf Life Saving. A beach can have hazards even when the surface looks inviting; do not infer protection from a bay name or historical photograph.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://v3.beachsafe.org.au/surf-safety/ripcurrents"
+            }
+          ]
+        },
+        {
+          "title": "Use this guide’s location facts",
+          "text": "Look for documented entry and exit, setting, exposure and facilities. “Unknown” means the source has not established that fact. Northern waters may have additional local hazards and restrictions: follow the relevant parks and lifesaving advice.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.healthdirect.gov.au/healthy-living/weather-and-environment/beach-safety"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "freediving",
+      "title": "Freediving",
+      "intro": "Use the map to understand reference depth and access, then plan the actual dive with suitable training, a trained buddy and current local advice.",
+      "sections": [
+        {
+          "title": "Read the depth reference",
+          "text": "A contour labels a surveyed reference depth. It is not today’s water depth: tides, swell, the source datum and survey age matter. Point depths and profiles appear only where a numeric survey grid is published.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.ga.gov.au/scientific-topics/marine-and-coastal/seabed/ausbathytopo-grids"
+            }
+          ]
+        },
+        {
+          "title": "Read the starting point",
+          "text": "The distance may start at a monitoring point, gazetted place reference, documented access location or mapped 0 m contour. Check the label. A beach-centre point may be offshore and is not your entry point.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://dan.org/alert-diver/article/freediving-safety/"
+            }
+          ]
+        },
+        {
+          "title": "Use trained buddy procedures",
+          "text": "Do not freedive alone. Learn and practise appropriate buddy supervision and rescue procedures with a qualified instructor. DAN discusses the importance of one-up-one-down practice and the limits of supervision as complexity increases.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://world.dan.org/alert-diver/article/freediving-risk-assessments/"
+            }
+          ]
+        },
+        {
+          "title": "Avoid performance targets from a map",
+          "text": "A nearby 10 m contour is not a recommendation to dive to 10 m. Stay within your training and experience, and choose a site where entry, observation and exit can be managed.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://dan.org/alert-diver/article/freediving-safety/"
+            }
+          ]
+        },
+        {
+          "title": "Breathing and training",
+          "text": "Do not hyperventilate before breath-hold diving. Learn preparation, recovery and rescue through formal instruction rather than using this directory as a training programme.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://world.dan.org/alert-diver/article/freediving-safety-awareness/"
+            }
+          ]
+        },
+        {
+          "title": "Check access and traffic",
+          "text": "Inspect entry and exit, current conditions, visibility and boat traffic. Consider the local requirements for dive flags and floats. A ruler line can cross rocks, channels or restricted water and is not a checked route.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://dan.org/alert-diver/article/hypoxia-in-breath-hold-diving/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spearfishing",
+      "title": "Spearfishing",
+      "intro": "Research the exact water, the method and the species before planning a trip. This directory does not issue permission to fish.",
+      "sections": [
+        {
+          "title": "Check the jurisdiction first",
+          "text": "Use the state or territory rules and the applicable marine-park zoning for the water you intend to enter. A tourism region can cross a legal boundary; Commonwealth and state or territory requirements may both be relevant.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://australianmarineparks.gov.au/access-use/other-approvals/recreational-fishing/"
+            }
+          ]
+        },
+        {
+          "title": "Check more than the beach name",
+          "text": "Confirm current licences, spearfishing closures, gear restrictions, protected species, size and bag limits, and seasonal rules. A missing restriction in this directory means “not established”, not “allowed”.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.dpird.nsw.gov.au/fishing/recreational/resources/spearfishing"
+            }
+          ]
+        },
+        {
+          "title": "Check the exact boundaries",
+          "text": "Follow the authority’s current closure and zoning maps. The beach reference point and the nearest depth contour can lie on different sides of a boundary.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.dpird.nsw.gov.au/fishing/recreational/resources/interactive-map-for-recreational-fishers"
+            }
+          ]
+        },
+        {
+          "title": "Plan the dive with your buddy",
+          "text": "Spearfishing adds tasks to breath-hold diving. Keep buddy procedures and rescue skills within your training and experience; reading habitat or depth information does not assess dive safety.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://dan.org/alert-diver/article/freediving-safety/"
+            }
+          ]
+        },
+        {
+          "title": "Separate equipment from other water users",
+          "text": "Follow the authority’s equipment and public-area guidance. VFA’s guidance includes unloading a speargun before taking it out of the water; check your own jurisdiction’s requirements.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://vfa.vic.gov.au/recreational-fishing/recreational-fishing-guide/fishing-safety"
+            }
+          ]
+        },
+        {
+          "title": "Use the site facts as research",
+          "text": "Documented entry, habitat and reference depths help you identify questions to check. Known restrictions exclude a location from spearfishing suggestions here. Other suggestions remain research leads, with permission unconfirmed.",
+          "sources": [
+            {
+              "label": "Read the source",
+              "url": "https://www.dpird.nsw.gov.au/fishing/recreational/resources/spearfishing"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "jurisdictions": {
+    "NSW": [
+      {
+        "label": "Spearfishing rules",
+        "url": "https://www.dpird.nsw.gov.au/fishing/recreational/resources/spearfishing"
+      },
+      {
+        "label": "Closures and marine zoning",
+        "url": "https://www.dpird.nsw.gov.au/fishing/closures/spearfishing-closures"
+      }
+    ],
+    "VIC": [
+      {
+        "label": "Marine fishing equipment rules",
+        "url": "https://vfa.vic.gov.au/recreational-fishing/recreational-fishing-guide/fishing-equipment/marine-fishing-equipment/using-equipment-in-marine-waters"
+      },
+      {
+        "label": "Marine parks and sanctuaries",
+        "url": "https://vfa.vic.gov.au/recreational-fishing/recreational-fishing-guide/waters-with-fishing-restrictions/marine-waters-closed-to-recreational-fishing/restricted-areas-marine-national-parks"
+      }
+    ],
+    "QLD": [
+      {
+        "label": "Tidal closures",
+        "url": "https://www.dpi.qld.gov.au/services/fisheries/closures/tidal-locations"
+      },
+      {
+        "label": "Queensland fisheries",
+        "url": "https://www.dpi.qld.gov.au/services/fisheries"
+      }
+    ],
+    "WA": [
+      {
+        "label": "Recreational fishing rules",
+        "url": "https://www.dpird.wa.gov.au/individuals/recreational-fishing/"
+      }
+    ],
+    "SA": [
+      {
+        "label": "Recreational fishing rules",
+        "url": "https://pir.sa.gov.au/recreational_fishing"
+      }
+    ],
+    "TAS": [
+      {
+        "label": "Tasmanian fishing rules",
+        "url": "https://fishing.tas.gov.au/"
+      }
+    ],
+    "NT": [
+      {
+        "label": "Spearfishing rules",
+        "url": "https://nt.gov.au/marine/recreational-fishing/rules/rules-for-spearfishing"
+      }
+    ],
+    "JBT": [
+      {
+        "label": "Booderee visitor information",
+        "url": "https://booderee.gov.au/"
+      },
+      {
+        "label": "Commonwealth marine parks",
+        "url": "https://australianmarineparks.gov.au/access-use/other-approvals/recreational-fishing/"
+      }
+    ],
+    "EXT": [
+      {
+        "label": "Commonwealth marine parks",
+        "url": "https://australianmarineparks.gov.au/access-use/other-approvals/recreational-fishing/"
+      }
+    ]
+  }
+}

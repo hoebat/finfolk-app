@@ -26,7 +26,7 @@ export class StaticData {
   async json(path){const response=await this.fetcher(this.url(path),{cache:'no-cache'});if(!response.ok)throw Error(`Static data unavailable (${response.status}): ${path}`);const text=await response.text();if(text.startsWith('version https://git-lfs.github.com/spec/v1'))throw Error('An unresolved Git LFS pointer was deployed; rebuild with LFS checkout enabled');return JSON.parse(text);}
   async catalog(){const catalog=await this.json('data/catalog.json');if(catalog.format_version!==1)throw Error('Unsupported static dataset version');this.current=catalog;return catalog;}
   region(id){const region=this.current?.regions.find(r=>r.id===id);if(!region)throw Error('Unknown region');return region;}
-  async contours(id){return this.json(this.region(id).contour_file);}
+  async contours(id){const path=this.region(id).contour_file;return path?this.json(path):{type:'FeatureCollection',features:[]};}
   async chunk(meta,key){
     const file=meta.grid.chunks[key];if(!file)return null;const path=this.url(file);if(this.cache.has(path))return this.cache.get(path);
     const pending=(async()=>{const response=await this.fetcher(path);if(!response.ok)throw Error(`Numeric survey chunk failed (${response.status}); depth cannot be determined`);if(typeof DecompressionStream==='undefined')throw Error('This browser needs support for gzip DecompressionStream');const compressed=await response.arrayBuffer(),decoded=await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();if(decoded.byteLength!==meta.grid.chunk_size**2*4)throw Error('Numeric survey chunk has an invalid size');return new DataView(decoded);})();
