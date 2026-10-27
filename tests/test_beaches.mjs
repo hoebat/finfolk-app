@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {beachesForRegion,findBeach} from '../web/beaches.js';
+import {beachMeasurement} from '../web/measure.js';
+const catalog=JSON.parse(fs.readFileSync(new URL('../web/beaches.json',import.meta.url)));
+assert.equal(beachesForRegion(catalog,'port-phillip').length,39);
+assert.equal(beachesForRegion(catalog,'bondi').length,15);
+assert.equal(new Set(catalog.beaches.map(b=>b.id)).size,54);
+for(const b of catalog.beaches){assert.ok(b.point.every(Number.isFinite));assert.ok(catalog.sources.some(s=>s.id===b.source_id));assert.ok(b.source_url.startsWith('https://'));}
+assert.equal(findBeach(catalog,'Maroobra').id,'maroubra');
+assert.equal(findBeach(catalog,"Gordon’s Bay").id,'gordons-bay');
+assert.equal(findBeach(catalog,'gordans bay').id,'gordons-bay');
+assert.equal(findBeach(catalog,'edithvale').region,'port-phillip');
+assert.equal(beachesForRegion(catalog,'port-phillip','maroubra').length,0);
+assert.equal(beachesForRegion(catalog,'bondi','gordon').length,1);
+const feature=(depth,y)=>({properties:{depth_m:depth,datum_label:'AHD'},geometry:{type:'LineString',coordinates:[[0,y],[.01,y]]}});
+const beach={id:'test',point:[.005,0],name:'Test beach',source_url:'https://example.org'};
+const reference=beachMeasurement([feature(10,-.002)],beach);
+assert.deepEqual(reference.start,beach.point);assert.equal(reference.reference_to_shore_m,null);assert.match(reference.start_label,/shoreline not established/);
+const snapped=beachMeasurement([feature(0,-.0001),feature(10,-.002)],beach);
+assert.ok(snapped.reference_to_shore_m<20);assert.match(snapped.start_label,/0 m reference contour/);assert.doesNotMatch(snapped.start_label,/low-water/);
+const distant=beachMeasurement([feature(0,-.02),feature(10,-.002)],beach);
+assert.deepEqual(distant.start,beach.point);
+assert.throws(()=>beachMeasurement([],beach),/No published 10 m contour/);
+console.log('Beach picker checks passed: provenance, region filtering, aliases, shoreline/reference starts and missing data.');

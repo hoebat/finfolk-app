@@ -10,6 +10,6 @@ const features=[line(5,[[0,.5],[2,.5]]),line(10,[[0,0],[2,0]]),line(10,[[[0,-2],
 const result=nearestContour([1,1],features,10);close(result.distance_m,111195.0802335329,.01);close(result.return_distance_m,result.distance_m*2);assert.equal(result.depth_m,10);assert.equal(result.feature,features[1]);
 assert.throws(()=>nearestContour([1,1],features,9),/No published 9 m contour/);
 assert.throws(()=>nearestContour([NaN,1],features,10));
-assert.throws(()=>edithvaleMeasurement(features),/local mapped low-water line|No published 0 m contour/);
+assert.throws(()=>edithvaleMeasurement([]),/No published 10 m contour/);
 const crossing=nearestOnSegment([180,1],[179,0],[-179,0]);assert.ok(Math.abs(Math.abs(crossing[0])-180)<1e-8);close(crossing[1],0);
 console.log('Measurement checks passed: spherical nearest-segment distance, endpoints, zero-length lines, MultiLineString, exact depth selection and missing data.');

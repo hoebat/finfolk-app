@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#102a35">
-  <title>Depth Atlas · Port Phillip & Bondi</title>
+  <title>Depth Atlas · Port Phillip & Sydney</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
     <div class="eyebrow">YOUR WATERS</div>
     <div class="region-picker" role="group" aria-label="Choose location">
       <button class="region active" data-region="port-phillip"><span>Port Phillip Bay</span><small>VICTORIA</small><b>↗</b></button>
-      <button class="region" data-region="bondi"><span>Bondi Beach</span><small>NEW SOUTH WALES</small><b>↗</b></button>
+      <button class="region" data-region="bondi"><span>Sydney Eastern Beaches</span><small>NEW SOUTH WALES</small><b>↗</b></button>
     </div>
     <section class="layer-section"><div class="section-label">MAP LAYERS</div>
       <label class="toggle"><span><b>Seabed depths</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
@@ -28,6 +28,7 @@
   </aside>
   <main>
     <header><div><div class="eyebrow">SEABED EXPLORER</div><h1 id="place-title">Port Phillip Bay</h1></div><div class="header-actions"><button id="profile-tool" class="primary">⌁ Draw depth profile</button><button id="export-map" class="secondary">Export map ↗</button></div></header>
+    <section class="beach-picker" aria-label="Choose a beach"><div><label for="beach-select" id="beach-picker-title">Port Phillip Bay beaches</label><small id="beach-count">Loading beach locations…</small></div><label class="search-label"><span class="sr-only">Search beach names</span><input id="beach-search" type="search" placeholder="Search beaches…" autocomplete="off"></label><select id="beach-select" aria-labelledby="beach-picker-title" disabled><option value="">Whole coast</option></select><a id="beach-source" target="_blank" rel="noopener noreferrer" hidden>Location source ↗</a><p id="beach-hint">Choose a beach to view it and measure to your selected depth contour. Reference locations can be adjusted on the map.</p></section>
     <div id="notice" role="status" aria-live="polite" hidden></div>
     <section class="map-wrap" aria-label="Interactive depth map">
       <canvas id="map" tabindex="0" aria-label="Depth map. Drag to pan, scroll or use plus and minus to zoom. Click to inspect. Arrow keys pan the map."></canvas>

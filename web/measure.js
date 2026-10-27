@@ -15,4 +15,11 @@ export function nearestContour(start,features,depth){
   if(!best)throw Error(`No published ${depth} m contour is available in this dataset. Choose another depth.`);return best;
 }
 export const EDITHVALE={name:'Edithvale Life Saving Club',point:[145.1068502,-38.0387296],source_url:'https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club'};
-export function edithvaleMeasurement(features,depth=10){const shoreline=nearestContour(EDITHVALE.point,features,0);if(shoreline.distance_m>1000)throw Error('The local mapped low-water line is unavailable');return {...nearestContour(shoreline.target,features,depth),start_label:'Mapped low-water mark near Edithvale Life Saving Club',club_point:EDITHVALE.point,club_to_shore_m:shoreline.distance_m};}
+export function beachMeasurement(features,beach,depth=10){
+  validatePoint(beach.point);let shoreline=null;
+  try{const candidate=nearestContour(beach.point,features,0);if(candidate.distance_m<=250)shoreline=candidate;}catch{}
+  const isLowWater=String(shoreline?.feature.properties.feature||'').toLowerCase().includes('low water');
+  const label=shoreline?`${isLowWater?'Mapped low-water mark':'Mapped 0 m reference contour'} near ${beach.reference_label||beach.name}`:`${beach.reference_label||beach.name} reference location; shoreline not established — pick your exact entry point to refine`;
+  return {...nearestContour(shoreline?.target||beach.point,features,depth),beach_id:beach.id,reference_point:beach.point,reference_to_shore_m:shoreline?.distance_m??null,reference_url:beach.source_url,start_label:label};
+}
+export function edithvaleMeasurement(features,depth=10){const result=beachMeasurement(features,{...EDITHVALE,id:'edithvale'},depth);return {...result,club_point:EDITHVALE.point,club_to_shore_m:result.reference_to_shore_m};}

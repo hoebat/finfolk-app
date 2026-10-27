@@ -38,6 +38,7 @@ def save_contours(store, region_id, collection, service_metadata=None):
     destination = store.root / "processed" / region_id / ("contours-" + ident + ".geojson")
     atomic_json(destination, normalized)
     metadata = {"file": str(destination.relative_to(store.root)), "count": len(normalized["features"]),
+                "query_bbox": list(region["bbox"]) if service_metadata is not None else None,
                 "downloaded_at": timestamp(), "sha256": sha256(raw / "original.geojson"),
                 "source_url": region["contour_service"], "datum": region["contour_datum"],
                 "survey_date": region["contour_survey"], "licence": region["licence"], "attribution": region["attribution"]}

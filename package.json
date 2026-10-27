@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Static bathymetry explorer for Port Phillip Bay and Bondi Beach",
+  "description": "Static bathymetry explorer for Port Phillip Bay and Sydney Eastern Beaches",
   "scripts": {
     "build": "python3 -m depth_explorer build-static",
-    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs"
+    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs"
   },
   "dependencies": {
     "proj4": "2.22.0"

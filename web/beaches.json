@@ -1,0 +1,941 @@
+{
+  "version": 1,
+  "retrieved_at": "2026-10-27",
+  "location_note": "Government beach-monitoring or council reference locations. These are not guaranteed beach entry points. Measurements use a published 0 m reference contour within 250 m when available; otherwise the labelled reference location is used. No water-quality ratings or live conditions are displayed.",
+  "sources": [
+    {
+      "id": "epa-vic-beach-report",
+      "publisher": "Environment Protection Authority Victoria",
+      "url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "download_url": "https://apps.epa.vic.gov.au/datavic/Data_Vic/BeachReport/Beach_Report_enterococci_data.xlsx",
+      "worksheet": "site_metadata",
+      "licence": "CC BY 4.0",
+      "attribution": "© Environment Protection Authority Victoria, Victorian Government. Beach Report site locations; names and display groups adapted for this explorer."
+    },
+    {
+      "id": "nsw-beachwatch",
+      "publisher": "NSW Government Beachwatch",
+      "url": "https://api.beachwatch.nsw.gov.au/public/sites/geojson",
+      "documentation": "https://www.beachwatch.nsw.gov.au/assets/documents/public-api-documentation.pdf",
+      "attribution": "Beach names and reference coordinates from NSW Government Beachwatch. No current water-quality forecast is reproduced."
+    },
+    {
+      "id": "kingston-council",
+      "publisher": "City of Kingston",
+      "url": "https://www.kingston.vic.gov.au/",
+      "attribution": "Supplemental beach reference locations from City of Kingston public location pages."
+    }
+  ],
+  "beaches": [
+    {
+      "id": "bondi",
+      "name": "Bondi Beach",
+      "region": "bondi",
+      "group": "Bondi to Coogee",
+      "point": [
+        151.278267,
+        -33.891157
+      ],
+      "reference_label": "NSW Beachwatch site: Bondi Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "405ce99c-7a0b-43f7-8d28-2ee0b65eebb5",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Bondi Beach"
+      ]
+    },
+    {
+      "id": "bronte",
+      "name": "Bronte Beach",
+      "region": "bondi",
+      "group": "Bondi to Coogee",
+      "point": [
+        151.26879,
+        -33.903087
+      ],
+      "reference_label": "NSW Beachwatch site: Bronte Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "e34aa8b8-142f-438d-ab18-bedce361e324",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Bronte Beach"
+      ]
+    },
+    {
+      "id": "clovelly",
+      "name": "Clovelly Beach",
+      "region": "bondi",
+      "group": "Bondi to Coogee",
+      "point": [
+        151.267659,
+        -33.914578
+      ],
+      "reference_label": "NSW Beachwatch site: Clovelly Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "06e4aa12-a704-440e-a31c-ce25fcd0057f",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Clovelly Beach"
+      ]
+    },
+    {
+      "id": "coogee",
+      "name": "Coogee Beach",
+      "region": "bondi",
+      "group": "Bondi to Coogee",
+      "point": [
+        151.25817,
+        -33.92076
+      ],
+      "reference_label": "NSW Beachwatch site: Coogee Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "ca53919d-8e26-40b0-b8cc-edf80ec303d9",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Coogee Beach"
+      ]
+    },
+    {
+      "id": "gordons-bay",
+      "name": "Gordon’s Bay",
+      "region": "bondi",
+      "group": "Bondi to Coogee",
+      "point": [
+        151.264558,
+        -33.915646
+      ],
+      "reference_label": "NSW Beachwatch site: Gordons Bay (East)",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "042af9fb-da1d-406a-a743-3da81da0a194",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Gordons Bay (East)",
+        "Gordon's Bay",
+        "Gordan's Bay",
+        "Gordans Bay"
+      ]
+    },
+    {
+      "id": "tamarama",
+      "name": "Tamarama Beach",
+      "region": "bondi",
+      "group": "Bondi to Coogee",
+      "point": [
+        151.270734,
+        -33.900805
+      ],
+      "reference_label": "NSW Beachwatch site: Tamarama Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "d8174dde-e864-4a58-b997-e140bea7c5d6",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Tamarama Beach"
+      ]
+    },
+    {
+      "id": "congwong-bay",
+      "name": "Congwong Bay",
+      "region": "bondi",
+      "group": "Maroubra to La Perouse",
+      "point": [
+        151.234813,
+        -33.989325
+      ],
+      "reference_label": "NSW Beachwatch site: Congwong Bay",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "7d0a9388-37fc-45f4-8fb3-e60ae4d09b1d",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Congwong Bay"
+      ]
+    },
+    {
+      "id": "frenchmans-bay",
+      "name": "Frenchmans Bay",
+      "region": "bondi",
+      "group": "Maroubra to La Perouse",
+      "point": [
+        151.231264,
+        -33.987235
+      ],
+      "reference_label": "NSW Beachwatch site: Frenchmans Bay",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "8bb75641-1783-43b9-861d-df7aa0594cd2",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Frenchmans Bay"
+      ]
+    },
+    {
+      "id": "little-bay",
+      "name": "Little Bay Beach",
+      "region": "bondi",
+      "group": "Maroubra to La Perouse",
+      "point": [
+        151.251417,
+        -33.979882
+      ],
+      "reference_label": "NSW Beachwatch site: Little Bay Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "a4e51f37-7089-4f6d-b78a-85f9b84fea87",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Little Bay Beach"
+      ]
+    },
+    {
+      "id": "malabar",
+      "name": "Malabar Beach",
+      "region": "bondi",
+      "group": "Maroubra to La Perouse",
+      "point": [
+        151.252247,
+        -33.96436
+      ],
+      "reference_label": "NSW Beachwatch site: Malabar Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "94c5d756-1093-48db-8dbc-70fbb523b16a",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Malabar Beach"
+      ]
+    },
+    {
+      "id": "maroubra",
+      "name": "Maroubra Beach",
+      "region": "bondi",
+      "group": "Maroubra to La Perouse",
+      "point": [
+        151.257459,
+        -33.948896
+      ],
+      "reference_label": "NSW Beachwatch site: Maroubra Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "c2461939-5613-4c11-8ae0-7331133baf88",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Maroubra Beach",
+        "Maroobra"
+      ]
+    },
+    {
+      "id": "south-maroubra",
+      "name": "South Maroubra Beach",
+      "region": "bondi",
+      "group": "Maroubra to La Perouse",
+      "point": [
+        151.257322,
+        -33.951378
+      ],
+      "reference_label": "NSW Beachwatch site: South Maroubra Beach",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "58ceea10-0ebb-4494-bb0e-cf134ba33b5d",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "South Maroubra Beach"
+      ]
+    },
+    {
+      "id": "yarra-bay",
+      "name": "Yarra Bay",
+      "region": "bondi",
+      "group": "Maroubra to La Perouse",
+      "point": [
+        151.228228,
+        -33.978245
+      ],
+      "reference_label": "NSW Beachwatch site: Yarra Bay",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "c7e2681c-94dd-465b-8c87-9c5a56809c8e",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Yarra Bay"
+      ]
+    },
+    {
+      "id": "camp-cove",
+      "name": "Camp Cove",
+      "region": "bondi",
+      "group": "South Head & Watsons Bay",
+      "point": [
+        151.278758,
+        -33.839395
+      ],
+      "reference_label": "NSW Beachwatch site: Camp Cove",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "4904afcf-6313-4456-9f14-cc037087dd76",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Camp Cove"
+      ]
+    },
+    {
+      "id": "watsons-bay",
+      "name": "Watsons Bay",
+      "region": "bondi",
+      "group": "South Head & Watsons Bay",
+      "point": [
+        151.280546,
+        -33.845115
+      ],
+      "reference_label": "NSW Beachwatch site: Watsons Bay",
+      "source_id": "nsw-beachwatch",
+      "source_record_id": "aaaefe71-5959-40e0-a3a0-a620e8bb49ce",
+      "source_url": "https://www.beachwatch.nsw.gov.au/",
+      "aliases": [
+        "Watsons Bay"
+      ]
+    },
+    {
+      "id": "aspendale",
+      "name": "Aspendale Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.100253,
+        -38.028173
+      ],
+      "reference_label": "EPA Beach Report site: Aspendale Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99996",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Aspendale Life Saving Club"
+      ]
+    },
+    {
+      "id": "carrum",
+      "name": "Carrum Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.12064,
+        -38.076393
+      ],
+      "reference_label": "EPA Beach Report site: Carrum Surf Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99995",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Carrum Surf Life Saving Club"
+      ]
+    },
+    {
+      "id": "chelsea",
+      "name": "Chelsea Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.11386,
+        -38.05244
+      ],
+      "reference_label": "Council Chelsea Beach and Victory Park location",
+      "source_id": "kingston-council",
+      "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/chelsea-beach"
+    },
+    {
+      "id": "edithvale",
+      "name": "Edithvale Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.1068502,
+        -38.0387296
+      ],
+      "reference_label": "Edithvale Life Saving Club",
+      "source_id": "kingston-council",
+      "source_url": "https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club"
+    },
+    {
+      "id": "frankston",
+      "name": "Frankston Beach — Life Saving Club",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.11854,
+        -38.142333
+      ],
+      "reference_label": "EPA Beach Report site: Frankston Surf Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99170",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Frankston Surf Life Saving Club"
+      ]
+    },
+    {
+      "id": "frankston-coast-guard",
+      "name": "Frankston — Coast Guard",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.115502,
+        -38.147043
+      ],
+      "reference_label": "EPA Beach Report site: Frankston Coast Guard",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99590",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Frankston Coast Guard"
+      ]
+    },
+    {
+      "id": "mentone",
+      "name": "Mentone Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.058733,
+        -37.9891
+      ],
+      "reference_label": "EPA Beach Report site: Mentone",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99100",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Mentone"
+      ]
+    },
+    {
+      "id": "mordialloc",
+      "name": "Mordialloc Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.0833,
+        -38.008817
+      ],
+      "reference_label": "EPA Beach Report site: Mordialloc",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99620",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Mordialloc"
+      ]
+    },
+    {
+      "id": "parkdale",
+      "name": "Parkdale Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.07525,
+        -37.99959
+      ],
+      "reference_label": "Council Parkdale Beach location",
+      "source_id": "kingston-council",
+      "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/parkdale-beach"
+    },
+    {
+      "id": "seaford",
+      "name": "Seaford Beach",
+      "region": "port-phillip",
+      "group": "Kingston & Frankston",
+      "point": [
+        145.12455,
+        -38.103316
+      ],
+      "reference_label": "EPA Beach Report site: Seaford",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99160",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Seaford"
+      ]
+    },
+    {
+      "id": "beaumaris",
+      "name": "Beaumaris Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        145.03275,
+        -37.994966
+      ],
+      "reference_label": "EPA Beach Report site: Beaumaris",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99990",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Beaumaris"
+      ]
+    },
+    {
+      "id": "black-rock",
+      "name": "Black Rock Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        145.014242,
+        -37.974777
+      ],
+      "reference_label": "EPA Beach Report site: Black Rock Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99999",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Black Rock Life Saving Club"
+      ]
+    },
+    {
+      "id": "brighton",
+      "name": "Brighton Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        144.986083,
+        -37.917297
+      ],
+      "reference_label": "EPA Beach Report site: Brighton Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99991",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Brighton Life Saving Club"
+      ]
+    },
+    {
+      "id": "elwood",
+      "name": "Elwood Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        144.983613,
+        -37.889061
+      ],
+      "reference_label": "EPA Beach Report site: Elwood",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99650",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Elwood"
+      ]
+    },
+    {
+      "id": "half-moon-bay",
+      "name": "Half Moon Bay",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        145.011066,
+        -37.968566
+      ],
+      "reference_label": "EPA Beach Report site: Half Moon Bay",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99070",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Half Moon Bay"
+      ]
+    },
+    {
+      "id": "hampton",
+      "name": "Hampton Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        144.997116,
+        -37.938
+      ],
+      "reference_label": "EPA Beach Report site: Hampton",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99060",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Hampton"
+      ]
+    },
+    {
+      "id": "port-melbourne",
+      "name": "Port Melbourne Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        144.937766,
+        -37.843866
+      ],
+      "reference_label": "EPA Beach Report site: Port Melbourne",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99020",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Port Melbourne"
+      ]
+    },
+    {
+      "id": "sandridge",
+      "name": "Sandridge Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        144.9164124,
+        -37.840033
+      ],
+      "reference_label": "EPA Beach Report site: Sandridge",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99690",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Sandridge"
+      ]
+    },
+    {
+      "id": "sandringham",
+      "name": "Sandringham Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        145.001354,
+        -37.950796
+      ],
+      "reference_label": "EPA Beach Report site: Sandringham",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99630",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Sandringham"
+      ]
+    },
+    {
+      "id": "south-melbourne",
+      "name": "South Melbourne Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        144.94625,
+        -37.847497
+      ],
+      "reference_label": "EPA Beach Report site: South Melbourne Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99997",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "South Melbourne Life Saving Club"
+      ]
+    },
+    {
+      "id": "st-kilda",
+      "name": "St Kilda Beach",
+      "region": "port-phillip",
+      "group": "Melbourne bayside",
+      "point": [
+        144.974033,
+        -37.868166
+      ],
+      "reference_label": "EPA Beach Report site: St Kilda",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99660",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "St Kilda"
+      ]
+    },
+    {
+      "id": "blairgowrie",
+      "name": "Blairgowrie Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        144.781716,
+        -38.36095
+      ],
+      "reference_label": "EPA Beach Report site: Blairgowrie",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99280",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Blairgowrie"
+      ]
+    },
+    {
+      "id": "canadian-bay",
+      "name": "Canadian Bay",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        145.083083,
+        -38.17175
+      ],
+      "reference_label": "EPA Beach Report site: Canadian Bay",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99580",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Canadian Bay"
+      ]
+    },
+    {
+      "id": "dromana",
+      "name": "Dromana Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        144.964633,
+        -38.332033
+      ],
+      "reference_label": "EPA Beach Report site: Dromana",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99550",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Dromana"
+      ]
+    },
+    {
+      "id": "mornington",
+      "name": "Mornington Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        145.044181,
+        -38.21363
+      ],
+      "reference_label": "EPA Beach Report site: Mornington Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99992",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Mornington Life Saving Club"
+      ]
+    },
+    {
+      "id": "mount-martha",
+      "name": "Mount Martha Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        145.013913,
+        -38.265248
+      ],
+      "reference_label": "EPA Beach Report site: Mt Martha Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99994",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Mt Martha Life Saving Club"
+      ]
+    },
+    {
+      "id": "portsea",
+      "name": "Portsea Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        144.713816,
+        -38.318983
+      ],
+      "reference_label": "EPA Beach Report site: Portsea",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99520",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Portsea"
+      ]
+    },
+    {
+      "id": "rosebud",
+      "name": "Rosebud Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        144.92806,
+        -38.347306
+      ],
+      "reference_label": "EPA Beach Report site: Rosebud Life Saving Club",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99993",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Rosebud Life Saving Club"
+      ]
+    },
+    {
+      "id": "rye",
+      "name": "Rye Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        144.8321,
+        -38.370183
+      ],
+      "reference_label": "EPA Beach Report site: Rye",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99530",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Rye"
+      ]
+    },
+    {
+      "id": "safety-beach",
+      "name": "Safety Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        144.992366,
+        -38.311266
+      ],
+      "reference_label": "EPA Beach Report site: Safety Beach",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99240",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Safety Beach"
+      ]
+    },
+    {
+      "id": "sorrento",
+      "name": "Sorrento Beach",
+      "region": "port-phillip",
+      "group": "Mornington Peninsula",
+      "point": [
+        144.7528,
+        -38.343516
+      ],
+      "reference_label": "EPA Beach Report site: Sorrento",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99290",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Sorrento"
+      ]
+    },
+    {
+      "id": "altona",
+      "name": "Altona Beach",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.83125,
+        -37.871066
+      ],
+      "reference_label": "EPA Beach Report site: Altona",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99710",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Altona"
+      ]
+    },
+    {
+      "id": "eastern-beach",
+      "name": "Eastern Beach",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.37085,
+        -38.146666
+      ],
+      "reference_label": "EPA Beach Report site: Eastern Beach",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99510",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Eastern Beach"
+      ]
+    },
+    {
+      "id": "portarlington",
+      "name": "Portarlington Beach",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.650817,
+        -38.112672
+      ],
+      "reference_label": "EPA Beach Report site: Portarlington Beach (new site)",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99761",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Portarlington Beach (new site)"
+      ]
+    },
+    {
+      "id": "santa-casa",
+      "name": "Santa Casa Beach — Queenscliff",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.648588,
+        -38.272293
+      ],
+      "reference_label": "EPA Beach Report site: Santa Casa",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99998",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Santa Casa"
+      ]
+    },
+    {
+      "id": "st-leonards",
+      "name": "St Leonards Beach",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.719166,
+        -38.170783
+      ],
+      "reference_label": "EPA Beach Report site: St Leonards",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99770",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "St Leonards"
+      ]
+    },
+    {
+      "id": "the-dell",
+      "name": "The Dell",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.563007,
+        -38.152496
+      ],
+      "reference_label": "EPA Beach Report site: The Dell",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99500",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "The Dell"
+      ]
+    },
+    {
+      "id": "werribee-south",
+      "name": "Werribee South Beach",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.692783,
+        -37.974916
+      ],
+      "reference_label": "EPA Beach Report site: Werribee Sth",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99730",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Werribee Sth"
+      ]
+    },
+    {
+      "id": "williamstown",
+      "name": "Williamstown Beach",
+      "region": "port-phillip",
+      "group": "Western bay & Bellarine",
+      "point": [
+        144.893233,
+        -37.867962
+      ],
+      "reference_label": "EPA Beach Report site: Williamstown",
+      "source_id": "epa-vic-beach-report",
+      "source_record_id": "99700",
+      "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
+      "aliases": [
+        "Williamstown"
+      ]
+    }
+  ]
+}
