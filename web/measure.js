@@ -16,6 +16,7 @@ export function nearestContour(start,features,depth){
 }
 export const EDITHVALE={name:'Edithvale Life Saving Club',point:[145.1068502,-38.0387296],source_url:'https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club'};
 export function beachMeasurement(features,beach,depth=10){
+  if(beach.entry?.verified)beach={...beach,point:beach.entry.point,reference_label:beach.entry.label,source_url:beach.entry.source_url};
   validatePoint(beach.point);let shoreline=null;
   try{const candidate=nearestContour(beach.point,features,0);if(candidate.distance_m<=250)shoreline=candidate;}catch{}
   const isLowWater=String(shoreline?.feature.properties.feature||'').toLowerCase().includes('low water');

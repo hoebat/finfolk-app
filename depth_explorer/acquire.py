@@ -15,7 +15,21 @@ from .store import sha256, timestamp
 def fetch_contours(store, region_id):
     region = REGIONS[region_id]
     try:
-        collection, service_metadata = query_features(region["contour_service"], region["bbox"])
+        collections, service_metadata = [], {"layers": []}
+        for service in region.get("contour_services", [region["contour_service"]]):
+            part, metadata = query_features(service, region["bbox"])
+            for feature in part["features"]:
+                feature["properties"]["source_url"] = service
+            collections.extend(part["features"])
+            service_metadata["layers"].append({"url": service, "metadata": metadata})
+        # A failed layer leaves the entire archived region intact. Major/minor
+        # services can overlap; preserve a single record for identical geometry.
+        unique = {}
+        for feature in collections:
+            props = {k.lower(): v for k, v in feature["properties"].items()}
+            key = json.dumps([feature["geometry"], props.get(region["contour_field"].lower()), props.get("datum")], sort_keys=True)
+            unique.setdefault(key, feature)
+        collection = {"type": "FeatureCollection", "features": list(unique.values())}
         return save_contours(store, region_id, collection, service_metadata)
     except Exception as exc:
         inventory = store.load()
@@ -38,6 +52,8 @@ def save_contours(store, region_id, collection, service_metadata=None):
     destination = store.root / "processed" / region_id / ("contours-" + ident + ".geojson")
     atomic_json(destination, normalized)
     metadata = {"file": str(destination.relative_to(store.root)), "count": len(normalized["features"]),
+                "source_revision": region.get("source_revision", 0),
+                "source_urls": region.get("contour_services", [region["contour_service"]]),
                 "query_bbox": list(region["bbox"]) if service_metadata is not None else None,
                 "downloaded_at": timestamp(), "sha256": sha256(raw / "original.geojson"),
                 "source_url": region["contour_service"], "datum": region["contour_datum"],

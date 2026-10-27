@@ -1,6 +1,6 @@
 # Shore Depth Explorer
 
-A **backend-free GitHub Pages map** for Port Phillip Bay and Sydney’s Eastern Beaches: coloured seabed depths, published and derived contours, point inspection, seabed profiles, PNG maps and CSV exports.
+A **backend-free GitHub Pages beach guide** for Port Phillip Bay, Sydney’s Eastern Beaches, Jervis Bay, and Western Port / Phillip Island. Search and compare 75 coastal locations by published depth contours, sourced site facts and scheduled public transport. Raster-only features appear when numeric raster data is actually published.
 
 The deployed site is plain HTML, CSS, JavaScript, JSON, PNG and compressed numeric chunks. Point inspection, profiles and contours run in the browser. Python/GDAL is used **only to acquire and prepare data before publishing**. The optional street basemap uses OpenStreetMap; bathymetry requests stay on the static site.
 
@@ -12,7 +12,7 @@ The deployed site is plain HTML, CSS, JavaScript, JSON, PNG and compressed numer
 2. Push to `main`, or run **Test, build and deploy GitHub Pages** from the Actions tab.
 3. The expected project-site address is **https://hoebat.github.io/shore-depth-explorer/**. The deploy job reports the actual URL when deployment succeeds.
 
-The workflow checks out Git LFS objects, installs build dependencies, runs tests, acquires any missing government contour layers, builds `_site/`, and deploys that artifact. Pull requests run tests/builds without deploying or acquiring new data. If government services are unavailable, the workflow emits a warning and retains honest empty coverage; it does not generate substitute depths. Archived contour snapshots are reused when their recorded query bounds cover the configured area. Missing, unknown or smaller bounds trigger a fresh complete download; failed downloads retain the existing snapshot.
+The workflow checks out Git LFS objects, installs build dependencies, runs tests, prepares scheduled transport comparisons, acquires any missing government contour layers, builds `_site/`, and deploys that artifact. A daily scheduled run refreshes transport examples. Actions caches the source archive, transport feeds and derived journeys; the cache is partitioned by the committed dataset inventory so a new raster import is not overwritten by an older cached inventory. Pull requests run tests/builds without deploying or acquiring new data. If government services are unavailable, the workflow emits a warning and retains honest empty coverage; it does not generate substitute depths. Archived contour snapshots are reused when their recorded query bounds cover the configured area. Missing, unknown or smaller bounds trigger a fresh complete download; failed downloads retain the existing snapshot.
 
 **Git LFS and Pages:** GitHub does not support directly serving LFS pointers as Pages content. This project uses `actions/checkout` with `lfs: true`, then publishes *materialized, derived files* in a Pages artifact. The build rejects unresolved LFS pointers. Source GeoTIFFs and archives remain in LFS and are not duplicated into the site. [GitHub LFS documentation](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage), [custom Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
@@ -97,17 +97,42 @@ Repeat for `port-phillip`. `.gitattributes` tracks GeoTIFF, ZIP, LAS/LAZ, ASCII 
 
 ## Choose a beach
 
-The searchable picker includes 39 Port Phillip Bay locations and 15 Sydney locations from South Head to La Perouse, including Bondi, Gordon’s Bay, Coogee, Maroubra, Malabar and Little Bay. Locations come from EPA Victoria Beach Report, NSW Beachwatch and City of Kingston, with provenance in `web/beaches.json`. Choose a location to view its contours and estimate distance to the selected reference depth. Share links such as `?site=maroubra` or `?site=gordons-bay`. The internal `bondi` region ID remains compatible with existing CLI commands.
+Search across all 75 locations by name, alias, state or region. Filter by reference depth and distance, sort by name/depth/public transport, or compare up to three beaches. Existing `?site=edithvale`, `?site=maroubra` and other beach links remain supported. New examples include `?site=hyams-beach`, `?site=greenfield`, and `?site=cowes`.
 
-These are monitoring or council reference points, not guaranteed entry points. Where a published 0 m line is within 250 m, the measurement starts there; otherwise it uses the labelled reference location. NSW’s source supplies 5–40 m contours without a shoreline. Pick your actual entry point to refine a measurement. The requested bounding area does not imply complete survey coverage.
+Locations and sourced access/habitat/exposure facts live in `web/beaches.json`. EPA Victoria, NSW Beachwatch, councils, parks agencies and government tourism pages are cited individually. New beach reference locations derived from OpenStreetMap carry ODbL attribution. Beach polygon centres and monitoring stations are not automatically classified as entry points. Missing site facts stay unknown.
+
+Automatic summaries show distances to 5/10/15/20 m contours within **3 km**, using the same spherical geometry as the interactive tool. Where a published 0 m line is within 250 m of the source reference, the measurement starts there. Otherwise it starts at the labelled reference location. Distances do not verify a swimming route. Categories state their criteria, such as “10 m contour within 500 m”; no skill or safety score is inferred.
+
+Regions are defined in `depth_explorer/regions.json`. Add a region and sourced beach records without hardcoding new UI buttons. Region IDs `port-phillip` and `bondi` remain compatible with existing commands. Western Port combines major/minor CoastKit layers atomically, deduplicates overlapping geometry, and preserves unverified datum codes. Missing ocean-side coverage stays blank.
+
+## Public transport
+
+```sh
+python3 -m scripts.build_transport
+python3 -m depth_explorer build-static --output _site
+```
+
+The transport build reads official GTFS ZIPs, including Victoria’s nested mode archives. It publishes scheduled examples for the next four Saturdays, with same-day or Sunday returns. Origins include Southern Cross, Sydney Central, Geelong, Frankston, Ballarat, Bendigo, Wollongong, Kiama, Bomaderry and Newcastle Interchange. The client searches the compact derived index and loads regional bathymetry only when selected. Generated `config/journeys.json` and feed caches are ignored by Git.
+
+**NSW setup:** add a Transport for NSW Open Data API key as the repository Actions secret **`TFNSW_API_KEY`**. Never put it in client JavaScript, a URL, or a committed file. Without it, NSW beaches and planner links work but scheduled NSW rankings are labelled unavailable. For local builds, supply the key through a securely configured environment or use `--nsw-feed /path/to/official.zip`. `--vic-feed`, `--cache`, and `--date YYYY-MM-DD` support reproducible preparation. Downloaded credentials and request headers are never logged or published.
+
+The connection-scan router respects service calendars and exceptions, previous-day GTFS times after 24:00, pickup/drop-off restrictions, same-vehicle continuity and published transfers. School-only services are excluded. Missing cross-feed interchange connections are added only after pedestrian-network verification. Routes outside the supported origin/destination envelope plus a 0.5° margin are excluded.
+
+Comparison examples use earliest-arrival searches at 06:00/07:00/08:00/09:00/10:00. At least four hours at the destination and a return by 23:00 are required; overnight return starts after 14:00 Sunday. The displayed return is the **latest feasible return**, not a recommendation to remain until late evening. Ranking compares generated examples rather than every possible departure. Tradeoffs in duration, transfers and walking are retained; redundant dominated examples are removed.
+
+Final walking legs require sourced access coordinates or a documented access street near the mapped endpoint. Forward and return pedestrian routes are checked independently, using OpenStreetMap-based routing. Estimates use 4 km/h and include endpoint offsets only for sourced on-land access points; beach-centre offsets are never represented as walks across water. Station/coach walks use published GTFS transfer information or verified pedestrian links. Mapped steps may be present; this is not wheelchair routing. Walking geometry is published separately from the search index, with attribution. A 30-minute maximum per walking leg is the UI default.
+
+A missing comparison means **insufficient verified data or no suitable generated option**, not that no service exists. The UI retains trip-planner links for every beach, shows schedule dates and freshness, and hides departed/expired examples using Australian local dates. There are no live disruption, tide, swell or visibility feeds. Feed failures retain previous still-valid comparisons. Network walking refreshes have bounded time budgets so a provider outage cannot hang the daily build.
 
 ## Measure the distance to a depth contour
 
 The **Distance to depth** panel works with published contour data; a numeric raster is not required. Choose an available contour depth, then pick a beach entry point. The app calculates the nearest point on the actual contour segments using spherical geometry, draws the straight line, and displays one-way and return distances. It does not interpolate an absent contour, infer current water depth, or assess whether the line is a suitable swimming route.
 
-The **Edithvale example** uses [Kingston Council’s Life Saving Club location](https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club), snaps to the nearest published **0 m / low-water-mark** line, then measures to the chosen contour. [Open the Edithvale example](https://hoebat.github.io/shore-depth-explorer/?site=edithvale). Using the currently published Port Phillip dataset, the 10 m contour is approximately **1.9 km from the mapped low-water mark** near the club, or about **3.8 km return**. The survey catalogue spans 1971–2000 and its vertical datum remains unverified. The mapped low-water mark is not the current beach waterline.
+The **Edithvale beach selection** uses [Kingston Council’s Life Saving Club location](https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club), snaps to the nearest published **0 m / low-water-mark** line, then measures to the chosen contour. [Open the Edithvale example](https://hoebat.github.io/shore-depth-explorer/?site=edithvale). Using the currently published Port Phillip dataset, the 10 m contour is approximately **1.9 km from the mapped low-water mark** near the club, or about **3.8 km return**. The survey catalogue spans 1971–2000 and its vertical datum remains unverified. The mapped low-water mark is not the current beach waterline.
 
 ## Static data format
+
+`_site/data/beach-summaries.json` contains generated beach-depth summaries, `data/journeys.json` contains a small dated comparison index, `data/journey-itineraries/` contains journey steps loaded on demand, and `data/walking-routes.json` contains deduplicated walking geometry. The builder runs Node to reuse the browser measurement module and includes all generated assets in the size budget.
 
 `_site/data/catalog.json` lists sources, native grid dimensions/affine transforms/projections, sparse chunk paths, contour GeoJSON paths, and display tile paths. Each numeric chunk is a gzip-compressed **256 × 256 little-endian Float32 array**, with positive-down reference depth and NaN for missing cells. The last chunk of a grid is padded with NaN. Whole missing chunks are omitted from the manifest.
 

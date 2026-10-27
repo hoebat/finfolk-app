@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Static bathymetry explorer for Port Phillip Bay and Sydney Eastern Beaches",
+  "description": "Static coastal beach discovery, reference depths and public transport for Victoria and NSW",
   "scripts": {
     "build": "python3 -m depth_explorer build-static",
-    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs"
+    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs"
   },
   "dependencies": {
     "proj4": "2.22.0"
   },
   "overrides": {
     "wkt-parser": "1.5.5"
+  },
+  "devDependencies": {
+    "happy-dom": "21.0.4"
   }
 }

@@ -3,32 +3,48 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#102a35">
-  <title>Depth Atlas · Port Phillip & Sydney</title>
+  <title>Depth Atlas · Coastal beaches by depth and public transport</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <aside class="sidebar">
     <a class="brand" href="./" aria-label="Depth Atlas home"><span class="brand-mark">≋</span><span>DEPTH ATLAS<small>A closer look beneath the surface</small></span></a>
     <div class="eyebrow">YOUR WATERS</div>
-    <div class="region-picker" role="group" aria-label="Choose location">
-      <button class="region active" data-region="port-phillip"><span>Port Phillip Bay</span><small>VICTORIA</small><b>↗</b></button>
-      <button class="region" data-region="bondi"><span>Sydney Eastern Beaches</span><small>NEW SOUTH WALES</small><b>↗</b></button>
-    </div>
+    <div id="region-picker" class="region-picker" role="group" aria-label="Choose map region"></div>
+    <details class="map-data"><summary>Map data &amp; layers</summary>
     <section class="layer-section"><div class="section-label">MAP LAYERS</div>
-      <label class="toggle"><span><b>Seabed depths</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
-      <label class="toggle"><span><b>Depth contours</b><small>Published or raster-derived lines</small></span><input id="contour-layer" type="checkbox" checked></label>
-      <label class="toggle"><span><b>Data locations</b><small>Pin counts are data records, not depths</small></span><input id="pin-layer" type="checkbox" checked></label>
-      <label class="toggle"><span><b>Raster footprints</b><small>File extents may contain gaps</small></span><input id="coverage-layer" type="checkbox"></label>
+      <label hidden class="toggle"><span><b>Seabed depths</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
+      <label hidden class="toggle"><span><b>Depth contours</b><small>Published or raster-derived lines</small></span><input id="contour-layer" type="checkbox" checked></label>
+      <label hidden class="toggle"><span><b>Data locations</b><small>Pin counts are data records, not depths</small></span><input id="pin-layer" type="checkbox"></label>
+      <label hidden class="toggle"><span><b>Raster footprints</b><small>File extents may contain gaps</small></span><input id="coverage-layer" type="checkbox"></label>
       <label class="toggle"><span><b>Street basemap</b><small>OpenStreetMap · requires internet</small></span><input id="basemap-layer" type="checkbox"></label>
-      <label class="interval">Derived contour interval <select id="interval"><option value="5">5 m</option><option value="2">2 m · measured ≤5 m grids</option></select></label>
+      <label hidden class="interval">Derived contour interval <select id="interval"><option value="5">5 m</option><option value="2">2 m · measured ≤5 m grids</option></select></label>
     </section>
-    <section class="legend"><div class="section-label">REFERENCE DEPTH · METRES</div><div class="gradient"></div><div class="ticks"><span>0</span><span>5</span><span>10</span><span>20</span><span>30</span><span>50+</span></div><div class="legend-key"><span><i class="land"></i>Above datum</span><span><i class="missing"></i>No raster data</span></div></section>
+    <section class="legend" id="raster-legend" hidden><div class="section-label">REFERENCE DEPTH · METRES</div><div class="gradient"></div><div class="ticks"><span>0</span><span>5</span><span>10</span><span>20</span><span>30</span><span>50+</span></div><div class="legend-key"><span><i class="land"></i>Above datum</span><span><i class="missing"></i>No raster data</span></div></section>
     <section class="source-card"><div class="section-label">SURVEY DATA</div><div id="data-status" class="data-status">Checking coverage…</div><p id="source-summary"></p><button id="fetch" class="secondary">↓ Download contour GeoJSON</button><button id="data-guide" class="text-button">View survey data & sources ↗</button></section>
+    </details>
     <div class="sidebar-bottom"><span class="local-dot"></span> RUNS IN YOUR BROWSER <button id="refresh" class="text-button">Refresh data</button></div>
   </aside>
   <main>
-    <header><div><div class="eyebrow">SEABED EXPLORER</div><h1 id="place-title">Port Phillip Bay</h1></div><div class="header-actions"><button id="profile-tool" class="primary">⌁ Draw depth profile</button><button id="export-map" class="secondary">Export map ↗</button></div></header>
-    <section class="beach-picker" aria-label="Choose a beach"><div><label for="beach-select" id="beach-picker-title">Port Phillip Bay beaches</label><small id="beach-count">Loading beach locations…</small></div><label class="search-label"><span class="sr-only">Search beach names</span><input id="beach-search" type="search" placeholder="Search beaches…" autocomplete="off"></label><select id="beach-select" aria-labelledby="beach-picker-title" disabled><option value="">Whole coast</option></select><a id="beach-source" target="_blank" rel="noopener noreferrer" hidden>Location source ↗</a><p id="beach-hint">Choose a beach to view it and measure to your selected depth contour. Reference locations can be adjusted on the map.</p></section>
+    <header><div><div class="eyebrow">SEABED EXPLORER</div><h1 id="place-title">Port Phillip Bay</h1></div><div class="header-actions"><button id="profile-tool" class="primary" hidden>⌁ Draw depth profile</button><button id="export-map" class="secondary">Export map ↗</button></div></header>
+    <section class="discovery" aria-label="Find coastal beaches">
+      <div class="discovery-heading"><div><label for="beach-search" id="beach-picker-title">Find your next coastal spot</label><p id="beach-count" role="status">Loading beach guide…</p></div><input id="beach-search" type="search" placeholder="Beach, region or alias…" autocomplete="off"></div>
+      <div class="discovery-filters">
+        <label>State<select id="state-filter"><option value="">All states</option><option>Victoria</option><option>New South Wales</option></select></label>
+        <label>Region<select id="region-filter"><option value="">All regions</option></select></label>
+        <label>Target depth<select id="target-filter"><option value="5">5 m</option><option value="10" selected>10 m</option><option value="15">15 m</option><option value="20">20 m</option></select></label>
+        <label>Contour distance<select id="distance-filter"><option value="">Any distance</option><option value="250">Within 250 m</option><option value="500">Within 500 m</option><option value="1000">Within 1 km</option><option value="3000">Within 3 km</option></select></label>
+        <label>Sort by<select id="sort-filter"><option value="name">Beach name</option><option value="depth">Distance to depth</option><option value="fastest">Fastest public transport</option><option value="changes">Fewest transfers</option><option value="walking">Least walking</option></select></label>
+      </div>
+      <details class="transport-filters"><summary>Public transport · day trips &amp; overnight</summary>
+        <div class="discovery-filters"><label>Starting hub<select id="origin-filter"></select></label><label>Saturday departure<select id="date-filter"></select></label><label>Trip<select id="trip-filter"><option value="day">Day trip</option><option value="overnight">Overnight · return Sunday</option></select></label><label>Maximum walk per leg<select id="walk-filter"><option value="30">30 minutes</option><option value="15">15 minutes</option><option value="60">60 minutes</option><option value="">No limit</option></select></label><label class="check-filter"><input id="transit-filter" type="checkbox">Only verified scheduled trips</label></div>
+        <p id="transport-status" role="status"></p><small>Choose a metro or regional hub. Rankings require a verified walk and a workable return; times are scheduled, not live.</small>
+      </details>
+      <div id="beach-results" class="beach-results"></div><button id="show-more" class="secondary" hidden>Show more beaches</button>
+      <select id="beach-select" hidden aria-label="Legacy beach selection"></select><a id="beach-source" hidden></a>
+    </section>
+    <section id="comparison" class="comparison" aria-label="Beach comparison" hidden></section>
+    <section id="beach-summary" tabindex="-1" class="beach-summary" aria-label="Selected beach details" hidden></section>
     <div id="notice" role="status" aria-live="polite" hidden></div>
     <section class="map-wrap" aria-label="Interactive depth map">
       <canvas id="map" tabindex="0" aria-label="Depth map. Drag to pan, scroll or use plus and minus to zoom. Click to inspect. Arrow keys pan the map."></canvas>
@@ -39,8 +55,8 @@
       <div id="inspection" class="inspection" hidden><button id="close-inspection" aria-label="Close inspection">×</button><div class="eyebrow" id="inspection-kind">REFERENCE DEPTH</div><div id="inspection-value" class="inspection-value"></div><div id="inspection-details"></div></div>
       <div class="map-bottom"><span id="coordinates">Click the map to inspect a location</span><span id="map-attribution">Depth Atlas · local data</span></div>
     </section>
-    <section class="measure-panel" aria-label="Distance to a published depth contour"><div><div class="eyebrow">HOW FAR TO DEEPER WATER?</div><h2>Distance to depth</h2></div><div class="measure-actions"><label>Target contour <select id="measure-depth"><option value="10">10 m</option></select></label><button id="measure-start" class="primary" disabled>Pick a beach start point</button><button id="edithvale" class="secondary">Edithvale example</button><button id="measure-clear" class="text-button" hidden>Clear</button></div><p id="measure-result" aria-live="polite">Choose a start point to measure the straight-line distance to a published contour.</p><small id="measure-reference">Contour reference depth only. The straight line does not assess an open-water route, tides or current conditions.</small></section>
-    <section class="profile-panel"><div class="profile-header"><div><div class="eyebrow">ALONG THE SEABED</div><h2>Depth profile</h2></div><span id="profile-stats">Draw a line to explore the change in depth</span><button id="export-csv" class="secondary" disabled>↓ Export CSV</button></div><div class="chart-wrap"><canvas id="profile-chart" aria-label="Seabed reference depth against distance"></canvas><p id="profile-empty">From the shore to deeper water.<br><span>Add a raster, then draw a line on the map.</span></p></div></section>
+    <section class="measure-panel" id="measure-panel" hidden aria-label="Distance to a published depth contour"><div><div class="eyebrow">HOW FAR TO DEEPER WATER?</div><h2>Distance to depth</h2></div><div class="measure-actions"><label>Target contour <select id="measure-depth"><option value="10">10 m</option></select></label><button id="measure-start" class="primary" disabled>Pick a beach start point</button><button id="edithvale" class="secondary" hidden>Edithvale example</button><button id="measure-clear" class="text-button" hidden>Clear</button></div><p id="measure-result" aria-live="polite">Choose a start point to measure the straight-line distance to a published contour.</p><small id="measure-reference">Contour reference depth only. The straight line does not assess an open-water route, tides or current conditions.</small></section>
+    <section class="profile-panel" id="profile-panel" hidden><div class="profile-header"><div><div class="eyebrow">ALONG THE SEABED</div><h2>Depth profile</h2></div><span id="profile-stats">Draw a line to explore the change in depth</span><button id="export-csv" class="secondary" disabled>↓ Export CSV</button></div><div class="chart-wrap"><canvas id="profile-chart" aria-label="Seabed reference depth against distance"></canvas><p id="profile-empty">From the shore to deeper water.<br><span>Add a raster, then draw a line on the map.</span></p></div></section>
     <footer>Surveyed reference depths · no tide adjustment. <span>These datasets are not supplied for navigation and do not establish dive safety.</span></footer>
   </main>
   <dialog id="guide"><div class="dialog-header"><div><div class="eyebrow">GOVERNMENT SOURCES</div><h2 id="guide-title">Get the data</h2></div><button id="close-guide" aria-label="Close data guide">×</button></div><div id="guide-content"></div></dialog>

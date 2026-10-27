@@ -14,7 +14,8 @@ def main():
     store = Store("datasets")
     for region in REGIONS:
         archived = store.load()["contours"].get(region)
-        if archived and covers(archived.get("query_bbox"), REGIONS[region]["bbox"]):
+        if (archived and covers(archived.get("query_bbox"), REGIONS[region]["bbox"])
+                and archived.get("source_revision") == REGIONS[region].get("source_revision", 0)):
             print(f"{region}: using archived published contours")
             continue
         try:

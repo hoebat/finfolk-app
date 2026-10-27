@@ -1,8 +1,8 @@
 const normalise=value=>String(value??'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
 
-export function beachesForRegion(catalog,region,query=''){
+export function beachesForRegion(catalog,region,query='',allRegions=false){
   const needle=normalise(query);
-  return (catalog?.beaches||[]).filter(beach=>beach.region===region&&(!needle||[beach.name,beach.id,beach.group,...(beach.aliases||[])].some(value=>normalise(value).includes(needle)))).sort((a,b)=>a.group.localeCompare(b.group)||a.name.localeCompare(b.name));
+  return (catalog?.beaches||[]).filter(beach=>(allRegions||beach.region===region)&&(!needle||[beach.name,beach.id,beach.group,...(beach.aliases||[])].some(value=>normalise(value).includes(needle)))).sort((a,b)=>a.group.localeCompare(b.group)||a.name.localeCompare(b.name));
 }
 
 export function findBeach(catalog,value){

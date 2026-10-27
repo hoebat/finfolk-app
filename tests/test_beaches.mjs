@@ -5,7 +5,9 @@ import {beachMeasurement} from '../web/measure.js';
 const catalog=JSON.parse(fs.readFileSync(new URL('../web/beaches.json',import.meta.url)));
 assert.equal(beachesForRegion(catalog,'port-phillip').length,39);
 assert.equal(beachesForRegion(catalog,'bondi').length,15);
-assert.equal(new Set(catalog.beaches.map(b=>b.id)).size,54);
+assert.equal(new Set(catalog.beaches.map(b=>b.id)).size,catalog.beaches.length);
+assert.ok(beachesForRegion(catalog,'jervis-bay').length>=8);
+assert.ok(beachesForRegion(catalog,'western-port').length>=6);
 for(const b of catalog.beaches){assert.ok(b.point.every(Number.isFinite));assert.ok(catalog.sources.some(s=>s.id===b.source_id));assert.ok(b.source_url.startsWith('https://'));}
 assert.equal(findBeach(catalog,'Maroobra').id,'maroubra');
 assert.equal(findBeach(catalog,"Gordon’s Bay").id,'gordons-bay');

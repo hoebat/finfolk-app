@@ -24,6 +24,13 @@
       "publisher": "City of Kingston",
       "url": "https://www.kingston.vic.gov.au/",
       "attribution": "Supplemental beach reference locations from City of Kingston public location pages."
+    },
+    {
+      "id": "openstreetmap",
+      "publisher": "OpenStreetMap contributors",
+      "url": "https://www.openstreetmap.org/copyright",
+      "licence": "ODbL",
+      "attribution": "© OpenStreetMap contributors. Named beach reference points derived from mapped objects; polygon centres are not beach entry points."
     }
   ],
   "beaches": [
@@ -42,7 +49,21 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Bondi Beach"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council identifies promenade access from Campbell Parade.",
+          "source_url": "https://www.waverley.nsw.gov.au/community/disability_inclusion/access_bondi",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "access_streets": [
+        "Campbell Parade"
+      ],
+      "access_source": "https://www.waverley.nsw.gov.au/community/disability_inclusion/access_bondi"
     },
     {
       "id": "bronte",
@@ -59,7 +80,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Bronte Beach"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "clovelly",
@@ -76,6 +100,17 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Clovelly Beach"
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": [
+        {
+          "label": "Entry",
+          "text": "The council describes steps into the water in the beachside area.",
+          "category": "Documented steps",
+          "source_url": "https://www.randwick.nsw.gov.au/facilities-and-recreation/beaches-and-coast/beachside-areas/clovelly-beachside-area",
+          "reviewed_at": "2026-10-27"
+        }
       ]
     },
     {
@@ -93,7 +128,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Coogee Beach"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "gordons-bay",
@@ -113,7 +151,30 @@
         "Gordon's Bay",
         "Gordan's Bay",
         "Gordans Bay"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "Pedestrian access is via surrounding streets and the coastal walk.",
+          "source_url": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/gordons-bay",
+          "reviewed_at": "2026-10-27"
+        },
+        {
+          "label": "Habitat",
+          "text": "The government visitor description identifies an offshore reef and an underwater nature trail.",
+          "category": "Documented reef",
+          "source_url": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/gordons-bay",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "access_streets": [
+        "Coastal Walkway",
+        "Bondi to Coogee",
+        "Cliffbrook Parade"
+      ],
+      "access_source": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/gordons-bay"
     },
     {
       "id": "tamarama",
@@ -130,7 +191,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Tamarama Beach"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "congwong-bay",
@@ -147,7 +211,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Congwong Bay"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "frenchmans-bay",
@@ -164,7 +231,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Frenchmans Bay"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "little-bay",
@@ -181,7 +251,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Little Bay Beach"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "malabar",
@@ -198,7 +271,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Malabar Beach"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "maroubra",
@@ -216,7 +292,21 @@
       "aliases": [
         "Maroubra Beach",
         "Maroobra"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council locates the public beachside area on Marine Parade.",
+          "source_url": "https://www.randwick.nsw.gov.au/facilities-and-recreation/beaches-and-coast/beachside-areas/maroubra-beachside-area",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "access_streets": [
+        "Marine Parade"
+      ],
+      "access_source": "https://www.randwick.nsw.gov.au/facilities-and-recreation/beaches-and-coast/beachside-areas/maroubra-beachside-area"
     },
     {
       "id": "south-maroubra",
@@ -233,7 +323,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "South Maroubra Beach"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "yarra-bay",
@@ -250,7 +343,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Yarra Bay"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "camp-cove",
@@ -267,7 +363,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Camp Cove"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "watsons-bay",
@@ -284,7 +383,10 @@
       "source_url": "https://www.beachwatch.nsw.gov.au/",
       "aliases": [
         "Watsons Bay"
-      ]
+      ],
+      "state": "New South Wales",
+      "region_name": "Sydney Eastern Beaches",
+      "facts": []
     },
     {
       "id": "aspendale",
@@ -301,7 +403,27 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Aspendale Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council lists accessible footpaths at this beach location.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/aspendale-beach",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "entry": {
+        "point": [
+          145.10179,
+          -38.02981
+        ],
+        "label": "Council-listed Aspendale Beach foreshore access",
+        "verified": true,
+        "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/aspendale-beach",
+        "reviewed_at": "2026-10-27"
+      }
     },
     {
       "id": "carrum",
@@ -318,7 +440,27 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Carrum Surf Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council lists accessible footpaths at this beach location.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/carrum-beach",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "entry": {
+        "point": [
+          145.12165,
+          -38.07745
+        ],
+        "label": "Council-listed Carrum Beach foreshore access",
+        "verified": true,
+        "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/carrum-beach",
+        "reviewed_at": "2026-10-27"
+      }
     },
     {
       "id": "chelsea",
@@ -331,7 +473,27 @@
       ],
       "reference_label": "Council Chelsea Beach and Victory Park location",
       "source_id": "kingston-council",
-      "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/chelsea-beach"
+      "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/chelsea-beach",
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council lists accessible footpaths at this beach location.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/chelsea-beach",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "entry": {
+        "point": [
+          145.11386,
+          -38.05244
+        ],
+        "label": "Council-listed Chelsea Beach foreshore access",
+        "verified": true,
+        "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/chelsea-beach",
+        "reviewed_at": "2026-10-27"
+      }
     },
     {
       "id": "edithvale",
@@ -344,7 +506,34 @@
       ],
       "reference_label": "Edithvale Life Saving Club",
       "source_id": "kingston-council",
-      "source_url": "https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club"
+      "source_url": "https://www.kingston.vic.gov.au/community/get-involved/community-groups/Edithvale-Life-Saving-Club",
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council lists accessible paths, toilets and showers at the foreshore club precinct.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/edithvale-beach",
+          "reviewed_at": "2026-10-27"
+        },
+        {
+          "label": "Beach",
+          "text": "A sandy beach backed by low dunes.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/edithvale-beach",
+          "reviewed_at": "2026-10-27",
+          "category": "Sandy beach"
+        }
+      ],
+      "entry": {
+        "point": [
+          145.10676,
+          -38.03876
+        ],
+        "label": "Council-listed Edithvale foreshore / life saving club access",
+        "verified": true,
+        "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/edithvale-beach",
+        "reviewed_at": "2026-10-27"
+      }
     },
     {
       "id": "frankston",
@@ -361,7 +550,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Frankston Surf Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "frankston-coast-guard",
@@ -378,7 +570,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Frankston Coast Guard"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "mentone",
@@ -395,7 +590,27 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Mentone"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council lists accessible footpaths at this beach location.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/mentone-beach",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "entry": {
+        "point": [
+          145.05506,
+          -37.98684
+        ],
+        "label": "Council-listed Mentone Beach foreshore access",
+        "verified": true,
+        "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/mentone-beach",
+        "reviewed_at": "2026-10-27"
+      }
     },
     {
       "id": "mordialloc",
@@ -412,7 +627,27 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Mordialloc"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council lists accessible footpaths at this beach location.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/mordialloc-beach",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "entry": {
+        "point": [
+          145.08473,
+          -38.00835
+        ],
+        "label": "Council-listed Mordialloc Beach foreshore access",
+        "verified": true,
+        "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/mordialloc-beach",
+        "reviewed_at": "2026-10-27"
+      }
     },
     {
       "id": "parkdale",
@@ -425,7 +660,27 @@
       ],
       "reference_label": "Council Parkdale Beach location",
       "source_id": "kingston-council",
-      "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/parkdale-beach"
+      "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/parkdale-beach",
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The council lists accessible footpaths at this beach location.",
+          "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/parkdale-beach",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "entry": {
+        "point": [
+          145.07525,
+          -37.99959
+        ],
+        "label": "Council-listed Parkdale Beach foreshore access",
+        "verified": true,
+        "source_url": "https://www.kingston.vic.gov.au/environment/parks-and-reserves/parkdale-beach",
+        "reviewed_at": "2026-10-27"
+      }
     },
     {
       "id": "seaford",
@@ -442,7 +697,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Seaford"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "beaumaris",
@@ -459,7 +717,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Beaumaris"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "black-rock",
@@ -476,7 +737,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Black Rock Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "brighton",
@@ -493,7 +757,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Brighton Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "elwood",
@@ -510,7 +777,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Elwood"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "half-moon-bay",
@@ -527,7 +797,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Half Moon Bay"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "hampton",
@@ -544,7 +817,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Hampton"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "port-melbourne",
@@ -561,7 +837,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Port Melbourne"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "sandridge",
@@ -578,7 +857,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Sandridge"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "sandringham",
@@ -595,7 +877,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Sandringham"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "south-melbourne",
@@ -612,7 +897,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "South Melbourne Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "st-kilda",
@@ -629,7 +917,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "St Kilda"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "blairgowrie",
@@ -646,7 +937,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Blairgowrie"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "canadian-bay",
@@ -663,7 +957,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Canadian Bay"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "dromana",
@@ -680,7 +977,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Dromana"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "mornington",
@@ -697,7 +997,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Mornington Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "mount-martha",
@@ -714,7 +1017,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Mt Martha Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "portsea",
@@ -731,7 +1037,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Portsea"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "rosebud",
@@ -748,7 +1057,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Rosebud Life Saving Club"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "rye",
@@ -765,7 +1077,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Rye"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "safety-beach",
@@ -782,7 +1097,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Safety Beach"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "sorrento",
@@ -799,7 +1117,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Sorrento"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "altona",
@@ -816,7 +1137,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Altona"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "eastern-beach",
@@ -833,7 +1157,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Eastern Beach"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "portarlington",
@@ -850,7 +1177,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Portarlington Beach (new site)"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "santa-casa",
@@ -867,7 +1197,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Santa Casa"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "st-leonards",
@@ -884,7 +1217,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "St Leonards"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "the-dell",
@@ -901,7 +1237,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "The Dell"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "werribee-south",
@@ -918,7 +1257,10 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Werribee Sth"
-      ]
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
     },
     {
       "id": "williamstown",
@@ -935,7 +1277,593 @@
       "source_url": "https://discover.data.vic.gov.au/dataset/beach-report-enterococci-data",
       "aliases": [
         "Williamstown"
+      ],
+      "state": "Victoria",
+      "region_name": "Port Phillip Bay",
+      "facts": []
+    },
+    {
+      "id": "cowes",
+      "name": "Cowes Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.2383385,
+        -38.4475584
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Main Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/99979611",
+      "aliases": [
+        "Main Beach",
+        "Phillip Island"
+      ],
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The tourism authority identifies access from Thompson Avenue and the Esplanade.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27"
+        },
+        {
+          "label": "Setting",
+          "text": "A bay beach with facilities near the jetty.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27",
+          "category": "Bay beach"
+        }
+      ],
+      "access_streets": [
+        "Thompson Avenue",
+        "The Esplanade"
+      ],
+      "access_source": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines"
+    },
+    {
+      "id": "ventnor",
+      "name": "Ventnor Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.1723943,
+        -38.4640787
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Ventnor Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/795599680",
+      "aliases": [
+        "Ventnor Beach",
+        "Phillip Island"
+      ],
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The tourism authority identifies access from Ventnor Beach Road.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27"
+        },
+        {
+          "label": "Setting",
+          "text": "A northern-side bay beach.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27",
+          "category": "Bay beach"
+        }
+      ],
+      "access_streets": [
+        "Ventnor Beach Road"
+      ],
+      "access_source": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines"
+    },
+    {
+      "id": "smiths-beach",
+      "name": "Smiths Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.2579398,
+        -38.5057463
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Smiths Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/25322648",
+      "aliases": [
+        "Smiths Beach",
+        "Phillip Island"
+      ],
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The tourism authority identifies access from Smiths Beach Road.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "access_streets": [
+        "Smiths Beach Road"
+      ],
+      "access_source": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines"
+    },
+    {
+      "id": "ycw",
+      "name": "YCW Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.2490274,
+        -38.5050952
+      ],
+      "reference_label": "OpenStreetMap named beach reference: YCW",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/174042617",
+      "aliases": [
+        "YCW",
+        "Phillip Island"
+      ],
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The tourism authority identifies access from Beachcomber Avenue.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "access_streets": [
+        "Beachcomber Avenue"
+      ],
+      "access_source": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines"
+    },
+    {
+      "id": "cape-woolamai",
+      "name": "Cape Woolamai · Anzacs",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.3329776,
+        -38.5386324
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Anzacs",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/node/2828706029",
+      "aliases": [
+        "Anzacs",
+        "Phillip Island"
+      ],
+      "facts": [
+        {
+          "label": "Access",
+          "text": "The tourism authority identifies access from Beach Road off Woolamai Road.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27"
+        },
+        {
+          "label": "Exposure",
+          "text": "A surf beach with documented strong rips and currents.",
+          "source_url": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines",
+          "reviewed_at": "2026-10-27",
+          "category": "Documented surf exposure"
+        }
+      ],
+      "access_streets": [
+        "Beach Road"
+      ],
+      "access_source": "https://www.visitvictoria.com/regions/phillip-island/see-and-do/nature-and-wildlife/beaches-and-coastlines"
+    },
+    {
+      "id": "san-remo",
+      "name": "San Remo Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.3652502,
+        -38.5212792
+      ],
+      "reference_label": "OpenStreetMap named beach reference: San Remo Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/1009424474",
+      "aliases": [
+        "San Remo Beach"
+      ],
+      "facts": []
+    },
+    {
+      "id": "silverleaves",
+      "name": "Silverleaves Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.2609662,
+        -38.4491951
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Silverleaves",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/28204391",
+      "aliases": [
+        "Silverleaves",
+        "Phillip Island"
+      ],
+      "facts": []
+    },
+    {
+      "id": "berrys-beach",
+      "name": "Berrys Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.2047695,
+        -38.5197503
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Berrys Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/23626206",
+      "aliases": [
+        "Berrys Beach",
+        "Phillip Island"
+      ],
+      "facts": []
+    },
+    {
+      "id": "corinella",
+      "name": "Corinella Beach",
+      "region": "western-port",
+      "region_name": "Western Port & Phillip Island",
+      "state": "Victoria",
+      "group": "Western Port & Phillip Island",
+      "point": [
+        145.4216954,
+        -38.4080749
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Corinella Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/node/10270776135",
+      "aliases": [
+        "Corinella Beach"
+      ],
+      "facts": []
+    },
+    {
+      "id": "huskisson",
+      "name": "Huskisson Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6772906,
+        -35.0456526
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Huskisson Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/5754660",
+      "aliases": [
+        "Huskisson Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        }
       ]
+    },
+    {
+      "id": "shark-net",
+      "name": "Shark Net Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6741337,
+        -35.039684
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Shark Net Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/5754657",
+      "aliases": [
+        "Shark Net Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": []
+    },
+    {
+      "id": "collingwood",
+      "name": "Collingwood Beach · Vincentia",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.674626,
+        -35.061805
+      ],
+      "reference_label": "NSW Beachwatch site: Collingwood Beach",
+      "source_id": "nsw-beachwatch",
+      "source_url": "https://api.beachwatch.nsw.gov.au/public/sites/geojson",
+      "aliases": [
+        "Collingwood Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        }
+      ]
+    },
+    {
+      "id": "orion-beach",
+      "name": "Orion Beach · Vincentia",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6837875,
+        -35.0702951
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Orion Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/5871471",
+      "aliases": [
+        "Orion Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        }
+      ]
+    },
+    {
+      "id": "blenheim",
+      "name": "Blenheim Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6913872,
+        -35.0830907
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Blenheim Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/5871476",
+      "aliases": [
+        "Blenheim Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        }
+      ]
+    },
+    {
+      "id": "greenfield",
+      "name": "Greenfield Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6920649,
+        -35.0880355
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Greenfields Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/5871674",
+      "aliases": [
+        "Greenfields Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Access",
+          "text": "Pedestrian access starts at the Elizabeth Drive cul-de-sac in Vincentia.",
+          "source_url": "https://www.nationalparks.nsw.gov.au/things-to-do/picnic-areas/greenfield-beach-picnic-area/visitor-info",
+          "reviewed_at": "2026-10-27"
+        },
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "access_streets": [
+        "Elizabeth Drive"
+      ],
+      "access_source": "https://www.nationalparks.nsw.gov.au/things-to-do/picnic-areas/greenfield-beach-picnic-area/visitor-info"
+    },
+    {
+      "id": "chinamans-jervis",
+      "name": "Chinamans Beach · Jervis Bay",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.7758518,
+        -35.0082845
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Chinamans Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/959644982",
+      "aliases": [
+        "Chinamans Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": []
+    },
+    {
+      "id": "hyams-beach",
+      "name": "Hyams Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6986351,
+        -35.1133238
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Hyams Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/5874312",
+      "aliases": [
+        "Hyams Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        },
+        {
+          "label": "Access",
+          "text": "The government visitor listing identifies Cyrus Street as the beach location.",
+          "source_url": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/hyams-beach",
+          "reviewed_at": "2026-10-27"
+        }
+      ],
+      "access_streets": [
+        "Cyrus Street"
+      ],
+      "access_source": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/hyams-beach"
+    },
+    {
+      "id": "nelson-beach",
+      "name": "Nelson Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6948182,
+        -35.0753749
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Nelson Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/230385239",
+      "aliases": [
+        "Nelson Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": []
+    },
+    {
+      "id": "murrays-beach",
+      "name": "Murrays Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.7592115,
+        -35.1252197
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Murrays Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/319811934",
+      "aliases": [
+        "Murrays Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        }
+      ]
+    },
+    {
+      "id": "cave-beach",
+      "name": "Cave Beach",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.6711872,
+        -35.1636294
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Cave Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/78271877",
+      "aliases": [
+        "Cave Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": [
+        {
+          "label": "Regional transport",
+          "text": "Train to Bomaderry connects with buses towards Huskisson or Vincentia. Verify the onward connection to this beach.",
+          "source_url": "https://booderee.gov.au/plan/getting-here/",
+          "reviewed_at": "2026-10-27"
+        }
+      ]
+    },
+    {
+      "id": "abrahams-bosom",
+      "name": "Abrahams Bosom Beach · Currarong",
+      "region": "jervis-bay",
+      "region_name": "Jervis Bay",
+      "state": "New South Wales",
+      "group": "Jervis Bay",
+      "point": [
+        150.8273694,
+        -35.0105038
+      ],
+      "reference_label": "OpenStreetMap named beach reference: Abrahams Bosom Beach",
+      "source_id": "openstreetmap",
+      "source_url": "https://www.openstreetmap.org/way/5775649",
+      "aliases": [
+        "Abrahams Bosom Beach",
+        "Vincentia",
+        "Jervis Bay"
+      ],
+      "facts": []
     }
   ]
 }
