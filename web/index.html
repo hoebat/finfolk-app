@@ -9,7 +9,7 @@
 <body>
   <aside class="sidebar">
     <a class="brand" href="./" aria-label="Depth Atlas home"><span class="brand-mark">≋</span><span>DEPTH ATLAS<small>A closer look beneath the surface</small></span></a>
-    <nav class="primary-nav" aria-label="Main navigation"><button data-view="discover">Discover</button><button data-view="areas">Areas</button><button data-view="guides">Guides</button></nav>
+    <nav class="primary-nav" aria-label="Main navigation"><button data-view="maps">Depth maps</button><button data-view="discover">Discover</button><button data-view="areas">Areas</button><button data-view="guides">Guides</button></nav>
     <div class="eyebrow">AREA DIRECTORY</div>
     <div id="region-picker" class="region-picker" role="group" aria-label="Choose map region"></div>
     <details class="map-data"><summary>Map data &amp; layers</summary>
@@ -46,8 +46,8 @@
 </section>
     <section id="comparison" class="comparison" aria-label="Beach comparison" hidden></section>
     <section id="explorer" hidden>
+    <label class="survey-picker">Published depth map<select id="survey-select" aria-label="Published depth map"></select></label>
     <div class="explorer-heading"><h2 id="place-title">Coastal map</h2><div class="header-actions"><button id="profile-tool" class="primary" hidden>⌁ Draw depth profile</button><button id="export-map" class="secondary">Export map ↗</button></div></div>
-    <section id="beach-summary" tabindex="-1" class="beach-summary" aria-label="Selected beach details" hidden></section>
     <div id="notice" role="status" aria-live="polite" hidden></div>
     <section class="map-wrap" aria-label="Interactive depth map">
       <canvas id="map" tabindex="0" aria-label="Depth map. Drag to pan, scroll or use plus and minus to zoom. Click to inspect. Arrow keys pan the map."></canvas>
@@ -59,6 +59,7 @@
       <div class="map-bottom"><span id="coordinates">Click the map to inspect a location</span><span id="map-attribution">Depth Atlas · local data</span></div>
     </section>
     <section class="measure-panel" id="measure-panel" hidden aria-label="Distance to a published depth contour"><div><div class="eyebrow">HOW FAR TO DEEPER WATER?</div><h2>Distance to depth</h2></div><div class="measure-actions"><label>Target contour <select id="measure-depth"><option value="10">10 m</option></select></label><button id="measure-start" class="primary" disabled>Pick a beach start point</button><button id="edithvale" class="secondary" hidden>Edithvale example</button><button id="measure-clear" class="text-button" hidden>Clear</button></div><p id="measure-result" aria-live="polite">Choose a start point to measure the straight-line distance to a published contour.</p><small id="measure-reference">Contour reference depth only. The straight line does not assess an open-water route, tides or current conditions.</small></section>
+    <section id="beach-summary" tabindex="-1" class="beach-summary" aria-label="Selected beach details" hidden></section>
     <section class="profile-panel" id="profile-panel" hidden><div class="profile-header"><div><div class="eyebrow">ALONG THE SEABED</div><h2>Depth profile</h2></div><span id="profile-stats">Draw a line to explore the change in depth</span><button id="export-csv" class="secondary" disabled>↓ Export CSV</button></div><div class="chart-wrap"><canvas id="profile-chart" aria-label="Seabed reference depth against distance"></canvas><p id="profile-empty">From the shore to deeper water.<br><span>Add a raster, then draw a line on the map.</span></p></div></section>
     </section>
     <footer>Surveyed reference depths · no tide adjustment. <span>Sources: governments, OpenStreetMap contributors (ODbL) &amp; Natural Earth. Survey data are not supplied for navigation or a safety assessment.</span></footer>
