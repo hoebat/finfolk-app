@@ -46,6 +46,12 @@ class CoastIndex:
                     candidate=[a[0]+t*(b[0]-a[0]),a[1]+t*(b[1]-a[1])];best=min(best,distance(point,candidate))
         return best
 
+def package_for(point, packages):
+    """Prefer a published local package over a larger overlapping envelope."""
+    matches = [r for r in packages if r.get('status') != 'empty' and r['bbox'][0] <= point[0] <= r['bbox'][2] and r['bbox'][1] <= point[1] <= r['bbox'][3]]
+    return min(matches, key=lambda r: ((r['bbox'][2]-r['bbox'][0])*(r['bbox'][3]-r['bbox'][1]), r['id']), default=None)
+
+
 def directory(seed,national,config,packages):
     states={s['id']:s['name'] for s in config['states']};reverse={v:k for k,v in states.items()}
     areas=config['areas'];byid={a['id']:a for a in areas};beaches=[]
@@ -64,7 +70,7 @@ def directory(seed,national,config,packages):
             duplicate.setdefault('additional_sources',[]).append({'id':b['id'],'url':b['source_url']});continue
         b.update(area_id=area_for(b['point'],b['state_id'],areas),state=states[b['state_id']],jurisdiction_id=b.get('jurisdiction_id',b['state_id']))
         # Imported locations can reuse an existing survey package if in its area.
-        package=next((r for r in packages if r['bbox'][0]<=b['point'][0]<=r['bbox'][2] and r['bbox'][1]<=b['point'][1]<=r['bbox'][3]),None)
+        package=package_for(b['point'],packages)
         b['region']=package['id'] if package else b['area_id'];beaches.append(b)
     used={b['area_id'] for b in beaches};outareas=[]
     for area in areas:

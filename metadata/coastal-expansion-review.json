@@ -1,0 +1,293 @@
+{
+  "reviewed_at": "2026-10-28",
+  "contours": [
+    {
+      "region": "port-phillip",
+      "feature_count": 1518,
+      "source_urls": [
+        "https://core-gis.mapshare.vic.gov.au/arcgis/rest/services/Mapshare/MarineCoastal/MapServer/25"
+      ],
+      "raw_sha256": "81399759d355944ba39ddb673bdfbd28654c50b3223325e020ba26e9c25a6ea2",
+      "query_bbox": [
+        144.3,
+        -38.4,
+        145.18,
+        -37.8
+      ],
+      "datum": "Unverified \u2014 original DATUM code retained per feature"
+    },
+    {
+      "region": "bondi",
+      "feature_count": 395,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "90050690d3fa7a01cf6e388705042faeb11d6982d2032b499a818545bdae780c",
+      "query_bbox": [
+        151.215,
+        -34.01,
+        151.34,
+        -33.815
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "jervis-bay",
+      "feature_count": 1562,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "4b2cf56b463f78cdcd5985cb5076a87457896b85c23314b2fa4cb71d2c66b399",
+      "query_bbox": [
+        150.6,
+        -35.2,
+        150.91,
+        -34.94
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "western-port",
+      "feature_count": 5598,
+      "source_urls": [
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/17",
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/18"
+      ],
+      "raw_sha256": "c09fec774c48991999f65d2d7e52b21700615c5f396255eea3b2fb067546664a",
+      "query_bbox": [
+        144.95,
+        -38.63,
+        145.62,
+        -38.15
+      ],
+      "datum": "Unverified \u2014 original DATUM code retained per feature"
+    },
+    {
+      "region": "nsw-northern-beaches",
+      "feature_count": 1118,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "f42d4c7a96f991853e325e5341738f23e078f762ea7c6ee56e09f79395f28db4",
+      "query_bbox": [
+        151.184489,
+        -33.823408,
+        151.46782,
+        -33.465075
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "nsw-southern-sydney",
+      "feature_count": 640,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "1515a679e90af930c5c2ec3bb47f84382fd0abc6ea9f7817bcbf00804c06bbef",
+      "query_bbox": [
+        150.934503,
+        -34.281745,
+        151.251163,
+        -33.915076
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "nsw-central-coast",
+      "feature_count": 2653,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "a48f39e8d43a7e30b5289be92a5cc4f01abd6fe98704ba025f91cd19b3b6f3ae",
+      "query_bbox": [
+        151.382541,
+        -33.540908,
+        151.728921,
+        -32.99285
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "nsw-hunter",
+      "feature_count": 4571,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "9058997766344296396bb0af324c36a49f4c7b6efb507d4513621cf8f351b9c4",
+      "query_bbox": [
+        151.667809,
+        -33.065072,
+        152.60112,
+        -32.006731
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "nsw-northern-rivers",
+      "feature_count": 3443,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "c00ddff015a3b157d74a1fd759ffd27689baca855896c126262356801f61f0ef",
+      "query_bbox": [
+        153.384408,
+        -29.181731,
+        153.684401,
+        -28.115065
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "nsw-illawarra",
+      "feature_count": 2214,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "52cbf573a95c3958b4112bf889a1d1ebe7f5fb833e3fb79344f1d09c0a22fb16",
+      "query_bbox": [
+        150.78451,
+        -34.815081,
+        151.009503,
+        -34.223412
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "qld-southern-gold-coast",
+      "feature_count": 23,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "94aab2365d35679c6cda6ac9324799683c1409821a4cbd9130dd34ddc90ff5e0",
+      "query_bbox": [
+        153.35,
+        -28.18,
+        153.57,
+        -28.08
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "vic-corner-inlet",
+      "feature_count": 712,
+      "source_urls": [
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/7",
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/8"
+      ],
+      "raw_sha256": "9d18cfc370ae4e2c46d02257bbcb081d2b59503fe90ec2c9a3eadf3f9801ebb8",
+      "query_bbox": [
+        146.181507,
+        -38.882589,
+        146.919043,
+        -38.599939
+      ],
+      "datum": "Unverified \u2014 original DATUM code retained per feature"
+    },
+    {
+      "region": "vic-mallacoota",
+      "feature_count": 109,
+      "source_urls": [
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/10",
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/11"
+      ],
+      "raw_sha256": "531e350e6cb7a158a22ca882c0715948fc5afdbe52f5df6213314fc9225d36e8",
+      "query_bbox": [
+        149.693355,
+        -37.563784,
+        149.802769,
+        -37.48828
+      ],
+      "datum": "Unverified \u2014 original DATUM code retained per feature"
+    },
+    {
+      "region": "nsw-eurobodalla",
+      "feature_count": 3093,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "afc71cf2c6ea1c94bb0ded7da0fe41a7b402e20ec88ef1ba105a6a16ca6f3115",
+      "query_bbox": [
+        150.042879,
+        -36.398423,
+        150.451192,
+        -35.448418
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "nsw-sapphire",
+      "feature_count": 2319,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "raw_sha256": "b43404f4b8edbfab64d4db47e6ca57ebce67762b4327dae036ad27d4acc4fb64",
+      "query_bbox": [
+        149.817897,
+        -37.481763,
+        150.134548,
+        -36.31509
+      ],
+      "datum": "AHD"
+    },
+    {
+      "region": "tas-southeast",
+      "feature_count": 436,
+      "source_urls": [
+        "https://geoserver.imas.utas.edu.au/geoserver/imas/wfs"
+      ],
+      "raw_sha256": "d09aadce01a83e9cd0c6b51a291176381b842a60f95d45ea1b942705b3c4da74",
+      "query_bbox": [
+        146.85,
+        -43.7,
+        148.1,
+        -42.65
+      ],
+      "datum": "MSL (EPSG:5715)"
+    }
+  ],
+  "tasmania": {
+    "metadata_url": "https://metadata.imas.utas.edu.au/geonetwork/srv/api/records/fa2dbc70-44ab-11dc-8cd0-00188b4c0af8/formatters/xml",
+    "method": "Complete unfiltered WFS layer verified before local envelope selection: spatially filtered WFS count reported 454 but returned 436 records. Full layer reported and returned 1504 records.",
+    "licence": "CC BY 4.0",
+    "datum": "MSL depth (EPSG:5715)"
+  },
+  "wa_raster": {
+    "status": "deferred",
+    "name": "Fremantle Cockburn Sound Bathymetry 2m 2004",
+    "source_url": "https://files.ausseabed.gov.au/survey/20040026S-Fremantle-Bathymetry-2m-2004.zip",
+    "archive_sha256": "82131b86721c1b83c8e4f4ee119024b037706246d3ebe505d398a5e73fcbde09",
+    "archive_bytes": 4953559,
+    "reason": "Archive contains a sparse offshore grid at 35.63\u201357.24 m, not verified beach-adjacent coverage. Vertical reference EGM2008 appears in one filename but is not explicitly established by embedded grid metadata; no datum_verified import was made.",
+    "bounds": [
+      115.652460393557,
+      -32.250731425524,
+      115.765306761543,
+      -32.098143588666005
+    ],
+    "valid_cells": 1291142,
+    "grid_shape": [
+      8493,
+      6281
+    ],
+    "band_direction": "Height",
+    "minimum": -57.2400016784668,
+    "maximum": -35.630001068115234
+  },
+  "gold_coast_review": {
+    "status": "limited-to-point-danger-tweed-entrance",
+    "requested_bbox": [
+      153.35,
+      -28.18,
+      153.57,
+      -28.08
+    ],
+    "feature_count": 23,
+    "geometry_bounds": [
+      153.54682309250975,
+      -28.216821307144123,
+      153.584054896612,
+      -28.161813229894555
+    ],
+    "note": "Visual validation found only Point Danger / Tweed entrance contours, so the package is labelled accordingly. No continuous Palm Beach or Gold Coast seafront coverage is claimed."
+  }
+}

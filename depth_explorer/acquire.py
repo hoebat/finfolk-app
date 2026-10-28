@@ -7,29 +7,49 @@ import uuid
 from pathlib import Path
 
 from .catalog import REGIONS
-from .net import atomic_json, normalize_contours, query_features
+from .net import atomic_json, normalize_contours, query_features, query_wfs_features
 from .raster import Raster, clip_cog
 from .store import sha256, timestamp
+
+
+def contour_collection(region_id):
+    """Acquire without mutating the store, so regional downloads may run together."""
+    region = REGIONS[region_id]
+    collections, service_metadata = [], {"layers": []}
+    for service in region.get("contour_services", [region["contour_service"]]):
+        if region.get("contour_protocol") == "wfs":
+            part, metadata = query_wfs_features(service, None if region.get("contour_client_clip") else region["bbox"], region["contour_type_name"], region["contour_geometry_field"], region["contour_sort_field"])
+        else:
+            part, metadata = query_features(service, region["bbox"])
+        if region.get("contour_client_clip"):
+            # This source's spatial count disagrees with its filtered pages.
+            # Verify the complete unfiltered layer before applying an envelope locally.
+            w, s, e, n = region["bbox"]
+            selected = []
+            for feature in part["features"]:
+                geometry = feature.get("geometry") or {}
+                lines = [geometry.get("coordinates", [])] if geometry.get("type") == "LineString" else geometry.get("coordinates", [])
+                points = [p for line in lines for p in line]
+                if points and min(p[0] for p in points) <= e and max(p[0] for p in points) >= w and min(p[1] for p in points) <= n and max(p[1] for p in points) >= s:
+                    selected.append(feature)
+            part = {"type": "FeatureCollection", "features": selected}
+            metadata["local_envelope"] = region["bbox"]
+        for feature in part["features"]:
+            feature["properties"]["source_url"] = service
+        collections.extend(part["features"])
+        service_metadata["layers"].append({"url": service, "metadata": metadata})
+    unique = {}
+    for feature in collections:
+        props = {k.lower(): v for k, v in feature["properties"].items()}
+        key = json.dumps([feature["geometry"], props.get(region["contour_field"].lower()), props.get("datum")], sort_keys=True)
+        unique.setdefault(key, feature)
+    return {"type": "FeatureCollection", "features": list(unique.values())}, service_metadata
 
 
 def fetch_contours(store, region_id):
     region = REGIONS[region_id]
     try:
-        collections, service_metadata = [], {"layers": []}
-        for service in region.get("contour_services", [region["contour_service"]]):
-            part, metadata = query_features(service, region["bbox"])
-            for feature in part["features"]:
-                feature["properties"]["source_url"] = service
-            collections.extend(part["features"])
-            service_metadata["layers"].append({"url": service, "metadata": metadata})
-        # A failed layer leaves the entire archived region intact. Major/minor
-        # services can overlap; preserve a single record for identical geometry.
-        unique = {}
-        for feature in collections:
-            props = {k.lower(): v for k, v in feature["properties"].items()}
-            key = json.dumps([feature["geometry"], props.get(region["contour_field"].lower()), props.get("datum")], sort_keys=True)
-            unique.setdefault(key, feature)
-        collection = {"type": "FeatureCollection", "features": list(unique.values())}
+        collection, service_metadata = contour_collection(region_id)
         return save_contours(store, region_id, collection, service_metadata)
     except Exception as exc:
         inventory = store.load()

@@ -87,6 +87,37 @@ def query_features(service, bbox, where="1=1"):
     return {"type": "FeatureCollection", "features": features}, metadata
 
 
+def query_wfs_features(service, bbox, type_name, geometry_field, sort_field):
+    """Download a stable WFS page sequence; reject incomplete or repeated pages."""
+    params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature",
+              "typeNames": type_name, "outputFormat": "application/json",
+              "srsName": "EPSG:4326", "sortBy": sort_field, "count": 100}
+    if bbox is not None:
+        params["cql_filter"] = f"BBOX({geometry_field},{','.join(map(str, bbox))},'EPSG:4326')"
+    features, seen, expected = [], set(), None
+    for start in range(0, 100000, 100):
+        result = get_json(service, {**params, "startIndex": start})
+        count = result.get("numberMatched", result.get("totalFeatures"))
+        if not str(count).isdigit():
+            raise ValueError("WFS source did not report a complete feature count")
+        if expected is None:
+            expected = int(count)
+        if expected != int(count):
+            raise ValueError("WFS source changed during download")
+        page = result.get("features", [])
+        for feature in page:
+            ident = feature.get("id")
+            if ident is None or ident in seen:
+                raise ValueError("WFS paging returned a missing or duplicate feature ID")
+            seen.add(ident)
+        features.extend(page)
+        if len(features) == expected:
+            return {"type": "FeatureCollection", "features": features}, {"service": service, "query": params, "numberMatched": expected}
+        if len(page) != 100 or len(features) > expected:
+            break
+    raise ValueError(f"Incomplete WFS download: expected {expected}, got {len(features)}")
+
+
 def normalize_contours(collection, region):
     output = {"type": "FeatureCollection", "features": []}
     for feature in collection.get("features", []):

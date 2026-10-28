@@ -6,7 +6,7 @@ A backend-free GitHub Pages guide to Australian coastal beaches, reference depth
 
 ## What the data establishes
 
-A listed beach is not a verified entry point, swim route, fishing permission or a current-conditions report. Detailed reference-depth data is published for Port Phillip Bay, Sydney Eastern Beaches, Jervis Bay and Western Port / Phillip Island. Elsewhere, survey discovery and the beach directory remain useful even where depth data has not been published in the app. Numeric point depths, shading and profiles appear only when a valid raster grid is available.
+A listed beach is not a verified entry point, swim route, fishing permission or a current-conditions report. Sixteen regional contour maps cover the four original regions plus Sydney Northern Beaches, Southern Sydney, Central Coast, Hunter, Northern Rivers, Illawarra, Eurobodalla, Sapphire Coast, partial Point Danger–Tweed entrance coverage, Corner Inlet, Mallacoota and southeast Tasmania. Coverage is limited to actual published survey lines, not entire regional envelopes. Elsewhere, survey discovery and the beach directory remain useful even where depth data has not been published in the app. Numeric point depths, shading and profiles appear only when a valid raster grid is available.
 
 The national directory uses Geoscience Australia's Composite Gazetteer, screened to within 5 km of the Natural Earth 1:10 million coastline to exclude inland records. Screening is approximate and does not produce a shoreline measurement. Directory completeness follows the source, including its named-place coverage and positional limitations. Source IDs, aliases and legacy beach IDs are retained. Nearby matching gazetteer names are merged with reviewed records rather than replacing them.
 
@@ -108,3 +108,13 @@ node --check web/app.js
 ```
 
 Tests cover numeric sampling, datum handling, complete downloads, atomic multi-layer acquisition, build safety and size limits, directory ordering and jurisdictions, failed-source retention, activity restriction handling, stay proximity/unknown amenities, social URL validation and app DOM flows. Synthetic fixtures are not published as survey data. The GIS test runs when Rasterio/Numpy are available and is enabled in Actions.
+
+## October 2026 coastal expansion
+
+The depth selector groups published packages by state. Imported beach references use the smallest available matching survey envelope; reviewed existing assignments and legacy links are retained. An envelope match alone does not establish a depth at a beach. Generated summaries still require an actual matching contour within 3 km.
+
+New NSW and southern Gold Coast contours use the 2018 marine lidar service and AHD. The southern Gold Coast request yielded only partial Point Danger–Tweed entrance coverage; the map is named for that actual footprint and does not claim Palm Beach or Gold Coast-wide depth coverage. Victorian inlet contours preserve unverified original DATUM codes. Tasmania uses the authoritative IMAS SeaMap WFS and its CC BY 4.0 / MSL depth metadata. Its spatially filtered count is inconsistent, so acquisition validates all 1,504 source records before selecting the southeast envelope locally. No missing contour levels are interpolated.
+
+Downloads run for up to three regions concurrently; one writer updates the inventory only after a complete region is validated. Actions archives active raw and processed sources in Git LFS through a separate repository-write job. Normal build/deploy jobs retain read-only repository access. Source archives are committed only when acquisition changes the inventory; concurrent branch changes reject the archive push instead of overwriting user commits. Large data are not sent through ordinary Git blobs.
+
+`metadata/coastal-expansion-review.json` records the validated feature counts and source hashes. The proposed Fremantle–Cockburn numeric raster was inspected and deferred: the archive supplies sparse offshore 35–57 m data, and its vertical reference is not explicitly verified in embedded metadata. It is not published as a beach-depth raster. The existing numeric import still requires verified datum and metre units.

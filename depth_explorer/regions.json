@@ -116,5 +116,363 @@
       "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/18"
     ],
     "source_revision": 1
+  },
+  {
+    "id": "nsw-northern-beaches",
+    "name": "Sydney Northern Beaches",
+    "state": "New South Wales",
+    "bbox": [
+      151.184489,
+      -33.823408,
+      151.46782,
+      -33.465075
+    ],
+    "center": [
+      151.326154,
+      -33.644241
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "nsw-southern-sydney",
+    "name": "Southern Sydney & Royal National Park",
+    "state": "New South Wales",
+    "bbox": [
+      150.934503,
+      -34.281745,
+      151.251163,
+      -33.915076
+    ],
+    "center": [
+      151.092833,
+      -34.098411
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "nsw-central-coast",
+    "name": "Central Coast",
+    "state": "New South Wales",
+    "bbox": [
+      151.382541,
+      -33.540908,
+      151.728921,
+      -32.99285
+    ],
+    "center": [
+      151.555731,
+      -33.266879
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "nsw-hunter",
+    "name": "Newcastle, Hunter & Port Stephens",
+    "state": "New South Wales",
+    "bbox": [
+      151.667809,
+      -33.065072,
+      152.60112,
+      -32.006731
+    ],
+    "center": [
+      152.134464,
+      -32.535902
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "nsw-northern-rivers",
+    "name": "Northern Rivers & Byron Coast",
+    "state": "New South Wales",
+    "bbox": [
+      153.384408,
+      -29.181731,
+      153.684401,
+      -28.115065
+    ],
+    "center": [
+      153.534404,
+      -28.648398
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "nsw-illawarra",
+    "name": "Illawarra & Kiama",
+    "state": "New South Wales",
+    "bbox": [
+      150.78451,
+      -34.815081,
+      151.009503,
+      -34.223412
+    ],
+    "center": [
+      150.897007,
+      -34.519247
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "nsw-eurobodalla",
+    "name": "Eurobodalla & Batemans Bay",
+    "state": "New South Wales",
+    "bbox": [
+      150.042879,
+      -36.398423,
+      150.451192,
+      -35.448418
+    ],
+    "center": [
+      150.247036,
+      -35.923421
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "nsw-sapphire",
+    "name": "Sapphire Coast",
+    "state": "New South Wales",
+    "bbox": [
+      149.817897,
+      -37.481763,
+      150.134548,
+      -36.31509
+    ],
+    "center": [
+      149.976222,
+      -36.898427
+    ],
+    "zoom": 10,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "Published 2018 marine lidar contours within this coastal region. Gaps remain blank. AHD reference depths are not current water depths; contours do not provide numeric point depths or profiles.",
+    "source_revision": 1
+  },
+  {
+    "id": "qld-southern-gold-coast",
+    "name": "Point Danger & Tweed entrance · partial survey",
+    "state": "Queensland",
+    "bbox": [
+      153.35,
+      -28.18,
+      153.57,
+      -28.08
+    ],
+    "center": [
+      153.554,
+      -28.177
+    ],
+    "zoom": 13,
+    "raster_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "raster_portal": "https://elevation.fsdf.org.au/",
+    "combined_catalog": "https://www.data.nsw.gov.au/data/dataset/nsw-bathymetry-sourced-from-multibeam-and-marine-lidar-surveys",
+    "contour_catalog": "https://data.nsw.gov.au/data/dataset/marine-lidar-topo-bathy-2018",
+    "contour_service": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+    "contour_field": "Contour",
+    "contour_sign": -1,
+    "contour_datum": "AHD",
+    "contour_survey": "July–December 2018",
+    "attribution": "© State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water",
+    "licence": "Creative Commons Attribution — retain supplied licence version",
+    "notes": "The southern Gold Coast request returned contours around Point Danger and the Tweed entrance, with much of Palm Beach, Coolangatta and the open Gold Coast unmeasured in this layer. This is a partial border-area survey, not Gold Coast-wide coverage. Beach-to-contour lines do not establish a water-only route; nearby lines may be in an adjacent inlet. AHD reference depths are not current water depths.",
+    "source_revision": 1,
+    "map_attribution": "NSW Government · 2018 marine lidar · Creative Commons Attribution"
+  },
+  {
+    "id": "vic-corner-inlet",
+    "name": "Corner Inlet & Nooramunga",
+    "state": "Victoria",
+    "bbox": [
+      146.181507,
+      -38.882589,
+      146.919043,
+      -38.599939
+    ],
+    "center": [
+      146.55027492549186,
+      -38.741264123994625
+    ],
+    "zoom": 11,
+    "raster_catalog": "https://discover.data.vic.gov.au/dataset/victorian-coastal-digital-elevation-model-2021-vcdem-10m",
+    "raster_portal": "https://datashare.maps.vic.gov.au/search?md=373819c3-70dd-473c-9ceb-02d879950cf6",
+    "contour_catalog": "https://discover.data.vic.gov.au/dataset/corner-inlet-depth-contour-lines-at-1-25000",
+    "contour_service": "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/7",
+    "contour_field": "DEPTH",
+    "contour_sign": 1,
+    "contour_datum": "Unverified — original DATUM code retained per feature",
+    "contour_survey": "Not established in service metadata",
+    "attribution": "© State of Victoria, Department of Energy, Environment and Climate Action",
+    "licence": "CC BY 4.0",
+    "notes": "Published inlet contours, not open-coast coverage. Original vertical DATUM codes are retained; their reference remains unverified. Do not infer current water depth or a swimming route.",
+    "contour_services": [
+      "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/7",
+      "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/8"
+    ],
+    "source_revision": 1
+  },
+  {
+    "id": "vic-mallacoota",
+    "name": "Mallacoota Inlet",
+    "state": "Victoria",
+    "bbox": [
+      149.693355,
+      -37.563784,
+      149.802769,
+      -37.48828
+    ],
+    "center": [
+      149.7480617049972,
+      -37.52603222198806
+    ],
+    "zoom": 13,
+    "raster_catalog": "https://discover.data.vic.gov.au/dataset/victorian-coastal-digital-elevation-model-2021-vcdem-10m",
+    "raster_portal": "https://datashare.maps.vic.gov.au/search?md=373819c3-70dd-473c-9ceb-02d879950cf6",
+    "contour_catalog": "https://discover.data.vic.gov.au/dataset/mallacoota-inlet-depth-contours-at-1-10000",
+    "contour_service": "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/10",
+    "contour_field": "DEPTH",
+    "contour_sign": 1,
+    "contour_datum": "Unverified — original DATUM code retained per feature",
+    "contour_survey": "Not established in service metadata",
+    "attribution": "© State of Victoria, Department of Energy, Environment and Climate Action",
+    "licence": "CC BY 4.0",
+    "notes": "Published inlet contours, not open-coast coverage. Original vertical DATUM codes are retained; their reference remains unverified. Do not infer current water depth or a swimming route.",
+    "contour_services": [
+      "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/10",
+      "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/11"
+    ],
+    "source_revision": 1
+  },
+  {
+    "id": "tas-southeast",
+    "name": "Southeast Tasmania · Tasman & Bruny",
+    "state": "Tasmania",
+    "bbox": [
+      146.85,
+      -43.7,
+      148.1,
+      -42.65
+    ],
+    "center": [
+      147.48,
+      -43.15
+    ],
+    "zoom": 10,
+    "contour_service": "https://geoserver.imas.utas.edu.au/geoserver/imas/wfs",
+    "contour_protocol": "wfs",
+    "contour_type_name": "SeamapTAS_contours_5m",
+    "contour_geometry_field": "Geometry",
+    "contour_sort_field": "OID",
+    "contour_field": "CONTOUR",
+    "contour_sign": 1,
+    "contour_datum": "MSL (EPSG:5715)",
+    "contour_survey": "SeaMap Tasmania compilation, published 2007; acquisition dates vary",
+    "contour_catalog": "https://metadata.imas.utas.edu.au/geonetwork/srv/eng/catalog.search#/metadata/fa2dbc70-44ab-11dc-8cd0-00188b4c0af8",
+    "attribution": "Lucieer, V.L. (2007), SeaMap Tasmania Bathymetric Data. Tasmanian Aquaculture and Fisheries Institute, University of Tasmania. Accessed 28 October 2026.",
+    "licence": "CC BY 4.0",
+    "notes": "SeaMap surveyed coastal transects, with interpolated contour geometry; source coverage extends to 40 m or 1.5 km from shore, whichever is reached first. MSL depth is verified in the publisher metadata. Gaps remain blank. Not supplied for navigation.",
+    "source_revision": 1,
+    "contour_client_clip": true,
+    "map_attribution": "SeaMap Tasmania · TAFI / University of Tasmania · CC BY 4.0"
   }
 ]

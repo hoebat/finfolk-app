@@ -18,7 +18,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    outputs:
+      archive_changed: ${{ steps.source_archive.outputs.changed }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -54,6 +56,17 @@ jobs:
         run: python -m scripts.fetch_missing_contours
       - name: Build backend-free site
         run: python -m depth_explorer build-static --output _site
+      - name: Prepare active survey sources for Git LFS
+        id: source_archive
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: python -m scripts.archive_sources
+      - name: Upload active survey source archive
+        if: steps.source_archive.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: survey-sources
+          path: .cache/source-archive
+          retention-days: 1
       - name: Upload Pages artifact with materialized LFS data
         uses: actions/upload-pages-artifact@v4
         with:
@@ -75,3 +88,30 @@ jobs:
       - name: Deploy static artifact
         id: deployment
         uses: actions/deploy-pages@v4
+
+  archive:
+    if: github.ref == 'refs/heads/main' && needs.build.outputs.archive_changed == 'true' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          lfs: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: survey-sources
+          path: .cache/source-archive
+      - name: Commit active public sources through Git LFS
+        run: |
+          git rm -r --ignore-unmatch datasets/raw datasets/processed
+          cp -R .cache/source-archive/. datasets/
+          git lfs install --local
+          git add datasets/
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Archive acquired government depth sources with Git LFS"
+          git push origin HEAD:main
