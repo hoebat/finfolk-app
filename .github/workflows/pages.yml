@@ -66,6 +66,7 @@ jobs:
         with:
           name: survey-sources
           path: .cache/source-archive
+          include-hidden-files: true
           retention-days: 1
       - name: Upload Pages artifact with materialized LFS data
         uses: actions/upload-pages-artifact@v4
