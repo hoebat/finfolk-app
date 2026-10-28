@@ -69,7 +69,7 @@ if __name__=="__main__":
         parser.error("Source transfers require credential-free HTTPS")
     with tempfile.TemporaryDirectory() as temp:
         path=Path(temp)/"sources.zip"
-        request=urllib.request.Request(args.url,headers={"User-Agent":"ShoreDepthExplorer/1.0","bypass-tunnel-reminder":"true"})
+        request=urllib.request.Request(args.url,headers={"User-Agent":"ShoreDepthExplorer/1.0"})
         with urllib.request.urlopen(request,timeout=120) as response,path.open("wb") as output:
             size=0
             while chunk:=response.read(1024**2):

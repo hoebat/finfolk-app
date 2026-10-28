@@ -14,6 +14,7 @@ for(const area of directory.areas){area.detail_file='data/areas/'+area.id+'.json
 const regions=JSON.parse(await readFile(new URL('../depth_explorer/regions.json',import.meta.url),'utf8')).map(r=>({...r,rasters:[],tiles:{},contour_file:`data/contours/${r.id}.geojson`,status:'contours',contours:{count:2,datum:r.contour_datum}}));
 // Production areas can span both surveyed beaches and unsurveyed directory entries.
 for(const area of directory.areas){area.map_region=area.id;regions.push({id:area.id,name:area.name,center:area.center,zoom:10,rasters:[],tiles:{},contour_file:null,status:'empty'});}
+regions.push({id:'unavailable-configured-survey',name:'Unavailable survey',state:'TEST',center:[151,-34],zoom:10,rasters:[],tiles:{},contour_file:'data/contours/unavailable.geojson',contours:null,status:'empty'});
 const guides=await readFile(new URL('../web/guides.json',import.meta.url),'utf8'),social=await readFile(new URL('../web/social.json',import.meta.url),'utf8');
 for(const name of ['document','location','history','Event','MouseEvent','HTMLCanvasElement'])globalThis[name]=window[name];
 globalThis.devicePixelRatio=1;globalThis.ResizeObserver=class{observe(){}};
@@ -37,7 +38,7 @@ try{
  await import('../web/app.js');await waitFor(()=>document.querySelectorAll('.area-button').length>0&&!$('measure-start').disabled);
  assert.equal(contourRequests,1,'The home page opens one published map');assert.equal($('explorer').hidden,false);assert.equal($('search-options').open,false);assert.equal(document.querySelector('.directory-menu').open,false);assert.equal(areaRequests,0,'Regional detail files load only when selected');assert.equal($('origin-filter'),null);assert.equal($('transport-status'),null);
  assert.ok($('map').compareDocumentPosition($('beach-summary'))&window.Node.DOCUMENT_POSITION_FOLLOWING,'Map precedes potentially long beach details');
- document.querySelector('[data-view="maps"]').click();await waitFor(()=>!$('measure-start').disabled);assert.equal($('explorer').hidden,false);assert.equal($('survey-select').options.length,regions.filter(r=>r.contour_file).length);assert.equal($('empty-state').hidden,true);assert.equal($('search-results-panel').hidden,true);assert.ok(contourRequests>0);
+ document.querySelector('[data-view="maps"]').click();await waitFor(()=>!$('measure-start').disabled);assert.equal($('explorer').hidden,false);assert.equal($('survey-select').options.length,regions.filter(r=>r.status!=='empty'&&r.contour_file).length);assert.equal($('empty-state').hidden,true);assert.equal($('search-results-panel').hidden,true);assert.ok(contourRequests>0);
  document.querySelector('[data-view="discover"]').click();
  for(const id of ['profile-tool','profile-panel','raster-legend'])assert.equal($(id).hidden,true);
  const states=[...document.querySelectorAll('#region-picker .state-group>summary')].map(s=>s.textContent);assert.deepEqual(states,states.slice().sort((a,b)=>a.localeCompare(b)));

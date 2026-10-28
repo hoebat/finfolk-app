@@ -29,6 +29,7 @@ async function openSurvey(id){
   try{await load(id);$('explorer').hidden=false;map.resize();notice('');$('explorer').scrollIntoView?.({behavior:'smooth',block:'start'});}catch(error){notice(error.message);}
 }
 $('survey-select').onchange=()=>openSurvey($('survey-select').value);
+function hasPublishedData(r){return r.status!=='empty'&&(r.rasters.length>0||r.contours?.count>0);}
 function updateBeachPicker(){discovery?.render();}
 function updateCapabilities(){
   const c=capabilities(region,map.contours);
@@ -162,12 +163,12 @@ async function start(){
   try{beachCatalog=await data.json('beaches.json');}catch(e){notice(`Beach locations are unavailable: ${e.message}`);}
   const [summaries,guides,social]=await Promise.all([data.json('data/beach-summaries.json').catch(()=>({beaches:[]})),data.json('guides.json'),data.json('social.json').catch(()=>({posts:[]}))]);
   catalog=await data.catalog();region=catalog.regions[0];map.setRegion(region);
-  const published=catalog.regions.filter(r=>r.contour_file||r.rasters.length);for(const state of [...new Set(published.map(r=>r.state))].sort((a,b)=>a.localeCompare(b))){const group=elem('optgroup');group.label=state;for(const r of published.filter(r=>r.state===state).sort((a,b)=>a.name.localeCompare(b.name))){const option=elem('option',r.name);option.value=r.id;group.append(option);}$('survey-select').append(group);}
+  const published=catalog.regions.filter(hasPublishedData);for(const state of [...new Set(published.map(r=>r.state))].sort((a,b)=>a.localeCompare(b))){const group=elem('optgroup');group.label=state;for(const r of published.filter(r=>r.state===state).sort((a,b)=>a.name.localeCompare(b.name))){const option=elem('option',r.name);option.value=r.id;group.append(option);}$('survey-select').append(group);}
   discovery=installDiscovery({catalog:beachCatalog,summaries,guides,social,loadJSON:path=>data.json(path),onSelect:id=>chooseBeach(id).then(()=>{discovery.setView('maps',{notify:false});map.resize();$('explorer').scrollIntoView?.({behavior:'smooth',block:'start'});}).catch(e=>notice(e.message)),onArea:async area=>{
-    const request=++selectionRequest;activeAreaId=area.id;const counts=new Map();for(const b of beachCatalog.beaches.filter(b=>b.area_id===area.id)){if(catalog.regions.some(r=>r.id===b.region&&(r.contour_file||r.rasters.length)))counts.set(b.region,(counts.get(b.region)||0)+1);}const survey=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0];try{await load(survey||area.map_region);}catch(error){notice(error.message);return;}if(request!==selectionRequest)return;
+    const request=++selectionRequest;activeAreaId=area.id;const counts=new Map();for(const b of beachCatalog.beaches.filter(b=>b.area_id===area.id)){if(catalog.regions.some(r=>r.id===b.region&&hasPublishedData(r)))counts.set(b.region,(counts.get(b.region)||0)+1);}const survey=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0];try{await load(survey||area.map_region);}catch(error){notice(error.message);return;}if(request!==selectionRequest)return;
     try{const context=await discovery.getAreaData(area);if(request!==selectionRequest)return;map.coastline=context.coastline||[];}catch{map.coastline=[];}
     $('explorer').hidden=false;map.beaches=beachCatalog.beaches.filter(b=>b.area_id===area.id);map.center=area.center;map.zoom=10;map.resize();map.onview?.();$('explorer').scrollIntoView?.({behavior:'smooth',block:'start'});
-  },onView:view=>{if(view==='maps'){if(!contoursReady&&!site)openSurvey(catalog.regions.find(r=>r.contour_file||r.rasters.length)?.id);else map.resize();}},onContext:coastline=>{map.coastline=coastline;map.draw();},onStays:stays=>{map.stays=stays;map.draw();}});
+  },onView:view=>{if(view==='maps'){if(!contoursReady&&!site)openSurvey(catalog.regions.find(hasPublishedData)?.id);else map.resize();}},onContext:coastline=>{map.coastline=coastline;map.draw();},onStays:stays=>{map.stays=stays;map.draw();}});
   map.onBeach=beach=>chooseBeach(beach.id).then(()=>{discovery.setView('maps',{notify:false});map.resize();}).catch(e=>notice(e.message));
   map.onStay=stay=>{$('inspection').hidden=false;$('inspection-kind').textContent='NEARBY STAY';$('inspection-value').textContent=stay.name;$('inspection-details').replaceChildren(elem('p',`${(stay.distance_m/1000).toFixed(1)} km straight-line from beach reference`),elem('p',stay.status),link(stay.operator_url?'Provider & bookings ↗':'Mapped listing ↗',stay.operator_url||stay.source_url));};
   const requested=findBeach(beachCatalog,site);if(requested){await chooseBeach(requested.id,{writeURL:false});discovery.setView('maps',{writeURL:false,notify:false});map.resize();}

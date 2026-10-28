@@ -99,7 +99,7 @@ Large source rasters and archives use Git LFS. Materialised derived files are pu
 
 ## Deploy and verify
 
-Repository Settings → Pages must use GitHub Actions. Pushes to `main`, manual runs and weekly refreshes run the build and publish to https://hoebat.github.io/shore-depth-explorer/. Pull requests test and build without refreshing external sources or deploying. Actions caches survey archives and national sources, partitioned by the committed dataset inventory so new imported data is not overwritten by an incompatible cached inventory.
+Repository Settings → Pages must use GitHub Actions. Pushes to `main`, manual runs and weekly refreshes run the build and publish to https://hoebat.github.io/shore-depth-explorer/. Pull requests test and build without refreshing external sources or deploying. Actions caches national sources independently from survey archives. Survey caches are partitioned by the committed dataset inventory so new imported data is not overwritten by an incompatible cached inventory.
 
 ```sh
 python3 -m unittest discover -s tests -v
@@ -118,3 +118,5 @@ New NSW and southern Gold Coast contours use the 2018 marine lidar service and A
 Downloads run for up to three regions concurrently; one writer updates the inventory only after a complete region is validated. Actions archives active raw and processed sources in Git LFS through a separate repository-write job. Normal build/deploy jobs retain read-only repository access. Source archives are committed only when acquisition changes the inventory; concurrent branch changes reject the archive push instead of overwriting user commits. Large data are not sent through ordinary Git blobs.
 
 `metadata/coastal-expansion-review.json` records the validated feature counts and source hashes. The proposed Fremantle–Cockburn numeric raster was inspected and deferred: the archive supplies sparse offshore 35–57 m data, and its vertical reference is not explicitly verified in embedded metadata. It is not published as a beach-depth raster. The existing numeric import still requires verified datum and metre units.
+
+Checksum-pinned source transfers can seed previously reviewed government responses when build-worker connections time out. The importer verifies the bundle hash, each original response hash, feature count and configured publisher URLs before using the normal acquisition store. Published maps and later builds use the Git LFS archives; temporary transfer services are not application dependencies. Empty configured packages are excluded from the published-map selector.
