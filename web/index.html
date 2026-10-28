@@ -10,8 +10,7 @@
   <aside class="sidebar">
     <a class="brand" href="./" aria-label="Depth Atlas home"><span class="brand-mark">≋</span><span>DEPTH ATLAS<small>A closer look beneath the surface</small></span></a>
     <nav class="primary-nav" aria-label="Main navigation"><button data-view="maps">Depth maps</button><button data-view="discover">Discover</button><button data-view="areas">Areas</button><button data-view="guides">Guides</button></nav>
-    <div class="eyebrow">AREA DIRECTORY</div>
-    <div id="region-picker" class="region-picker" role="group" aria-label="Choose map region"></div>
+    <details class="directory-menu"><summary>Browse coastal areas</summary><div id="region-picker" class="region-picker" role="group" aria-label="Choose map region"></div></details>
     <details class="map-data"><summary>Map data &amp; layers</summary>
     <section class="layer-section"><div class="section-label">MAP LAYERS</div>
       <label hidden class="toggle"><span><b>Seabed depths</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
@@ -32,13 +31,14 @@
     <section id="guides-page" hidden><p class="guide-intro">Use these guides to prepare questions and read authoritative advice. Conditions and fishing rules must be checked for the exact place and day.</p><div id="guides-content"></div></section>
     <section id="search-section" class="discovery" aria-label="Find coastal beaches"><p id="breadcrumbs" class="breadcrumbs">Australia</p>
       <div class="discovery-heading"><div><label for="beach-search" id="beach-picker-title">Search beaches and areas</label><p id="beach-count" role="status">Loading beach guide…</p></div><input id="beach-search" type="search" placeholder="Beach, region or alias…" autocomplete="off"></div>
-      <div class="discovery-filters"><label>Activity<select id="activity-filter"><option value="freediving">Freediving</option><option value="ocean-swimming">Ocean swimming</option><option value="spearfishing">Spearfishing research</option></select></label>
+      <details id="search-options" class="search-options"><summary>Filters</summary><div class="discovery-filters"><label>Activity<select id="activity-filter"><option value="freediving">Freediving</option><option value="ocean-swimming">Ocean swimming</option><option value="spearfishing">Spearfishing research</option></select></label>
         <label>State/territory<select id="state-filter"><option value="">All states &amp; territories</option></select></label>
         <label>Region<select id="region-filter"><option value="">All regions</option></select></label>
         <label>Target depth<select id="target-filter"><option value="5">5 m</option><option value="10" selected>10 m</option><option value="15">15 m</option><option value="20">20 m</option></select></label>
         <label>Contour distance<select id="distance-filter"><option value="">Any distance</option><option value="250">Within 250 m</option><option value="500">Within 500 m</option><option value="1000">Within 1 km</option><option value="3000">Within 3 km</option></select></label>
         <label class="camping-check"><input id="camping-filter" type="checkbox">Stay listing within 25 km</label><label>Sort by<select id="sort-filter"><option value="name">Beach name</option><option value="depth">Distance to depth</option></select></label>
       </div>
+      </details>
       <select id="beach-select" hidden aria-label="Legacy beach selection"></select><a id="beach-source" hidden></a>
     </section>
     <section id="discover-page" class="recommendation-section"><div class="eyebrow">MATCHES WITH A REASON</div><h2 class="section-heading">Places to investigate</h2><label class="recommendation-focus">Discover by <select id="recommendation-focus"><option value="activity">Documented activity facts</option><option value="camping">Nearby source-checked camping &amp; stays</option></select></label><p id="recommendation-note" class="muted"></p><div id="recommendations" class="recommendations"></div></section>
@@ -49,6 +49,7 @@
     <label class="survey-picker">Published depth map<select id="survey-select" aria-label="Published depth map"></select></label>
     <div class="explorer-heading"><h2 id="place-title">Coastal map</h2><div class="header-actions"><button id="profile-tool" class="primary" hidden>⌁ Draw depth profile</button><button id="export-map" class="secondary">Export map ↗</button></div></div>
     <div id="notice" role="status" aria-live="polite" hidden></div>
+    <div class="explorer-layout"><div class="map-column">
     <section class="map-wrap" aria-label="Interactive depth map">
       <canvas id="map" tabindex="0" aria-label="Depth map. Drag to pan, scroll or use plus and minus to zoom. Click to inspect. Arrow keys pan the map."></canvas>
       <div class="map-top"><span class="map-tag">SURVEYED SEABED</span><span id="datum-tag" class="map-tag subtle">Reference datum shown per source</span></div>
@@ -59,9 +60,10 @@
       <div class="map-bottom"><span id="coordinates">Click the map to inspect a location</span><span id="map-attribution">Depth Atlas · local data</span></div>
     </section>
     <section class="measure-panel" id="measure-panel" hidden aria-label="Distance to a published depth contour"><div><div class="eyebrow">HOW FAR TO DEEPER WATER?</div><h2>Distance to depth</h2></div><div class="measure-actions"><label>Target contour <select id="measure-depth"><option value="10">10 m</option></select></label><button id="measure-start" class="primary" disabled>Pick a beach start point</button><button id="edithvale" class="secondary" hidden>Edithvale example</button><button id="measure-clear" class="text-button" hidden>Clear</button></div><p id="measure-result" aria-live="polite">Choose a start point to measure the straight-line distance to a published contour.</p><small id="measure-reference">Contour reference depth only. The straight line does not assess an open-water route, tides or current conditions.</small></section>
-    <section id="beach-summary" tabindex="-1" class="beach-summary" aria-label="Selected beach details" hidden></section>
     <section class="profile-panel" id="profile-panel" hidden><div class="profile-header"><div><div class="eyebrow">ALONG THE SEABED</div><h2>Depth profile</h2></div><span id="profile-stats">Draw a line to explore the change in depth</span><button id="export-csv" class="secondary" disabled>↓ Export CSV</button></div><div class="chart-wrap"><canvas id="profile-chart" aria-label="Seabed reference depth against distance"></canvas><p id="profile-empty">From the shore to deeper water.<br><span>Add a raster, then draw a line on the map.</span></p></div></section>
-    </section>
+    </div>
+    <section id="beach-summary" tabindex="-1" class="beach-summary" aria-label="Selected beach details" hidden></section>
+    </div></section>
     <footer>Surveyed reference depths · no tide adjustment. <span>Sources: governments, OpenStreetMap contributors (ODbL) &amp; Natural Earth. Survey data are not supplied for navigation or a safety assessment.</span></footer>
   </main>
   <dialog id="guide"><div class="dialog-header"><div><div class="eyebrow">GOVERNMENT SOURCES</div><h2 id="guide-title">Get the data</h2></div><button id="close-guide" aria-label="Close data guide">×</button></div><div id="guide-content"></div></dialog>
