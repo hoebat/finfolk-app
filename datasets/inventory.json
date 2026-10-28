@@ -234,6 +234,111 @@
       "survey_date": "SeaMap Tasmania compilation, published 2007; acquisition dates vary",
       "licence": "CC BY 4.0",
       "attribution": "Lucieer, V.L. (2007), SeaMap Tasmania Bathymetric Data. Tasmanian Aquaculture and Fisheries Institute, University of Tasmania. Accessed 28 October 2026."
+    },
+    "nsw-eurobodalla": {
+      "file": "processed/nsw-eurobodalla/contours-02ebc8ae1079.geojson",
+      "count": 3093,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        150.042879,
+        -36.398423,
+        150.451192,
+        -35.448418
+      ],
+      "downloaded_at": "2026-10-28T04:32:44.407511+00:00",
+      "sha256": "afc71cf2c6ea1c94bb0ded7da0fe41a7b402e20ec88ef1ba105a6a16ca6f3115",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "nsw-hunter": {
+      "file": "processed/nsw-hunter/contours-5acb29311374.geojson",
+      "count": 4571,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        151.667809,
+        -33.065072,
+        152.60112,
+        -32.006731
+      ],
+      "downloaded_at": "2026-10-28T04:32:48.923509+00:00",
+      "sha256": "9058997766344296396bb0af324c36a49f4c7b6efb507d4513621cf8f351b9c4",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "nsw-illawarra": {
+      "file": "processed/nsw-illawarra/contours-5520e26692de.geojson",
+      "count": 2214,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        150.78451,
+        -34.815081,
+        151.009503,
+        -34.223412
+      ],
+      "downloaded_at": "2026-10-28T04:32:51.335891+00:00",
+      "sha256": "52cbf573a95c3958b4112bf889a1d1ebe7f5fb833e3fb79344f1d09c0a22fb16",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "nsw-northern-rivers": {
+      "file": "processed/nsw-northern-rivers/contours-7e31f6a19d5f.geojson",
+      "count": 3443,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        153.384408,
+        -29.181731,
+        153.684401,
+        -28.115065
+      ],
+      "downloaded_at": "2026-10-28T04:32:54.711821+00:00",
+      "sha256": "c00ddff015a3b157d74a1fd759ffd27689baca855896c126262356801f61f0ef",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "nsw-sapphire": {
+      "file": "processed/nsw-sapphire/contours-db4e4ea9d629.geojson",
+      "count": 2319,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        149.817897,
+        -37.481763,
+        150.134548,
+        -36.31509
+      ],
+      "downloaded_at": "2026-10-28T04:32:57.826856+00:00",
+      "sha256": "b43404f4b8edbfab64d4db47e6ca57ebce67762b4327dae036ad27d4acc4fb64",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
     }
   },
   "acquisitions": [
@@ -313,7 +418,42 @@
       "status": "complete",
       "kind": "contours",
       "count": 436
+    },
+    {
+      "region": "nsw-eurobodalla",
+      "at": "2026-10-28T04:32:44.430918+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 3093
+    },
+    {
+      "region": "nsw-hunter",
+      "at": "2026-10-28T04:32:48.953467+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 4571
+    },
+    {
+      "region": "nsw-illawarra",
+      "at": "2026-10-28T04:32:51.351870+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 2214
+    },
+    {
+      "region": "nsw-northern-rivers",
+      "at": "2026-10-28T04:32:54.734303+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 3443
+    },
+    {
+      "region": "nsw-sapphire",
+      "at": "2026-10-28T04:32:57.847249+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 2319
     }
   ],
-  "updated_at": "2026-10-28T03:39:26.204687+00:00"
+  "updated_at": "2026-10-28T04:32:57.847265+00:00"
 }
