@@ -70,16 +70,22 @@ def query_features(service, bbox, where="1=1"):
     ids = sorted(set(ids.get("objectIds") or []))
     features = []
     def fetch(batch):
-        result = get_json(service + "/query", {"objectIds": ",".join(map(str, batch)),
-                         "outFields": "*", "outSR": 4326, "returnGeometry": "true", "f": "geojson"})
+        try:
+            result = get_json(service + "/query", {"objectIds": ",".join(map(str, batch)),
+                             "outFields": "*", "outSR": 4326, "returnGeometry": "true", "f": "geojson"})
+        except (OSError, TimeoutError):
+            if len(batch) == 1:
+                raise
+            mid = len(batch) // 2
+            return fetch(batch[:mid]) + fetch(batch[mid:])
         if result.get("exceededTransferLimit"):
             if len(batch) == 1:
                 raise ValueError("Source truncated a single feature")
             mid = len(batch) // 2
             return fetch(batch[:mid]) + fetch(batch[mid:])
         return result.get("features", [])
-    for offset in range(0, len(ids), 100):
-        features.extend(fetch(ids[offset:offset + 100]))
+    for offset in range(0, len(ids), 25):
+        features.extend(fetch(ids[offset:offset + 25]))
     # GeoJSON sometimes puts the OID in id, sometimes in properties.
     found = {f.get("properties", {}).get(oid, f.get("id")) for f in features}
     if set(ids) != found:

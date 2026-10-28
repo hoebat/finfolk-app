@@ -27,7 +27,7 @@ def main(root="datasets", workers=3):
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {pool.submit(contour_collection, region): region for region in pending}
         for future in as_completed(futures):
-            region = futures[future]
+            region = futures.pop(future)
             try:
                 collection, metadata = future.result()
                 result = save_contours(store, region, collection, metadata)

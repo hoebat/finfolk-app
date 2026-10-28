@@ -63,3 +63,11 @@ class ExpansionTests(unittest.TestCase):
                 self.assertTrue(prepare(root,Path(temp)/'out'))
             self.assertTrue((Path(temp)/'out/raw/test/contours-one/original.geojson').exists())
             self.assertFalse((Path(temp)/'out/raw/test/stale/original.geojson').exists())
+
+    def test_arcgis_timeout_splits_batch_without_losing_features(self):
+        from depth_explorer.net import query_features
+        metadata={'fields':[{'name':'OBJECTID','type':'esriFieldTypeOID'}]}
+        features=[{'id':i,'properties':{'OBJECTID':i}} for i in [1,2]]
+        with patch('depth_explorer.net.get_json',side_effect=[metadata,{'objectIds':[1,2]},TimeoutError('large response'),{'features':features[:1]},{'features':features[1:]}]):
+            result,_=query_features('https://example.test/layer',None)
+        self.assertEqual([f['id'] for f in result['features']],[1,2])
