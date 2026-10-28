@@ -43,11 +43,21 @@ jobs:
           node --check web/app.js
       - uses: actions/cache@v4
         with:
-          path: |
-            .cache/national
-            datasets
-          key: coastal-v2-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-${{ github.run_id }}
-          restore-keys: coastal-v2-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-
+          path: .cache/national
+          key: national-v3-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: national-v3-${{ runner.os }}-
+      - uses: actions/cache@v4
+        with:
+          path: datasets
+          key: coastal-v3-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-${{ github.run_id }}
+          restore-keys: coastal-v3-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-
+      - name: Seed checksum-verified public source responses
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: >-
+          python -m scripts.seed_contours
+          --url https://olive-mirrors-drive.loca.lt/verified-contours.zip
+          --sha256 53fe157eaaeea134d14234cac1f88239359e8c3ace1b5a2a6f779db047c4ea6a
+          --regions nsw-hunter nsw-northern-rivers nsw-illawarra nsw-eurobodalla nsw-sapphire
       - name: Refresh national beaches, stays and survey inventory
         if: github.event_name != 'pull_request'
         run: python -m scripts.acquire_national

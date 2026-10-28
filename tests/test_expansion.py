@@ -71,3 +71,26 @@ class ExpansionTests(unittest.TestCase):
         with patch('depth_explorer.net.get_json',side_effect=[metadata,{'objectIds':[1,2]},TimeoutError('large response'),{'features':features[:1]},{'features':features[1:]}]):
             result,_=query_features('https://example.test/layer',None)
         self.assertEqual([f['id'] for f in result['features']],[1,2])
+
+    def test_source_transfer_checks_archive_and_original_hashes(self):
+        import tempfile,json,zipfile,hashlib
+        from pathlib import Path
+        from depth_explorer.store import Store
+        from scripts.seed_contours import seed
+        raw=json.dumps({'features':[{'properties':{'Contour':-10},'geometry':{'type':'LineString','coordinates':[[151,-34],[151.1,-34.1]]}}]}).encode()
+        expected={'contours':[{'region':'nsw-hunter','feature_count':1,'raw_sha256':hashlib.sha256(raw).hexdigest()}]}
+        service=REGIONS['nsw-hunter']['contour_service']
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'sources.zip'
+            with zipfile.ZipFile(path,'w') as z:
+                z.writestr('nsw-hunter/original.geojson',raw)
+                z.writestr('nsw-hunter/service.json',json.dumps({'layers':[{'url':service}]}))
+            digest=hashlib.sha256(path.read_bytes()).hexdigest()
+            store=Store(Path(temp)/'data')
+            with patch('scripts.seed_contours.review_records',return_value=expected):
+                with self.assertRaisesRegex(ValueError,'checksum mismatch'):seed(store,path,'0'*64)
+                seed(store,path,digest)
+            self.assertEqual(store.load()['contours']['nsw-hunter']['count'],1)
+            expected['contours'][0]['raw_sha256']='0'*64
+            with patch('scripts.seed_contours.review_records',return_value=expected):
+                with self.assertRaisesRegex(ValueError,'government response checksum'):seed(store,path,digest)
