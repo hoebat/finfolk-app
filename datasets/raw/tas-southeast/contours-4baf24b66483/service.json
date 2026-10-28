@@ -1,0 +1,27 @@
+{
+  "layers": [
+    {
+      "url": "https://geoserver.imas.utas.edu.au/geoserver/imas/wfs",
+      "metadata": {
+        "service": "https://geoserver.imas.utas.edu.au/geoserver/imas/wfs",
+        "query": {
+          "service": "WFS",
+          "version": "2.0.0",
+          "request": "GetFeature",
+          "typeNames": "SeamapTAS_contours_5m",
+          "outputFormat": "application/json",
+          "srsName": "EPSG:4326",
+          "sortBy": "OID",
+          "count": 100
+        },
+        "numberMatched": 1504,
+        "local_envelope": [
+          146.85,
+          -43.7,
+          148.1,
+          -42.65
+        ]
+      }
+    }
+  ]
+}

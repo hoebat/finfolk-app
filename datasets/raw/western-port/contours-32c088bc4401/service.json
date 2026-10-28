@@ -1,0 +1,508 @@
+{
+  "layers": [
+    {
+      "url": "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/17",
+      "metadata": {
+        "currentVersion": 11.1,
+        "cimVersion": "3.1.0",
+        "id": 17,
+        "name": "major",
+        "type": "Feature Layer",
+        "description": "",
+        "geometryType": "esriGeometryPolyline",
+        "sourceSpatialReference": {
+          "wkid": 4283,
+          "latestWkid": 4283,
+          "xyTolerance": 8.983152841195213e-09,
+          "zTolerance": 0.001,
+          "mTolerance": 0.001,
+          "falseX": -400,
+          "falseY": -400,
+          "xyUnits": 999999999.9999999,
+          "falseZ": -100000,
+          "zUnits": 10000,
+          "falseM": -100000,
+          "mUnits": 10000
+        },
+        "copyrightText": "",
+        "parentLayer": {
+          "id": 16,
+          "name": "Western Port"
+        },
+        "subLayers": [],
+        "minScale": 0,
+        "maxScale": 0,
+        "referenceScale": 0.0,
+        "drawingInfo": {
+          "renderer": {
+            "type": "uniqueValue",
+            "field1": "DEPTH",
+            "defaultSymbol": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                0,
+                0,
+                0,
+                255
+              ],
+              "width": 1.2
+            },
+            "defaultLabel": "<all other values>",
+            "uniqueValueInfos": [
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSDash",
+                  "color": [
+                    0,
+                    0,
+                    0,
+                    255
+                  ],
+                  "width": 1.2
+                },
+                "value": "0",
+                "label": "0"
+              }
+            ],
+            "fieldDelimiter": ",",
+            "authoringInfo": {
+              "colorRamp": {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  247,
+                  208,
+                  35,
+                  255
+                ],
+                "toColor": [
+                  92,
+                  0,
+                  250,
+                  255
+                ]
+              }
+            }
+          },
+          "scaleSymbols": true,
+          "transparency": 0,
+          "labelingInfo": null
+        },
+        "defaultVisibility": true,
+        "extent": {
+          "xmin": 16141433.894461893,
+          "ymin": -4657895.095781866,
+          "xmax": 16200647.818392998,
+          "ymax": -4609589.218733145,
+          "spatialReference": {
+            "wkid": 102100,
+            "latestWkid": 3857,
+            "xyTolerance": 0.001,
+            "zTolerance": 0.001,
+            "mTolerance": 0.001,
+            "falseX": -20037700,
+            "falseY": -30241100,
+            "xyUnits": 148923141.92838538,
+            "falseZ": -100000,
+            "zUnits": 10000,
+            "falseM": -100000,
+            "mUnits": 10000
+          }
+        },
+        "hasAttachments": false,
+        "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+        "displayField": "WP_BATH4_G",
+        "typeIdField": null,
+        "subtypeFieldName": null,
+        "subtypeField": null,
+        "defaultSubtypeCode": null,
+        "fields": [
+          {
+            "name": "OBJECTID",
+            "type": "esriFieldTypeOID",
+            "alias": "OBJECTID",
+            "domain": null
+          },
+          {
+            "name": "Shape",
+            "type": "esriFieldTypeGeometry",
+            "alias": "Shape",
+            "domain": null
+          },
+          {
+            "name": "WP_BATH4_G",
+            "type": "esriFieldTypeDouble",
+            "alias": "WP_BATH4_G",
+            "domain": null
+          },
+          {
+            "name": "WP_BATH4_1",
+            "type": "esriFieldTypeDouble",
+            "alias": "WP_BATH4_1",
+            "domain": null
+          },
+          {
+            "name": "FEATURE",
+            "type": "esriFieldTypeString",
+            "alias": "FEATURE",
+            "length": 25,
+            "domain": null
+          },
+          {
+            "name": "DEPTH",
+            "type": "esriFieldTypeSingle",
+            "alias": "DEPTH",
+            "domain": null
+          },
+          {
+            "name": "DATUM",
+            "type": "esriFieldTypeSingle",
+            "alias": "DATUM",
+            "domain": null
+          },
+          {
+            "name": "LENGTH_M",
+            "type": "esriFieldTypeInteger",
+            "alias": "LENGTH_M",
+            "domain": null
+          },
+          {
+            "name": "VERSION",
+            "type": "esriFieldTypeSmallInteger",
+            "alias": "VERSION",
+            "domain": null
+          },
+          {
+            "name": "Shape_Length",
+            "type": "esriFieldTypeDouble",
+            "alias": "Shape_Length",
+            "domain": null
+          }
+        ],
+        "geometryField": {
+          "name": "Shape",
+          "type": "esriFieldTypeGeometry",
+          "alias": "Shape"
+        },
+        "indexes": [
+          {
+            "name": "FDO_OBJECTID",
+            "fields": "OBJECTID",
+            "isAscending": true,
+            "isUnique": true,
+            "description": ""
+          },
+          {
+            "name": "FDO_Shape",
+            "fields": "Shape",
+            "isAscending": true,
+            "isUnique": false,
+            "description": ""
+          }
+        ],
+        "subtypes": [],
+        "relationships": [],
+        "canModifyLayer": false,
+        "canScaleSymbols": false,
+        "hasLabels": true,
+        "capabilities": "Map,Query,Data",
+        "maxRecordCount": 2000,
+        "supportsStatistics": true,
+        "supportsExceedsLimitStatistics": true,
+        "supportsAdvancedQueries": true,
+        "supportedQueryFormats": "JSON, geoJSON, PBF",
+        "isDataVersioned": false,
+        "ownershipBasedAccessControlForFeatures": {
+          "allowOthersToQuery": true
+        },
+        "useStandardizedQueries": true,
+        "supportedSpatialRelationships": [
+          "esriSpatialRelIntersects",
+          "esriSpatialRelContains",
+          "esriSpatialRelCrosses",
+          "esriSpatialRelEnvelopeIntersects",
+          "esriSpatialRelIndexIntersects",
+          "esriSpatialRelOverlaps",
+          "esriSpatialRelTouches",
+          "esriSpatialRelWithin",
+          "esriSpatialRelRelation"
+        ],
+        "advancedQueryCapabilities": {
+          "useStandardizedQueries": true,
+          "supportsStatistics": true,
+          "supportsPercentileStatistics": true,
+          "supportsHavingClause": true,
+          "supportsOrderBy": true,
+          "supportsDistinct": true,
+          "supportsCountDistinct": true,
+          "supportsPagination": true,
+          "supportsLod": false,
+          "supportsQueryWithLodSR": false,
+          "supportsTrueCurve": true,
+          "supportsQueryWithDatumTransformation": true,
+          "supportsReturningQueryExtent": true,
+          "supportsQueryWithDistance": true,
+          "supportsSqlExpression": true,
+          "supportsTimeRelation": true,
+          "supportsSqlFormat": false,
+          "supportsQueryAnalytic": false
+        },
+        "supportsDatumTransformation": true,
+        "dateFieldsTimeReference": null,
+        "preferredTimeReference": null,
+        "datesInUnknownTimezone": false,
+        "hasGeometryProperties": true,
+        "geometryProperties": {
+          "shapeLengthFieldName": "Shape_Length",
+          "units": "esriDecimalDegrees",
+          "mapUnits": {
+            "uwkid": 9102
+          }
+        },
+        "hasMetadata": true,
+        "isDataArchived": false,
+        "archivingInfo": {
+          "supportsQueryWithHistoricMoment": false,
+          "startArchivingMoment": -1
+        },
+        "supportsCoordinatesQuantization": true,
+        "supportsDynamicLegends": true
+      }
+    },
+    {
+      "url": "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/18",
+      "metadata": {
+        "currentVersion": 11.1,
+        "cimVersion": "3.1.0",
+        "id": 18,
+        "name": "minor",
+        "type": "Feature Layer",
+        "description": "",
+        "geometryType": "esriGeometryPolyline",
+        "sourceSpatialReference": {
+          "wkid": 4283,
+          "latestWkid": 4283,
+          "xyTolerance": 8.983152841195213e-09,
+          "zTolerance": 0.001,
+          "mTolerance": 0.001,
+          "falseX": -400,
+          "falseY": -400,
+          "xyUnits": 999999999.9999999,
+          "falseZ": -100000,
+          "zUnits": 10000,
+          "falseM": -100000,
+          "mUnits": 10000
+        },
+        "copyrightText": "",
+        "parentLayer": {
+          "id": 16,
+          "name": "Western Port"
+        },
+        "subLayers": [],
+        "minScale": 125000,
+        "maxScale": 0,
+        "referenceScale": 0.0,
+        "drawingInfo": {
+          "renderer": {
+            "type": "simple",
+            "symbol": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                0,
+                0,
+                0,
+                255
+              ],
+              "width": 0.4
+            }
+          },
+          "scaleSymbols": true,
+          "transparency": 0,
+          "labelingInfo": null
+        },
+        "defaultVisibility": true,
+        "extent": {
+          "xmin": 16141433.894461893,
+          "ymin": -4657895.095781866,
+          "xmax": 16200647.818392998,
+          "ymax": -4609589.218733145,
+          "spatialReference": {
+            "wkid": 102100,
+            "latestWkid": 3857,
+            "xyTolerance": 0.001,
+            "zTolerance": 0.001,
+            "mTolerance": 0.001,
+            "falseX": -20037700,
+            "falseY": -30241100,
+            "xyUnits": 148923141.92838538,
+            "falseZ": -100000,
+            "zUnits": 10000,
+            "falseM": -100000,
+            "mUnits": 10000
+          }
+        },
+        "hasAttachments": false,
+        "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+        "displayField": "WP_BATH4_G",
+        "typeIdField": null,
+        "subtypeFieldName": null,
+        "subtypeField": null,
+        "defaultSubtypeCode": null,
+        "fields": [
+          {
+            "name": "OBJECTID",
+            "type": "esriFieldTypeOID",
+            "alias": "OBJECTID",
+            "domain": null
+          },
+          {
+            "name": "Shape",
+            "type": "esriFieldTypeGeometry",
+            "alias": "Shape",
+            "domain": null
+          },
+          {
+            "name": "WP_BATH4_G",
+            "type": "esriFieldTypeDouble",
+            "alias": "WP_BATH4_G",
+            "domain": null
+          },
+          {
+            "name": "WP_BATH4_1",
+            "type": "esriFieldTypeDouble",
+            "alias": "WP_BATH4_1",
+            "domain": null
+          },
+          {
+            "name": "FEATURE",
+            "type": "esriFieldTypeString",
+            "alias": "FEATURE",
+            "length": 25,
+            "domain": null
+          },
+          {
+            "name": "DEPTH",
+            "type": "esriFieldTypeSingle",
+            "alias": "DEPTH",
+            "domain": null
+          },
+          {
+            "name": "DATUM",
+            "type": "esriFieldTypeSingle",
+            "alias": "DATUM",
+            "domain": null
+          },
+          {
+            "name": "LENGTH_M",
+            "type": "esriFieldTypeInteger",
+            "alias": "LENGTH_M",
+            "domain": null
+          },
+          {
+            "name": "VERSION",
+            "type": "esriFieldTypeSmallInteger",
+            "alias": "VERSION",
+            "domain": null
+          },
+          {
+            "name": "Shape_Length",
+            "type": "esriFieldTypeDouble",
+            "alias": "Shape_Length",
+            "domain": null
+          }
+        ],
+        "geometryField": {
+          "name": "Shape",
+          "type": "esriFieldTypeGeometry",
+          "alias": "Shape"
+        },
+        "indexes": [
+          {
+            "name": "FDO_OBJECTID",
+            "fields": "OBJECTID",
+            "isAscending": true,
+            "isUnique": true,
+            "description": ""
+          },
+          {
+            "name": "FDO_Shape",
+            "fields": "Shape",
+            "isAscending": true,
+            "isUnique": false,
+            "description": ""
+          }
+        ],
+        "subtypes": [],
+        "relationships": [],
+        "canModifyLayer": false,
+        "canScaleSymbols": false,
+        "hasLabels": true,
+        "capabilities": "Map,Query,Data",
+        "maxRecordCount": 2000,
+        "supportsStatistics": true,
+        "supportsExceedsLimitStatistics": true,
+        "supportsAdvancedQueries": true,
+        "supportedQueryFormats": "JSON, geoJSON, PBF",
+        "isDataVersioned": false,
+        "ownershipBasedAccessControlForFeatures": {
+          "allowOthersToQuery": true
+        },
+        "useStandardizedQueries": true,
+        "supportedSpatialRelationships": [
+          "esriSpatialRelIntersects",
+          "esriSpatialRelContains",
+          "esriSpatialRelCrosses",
+          "esriSpatialRelEnvelopeIntersects",
+          "esriSpatialRelIndexIntersects",
+          "esriSpatialRelOverlaps",
+          "esriSpatialRelTouches",
+          "esriSpatialRelWithin",
+          "esriSpatialRelRelation"
+        ],
+        "advancedQueryCapabilities": {
+          "useStandardizedQueries": true,
+          "supportsStatistics": true,
+          "supportsPercentileStatistics": true,
+          "supportsHavingClause": true,
+          "supportsOrderBy": true,
+          "supportsDistinct": true,
+          "supportsCountDistinct": true,
+          "supportsPagination": true,
+          "supportsLod": false,
+          "supportsQueryWithLodSR": false,
+          "supportsTrueCurve": true,
+          "supportsQueryWithDatumTransformation": true,
+          "supportsReturningQueryExtent": true,
+          "supportsQueryWithDistance": true,
+          "supportsSqlExpression": true,
+          "supportsTimeRelation": true,
+          "supportsSqlFormat": false,
+          "supportsQueryAnalytic": false
+        },
+        "supportsDatumTransformation": true,
+        "dateFieldsTimeReference": null,
+        "preferredTimeReference": null,
+        "datesInUnknownTimezone": false,
+        "hasGeometryProperties": true,
+        "geometryProperties": {
+          "shapeLengthFieldName": "Shape_Length",
+          "units": "esriDecimalDegrees",
+          "mapUnits": {
+            "uwkid": 9102
+          }
+        },
+        "hasMetadata": true,
+        "isDataArchived": false,
+        "archivingInfo": {
+          "supportsQueryWithHistoricMoment": false,
+          "startArchivingMoment": -1
+        },
+        "supportsCoordinatesQuantization": true,
+        "supportsDynamicLegends": true
+      }
+    }
+  ]
+}

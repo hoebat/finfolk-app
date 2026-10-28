@@ -1,0 +1,291 @@
+{
+  "layers": [
+    {
+      "url": "https://core-gis.mapshare.vic.gov.au/arcgis/rest/services/Mapshare/MarineCoastal/MapServer/25",
+      "metadata": {
+        "currentVersion": 11.3,
+        "cimVersion": "3.3.0",
+        "id": 25,
+        "name": "Port Phillip Bay",
+        "type": "Feature Layer",
+        "description": "99ff165f-261e-548e-a9c7-3541f4890b52",
+        "geometryType": "esriGeometryPolyline",
+        "sourceSpatialReference": {
+          "wkid": 7844,
+          "latestWkid": 7844,
+          "xyTolerance": 8.983152841195213e-09,
+          "zTolerance": 0.001,
+          "mTolerance": 0.001,
+          "falseX": -400,
+          "falseY": -400,
+          "xyUnits": 999999999.9999999,
+          "falseZ": -100000,
+          "zUnits": 10000,
+          "falseM": -100000,
+          "mUnits": 10000
+        },
+        "copyrightText": "",
+        "parentLayer": {
+          "id": 22,
+          "name": "Bathymetry Isolines"
+        },
+        "subLayers": [],
+        "minScale": 0,
+        "maxScale": 0,
+        "referenceScale": 0.0,
+        "drawingInfo": {
+          "renderer": {
+            "type": "simple",
+            "symbol": {
+              "type": "esriSLS",
+              "style": "esriSLSSolid",
+              "color": [
+                0,
+                92,
+                230,
+                255
+              ],
+              "width": 1
+            }
+          },
+          "scaleSymbols": true,
+          "transparency": 0,
+          "labelingInfo": [
+            {
+              "labelExpression": "[DEPTH]",
+              "labelPlacement": "esriServerLinePlacementAboveAlong",
+              "textLayout": "straight",
+              "deconflictionStrategy": "dynamic",
+              "allowOverrun": false,
+              "repeatLabel": false,
+              "removeDuplicates": "all",
+              "removeDuplicatesDistance": 0,
+              "lineConnection": "minimizeLabels",
+              "stackLabel": false,
+              "useCodedValues": true,
+              "maxScale": 100000,
+              "minScale": 0,
+              "name": "Default",
+              "priority": 33,
+              "symbol": {
+                "type": "esriTS",
+                "color": [
+                  0,
+                  169,
+                  230,
+                  255
+                ],
+                "backgroundColor": null,
+                "borderLineColor": null,
+                "borderLineSize": null,
+                "verticalAlignment": "bottom",
+                "horizontalAlignment": "center",
+                "rightToLeft": false,
+                "angle": 0,
+                "xoffset": 0,
+                "yoffset": 0,
+                "kerning": true,
+                "haloColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "haloSize": 0.7,
+                "font": {
+                  "family": "Arial",
+                  "size": 6,
+                  "style": "normal",
+                  "weight": "bold",
+                  "decoration": "none"
+                }
+              }
+            }
+          ]
+        },
+        "defaultVisibility": true,
+        "extent": {
+          "xmin": 2443311.8326020027,
+          "ymin": 2347791.506135271,
+          "xmax": 2510921.201172515,
+          "ymax": 2406992.369404343,
+          "spatialReference": {
+            "wkid": 7899,
+            "latestWkid": 7899,
+            "xyTolerance": 0.001,
+            "zTolerance": 0.001,
+            "mTolerance": 0.001,
+            "falseX": -34932800,
+            "falseY": -17746400,
+            "xyUnits": 10000,
+            "falseZ": -100000,
+            "zUnits": 10000,
+            "falseM": -100000,
+            "mUnits": 10000
+          }
+        },
+        "hasAttachments": false,
+        "htmlPopupType": "esriServerHTMLPopupTypeNone",
+        "displayField": "FEATURE",
+        "typeIdField": null,
+        "subtypeFieldName": null,
+        "subtypeField": null,
+        "defaultSubtypeCode": null,
+        "fields": [
+          {
+            "name": "OBJECTID",
+            "type": "esriFieldTypeOID",
+            "alias": "OBJECTID",
+            "domain": null
+          },
+          {
+            "name": "Shape",
+            "type": "esriFieldTypeGeometry",
+            "alias": "Shape",
+            "domain": null
+          },
+          {
+            "name": "pp_bath6_g",
+            "type": "esriFieldTypeDouble",
+            "alias": "PP_BATH6_G",
+            "domain": null
+          },
+          {
+            "name": "pp_bath6_1",
+            "type": "esriFieldTypeDouble",
+            "alias": "PP_BATH6_1",
+            "domain": null
+          },
+          {
+            "name": "depth",
+            "type": "esriFieldTypeDouble",
+            "alias": "DEPTH",
+            "domain": null
+          },
+          {
+            "name": "datum",
+            "type": "esriFieldTypeDouble",
+            "alias": "DATUM",
+            "domain": null
+          },
+          {
+            "name": "feature",
+            "type": "esriFieldTypeString",
+            "alias": "FEATURE",
+            "length": 20,
+            "domain": null
+          },
+          {
+            "name": "version",
+            "type": "esriFieldTypeSmallInteger",
+            "alias": "VERSION",
+            "domain": null
+          },
+          {
+            "name": "length_m",
+            "type": "esriFieldTypeInteger",
+            "alias": "LENGTH_M",
+            "domain": null
+          },
+          {
+            "name": "Shape_Length",
+            "type": "esriFieldTypeDouble",
+            "alias": "Shape_Length",
+            "domain": null
+          }
+        ],
+        "geometryField": {
+          "name": "Shape",
+          "type": "esriFieldTypeGeometry",
+          "alias": "Shape"
+        },
+        "indexes": [
+          {
+            "name": "FDO_OBJECTID",
+            "fields": "OBJECTID",
+            "isAscending": true,
+            "isUnique": true,
+            "description": ""
+          },
+          {
+            "name": "FDO_Shape",
+            "fields": "Shape",
+            "isAscending": true,
+            "isUnique": false,
+            "description": ""
+          }
+        ],
+        "subtypes": [],
+        "relationships": [],
+        "canModifyLayer": true,
+        "canScaleSymbols": false,
+        "hasLabels": true,
+        "capabilities": "Map,Query,Data",
+        "maxRecordCount": 2000,
+        "supportsStatistics": true,
+        "supportsExceedsLimitStatistics": true,
+        "supportsAdvancedQueries": true,
+        "supportedQueryFormats": "JSON, geoJSON, PBF",
+        "isDataVersioned": false,
+        "ownershipBasedAccessControlForFeatures": {
+          "allowOthersToQuery": true
+        },
+        "useStandardizedQueries": true,
+        "supportedSpatialRelationships": [
+          "esriSpatialRelIntersects",
+          "esriSpatialRelContains",
+          "esriSpatialRelCrosses",
+          "esriSpatialRelEnvelopeIntersects",
+          "esriSpatialRelIndexIntersects",
+          "esriSpatialRelOverlaps",
+          "esriSpatialRelTouches",
+          "esriSpatialRelWithin",
+          "esriSpatialRelRelation"
+        ],
+        "advancedQueryCapabilities": {
+          "useStandardizedQueries": true,
+          "supportsStatistics": true,
+          "supportsPercentileStatistics": true,
+          "supportsHavingClause": true,
+          "supportsOrderBy": true,
+          "supportsDistinct": true,
+          "supportsCountDistinct": true,
+          "supportsAdvancedQueryRelated": true,
+          "supportsQueryRelatedPagination": true,
+          "supportsPagination": true,
+          "supportsLod": false,
+          "supportsQueryWithLodSR": false,
+          "supportsTrueCurve": true,
+          "supportsQueryWithDatumTransformation": true,
+          "supportsReturningQueryExtent": true,
+          "supportsQueryWithDistance": true,
+          "supportsSqlExpression": true,
+          "supportsTimeRelation": true,
+          "supportsSqlFormat": false,
+          "supportsQueryAnalytic": false,
+          "supportsCurrentUserQueries": true
+        },
+        "supportsDatumTransformation": true,
+        "dateFieldsTimeReference": null,
+        "preferredTimeReference": null,
+        "datesInUnknownTimezone": false,
+        "hasGeometryProperties": true,
+        "geometryProperties": {
+          "shapeLengthFieldName": "Shape_Length",
+          "units": "esriDecimalDegrees",
+          "mapUnits": {
+            "uwkid": 9102
+          }
+        },
+        "hasMetadata": true,
+        "isDataArchived": false,
+        "archivingInfo": {
+          "supportsQueryWithHistoricMoment": false,
+          "startArchivingMoment": -1
+        },
+        "supportsCoordinatesQuantization": true,
+        "supportsDynamicLegends": true
+      }
+    }
+  ]
+}

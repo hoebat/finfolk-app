@@ -1,0 +1,336 @@
+{
+  "layers": [
+    {
+      "url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "metadata": {
+        "currentVersion": 10.81,
+        "id": 0,
+        "name": "Isobaths at 5m depth intervals",
+        "type": "Feature Layer",
+        "description": "",
+        "geometryType": "esriGeometryPolyline",
+        "sourceSpatialReference": {
+          "wkt": "PROJCS[\"GDA_1994_Transverse_Mercator\",GEOGCS[\"GCS_GDA_1994\",DATUM[\"D_GDA_1994\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",10000000.0],PARAMETER[\"Central_Meridian\",153.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]],VERTCS[\"AHD\",VDATUM[\"Australian_Height_Datum\"],PARAMETER[\"Vertical_Shift\",0.0],PARAMETER[\"Direction\",1.0],UNIT[\"Meter\",1.0]]"
+        },
+        "copyrightText": "",
+        "parentLayer": null,
+        "subLayers": [],
+        "minScale": 250000,
+        "maxScale": 0,
+        "drawingInfo": {
+          "renderer": {
+            "type": "uniqueValue",
+            "field1": "Contour",
+            "field2": null,
+            "field3": null,
+            "defaultSymbol": null,
+            "defaultLabel": null,
+            "uniqueValueInfos": [
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    0,
+                    57,
+                    148,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-45",
+                "label": "-45",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    16,
+                    66,
+                    158,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-40",
+                "label": "-40",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    32,
+                    74,
+                    171,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-35",
+                "label": "-35",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    51,
+                    85,
+                    181,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-30",
+                "label": "-30",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    74,
+                    100,
+                    194,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-25",
+                "label": "-25",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    97,
+                    117,
+                    207,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-20",
+                "label": "-20",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    121,
+                    134,
+                    217,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-15",
+                "label": "-15",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    151,
+                    159,
+                    230,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-10",
+                "label": "-10",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    182,
+                    185,
+                    242,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "-5",
+                "label": "-5",
+                "description": ""
+              },
+              {
+                "symbol": {
+                  "type": "esriSLS",
+                  "style": "esriSLSSolid",
+                  "color": [
+                    214,
+                    214,
+                    255,
+                    255
+                  ],
+                  "width": 1
+                },
+                "value": "0",
+                "label": "0",
+                "description": ""
+              }
+            ],
+            "fieldDelimiter": ","
+          },
+          "transparency": 0,
+          "labelingInfo": [
+            {
+              "labelPlacement": "esriServerLinePlacementAboveAlong",
+              "where": null,
+              "labelExpression": "[Contour]",
+              "useCodedValues": true,
+              "symbol": {
+                "type": "esriTS",
+                "color": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "backgroundColor": null,
+                "borderLineColor": null,
+                "borderLineSize": null,
+                "verticalAlignment": "baseline",
+                "horizontalAlignment": "left",
+                "rightToLeft": false,
+                "angle": 0,
+                "xoffset": 0,
+                "yoffset": 0,
+                "kerning": true,
+                "haloColor": null,
+                "haloSize": null,
+                "font": {
+                  "family": "Arial",
+                  "size": 8,
+                  "style": "normal",
+                  "weight": "bold",
+                  "decoration": "none"
+                }
+              },
+              "minScale": 100000,
+              "maxScale": 0
+            }
+          ]
+        },
+        "defaultVisibility": true,
+        "extent": {
+          "xmin": 222151.38889999967,
+          "ymin": 5843887.5,
+          "xmax": 564877.5,
+          "ymax": 6884981.3571,
+          "spatialReference": {
+            "wkt": "PROJCS[\"GDA_1994_Transverse_Mercator\",GEOGCS[\"GCS_GDA_1994\",DATUM[\"D_GDA_1994\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",10000000.0],PARAMETER[\"Central_Meridian\",153.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]],VERTCS[\"AHD\",VDATUM[\"Australian_Height_Datum\"],PARAMETER[\"Vertical_Shift\",0.0],PARAMETER[\"Direction\",1.0],UNIT[\"Meter\",1.0]]"
+          }
+        },
+        "hasAttachments": false,
+        "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+        "displayField": "Contour",
+        "typeIdField": null,
+        "subtypeFieldName": null,
+        "subtypeField": null,
+        "defaultSubtypeCode": null,
+        "fields": [
+          {
+            "name": "OBJECTID",
+            "type": "esriFieldTypeOID",
+            "alias": "OBJECTID",
+            "domain": null
+          },
+          {
+            "name": "Shape",
+            "type": "esriFieldTypeGeometry",
+            "alias": "Shape",
+            "domain": null
+          },
+          {
+            "name": "Contour",
+            "type": "esriFieldTypeDouble",
+            "alias": "Contour",
+            "domain": null
+          },
+          {
+            "name": "Shape_Length",
+            "type": "esriFieldTypeDouble",
+            "alias": "Shape_Length",
+            "domain": null
+          }
+        ],
+        "geometryField": {
+          "name": "Shape",
+          "type": "esriFieldTypeGeometry",
+          "alias": "Shape"
+        },
+        "indexes": [
+          {
+            "name": "FDO_OBJECTID",
+            "fields": "OBJECTID",
+            "isAscending": true,
+            "isUnique": true,
+            "description": ""
+          },
+          {
+            "name": "FDO_Shape",
+            "fields": "Shape",
+            "isAscending": true,
+            "isUnique": false,
+            "description": ""
+          },
+          {
+            "name": "iso_contour_idx",
+            "fields": "Contour",
+            "isAscending": true,
+            "isUnique": false,
+            "description": ""
+          }
+        ],
+        "subtypes": [],
+        "relationships": [],
+        "canModifyLayer": true,
+        "canScaleSymbols": false,
+        "hasLabels": true,
+        "capabilities": "Map,Query,Data",
+        "maxRecordCount": 1000,
+        "supportsStatistics": true,
+        "supportsAdvancedQueries": true,
+        "supportedQueryFormats": "JSON, geoJSON",
+        "isDataVersioned": false,
+        "ownershipBasedAccessControlForFeatures": {
+          "allowOthersToQuery": true
+        },
+        "useStandardizedQueries": true,
+        "advancedQueryCapabilities": {
+          "useStandardizedQueries": true,
+          "supportsStatistics": true,
+          "supportsHavingClause": true,
+          "supportsCountDistinct": true,
+          "supportsOrderBy": true,
+          "supportsDistinct": true,
+          "supportsPagination": true,
+          "supportsTrueCurve": true,
+          "supportsReturningQueryExtent": true,
+          "supportsQueryWithDistance": true,
+          "supportsSqlExpression": true
+        },
+        "supportsDatumTransformation": true,
+        "supportsCoordinatesQuantization": true
+      }
+    }
+  ]
+}

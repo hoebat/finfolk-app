@@ -1,5 +1,319 @@
 {
   "rasters": [],
-  "contours": {},
-  "acquisitions": []
+  "contours": {
+    "port-phillip": {
+      "file": "processed/port-phillip/contours-627623e89803.geojson",
+      "count": 1518,
+      "source_revision": 1,
+      "source_urls": [
+        "https://core-gis.mapshare.vic.gov.au/arcgis/rest/services/Mapshare/MarineCoastal/MapServer/25"
+      ],
+      "query_bbox": [
+        144.3,
+        -38.4,
+        145.18,
+        -37.8
+      ],
+      "downloaded_at": "2026-10-27T23:11:47.508033+00:00",
+      "sha256": "81399759d355944ba39ddb673bdfbd28654c50b3223325e020ba26e9c25a6ea2",
+      "source_url": "https://core-gis.mapshare.vic.gov.au/arcgis/rest/services/Mapshare/MarineCoastal/MapServer/25",
+      "datum": "Unverified \u2014 original DATUM code retained per feature",
+      "survey_date": "1971\u20132000 (catalogue temporal coverage)",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of Victoria, Department of Energy, Environment and Climate Action"
+    },
+    "bondi": {
+      "file": "processed/bondi/contours-0f01c510c703.geojson",
+      "count": 395,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        151.215,
+        -34.01,
+        151.34,
+        -33.815
+      ],
+      "downloaded_at": "2026-10-27T23:12:02.115716+00:00",
+      "sha256": "90050690d3fa7a01cf6e388705042faeb11d6982d2032b499a818545bdae780c",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "jervis-bay": {
+      "file": "processed/jervis-bay/contours-7614ee248440.geojson",
+      "count": 1562,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        150.6,
+        -35.2,
+        150.91,
+        -34.94
+      ],
+      "downloaded_at": "2026-10-27T23:13:26.895502+00:00",
+      "sha256": "4b2cf56b463f78cdcd5985cb5076a87457896b85c23314b2fa4cb71d2c66b399",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "western-port": {
+      "file": "processed/western-port/contours-32c088bc4401.geojson",
+      "count": 5598,
+      "source_revision": 1,
+      "source_urls": [
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/17",
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/18"
+      ],
+      "query_bbox": [
+        144.95,
+        -38.63,
+        145.62,
+        -38.15
+      ],
+      "downloaded_at": "2026-10-27T23:14:58.801368+00:00",
+      "sha256": "c09fec774c48991999f65d2d7e52b21700615c5f396255eea3b2fb067546664a",
+      "source_url": "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/17",
+      "datum": "Unverified \u2014 original DATUM code retained per feature",
+      "survey_date": "Not established in service metadata",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of Victoria, Department of Energy, Environment and Climate Action"
+    },
+    "nsw-southern-sydney": {
+      "file": "processed/nsw-southern-sydney/contours-718e8ac7bccd.geojson",
+      "count": 640,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        150.934503,
+        -34.281745,
+        151.251163,
+        -33.915076
+      ],
+      "downloaded_at": "2026-10-28T03:28:48.762595+00:00",
+      "sha256": "1515a679e90af930c5c2ec3bb47f84382fd0abc6ea9f7817bcbf00804c06bbef",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "nsw-northern-beaches": {
+      "file": "processed/nsw-northern-beaches/contours-ff94986429fe.geojson",
+      "count": 1118,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        151.184489,
+        -33.823408,
+        151.46782,
+        -33.465075
+      ],
+      "downloaded_at": "2026-10-28T03:28:56.468440+00:00",
+      "sha256": "f42d4c7a96f991853e325e5341738f23e078f762ea7c6ee56e09f79395f28db4",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "nsw-central-coast": {
+      "file": "processed/nsw-central-coast/contours-8f25500893e6.geojson",
+      "count": 2653,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        151.382541,
+        -33.540908,
+        151.728921,
+        -32.99285
+      ],
+      "downloaded_at": "2026-10-28T03:31:13.152541+00:00",
+      "sha256": "a48f39e8d43a7e30b5289be92a5cc4f01abd6fe98704ba025f91cd19b3b6f3ae",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "vic-corner-inlet": {
+      "file": "processed/vic-corner-inlet/contours-ae344de29b20.geojson",
+      "count": 712,
+      "source_revision": 1,
+      "source_urls": [
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/7",
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/8"
+      ],
+      "query_bbox": [
+        146.181507,
+        -38.882589,
+        146.919043,
+        -38.599939
+      ],
+      "downloaded_at": "2026-10-28T03:36:35.016882+00:00",
+      "sha256": "9d18cfc370ae4e2c46d02257bbcb081d2b59503fe90ec2c9a3eadf3f9801ebb8",
+      "source_url": "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/7",
+      "datum": "Unverified \u2014 original DATUM code retained per feature",
+      "survey_date": "Not established in service metadata",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of Victoria, Department of Energy, Environment and Climate Action"
+    },
+    "vic-mallacoota": {
+      "file": "processed/vic-mallacoota/contours-34b7405e9f68.geojson",
+      "count": 109,
+      "source_revision": 1,
+      "source_urls": [
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/10",
+        "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/11"
+      ],
+      "query_bbox": [
+        149.693355,
+        -37.563784,
+        149.802769,
+        -37.48828
+      ],
+      "downloaded_at": "2026-10-28T03:36:40.105739+00:00",
+      "sha256": "531e350e6cb7a158a22ca882c0715948fc5afdbe52f5df6213314fc9225d36e8",
+      "source_url": "https://biod-gis.mapshare.vic.gov.au/arcgis/rest/services/CoastKit/BathyContours/MapServer/10",
+      "datum": "Unverified \u2014 original DATUM code retained per feature",
+      "survey_date": "Not established in service metadata",
+      "licence": "CC BY 4.0",
+      "attribution": "\u00a9 State of Victoria, Department of Energy, Environment and Climate Action"
+    },
+    "qld-southern-gold-coast": {
+      "file": "processed/qld-southern-gold-coast/contours-d688b968aff2.geojson",
+      "count": 23,
+      "source_revision": 1,
+      "source_urls": [
+        "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0"
+      ],
+      "query_bbox": [
+        153.35,
+        -28.18,
+        153.57,
+        -28.08
+      ],
+      "downloaded_at": "2026-10-28T03:37:00.586449+00:00",
+      "sha256": "94aab2365d35679c6cda6ac9324799683c1409821a4cbd9130dd34ddc90ff5e0",
+      "source_url": "https://mapprod2.environment.nsw.gov.au/arcgis/rest/services/Coastal_Marine/NSW_Marine_Lidar_Bathymetry_Data_2018/MapServer/0",
+      "datum": "AHD",
+      "survey_date": "July\u2013December 2018",
+      "licence": "Creative Commons Attribution \u2014 retain supplied licence version",
+      "attribution": "\u00a9 State Government of NSW and NSW Department of Climate Change, Energy, the Environment and Water"
+    },
+    "tas-southeast": {
+      "file": "processed/tas-southeast/contours-4baf24b66483.geojson",
+      "count": 436,
+      "source_revision": 1,
+      "source_urls": [
+        "https://geoserver.imas.utas.edu.au/geoserver/imas/wfs"
+      ],
+      "query_bbox": [
+        146.85,
+        -43.7,
+        148.1,
+        -42.65
+      ],
+      "downloaded_at": "2026-10-28T03:39:26.135333+00:00",
+      "sha256": "d09aadce01a83e9cd0c6b51a291176381b842a60f95d45ea1b942705b3c4da74",
+      "source_url": "https://geoserver.imas.utas.edu.au/geoserver/imas/wfs",
+      "datum": "MSL (EPSG:5715)",
+      "survey_date": "SeaMap Tasmania compilation, published 2007; acquisition dates vary",
+      "licence": "CC BY 4.0",
+      "attribution": "Lucieer, V.L. (2007), SeaMap Tasmania Bathymetric Data. Tasmanian Aquaculture and Fisheries Institute, University of Tasmania. Accessed 28 October 2026."
+    }
+  },
+  "acquisitions": [
+    {
+      "region": "port-phillip",
+      "at": "2026-10-27T23:11:47.527385+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 1518
+    },
+    {
+      "region": "bondi",
+      "at": "2026-10-27T23:12:02.121056+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 395
+    },
+    {
+      "region": "jervis-bay",
+      "at": "2026-10-27T23:13:26.906958+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 1562
+    },
+    {
+      "region": "western-port",
+      "at": "2026-10-27T23:14:58.812583+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 5598
+    },
+    {
+      "region": "nsw-southern-sydney",
+      "at": "2026-10-28T03:28:48.768915+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 640
+    },
+    {
+      "region": "nsw-northern-beaches",
+      "at": "2026-10-28T03:28:56.477294+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 1118
+    },
+    {
+      "region": "nsw-central-coast",
+      "at": "2026-10-28T03:31:13.167964+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 2653
+    },
+    {
+      "region": "vic-corner-inlet",
+      "at": "2026-10-28T03:36:35.019397+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 712
+    },
+    {
+      "region": "vic-mallacoota",
+      "at": "2026-10-28T03:36:40.106928+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 109
+    },
+    {
+      "region": "qld-southern-gold-coast",
+      "at": "2026-10-28T03:37:00.586926+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 23
+    },
+    {
+      "region": "tas-southeast",
+      "at": "2026-10-28T03:39:26.204672+00:00",
+      "status": "complete",
+      "kind": "contours",
+      "count": 436
+    }
+  ],
+  "updated_at": "2026-10-28T03:39:26.204687+00:00"
 }
