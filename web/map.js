@@ -111,16 +111,12 @@ export class DepthMap {
     const view=this.bounds(),visible=this.areaZones.filter(zone=>zone.bounds[0]<=view[2]&&zone.bounds[2]>=view[0]&&zone.bounds[1]<=view[3]&&zone.bounds[3]>=view[1]);
     if(!visible.length)return;
     const w=this.width,h=this.height;
-    this.areaCanvas??=document.createElement('canvas');this.areaMaskCanvas??=document.createElement('canvas');
-    for(const canvas of [this.areaCanvas,this.areaMaskCanvas])if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;this.areaMaskKey=null;}
-    const layer=this.areaCanvas,layerCtx=layer.getContext('2d');layerCtx.clearRect(0,0,w,h);
-    for(const zone of visible.sort((a,b)=>(a.id===this.hoveredAreaId?1:0)-(b.id===this.hoveredAreaId?1:0))){
+    this.areaCanvas??=document.createElement('canvas');this.areaMaskCanvas??=document.createElement('canvas');this.areaOverlayCanvas??=document.createElement('canvas');
+    for(const canvas of [this.areaCanvas,this.areaMaskCanvas,this.areaOverlayCanvas])if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;this.areaMaskKey=null;}
+    const prepared=[];for(const zone of visible){
       const points=zone.points.map(point=>this.toScreen(point)),lines=zone.lines.map(edge=>edge.map(point=>this.toScreen(point))),metresPerPixel=2*Math.PI*R*Math.cos(this.center[1]*Math.PI/180)/(256*2**this.zoom),radius=Math.max(2,Math.min(26,zone.radius_m/metresPerPixel)),xs=points.map(point=>point[0]),ys=points.map(point=>point[1]),bounds=[Math.min(...xs)-radius-2,Math.min(...ys)-radius-2,Math.max(...xs)+radius+2,Math.max(...ys)+radius+2];
       if(bounds[2]<0||bounds[3]<0||bounds[0]>w||bounds[1]>h)continue;
-      const active=zone.id===this.hoveredAreaId;layerCtx.lineCap='round';layerCtx.lineJoin='round';
-      const paint=(color,width,pointRadius)=>{layerCtx.strokeStyle=color;layerCtx.fillStyle=color;layerCtx.lineWidth=width;layerCtx.beginPath();for(const edge of lines){layerCtx.moveTo(...edge[0]);layerCtx.lineTo(...edge[1]);}if(lines.length)layerCtx.stroke();for(const point of points){layerCtx.beginPath();layerCtx.arc(point[0],point[1],pointRadius,0,Math.PI*2);layerCtx.fill();}};
-      paint(active?'rgba(205,255,255,.9)':'rgba(119,211,220,.4)',radius*2+2,radius+1);paint(active?'rgba(94,224,231,.30)':'rgba(91,190,203,.12)',radius*2,radius);
-      this.areaHits.push({zone,points,lines,radius,bounds});
+      const hit={zone,points,lines,radius,bounds};prepared.push(hit);this.areaHits.push(hit);
     }
     const mask=this.areaMaskCanvas,key=`${this.zoom}/${left}/${top}/${w}/${h}/${this.shoreRevision||0}`;
     if(key!==this.areaMaskKey){
@@ -131,8 +127,15 @@ export class DepthMap {
       }
       this.areaMaskKey=key;
     }
-    layerCtx.save();layerCtx.globalCompositeOperation='destination-in';layerCtx.drawImage(mask,0,0);layerCtx.restore();
-    this.ctx.drawImage(layer,0,0,w,h);
+    const shape=this.areaCanvas,shapeCtx=shape.getContext('2d'),overlay=this.areaOverlayCanvas,overlayCtx=overlay.getContext('2d');
+    const tint=(zones,colour,padding=0)=>{
+      shapeCtx.clearRect(0,0,w,h);shapeCtx.save();shapeCtx.strokeStyle='#fff';shapeCtx.fillStyle='#fff';shapeCtx.lineCap='round';shapeCtx.lineJoin='round';
+      for(const hit of zones){const radius=hit.radius+padding;shapeCtx.lineWidth=radius*2;shapeCtx.beginPath();for(const edge of hit.lines){shapeCtx.moveTo(...edge[0]);shapeCtx.lineTo(...edge[1]);}if(hit.lines.length)shapeCtx.stroke();for(const point of hit.points){shapeCtx.beginPath();shapeCtx.arc(point[0],point[1],radius,0,Math.PI*2);shapeCtx.fill();}}
+      shapeCtx.globalCompositeOperation='destination-in';shapeCtx.drawImage(mask,0,0);shapeCtx.restore();
+      overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=colour;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(shape,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
+    };
+    tint(prepared,'rgba(91,190,203,.075)');
+    const active=prepared.filter(hit=>hit.zone.id===this.hoveredAreaId);if(active.length)tint(active,'rgba(94,224,231,.22)',1);
   }
   isWaterAtScreen(x,y){
     const world=project(this.fromScreen([x,y]),this.zoom),tileX=Math.floor(world[0]/256),tileY=Math.floor(world[1]/256),tile=cachedTile(this.images,this.zoom,tileX,tileY),styled=tile?.image.styled;
