@@ -19,6 +19,6 @@ export function styleShorePixels(pixels){
 export function shoreTile(image){
   const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
   const context=canvas.getContext('2d',{willReadFrequently:true});context.drawImage(image,0,0);
-  const pixels=context.getImageData(0,0,canvas.width,canvas.height);const mask=document.createElement('canvas');mask.width=canvas.width;mask.height=canvas.height;const m=mask.getContext('2d'),data=m.createImageData(mask.width,mask.height);for(let i=0;i<pixels.data.length;i+=4){const p=pixels.data;data.data[i+3]=isWaterPixel(p[i],p[i+1],p[i+2])?p[i+3]:0;}m.putImageData(data,0,0);canvas.waterMask=mask;
+  const pixels=context.getImageData(0,0,canvas.width,canvas.height);const mask=document.createElement('canvas');mask.width=canvas.width;mask.height=canvas.height;const m=mask.getContext('2d'),data=m.createImageData(mask.width,mask.height),waterPixels=new Uint8Array(mask.width*mask.height);for(let i=0;i<pixels.data.length;i+=4){const p=pixels.data,isWater=isWaterPixel(p[i],p[i+1],p[i+2]);if(isWater)waterPixels[i>>2]=1;data.data[i+3]=isWater?p[i+3]:0;}m.putImageData(data,0,0);canvas.waterMask=mask;canvas.waterPixels=waterPixels;
   styleShorePixels(pixels.data);context.putImageData(pixels,0,0);return canvas;
 }
