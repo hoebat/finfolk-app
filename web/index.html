@@ -6,9 +6,11 @@
   <title>Depth Atlas · Australia’s coast, depth & nearby stays</title>
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./glass.css">
+  <link rel="stylesheet" href="./mobile.css">
 </head>
 <body>
-  <aside class="sidebar">
+  <aside class="sidebar" id="app-sidebar">
+    <button id="mobile-menu-close" class="mobile-menu-close" aria-label="Close menu" hidden><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M6 18 18 6"/></svg></button>
     <a class="brand" href="./" aria-label="Depth Atlas home"><span class="brand-mark">≋</span><span>Depth Atlas<small>A closer look beneath the surface</small></span></a>
     <nav class="primary-nav" aria-label="Main navigation"><button data-view="maps"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2Z"/><path d="M9 3v16M15 5v16"/></svg>Depth maps</button><button data-view="discover"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5Z"/></svg>Discover</button><button data-view="areas"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Areas</button><button data-view="guides"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></svg>Guides</button></nav>
     <details class="directory-menu"><summary>Browse coastal areas</summary><div id="region-picker" class="region-picker" role="group" aria-label="Choose map region"></div></details>
@@ -29,6 +31,9 @@
     </details>
     <div class="sidebar-bottom"><span class="local-dot"></span> RUNS IN YOUR BROWSER <button id="refresh" class="text-button">Refresh data</button></div>
   </aside>
+  <div id="mobile-map-stage" role="main" aria-label="Coastal depth map" hidden></div>
+  <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Open menu" aria-controls="app-sidebar" aria-expanded="false" hidden><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <button id="mobile-menu-backdrop" class="mobile-menu-backdrop" aria-label="Close menu" aria-hidden="true" tabindex="-1" hidden></button>
   <main>
     <header><div><div class="eyebrow">AUSTRALIAN COASTAL GUIDE</div><h1 id="page-title">Find your next coastal spot</h1><p class="page-intro">Explore reference depths, sourced activity information and places to stay.</p></div></header>
     <section id="areas-page" hidden><h2 class="section-heading">State → coastal region → beach</h2><p id="directory-note" class="muted"></p><div id="areas-tree" class="areas-tree"></div></section>
@@ -55,7 +60,7 @@
     <div id="notice" role="status" aria-live="polite" hidden></div>
     <div class="explorer-layout"><div class="map-column">
     <section class="map-wrap" aria-label="Interactive depth map">
-      <canvas id="map" tabindex="0" aria-label="Depth map. Drag or use arrow keys to pan. Scroll or press plus and minus to zoom. Click to inspect."></canvas>
+      <canvas id="map" tabindex="0" aria-label="Depth map. Drag to pan and pinch to zoom. Arrow keys pan; plus and minus zoom. Click to inspect."></canvas>
       <button id="measurement-visibility" class="map-overlay-toggle" aria-label="Distance graphic" aria-pressed="true" title="Hide distance graphic" hidden><span id="measurement-hide-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 18 18M10.6 5.1 12 5c6.5 0 10 7 10 7a20 20 0 0 1-3.1 3.9M6.1 6.1A20 20 0 0 0 2 12s3.5 7 10 7a12 12 0 0 0 5-1.1M10 10a3 3 0 0 0 4 4"/></svg></span><span id="measurement-show-icon" hidden><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></span></button>
       <div id="empty-state" class="empty-state"><p>Depth data aren’t published here yet. Beach and stay markers are reference locations; the context coastline is approximate.</p><button id="empty-guide" class="text-button">View coverage &amp; sources ↗</button></div>
       <div id="drawing-help" class="drawing-help" hidden><span>Click to add profile points. Drag to pan.</span><button id="finish-profile">Finish profile</button><button id="cancel-profile" aria-label="Cancel profile">Cancel</button></div>

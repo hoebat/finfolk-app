@@ -26,7 +26,7 @@ The publisher's legend colour order is mapped into an aqua-to-navy palette. Shad
 
 ## Interface and system activity
 
-The interface uses system typography, translucent glass materials, segmented controls and restrained scale/entrance motion. Mobile navigation floats above the safe area. Reduced-motion preferences remove animations; reduced-transparency preferences use solid surfaces.
+The interface uses system typography, translucent glass materials, segmented controls and restrained scale/entrance motion. On small screens the map fills the viewport, with a single menu button opening a sidebar for navigation, search, layers, beach details, camping/photos and system activity. Selecting a location returns to the map; tapping a beach pin opens its details in the sidebar. Escape, the close button or the dimmed backdrop dismiss the sidebar. Controls, values and event handlers are preserved when returning to the desktop layout. Touch supports panning and pinch zoom without accidental point selection. Reduced-motion preferences remove animations; reduced-transparency preferences use solid surfaces.
 
 The chart keeps source/datum explanations, colour keys and zoom controls in **Map data & layers**. The eye button on the map hides or restores the distance-to-contour line, endpoints and label while preserving the numeric result. This visibility preference is saved on the current device and survives beach changes.
 
