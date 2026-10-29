@@ -114,11 +114,12 @@ export class DepthMap {
     for(const canvas of [this.areaCanvas,this.areaMaskCanvas])if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;this.areaMaskKey=null;}
     const layer=this.areaCanvas,layerCtx=layer.getContext('2d');layerCtx.clearRect(0,0,w,h);
     for(const zone of visible.sort((a,b)=>(a.id===this.hoveredAreaId?1:0)-(b.id===this.hoveredAreaId?1:0))){
-      const points=zone.polygon.map(point=>this.toScreen(point)),xs=points.map(point=>point[0]),ys=points.map(point=>point[1]),bounds=[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];
+      const points=zone.points.map(point=>this.toScreen(point)),lines=zone.lines.map(edge=>edge.map(point=>this.toScreen(point))),metresPerPixel=2*Math.PI*R*Math.cos(this.center[1]*Math.PI/180)/(256*2**this.zoom),radius=Math.max(1.5,zone.radius_m/metresPerPixel),xs=points.map(point=>point[0]),ys=points.map(point=>point[1]),bounds=[Math.min(...xs)-radius-2,Math.min(...ys)-radius-2,Math.max(...xs)+radius+2,Math.max(...ys)+radius+2];
       if(bounds[2]<0||bounds[3]<0||bounds[0]>w||bounds[1]>h)continue;
-      layerCtx.beginPath();points.forEach((point,index)=>index?layerCtx.lineTo(...point):layerCtx.moveTo(...point));layerCtx.closePath();
-      const active=zone.id===this.hoveredAreaId;layerCtx.fillStyle=active?'rgba(94,224,231,.30)':'rgba(91,190,203,.12)';layerCtx.strokeStyle=active?'rgba(205,255,255,.9)':'rgba(119,211,220,.4)';layerCtx.lineWidth=active?1.7:1;layerCtx.lineJoin='round';layerCtx.fill();layerCtx.stroke();
-      this.areaHits.push({zone,points,bounds});
+      const active=zone.id===this.hoveredAreaId;layerCtx.lineCap='round';layerCtx.lineJoin='round';
+      const paint=(color,width,pointRadius)=>{layerCtx.strokeStyle=color;layerCtx.fillStyle=color;layerCtx.lineWidth=width;layerCtx.beginPath();for(const edge of lines){layerCtx.moveTo(...edge[0]);layerCtx.lineTo(...edge[1]);}if(lines.length)layerCtx.stroke();for(const point of points){layerCtx.beginPath();layerCtx.arc(point[0],point[1],pointRadius,0,Math.PI*2);layerCtx.fill();}};
+      paint(active?'rgba(205,255,255,.9)':'rgba(119,211,220,.4)',radius*2+2,radius+1);paint(active?'rgba(94,224,231,.30)':'rgba(91,190,203,.12)',radius*2,radius);
+      this.areaHits.push({zone,points,lines,radius,bounds});
     }
     const mask=this.areaMaskCanvas,key=`${this.zoom}/${left}/${top}/${w}/${h}/${this.shoreRevision||0}`;
     if(key!==this.areaMaskKey){
@@ -142,10 +143,8 @@ export class DepthMap {
     if(!this.isWaterAtScreen(x,y))return null;
     for(const hit of [...this.areaHits].reverse()){
       const [left,top,right,bottom]=hit.bounds;if(x<left||x>right||y<top||y>bottom)continue;
-      let inside=false;for(let i=0,j=hit.points.length-1;i<hit.points.length;j=i++){
-        const [xi,yi]=hit.points[i],[xj,yj]=hit.points[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)inside=!inside;
-      }
-      if(inside)return hit.zone;
+      if(hit.points.some(point=>Math.hypot(x-point[0],y-point[1])<=hit.radius+2))return hit.zone;
+      for(const [a,b] of hit.lines){const dx=b[0]-a[0],dy=b[1]-a[1],length=dx*dx+dy*dy,t=length?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/length)):0;if(Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy)<=hit.radius+2)return hit.zone;}
     }
     return null;
   }
