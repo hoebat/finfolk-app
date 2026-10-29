@@ -40,7 +40,7 @@ function measureFrom(point,label){try{showMeasurement(nearestContour(point,map.c
 function measureEdithvale(){resetProfile();try{const result=edithvaleMeasurement(map.contours,Number($('measure-depth').value));showMeasurement(result,result.start_label);}catch(e){notice(e.message);}}
 async function openSurvey(id,{reveal=true}={}){
   const request=++selectionRequest;activeAreaId='';if(reveal){const url=new URL(location.href);url.searchParams.delete('site');history.replaceState(null,'',url);}notice('Loading published depth map…');
-  try{await load(id);if(request!==selectionRequest)return;const counts=new Map();for(const beach of beachCatalog.beaches.filter(b=>b.region===region.id))counts.set(beach.area_id,(counts.get(beach.area_id)||0)+1);const area=beachCatalog.areas.find(a=>a.id===[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0]);if(area){try{const context=await discovery.getAreaData(area);if(request!==selectionRequest)return;setAreaContext(context);}catch{setAreaContext();}}map.resize();notice('');if(reveal)revealMap();}catch(error){notice(error.message);}
+  try{await load(id);if(request!==selectionRequest)return;const counts=new Map();for(const beach of beachCatalog.beaches.filter(b=>b.region===region.id))counts.set(beach.area_id,(counts.get(beach.area_id)||0)+1);const area=beachCatalog.areas.find(a=>a.id===[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0]);map.focusedAreaId=area?.id||null;if(area){try{const context=await discovery.getAreaData(area);if(request!==selectionRequest)return;setAreaContext(context);}catch{setAreaContext();}}map.resize();notice('');if(reveal)revealMap();}catch(error){notice(error.message);}
 }
 $('survey-select').onchange=()=>openSurvey($('survey-select').value);
 function hasPublishedData(r){return r.status!=='empty'&&(r.rasters.length>0||r.contours?.count>0);}
@@ -55,7 +55,7 @@ function updateCapabilities(){
 function setAreaContext(data={}){map.coastline=data.coastline||[];map.contextContours=data.context_contours||[];map.contextSource=data.context_source||null;if(region?.status==='empty'){const available=map.contextContours.length>0;$('data-status').textContent=available?'No local survey · broad-scale context visible':'No depth data published yet';$('source-summary').textContent=available?'This map shows generalised 250 m model contours for regional context. No local numeric depth survey is published here.':'Government sources are configured. Survey data will appear after it is acquired and included in a site build.';}map.draw();updateCapabilities();}
 async function chooseBeach(id,{writeURL=true,depth=Number($('measure-depth').value)||10}={}){
   const request=++selectionRequest;let beach=findBeach(beachCatalog,id);if(beach&&discovery){try{beach=await discovery.getBeach(beach.id);}catch{notice('Detailed site facts are unavailable; using the listed reference position.');}}if(request!==selectionRequest)return;if(id&&!beach){notice('That beach is not in the location list. Choose a beach from the picker.');return;}
-  if(beach){activeAreaId=beach.area_id;}
+  if(beach){activeAreaId=beach.area_id;map.focusedAreaId=beach.area_id;}else map.focusedAreaId=null;
   if(beach&&(beach.region!==region?.id||!contoursReady))await load(beach.region,false,{center:beach.point,zoom:15});else loadRequest++;if(request!==selectionRequest)return;
   selectedBeachId=beach?.id||'';if([...$('measure-depth').options].some(o=>Number(o.value)===depth))$('measure-depth').value=depth;await discovery?.select(selectedBeachId);if(request!==selectionRequest)return;map.resize();map.selectedBeach=selectedBeachId;resetProfile();clearMeasurement();$('inspection').hidden=true;inspectionRequest++;notice('');
   if(beach){
@@ -192,7 +192,7 @@ async function openBeach(id,options={}){
   try{const beach=await chooseBeach(id,options);if(beach&&shell.route.epoch===epoch&&shell.route.view==='maps')shell.openPanel('place');}catch(e){notice(e.message);}
 }
 async function openArea(area){
-  const request=++selectionRequest;activeAreaId=area.id;const counts=new Map();for(const b of beachCatalog.beaches.filter(b=>b.area_id===area.id)){if(catalog.regions.some(r=>r.id===b.region&&hasPublishedData(r)))counts.set(b.region,(counts.get(b.region)||0)+1);}const survey=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const request=++selectionRequest;activeAreaId=area.id;map.focusedAreaId=area.id;const counts=new Map();for(const b of beachCatalog.beaches.filter(b=>b.area_id===area.id)){if(catalog.regions.some(r=>r.id===b.region&&hasPublishedData(r)))counts.set(b.region,(counts.get(b.region)||0)+1);}const survey=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0];
   try{await load(survey||area.map_region);if(request!==selectionRequest)return;try{const context=await discovery.getAreaData(area);if(request!==selectionRequest)return;setAreaContext(context);}catch{setAreaContext();}map.beaches=beachCatalog.beaches.filter(b=>b.area_id===area.id);map.center=area.center;map.zoom=10;map.resize();map.draw();map.onview?.();}catch(e){notice(e.message);}
 }
 async function start(){
