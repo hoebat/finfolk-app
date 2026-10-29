@@ -12,7 +12,7 @@ export function project([lon,lat], z) {
 export function unproject([x,y],z) {const size=256*2**z;return [x/size*360-180,Math.atan(Math.sinh(Math.PI*(1-2*y/size)))*180/Math.PI];}
 export class DepthMap {
   constructor(canvas) {
-    this.touchPoints=new Map();this.pendingTiles=[];this.tileActive=0;this.viewEpoch=0;this.ready=false;this.imageLimit=globalThis.matchMedia?.('(max-width:700px)').matches?128:256;this.canvas=canvas;this.ctx=canvas.getContext('2d');this.center=[144.86,-38.08];this.zoom=10;
+    this.active=true;this.touchPoints=new Map();this.pendingTiles=[];this.tileActive=0;this.viewEpoch=0;this.ready=false;this.imageLimit=globalThis.matchMedia?.('(max-width:700px)').matches?128:256;this.canvas=canvas;this.ctx=canvas.getContext('2d');this.center=[144.86,-38.08];this.zoom=10;
     this.layers={depth:true,contours:true,pins:false,coverage:false,basemap:true,measurement:true};this.contours=[];this.derived=[];this.sourcePins=[];this.pinGroups=new Map();this.pinHits=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';this.pointPicking=false;this.measurement=null;this.beaches=[];this.beachHits=[];this.stays=[];this.stayHits=[];this.coastline=[];
     new ResizeObserver(()=>this.resize()).observe(canvas);
     canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);if(e.pointerType==='touch'){this.touchPoints.set(e.pointerId,[e.offsetX,e.offsetY]);if(this.touchPoints.size>=2){const [a,b]=[...this.touchPoints.values()],mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];this.pinch={distance:Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1])),zoom:this.zoom,anchor:this.fromScreen(mid)};this.touchWasPinch=true;this.drag=null;return;}}this.drag={x:e.offsetX,y:e.offsetY,start:project(this.center,this.zoom),distance:0};});
@@ -22,6 +22,7 @@ export class DepthMap {
     canvas.addEventListener('wheel',e=>{e.preventDefault();if(this.wheelTime&&Date.now()-this.wheelTime<100)return;this.wheelTime=Date.now();this.zoomBy(e.deltaY<0?1:-1,[e.offsetX,e.offsetY]);},{passive:false});
     canvas.addEventListener('keydown',e=>{const shifts={ArrowLeft:[-80,0],ArrowRight:[80,0],ArrowUp:[0,-80],ArrowDown:[0,80]};if(shifts[e.key]){e.preventDefault();const p=project(this.center,this.zoom),d=shifts[e.key];this.center=unproject([p[0]+d[0],p[1]+d[1]],this.zoom);this.draw();this.onview?.();}else if(e.key==='+'||e.key==='=')this.zoomBy(1);else if(e.key==='-')this.zoomBy(-1);});
   }
+  setActive(active){if(this.active===active)return;this.active=active;if(!active){this.cancelSurface();this.viewEpoch++;this.pruneTiles();}else{this.resize();this.schedule();}}
   cancelGesture(){for(const id of this.touchPoints.keys()){try{if(this.canvas.hasPointerCapture?.(id))this.canvas.releasePointerCapture(id);}catch{}}this.touchPoints.clear();this.pinch=null;this.touchWasPinch=false;this.drag=null;this.schedule();this.onview?.();}
   resize(){const width=this.canvas.clientWidth,height=this.canvas.clientHeight,ratio=Math.min(2,devicePixelRatio||1),scaleBottom=Math.max(53,Math.ceil((this.canvas.parentElement?.querySelector('.map-bottom')?.getBoundingClientRect().height||0)+18));if(this.width===width&&this.height===height&&this.pixelRatio===ratio&&this.scaleBottom===scaleBottom)return;this.scaleBottom=scaleBottom;this.width=width;this.height=height;this.pixelRatio=ratio;this.canvas.width=width*ratio;this.canvas.height=height*ratio;this.ctx.setTransform(ratio,0,0,ratio,0,0);this.schedule();}
   toScreen(point){const p=project(point,this.zoom),c=project(this.center,this.zoom);return [p[0]-c[0]+this.width/2,p[1]-c[1]+this.height/2];}
@@ -41,6 +42,7 @@ export class DepthMap {
     this.pendingTiles=this.pendingTiles.filter(job=>{if(job.image.epoch===this.viewEpoch)return true;if(this.images.get(job.url)===job.image)this.images.delete(job.url);return false;}).sort((a,b)=>a.image.priority-b.image.priority);activity.queue(this.pendingTiles.length);
   }
   pumpTiles(){
+    if(this.active===false)return;
     this.pruneTiles();
     while(this.tileActive<6&&this.pendingTiles.length){const {image,url,basemap}=this.pendingTiles.shift(),task=activity.begin({url,...resourceLabel(url)});this.tileActive++;
       const settled=()=>{this.tileActive--;this.schedule();this.pumpTiles();};
@@ -51,6 +53,7 @@ export class DepthMap {
   }
   cancelSurface(){clearTimeout(this.surfaceTimer);this.surfaceController?.abort();this.surfaceRequest++;this.surfaceKey=null;this.surfaceState=this.surfaceImage?'ready':null;this.onsurface?.();}
   queueSurface(){
+    if(this.active===false)return;
     if(!this.surface||!this.layers.depth||!this.width||this.zoom<this.surface.minZoom){if(this.surfaceState==='loading')this.cancelSurface();return;}if(this.drag||this.pinch)return;
     if(coversView(this.surfaceImage,this.bounds(),this.zoom)){if(this.surfaceState==='loading'){clearTimeout(this.surfaceTimer);this.surfaceController?.abort();this.surfaceRequest++;this.surfaceKey=null;this.surfaceState='ready';this.onsurface?.();}return;}
     const padding=128,bounds=[...this.fromScreen([-padding,this.height+padding]),...this.fromScreen([this.width+padding,-padding])],zoom=this.zoom,url=surfaceURL(this.surface,bounds,this.width+padding*2,this.height+padding*2);if(url===this.surfaceKey)return;
@@ -70,7 +73,7 @@ export class DepthMap {
     const a=this.toScreen([snapshot.bounds[0],snapshot.bounds[3]]),b=this.toScreen([snapshot.bounds[2],snapshot.bounds[1]]);this.ctx.drawImage(snapshot.composed,...a,b[0]-a[0],b[1]-a[1]);
   }
   schedule(){if(this.frame)return;this.frame=(globalThis.requestAnimationFrame||(callback=>setTimeout(callback,16)))(()=>{this.frame=null;this.draw();});}
-  draw(){if(!this.width||!this.ready)return;const started=performance.now(),c=this.ctx,w=this.width,h=this.height;c.imageSmoothingEnabled=true;c.clearRect(0,0,w,h);c.fillStyle=OCEAN_COLOUR;c.fillRect(0,0,w,h);
+  draw(){if(this.active===false||!this.width||!this.ready)return;const started=performance.now(),c=this.ctx,w=this.width,h=this.height;c.imageSmoothingEnabled=true;c.clearRect(0,0,w,h);c.fillStyle=OCEAN_COLOUR;c.fillRect(0,0,w,h);
     const center=project(this.center,this.zoom),left=center[0]-w/2,top=center[1]-h/2;
     const viewKey=`${this.region}/${this.zoom}/${left}/${top}/${w}/${h}/${this.layers.basemap}/${this.layers.depth}`;if(this.viewKey!==viewKey){this.viewKey=viewKey;this.viewEpoch++;this.pruneTiles();}
     let basemapTiles=0,currentTiles=0,totalTiles=0;this.queueSurface();

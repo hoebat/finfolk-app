@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {mapMatches} from '../web/map-search.js';
+const catalog={beaches:[{id:'edithvale',name:'Edithvale Beach',aliases:['Edithvalue'],area_name:'Port Phillip Bay',state:'Victoria',state_id:'VIC'},{id:'bondi',name:'Bondi Beach',area_name:'Sydney Eastern Beaches',state:'New South Wales',state_id:'NSW'},{id:'unmapped',name:'Unmapped Beach',area_name:'Far coast',state:'Victoria',state_id:'VIC'}],areas:[{id:'vic-port-phillip',name:'Port Phillip Bay',state_id:'VIC'}]};
+assert.equal(mapMatches(catalog,'edithvalue')[0].id,'edithvale');
+assert.equal(mapMatches(catalog,'Port Phillip Bay')[0].kind,'area','Exact region outranks broad beach matches');
+assert.equal(mapMatches(catalog,'unmapped')[0].id,'unmapped','Search includes beaches without depth data');
+assert.equal(mapMatches(catalog,'NSW')[0].id,'bondi');
+assert.deepEqual(mapMatches(catalog,''),[]);
+assert.deepEqual(mapMatches(catalog,'<script>'),[]);
+console.log('Search checks passed: aliases, exact regions, unmapped beaches and state names.');
