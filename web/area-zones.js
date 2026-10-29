@@ -1,8 +1,8 @@
 const METRES_PER_DEGREE = 111320;
 const CLUSTER_DISTANCE = 18000;
 const CLUSTER_RADIUS = 30000;
-const EDGE_BUFFER = 650;
-const LONE_POINT_RADIUS = 900;
+const EDGE_BUFFER = 2200;
+const LONE_POINT_RADIUS = 2800;
 
 function distance(a, b) {
   return Math.hypot(a.x - b.x, a.y - b.y);
