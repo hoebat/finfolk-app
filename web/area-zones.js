@@ -1,7 +1,8 @@
 const METRES_PER_DEGREE = 111320;
-const CLUSTER_DISTANCE = 22000;
-const EDGE_BUFFER = 3000;
-const LONE_POINT_RADIUS = 3800;
+const CLUSTER_DISTANCE = 18000;
+const CLUSTER_RADIUS = 30000;
+const EDGE_BUFFER = 900;
+const LONE_POINT_RADIUS = 1200;
 
 function distance(a, b) {
   return Math.hypot(a.x - b.x, a.y - b.y);
@@ -52,23 +53,34 @@ function bufferedHull(points) {
   const hull = convexHull(points);
   if (hull.length <= 2) return capsule(hull[0], hull.at(-1), EDGE_BUFFER);
   const center = hull.reduce((sum, point) => ({x: sum.x + point.x / hull.length, y: sum.y + point.y / hull.length}), {x: 0, y: 0});
-  return hull.map(point => {
+  const expanded = hull.map(point => {
     const length = Math.max(1, distance(point, center));
     return {x: point.x + (point.x - center.x) / length * EDGE_BUFFER, y: point.y + (point.y - center.y) / length * EDGE_BUFFER};
   });
+  let smooth = expanded;
+  for (let iteration = 0; iteration < 2; iteration++) {
+    smooth = smooth.flatMap((point, index) => {
+      const next = smooth[(index + 1) % smooth.length];
+      return [
+        {x: point.x * .75 + next.x * .25, y: point.y * .75 + next.y * .25},
+        {x: point.x * .25 + next.x * .75, y: point.y * .25 + next.y * .75}
+      ];
+    });
+  }
+  return smooth;
 }
 
 function splitCoastClusters(points) {
   const remaining = new Set(points);
   const clusters = [];
   while (remaining.size) {
-    const first = remaining.values().next().value;
-    remaining.delete(first);
-    const cluster = [first], queue = [first];
+    const seed = remaining.values().next().value;
+    remaining.delete(seed);
+    const cluster = [seed], queue = [seed];
     while (queue.length) {
       const current = queue.pop();
       for (const other of [...remaining]) {
-        if (distance(current, other) <= CLUSTER_DISTANCE) {
+        if (distance(current, other) <= CLUSTER_DISTANCE && distance(seed, other) <= CLUSTER_RADIUS) {
           remaining.delete(other);
           cluster.push(other);
           queue.push(other);
