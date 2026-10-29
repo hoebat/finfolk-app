@@ -1,3 +1,4 @@
+import {estimateContourDepth} from './contour-estimate.js';
 import {installMapSearch} from './map-search.js';
 import {installAppShell} from './mobile-shell.js';
 import {installSystemPanel} from './activity.js';
@@ -111,10 +112,16 @@ map.onclick=async(point,contour,pin)=>{
   try{const result=await data.sample(selectedRegion,point);if(request!==inspectionRequest||region.id!==selectedRegion)return;
     const details=$('inspection-details');details.replaceChildren();
     if(result.status==='no-data'){
-      $('inspection-kind').textContent=contour?(pin?'PUBLISHED CONTOUR':'CONTOUR LABEL · NEAR CLICK'):'NO RASTER COVERAGE';
-      $('inspection-value').textContent=contour?`${number(contour.properties.depth_m)} m`:'No depth data';
-      details.append(elem('p',contour?`Published/derived contour relative to ${contour.properties.datum_label}. This is a line label; point depth is unavailable.`:'There is no numeric raster cell here. This may be outside a survey or inside a data gap.'));
-      if(contour&&pin)details.append(elem('p',region.contour_survey),link('Government contour dataset ↗',region.contour_catalog));
+      const estimate=pin?.kind==='contour'?null:estimateContourDepth(point,map.contours);
+      if(estimate){
+        $('inspection-kind').textContent='ESTIMATED REFERENCE DEPTH';$('inspection-value').textContent=`≈ ${number(Math.round(estimate.depth_m*2)/2)} m`;
+        details.append(elem('p',`Interpolated between the ${number(estimate.lower.depth_m)} m and ${number(estimate.upper.depth_m)} m contours, ${number(estimate.lower.distance_m,0)} m and ${number(estimate.upper.distance_m,0)} m away.`),elem('p',`${estimate.datum_label}${estimate.datum_code!==null?' · original DATUM code '+estimate.datum_code:''}. No numeric raster cell at this point. This assumes a gradual slope between the lines; seabed variation and vertical uncertainty are unknown. No tide adjustment.`),link('Government contour dataset ↗',region.contour_catalog||estimate.lower.feature.properties.source_url));
+      }else{
+        $('inspection-kind').textContent=contour?(pin?'PUBLISHED CONTOUR':'CONTOUR LABEL · NEAR CLICK'):'NO LOCAL DEPTH ESTIMATE';
+        $('inspection-value').textContent=contour?`${number(contour.properties.depth_m)} m`:'No depth data';
+        details.append(elem('p',contour?`Published/derived contour relative to ${contour.properties.datum_label}. This is a line label; point depth is unavailable.`:'No numeric raster cell or suitable nearby bracketing contours with a matching depth reference.'));
+        if(contour&&pin)details.append(elem('p',region.contour_survey),link('Government contour dataset ↗',region.contour_catalog));
+      }
     }else{
       const source=result.source;$('inspection-kind').textContent=result.status==='above-datum'?'ELEVATION ABOVE DATUM':'SURVEYED REFERENCE DEPTH';$('inspection-value').textContent=`${number(Math.abs(result.depth_m))} m`;
       const dl=elem('dl');for(const [label,value] of [['Datum',source.datum],['Grid',`${source.resolution_m} m source spacing`],['Survey',source.survey_date],['Coverage',source.quality],['Source',source.title]]){dl.append(elem('dt',label),elem('dd',value));}details.append(dl,link('Source dataset ↗',source.source_url));

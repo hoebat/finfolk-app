@@ -6,7 +6,7 @@
   "description": "Australian coastal discovery, reference depths, activity guides and nearby stays",
   "scripts": {
     "build": "python3 -m depth_explorer build-static",
-    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs"
+    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs && node tests/test_estimate.mjs"
   },
   "dependencies": {
     "proj4": "2.22.0"

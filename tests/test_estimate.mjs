@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {estimateContourDepth} from '../web/contour-estimate.js';
+const line=(depth,x,properties={},ys=[-.02,.02])=>({properties:{depth_m:depth,datum_label:'AHD',source_url:'https://example.test/survey',survey_date:'TEST',...properties},geometry:{type:'LineString',coordinates:[[x,ys[0]],[x,ys[1]]]}});
+const p=[0,0],features=[line(5,-.001),line(10,.003)];
+const estimate=estimateContourDepth(p,features);assert.ok(Math.abs(estimate.depth_m-6.25)<.001);assert.equal(estimate.lower.depth_m,5);assert.equal(estimate.upper.depth_m,10);assert.equal(estimate.method,'linear-between-contours');
+assert.equal(estimateContourDepth([.004,0],features),null,'No extrapolation outside both lines');
+assert.equal(estimateContourDepth(p,[line(5,-.001),line(10,.003,{datum_label:'LAT'})]),null,'Do not mix named datums');
+assert.equal(estimateContourDepth(p,[line(5,-.001,{datum_label:'Unverified',datum:.875}),line(10,.003,{datum_label:'Unverified',datum:.524})]),null,'Do not mix original datum codes');
+assert.equal(estimateContourDepth(p,[line(5,-.001,{datum_label:'Unverified'}),line(10,.003,{datum_label:'Unverified'})]),null,'A missing reference cannot establish compatibility');
+assert.ok(estimateContourDepth(p,[line(5,-.001,{datum_label:'Unverified',datum:.875}),line(10,.003,{datum_label:'Unverified',datum:.875})]),'Matching retained codes allow a labelled unverified reference estimate');
+assert.equal(estimateContourDepth(p,[line(5,-.001),line(10,.003,{source_url:'https://example.test/different-survey'})]),null,'Do not blend source surveys');
+assert.equal(estimateContourDepth(p,[line(5,-.1),line(10,.1)]),null,'Sparse distant contours do not provide local support');
+assert.equal(estimateContourDepth(p,[line(5,-.001),line(5,.001)]),null,'Two lines of the same depth do not define a slope');
+assert.equal(estimateContourDepth(p,[line(5,-.001,{},[.001,.002]),line(10,.003,{},[-.002,-.001])]),null,'Open survey-clipping endpoints do not support extrapolation');
+assert.equal(estimateContourDepth(p,[...features,line(0,.002,{datum_label:'LAT'})]),null,'Do not interpolate through a mapped zero contour');
+const multi=line(10,.003);multi.geometry={type:'MultiLineString',coordinates:[multi.geometry.coordinates]};assert.ok(estimateContourDepth(p,[features[0],multi]));
+assert.throws(()=>estimateContourDepth([NaN,0],features));
+console.log('Estimate checks passed: distance-weighted interpolation, bracketing, reference/source compatibility, range limits, clipping edges, shore crossings and MultiLineString.');
