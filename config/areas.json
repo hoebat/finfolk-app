@@ -84,6 +84,9 @@
       "id": "vic-south-west-vic",
       "state_id": "VIC",
       "name": "South West Coast",
+      "search_localities": [
+        "Portland"
+      ],
       "center": [
         142.0,
         -38.35
