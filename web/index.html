@@ -20,6 +20,7 @@
     <section class="layer-section"><div class="section-label">MAP LAYERS</div>
       <label hidden="" class="toggle"><span><b>Water depth shading</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked=""></label>
       <label hidden="" class="toggle"><span><b>Depth contours</b><small>Published or raster-derived lines</small></span><input id="contour-layer" type="checkbox" checked=""></label>
+      <label hidden="" id="context-layer-control" class="toggle"><span><b>Regional context contours</b><small>250 m model · visual context only</small></span><input id="context-layer" type="checkbox" checked=""></label>
       <label hidden="" class="toggle"><span><b>Data locations</b><small>Pin counts are data records, not depths</small></span><input id="pin-layer" type="checkbox"></label>
       <label hidden="" class="toggle"><span><b>Raster footprints</b><small>File extents may contain gaps</small></span><input id="coverage-layer" type="checkbox"></label>
       <label class="toggle"><span><b>Shore &amp; place names</b><small>OpenStreetMap · requires internet</small></span><input id="basemap-layer" type="checkbox" checked=""></label>
@@ -28,6 +29,7 @@
     <section class="legend" id="raster-legend" hidden=""><div class="section-label">REFERENCE DEPTH · METRES</div><div class="gradient"></div><div class="ticks"><span>0</span><span>5</span><span>10</span><span>20</span><span>30</span><span>50+</span></div><div class="legend-key"><span><i class="land"></i>Above datum</span><span><i class="missing"></i>No raster data</span></div></section>
     <section class="source-card"><div class="section-label">SURVEY DATA</div><div id="data-status" class="data-status">Checking coverage…</div><p id="source-summary"></p><button id="fetch" class="secondary">↓ Download contour GeoJSON</button><button id="data-guide" class="text-button">View survey data &amp; sources ↗</button></section>
     <div id="surface-legend" class="surface-details" hidden=""><a id="surface-source" target="_blank" rel="noopener noreferrer">Seabed imagery source ↗</a><small id="surface-status" role="status"></small><button id="surface-retry" hidden="">Retry</button></div>
+    <section class="source-card context-legend" id="context-legend" hidden=""><div class="section-label">BROAD-SCALE MODEL · VISUAL CONTEXT ONLY</div><p>Derived from a 250 m seabed grid and smoothed for mapping. Nearshore positions may be inaccurate; do not use for freediving decisions or navigation.</p><a id="context-source" target="_blank" rel="noopener noreferrer">AusBathyTopo 2024 source &amp; limits ↗</a></section>
     <div id="contour-legend" class="contour-key" hidden="" aria-label="Contour reference depths in metres"><span>Contours · m</span><i style="--contour:#aee7e4">0</i><i style="--contour:#53c4da">5</i><i style="--contour:#62b8e8">10</i><i style="--contour:#87a9e2">20</i><i style="--contour:#abbce8">30</i><i style="--contour:#ccc9ef">50+</i></div>
     </section><button id="refresh" class="secondary">Refresh data</button></section></div></aside>
 </section>

@@ -1,8 +1,12 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {beachMeasurement} from '../web/measure.js';
+const boundsCache=new WeakMap();
+function bounds(feature){if(boundsCache.has(feature))return boundsCache.get(feature);const lines=feature.geometry?.type==='LineString'?[feature.geometry.coordinates]:feature.geometry?.type==='MultiLineString'?feature.geometry.coordinates:[];let west=Infinity,south=Infinity,east=-Infinity,north=-Infinity;for(const line of lines)for(const point of line){west=Math.min(west,point[0]);south=Math.min(south,point[1]);east=Math.max(east,point[0]);north=Math.max(north,point[1]);}const value=[west,south,east,north];boundsCache.set(feature,value);return value;}
+function candidates(beach,features){const point=beach.entry?.verified?beach.entry.point:beach.point,latRange=10000/111320,lonRange=latRange/Math.max(.2,Math.cos(point[1]*Math.PI/180));return features.filter(feature=>[0,5,10,15,20].includes(feature.properties?.depth_m)&&(()=>{const b=bounds(feature);return b[2]>=point[0]-lonRange&&b[0]<=point[0]+lonRange&&b[3]>=point[1]-latRange&&b[1]<=point[1]+latRange;})());}
 export function summary(beach,region,features){
   const origin=beach.entry?.verified?{...beach,point:beach.entry.point,reference_label:beach.entry.label}:beach;
+  features=candidates(origin,features);
   const out={id:beach.id,depths:{},datum:region.contours?.datum||'unverified',survey_date:region.contours?.survey_date||null,source_url:region.contour_catalog};
   for(const depth of [5,10,15,20]){try{const result=beachMeasurement(features,origin,depth);out.start_label=result.start_label;out.start=result.start;out.depths[depth]=result.distance_m<=3000?{status:'available',distance_m:result.distance_m,target:result.target}:{status:'outside-radius'};}catch{out.depths[depth]={status:'unavailable'};}}
   return out;

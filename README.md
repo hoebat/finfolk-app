@@ -6,7 +6,9 @@ A backend-free GitHub Pages guide to Australian coastal beaches, reference depth
 
 ## What the data establishes
 
-A listed beach is not a verified entry point, swim route, fishing permission or a current-conditions report. Sixteen regional contour maps cover the four original regions plus Sydney Northern Beaches, Southern Sydney, Central Coast, Hunter, Northern Rivers, Illawarra, Eurobodalla, Sapphire Coast, partial Point Danger–Tweed entrance coverage, Corner Inlet, Mallacoota and southeast Tasmania. Coverage is limited to actual published survey lines, not entire regional envelopes. Elsewhere, survey discovery and the beach directory remain useful even where depth data has not been published in the app. Numeric point depths and profiles appear only when a valid raster grid is available. Filled water shading can also use publisher-rendered imagery (see below).
+A listed beach is not a verified entry point, swim route, fishing permission or a current-conditions report. Sixteen local contour maps cover the four original regions plus Sydney Northern Beaches, Southern Sydney, Central Coast, Hunter, Northern Rivers, Illawarra, Eurobodalla, Sapphire Coast, partial Point Danger–Tweed entrance coverage, Corner Inlet, Mallacoota and statewide Tasmania. Coverage is limited to actual published survey lines, not entire regional envelopes. A separate, faint national context layer shows 5 m contours derived from a 250 m bathymetry grid around the beach directory. It is broad-scale visual context only: it does not count as local survey coverage, appear in depth estimates or recommendations, or establish a swim route. Numeric point depths and profiles appear only when a valid raster grid is available. Filled water shading can also use publisher-rendered imagery (see below).
+
+The national context contours come from [IMAS AusBathyTopo 250 m 2024](https://metadata.imas.utas.edu.au/geonetwork/geonetwork/api/records/8f007712-6a2b-4007-9529-9bd72dd37ca0). The publisher describes them as smoothed for broad-scale mapping and unsuitable for high-precision use or navigation; nearshore and land-sea positions may be inaccurate. The map keeps them in a separate toggle and labels clicked lines as model context, never as a point-depth estimate.
 
 The national directory uses Geoscience Australia's Composite Gazetteer, screened to within 5 km of the Natural Earth 1:10 million coastline to exclude inland records. Screening is approximate and does not produce a shoreline measurement. Directory completeness follows the source, including its named-place coverage and positional limitations. Source IDs, aliases and legacy beach IDs are retained. Nearby matching gazetteer names are merged with reviewed records rather than replacing them.
 
@@ -22,7 +24,7 @@ When a map click has no numeric raster cell, the inspector can estimate referenc
 
 ## Filled water shading
 
-NSW packages use the NSW 2018 marine-lidar bathymetry DEM map service. Port Phillip/Western Port, Corner Inlet and Mallacoota use the relevant CoastKit bathymetry compilation layers. Imagery is requested directly from the publisher after the map settles, padded by 128 screen pixels and capped at 1400 image pixels per side. Small pans within a loaded view reuse it; obsolete requests and image-processing workers are cancelled. The last valid image stays anchored to its geographic bounds until a replacement succeeds. These services require internet; the app still has no backend. No raster service has been configured for southeast Tasmania, which retains its published contours.
+NSW packages use the NSW 2018 marine-lidar bathymetry DEM map service. Port Phillip/Western Port, Corner Inlet and Mallacoota use the relevant CoastKit bathymetry compilation layers. Imagery is requested directly from the publisher after the map settles, padded by 128 screen pixels and capped at 1400 image pixels per side. Small pans within a loaded view reuse it; obsolete requests and image-processing workers are cancelled. The last valid image stays anchored to its geographic bounds until a replacement succeeds. These services require internet; the app still has no backend. No raster service has been configured for Tasmania, which retains its published contours.
 
 The publisher's legend colour order is mapped into an aqua-to-navy palette. Shading shows **relative** shallow-to-deep appearance; it does not assume a linear stretch or infer numerical depths from rendered colours. The source's actual transparent gaps remain blank, and an OpenStreetMap water mask keeps land visible. Missing shore tiles leave their area unshaded. Contour labels and measurements continue to use the original local contour records. A compilation's source dates, spacing and datum can differ from those contour records. Imagery never enables point depths, numeric profiles or higher-resolution claims. The map legend links directly to the active publisher layer; service errors have a retry control and preserve contours.
 
@@ -56,6 +58,7 @@ Only validated HTTPS Instagram post/reel and X status URLs are accepted. Fixed o
 
 ```sh
 python3 -m scripts.acquire_national
+python3 -m scripts.fetch_national_context
 python3 -m scripts.fetch_missing_contours
 python3 -m depth_explorer build-static --output _site
 ```
@@ -72,7 +75,7 @@ The source registry for imported surveys is `depth_explorer/regions.json`. Brows
 
 ## Static artifact
 
-`beaches.json` is a lightweight national search/directory index. `data/areas/` contains regional beach facts, nearby stays, survey links and an approximate context coastline, loaded only when a beach or area is opened. `data/beach-summaries.json` contains generated reference-depth summaries. `data/surveys.json` retains the national source-survey inventory.
+`beaches.json` is a lightweight national search/directory index. `data/areas/` contains regional beach facts, nearby stays, survey links, an approximate context coastline and the beach area's clipped broad-scale model contours, loaded only when a beach or area is opened. `data/beach-summaries.json` contains generated reference-depth summaries from local source contours only. `data/surveys.json` retains the national source-survey inventory.
 
 `data/catalog.json` describes actual regional survey files, numeric rasters, chunks and tiles, plus clearly empty directory map regions. An empty region never requests a fabricated contour file. Numeric grid chunks are gzip-compressed 256 × 256 little-endian Float32 arrays with NaN for missing cells. PNG tiles are for display only. Native source cells supply point values and profiles, and missing data stays blank.
 

@@ -202,7 +202,7 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
         elif needs_projection:
             raise ValueError("Projected rasters require the bundled Proj4js library. Run npm install --ignore-scripts before building")
         from .national import prepare, finish
-        directory = prepare(stage, write, catalog)
+        directory = prepare(stage, write, catalog, store)
         catalog.update(mode="static", built_at=timestamp(), format_version=1)
         payload = json.dumps(catalog, allow_nan=False, separators=(",", ":")).encode()
         write("data/catalog.json", payload)

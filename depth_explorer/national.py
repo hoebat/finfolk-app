@@ -84,7 +84,7 @@ def directory(seed,national,config,packages):
     beaches.sort(key=lambda b:(b['state'],b['area_name'],b['name'],b['id']))
     return {'version':2,'location_note':seed['location_note'],'sources':seed['sources']+national.get('sources',[]),'states':[s for s in config['states'] if any(b['state_id']==s['id'] for b in beaches)],'areas':outareas,'beaches':beaches,'refresh':national.get('refresh',{}),'survey_catalogue_url':'https://portal.ga.gov.au/persona/marine'}
 
-def prepare(stage,write,catalog):
+def prepare(stage,write,catalog,store=None):
     seed=json.loads((ROOT/'web/beaches.json').read_text());config=json.loads((ROOT/'config/areas.json').read_text());snapshot=ROOT/'.cache/national/snapshot.json'
     national=json.loads(snapshot.read_text()) if snapshot.exists() else {}
     output=directory(seed,national,config,catalog['regions']);known={r['id'] for r in catalog['regions']}
@@ -99,6 +99,7 @@ def prepare(stage,write,catalog):
     shoreline=ROOT/'.cache/national/coastline.geojson'
     coast=CoastIndex(json.loads(shoreline.read_text())) if shoreline.exists() else None
     checked=[s for s in allstays if s.get('verified')]
+    context_source=(store.load().get('context_contours',{}).get('ausbathy-2024-shallow-5m',{}) if store else {})
     for beach in output['beaches']:
         nearby=[distance(beach['point'],s['point']) for s in checked if distance(beach['point'],s['point'])<=25000]
         beach['nearby_checked_stays']=len(nearby);beach['nearest_checked_stay_km']=round(min(nearby)/1000,1) if nearby else None
@@ -106,6 +107,13 @@ def prepare(stage,write,catalog):
         members=[b for b in output['beaches'] if b['area_id']==a['id']]
         area_surveys=set(national.get('coverage_by_area',{}).get(a['id'],[]))
         detail={'version':1,'beaches':members,'surveys':[s for s in national.get('surveys',[]) if s['id'] in area_surveys],'stays':[s for s in allstays if any(distance(s['point'],b['point'])<=50000 for b in members)]}
+        context_area=context_source.get('areas',{}).get(a['id'])
+        if store and context_area and context_area.get('count',0):
+            collection=json.loads((store.root/context_area['file']).read_text())
+            detail['context_contours']=collection['features']
+            detail['context_source']={key:value for key,value in context_source.items() if key!='areas'}
+            a['context_count']=context_area['count']
+            a['context_source_url']=context_source.get('metadata_url')
         if coast:
             w,s,e,n=a['bbox'];segments=set()
             for x in range(math.floor(w-.3),math.floor(e+.3)+1):

@@ -445,19 +445,19 @@
   },
   {
     "id": "tas-southeast",
-    "name": "Southeast Tasmania · Tasman & Bruny",
+    "name": "Tasmania · statewide nearshore contours",
     "state": "Tasmania",
     "bbox": [
-      146.85,
-      -43.7,
-      148.1,
-      -42.65
+      143.5,
+      -43.8,
+      148.6,
+      -39.5
     ],
     "center": [
-      147.48,
-      -43.15
+      146.05,
+      -41.65
     ],
-    "zoom": 10,
+    "zoom": 7,
     "contour_service": "https://geoserver.imas.utas.edu.au/geoserver/imas/wfs",
     "contour_protocol": "wfs",
     "contour_type_name": "SeamapTAS_contours_5m",
@@ -470,8 +470,8 @@
     "contour_catalog": "https://metadata.imas.utas.edu.au/geonetwork/srv/eng/catalog.search#/metadata/fa2dbc70-44ab-11dc-8cd0-00188b4c0af8",
     "attribution": "Lucieer, V.L. (2007), SeaMap Tasmania Bathymetric Data. Tasmanian Aquaculture and Fisheries Institute, University of Tasmania. Accessed 28 October 2026.",
     "licence": "CC BY 4.0",
-    "notes": "SeaMap surveyed coastal transects, with interpolated contour geometry; source coverage extends to 40 m or 1.5 km from shore, whichever is reached first. MSL depth is verified in the publisher metadata. Gaps remain blank. Not supplied for navigation.",
-    "source_revision": 1,
+    "notes": "Statewide SeaMap Tasmania 5 m contours. The source describes coastal coverage from the low-water mark to 40 m depth or 1.5 km from shore, whichever comes first; contour geometry is interpolated between source soundings. MSL depth is verified in the publisher metadata. Survey gaps remain blank. Not supplied for navigation.",
+    "source_revision": 2,
     "contour_client_clip": true,
     "map_attribution": "SeaMap Tasmania · TAFI / University of Tasmania · CC BY 4.0"
   }

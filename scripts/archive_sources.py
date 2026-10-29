@@ -29,6 +29,12 @@ def prepare(root, output):
     for item in inventory["rasters"]:
         paths.add(item["file"])
         paths.update(original["file"] for original in item.get("originals", []))
+    for source in inventory.get("context_contours", {}).values():
+        for item in source.get("areas", {}).values():
+            source_path = store.root / item["file"]
+            if sha256(source_path) != item["sha256"]:
+                raise ValueError("Regional context contour checksum does not match inventory")
+            paths.add(item["file"])
     for relative in sorted(paths):
         path = Path(relative)
         if path.is_absolute() or ".." in path.parts:
