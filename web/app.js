@@ -34,8 +34,9 @@ function hasPublishedData(r){return r.status!=='empty'&&(r.rasters.length>0||r.c
 function updateBeachPicker(){discovery?.render();}
 function updateCapabilities(){
   const c=capabilities(region,map.contours);
-  for(const [id,available] of [['depth-layer',c.raster],['coverage-layer',c.raster],['contour-layer',c.raster||c.contours],['pin-layer',!!map.sourcePins.length],['interval',c.fine]])$(id).closest('label').hidden=!available;
-  document.querySelector('.map-tag').textContent=c.raster||c.contours?'SURVEYED SEABED':'COASTAL DIRECTORY';$('raster-legend').hidden=!c.raster;$('contour-legend').hidden=!c.contours||!map.layers.contours;$('basemap-attribution').hidden=!map.layers.basemap;$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!c.measure;$('fetch').hidden=!c.contours;
+  for(const [id,available] of [['depth-layer',c.raster||!!map.surface],['coverage-layer',c.raster],['contour-layer',c.raster||c.contours],['pin-layer',!!map.sourcePins.length],['interval',c.fine]])$(id).closest('label').hidden=!available;
+  document.querySelector('.map-tag').textContent=c.raster||c.contours?'SURVEYED SEABED':'COASTAL DIRECTORY';$('raster-legend').hidden=!c.raster;$('contour-legend').hidden=!c.contours||!map.layers.contours||!!(map.surfaceImage&&map.layers.depth);$('basemap-attribution').hidden=!(map.layers.basemap||(map.surface&&map.layers.depth));
+  const surface=map.surface,show=!!surface&&map.layers.depth;$('surface-legend').hidden=!show;if(show){$('surface-source').href=surface.service+'/'+surface.layer;$('surface-source').title=surface.note;$('surface-status').textContent=map.zoom<surface.minZoom?'Zoom in for seabed shading':map.surfaceState==='error'?'Shading unavailable · contours retained':map.surfaceState==='loading'?'Loading seabed shading…':'Lighter = shallower · display only';$('surface-retry').hidden=map.surfaceState!=='error';}$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!c.measure;$('fetch').hidden=!c.contours;
 }
 async function chooseBeach(id,{writeURL=true,depth=Number($('target-filter').value)}={}){
   const request=++selectionRequest;let beach=findBeach(beachCatalog,id);if(beach&&discovery){try{beach=await discovery.getBeach(beach.id);}catch{notice('Detailed site facts are unavailable; using the listed reference position.');}}if(request!==selectionRequest)return;if(id&&!beach){notice('That beach is not in the location list. Choose a beach from the picker.');return;}
@@ -57,6 +58,7 @@ async function load(selected,retainView=false){
   $('data-status').textContent=region.status==='raster'?`${region.rasters.length} raster source${region.rasters.length===1?'':'s'} available`:region.status==='contours'?`${region.contours.count} published contours`:'No depth data published yet';
   $('data-status').classList.toggle('ready',region.status!=='empty');
   $('source-summary').textContent=region.status==='raster'?region.rasters.map(r=>`${r.resolution_m} m source spacing · ${r.datum} · ${r.quality} coverage`).join('; '):region.status==='contours'?'Contour values are available. Numeric rasters have not been published for point depths or profiles.':'Government sources are configured. Survey data will appear after it is acquired and included in a site build.';
+  if(map.surface)$('source-summary').textContent+=' '+map.surface.note;
   $('fetch').disabled=!region.contours;
   $('empty-state').hidden=region.status!=='empty';$('profile-tool').disabled=region.status!=='raster';
   $('datum-tag').textContent=region.rasters.length?`Depth below ${region.rasters[0].datum}`:region.contours?`Contours · ${region.contours.datum}`:'Reference datum shown per source';
@@ -72,6 +74,8 @@ $('zoom-in').onclick=()=>map.zoomBy(1);$('zoom-out').onclick=()=>map.zoomBy(-1);
 $('refresh').onclick=()=>load(region.id,true).catch(e=>notice(e.message));
 map.onmove=([lon,lat])=>{$('coordinates').textContent=`${Math.abs(lat).toFixed(5)}°${lat<0?'S':'N'}   ${Math.abs(lon).toFixed(5)}°${lon<0?'W':'E'}`;};
 map.onerror=message=>notice(message);
+map.onsurface=()=>{if(region)updateCapabilities();};
+$('surface-retry').onclick=()=>{map.surfaceKey=null;map.draw();};
 map.onview=()=>{clearTimeout(viewTimer);viewTimer=setTimeout(updateDerived,350);};
 async function updateDerived(){
   const request=++viewRequest;if(!region?.rasters.length||!map.layers.contours){map.derived=[];return;}
@@ -137,17 +141,18 @@ function drawProfile(){
 }
 $('export-csv').onclick=()=>{if(profile)download(new Blob([profileCSV(profile)],{type:'text/csv'}),`${profile.region}-depth-profile.csv`);};
 $('export-map').onclick=()=>{
-  try{const scale=2,w=map.width,h=map.height+164,canvas=elem('canvas');canvas.width=w*scale;canvas.height=h*scale;const c=canvas.getContext('2d');c.scale(scale,scale);c.fillStyle='#fff';c.fillRect(0,0,w,h);c.drawImage(map.canvas,0,0,w,map.height);c.fillStyle='#f8fbf8';c.fillRect(0,0,w,55);c.fillStyle='#234e51';c.font='22px Georgia';c.fillText(`${region.name} · surveyed seabed`,20,34);c.fillStyle='#fff';c.fillRect(0,map.height,w,164);c.fillStyle='#3f6566';c.font='10px system-ui';
+  try{const scale=2,w=map.width,h=map.height+240,canvas=elem('canvas');canvas.width=w*scale;canvas.height=h*scale;const c=canvas.getContext('2d');c.scale(scale,scale);c.fillStyle='#fff';c.fillRect(0,0,w,h);c.drawImage(map.canvas,0,0,w,map.height);c.fillStyle='#f8fbf8';c.fillRect(0,0,w,55);c.fillStyle='#234e51';c.font='22px Georgia';c.fillText(`${region.name} · surveyed seabed`,20,34);c.fillStyle='#fff';c.fillRect(0,map.height,w,240);c.fillStyle='#3f6566';c.font='10px system-ui';
     const sources=region.rasters.map(r=>`${r.title} | ${r.datum} | ${r.survey_date} | ${r.resolution_m} m | ${r.quality}`).join('; ')||(region.contours?`Published contours | ${region.contours.datum} | ${region.contour_survey}`:'No survey data is published for this area.');
     const wrap=(text,y)=>{let line='';for(const word of text.split(' ')){if(c.measureText(line+word).width>w-40){c.fillText(line,20,y);y+=14;line='';}line+=word+' ';}c.fillText(line,20,y);return y+17;};
-    let y=wrap(sources,map.height+23);y=wrap(region.attribution+' · '+region.licence,y);if(map.layers.basemap)y=wrap('Basemap © OpenStreetMap contributors · openstreetmap.org/copyright',y);y=wrap('Reference depths only. No tide adjustment. Not supplied for navigation.',y);
-    for(const [i,[depth,color]] of DEPTH_COLOURS.entries()){c.fillStyle=region.rasters.length?`rgb(${color.join(',')})`:contourColour(depth);c.fillRect(20+i*64,y,54,8);c.fillStyle='#426765';c.fillText(`${depth}${depth===50?'+':''} m`,20+i*64,y+23);}canvas.toBlob(blob=>{if(blob)download(blob,`${region.id}-depth-map.png`);else notice('PNG export failed. Disable the online basemap and retry.');},'image/png');
+    let y=wrap(sources,map.height+23);y=wrap(region.attribution+' · '+region.licence,y);if(map.layers.basemap||(map.surface&&map.layers.depth))y=wrap('Basemap © OpenStreetMap contributors · openstreetmap.org/copyright',y);if(map.surface&&map.layers.depth)y=wrap(map.surface.credit+' · Relative seabed shading, not numeric depth. Contour labels supply reference metres.',y);y=wrap('Reference depths only. No tide adjustment. Not supplied for navigation.',y);
+    for(const [i,[depth,color]] of DEPTH_COLOURS.entries()){c.fillStyle=region.rasters.length||(map.surfaceImage&&map.layers.depth)?`rgb(${color.join(',')})`:contourColour(depth);c.fillRect(20+i*64,y,54,8);c.fillStyle='#426765';c.fillText(map.surfaceImage&&map.layers.depth?(i===0?'Shallower':i===5?'Deeper':''):`${depth}${depth===50?'+':''} m`,20+i*64,y+23);}canvas.toBlob(blob=>{if(blob)download(blob,`${region.id}-depth-map.png`);else notice('PNG export failed. Disable the online basemap and retry.');},'image/png');
   }catch(e){notice(`Map export failed: ${e.message}. Try disabling the online basemap.`);}
 };
 function showGuide(){
   $('guide-title').textContent=`Survey data for ${region.name}`;const content=$('guide-content');content.replaceChildren();
   function step(title,text){const div=elem('section',undefined,'guide-step');div.append(elem('h3',title),elem('p',text));content.append(div);return div;}
   const first=step('Published survey coverage',region.status==='empty'?'No survey files are currently published for this area. The map leaves coverage blank.':region.status==='contours'?'Published contour lines are available. Point depths and numeric profiles are unavailable until a raster is published.':'Point values and profiles use numeric survey cells. Transparent areas are data gaps; grey areas have elevations above the reference datum.');if(region.contour_catalog)first.append(link('Government contour dataset ↗',region.contour_catalog));
+  if(map.surface){const surface=step('Filled water shading',map.surface.note+' Imagery comes directly from the publisher and requires internet. Colours follow the publisher legend from shallow to deep; they are not converted into numeric samples. Water is clipped to the OpenStreetMap shore. Missing imagery or shore tiles leaves shading blank.');surface.append(link('Publisher raster layer ↗',map.surface.service+'/'+map.surface.layer));}
   const second=step('Original elevation data',region.notes);if(region.raster_catalog)second.append(link('Government dataset ↗',region.raster_catalog));if(region.raster_portal)second.append(document.createTextNode(' · '),link('Publisher download portal ↗',region.raster_portal));
   step('Depth reference','Depth is measured below the datum listed with each survey. AHD and chart datums are different references. Survey spacing describes horizontal detail, not vertical accuracy.');
   step('Explore and export','Click the map for source details. Where rasters are available, draw a seabed profile and export it as CSV. PNG map exports include depth references and attribution. This map does not estimate current water depth or determine whether a dive is safe.');

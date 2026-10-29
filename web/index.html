@@ -13,7 +13,7 @@
     <details class="directory-menu"><summary>Browse coastal areas</summary><div id="region-picker" class="region-picker" role="group" aria-label="Choose map region"></div></details>
     <details class="map-data"><summary>Map data &amp; layers</summary>
     <section class="layer-section"><div class="section-label">MAP LAYERS</div>
-      <label hidden class="toggle"><span><b>Seabed depths</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
+      <label hidden class="toggle"><span><b>Water depth shading</b><small>Colour from shallow to deep</small></span><input id="depth-layer" type="checkbox" checked></label>
       <label hidden class="toggle"><span><b>Depth contours</b><small>Published or raster-derived lines</small></span><input id="contour-layer" type="checkbox" checked></label>
       <label hidden class="toggle"><span><b>Data locations</b><small>Pin counts are data records, not depths</small></span><input id="pin-layer" type="checkbox"></label>
       <label hidden class="toggle"><span><b>Raster footprints</b><small>File extents may contain gaps</small></span><input id="coverage-layer" type="checkbox"></label>
@@ -57,6 +57,7 @@
       <div id="empty-state" class="empty-state"><p>Depth data aren’t published here yet. Beach and stay markers are reference locations; the context coastline is approximate.</p><button id="empty-guide" class="text-button">View coverage &amp; sources ↗</button></div>
       <div id="drawing-help" class="drawing-help" hidden><span>Click to add profile points. Drag to pan.</span><button id="finish-profile">Finish profile</button><button id="cancel-profile" aria-label="Cancel profile">Cancel</button></div>
       <div id="inspection" class="inspection" hidden><button id="close-inspection" aria-label="Close inspection">×</button><div class="eyebrow" id="inspection-kind">REFERENCE DEPTH</div><div id="inspection-value" class="inspection-value"></div><div id="inspection-details"></div></div>
+      <div id="surface-legend" class="surface-legend" hidden><span class="surface-gradient" aria-hidden="true"></span><a id="surface-source" target="_blank" rel="noopener noreferrer">Seabed shading ↗</a><small id="surface-status" role="status"></small><button id="surface-retry" hidden>Retry</button></div>
       <div id="contour-legend" class="contour-legend" hidden aria-label="Contour reference depths in metres"><span>Contours · m</span><i style="--contour:#aee7e4">0</i><i style="--contour:#53c4da">5</i><i style="--contour:#62b8e8">10</i><i style="--contour:#87a9e2">20</i><i style="--contour:#abbce8">30</i><i style="--contour:#ccc9ef">50+</i></div>
       <div class="map-bottom"><span id="coordinates">Click the map to inspect a location</span><span><span id="map-attribution">Depth Atlas · local data</span> <a id="basemap-attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></span></div>
     </section>

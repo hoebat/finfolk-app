@@ -50,3 +50,9 @@ assert.equal(pixels[11],200,'Styling preserves transparency');
 assert.notEqual(contourColour(5),contourColour(20));
 
 const placeName=new Uint8ClampedArray([45,84,105,255]);styleShorePixels(placeName);assert.ok(placeName[0]>90,'Blue place-name text stays legible instead of being coloured as water');
+
+const {surfaceForRegion,surfaceURL,recolourSurface}=await import('../web/surfaces.js');
+const surface=surfaceForRegion({id:'bondi',rasters:[]});assert.equal(surface.layer,2);assert.equal(surfaceForRegion({id:'tas-southeast',rasters:[]}),null);assert.equal(surfaceForRegion({id:'port-phillip',rasters:[{}]}),null,'Numeric raster packages use their actual grid rendering');
+const url=new URL(surfaceURL(surface,[151,-34,152,-33],2000,1000));assert.equal(url.searchParams.get('size'),'1400,700');assert.equal(url.searchParams.get('bboxSR'),'3857');assert.equal(url.searchParams.get('layers'),'show:2');assert.equal(url.searchParams.get('transparent'),'true');const box=url.searchParams.get('bbox').split(',').map(Number);assert.ok(box[0]<box[2]&&box[1]<box[3]);
+const surfacePixels=new Uint8ClampedArray([255,0,0,255,0,0,255,127,17,31,43,0]);recolourSurface(surfacePixels,[[255,0,0],[0,0,255]]);assert.deepEqual([...surfacePixels],[174,231,228,255,6,22,46,127,17,31,43,0],'Legend order is recoloured while transparent source gaps stay blank');
+map.setRegion({id:'bondi',center:[151,-34],zoom:11,rasters:[]});assert.ok(map.surface);map.surfaceImage={image:{}};map.setRegion({id:'tas-southeast',center:[147,-43],zoom:11,rasters:[]});assert.equal(map.surface,null);assert.equal(map.surfaceImage,null,'Changing regions clears previous imagery');

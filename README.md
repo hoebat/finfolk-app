@@ -6,7 +6,7 @@ A backend-free GitHub Pages guide to Australian coastal beaches, reference depth
 
 ## What the data establishes
 
-A listed beach is not a verified entry point, swim route, fishing permission or a current-conditions report. Sixteen regional contour maps cover the four original regions plus Sydney Northern Beaches, Southern Sydney, Central Coast, Hunter, Northern Rivers, Illawarra, Eurobodalla, Sapphire Coast, partial Point Danger–Tweed entrance coverage, Corner Inlet, Mallacoota and southeast Tasmania. Coverage is limited to actual published survey lines, not entire regional envelopes. Elsewhere, survey discovery and the beach directory remain useful even where depth data has not been published in the app. Numeric point depths, shading and profiles appear only when a valid raster grid is available.
+A listed beach is not a verified entry point, swim route, fishing permission or a current-conditions report. Sixteen regional contour maps cover the four original regions plus Sydney Northern Beaches, Southern Sydney, Central Coast, Hunter, Northern Rivers, Illawarra, Eurobodalla, Sapphire Coast, partial Point Danger–Tweed entrance coverage, Corner Inlet, Mallacoota and southeast Tasmania. Coverage is limited to actual published survey lines, not entire regional envelopes. Elsewhere, survey discovery and the beach directory remain useful even where depth data has not been published in the app. Numeric point depths and profiles appear only when a valid raster grid is available. Filled water shading can also use publisher-rendered imagery (see below).
 
 The national directory uses Geoscience Australia's Composite Gazetteer, screened to within 5 km of the Natural Earth 1:10 million coastline to exclude inland records. Screening is approximate and does not produce a shoreline measurement. Directory completeness follows the source, including its named-place coverage and positional limitations. Source IDs, aliases and legacy beach IDs are retained. Nearby matching gazetteer names are merged with reviewed records rather than replacing them.
 
@@ -18,6 +18,12 @@ Search names, aliases, states and regions. Filter by target contour and referenc
 
 Automatic 5/10/15/20 m summaries use the same spherical nearest-segment calculation as the interactive map. Estimates are limited to contours within 3 km. A sourced reference within 250 m of a mapped 0 m line may snap to that line; otherwise its original location is explicitly labelled. Monitoring points and beach polygon centres may be offshore. No tide, route or current-water-depth adjustment is made. Coarse national products are not substituted for local swim-to-depth estimates.
 
+## Filled water shading
+
+NSW packages use the NSW 2018 marine-lidar bathymetry DEM map service. Port Phillip/Western Port, Corner Inlet and Mallacoota use the relevant CoastKit bathymetry compilation layers. Imagery is requested directly from the publisher after the map settles, capped at 1400 pixels per side. These services require internet; the app still has no backend. No raster service has been configured for southeast Tasmania, which retains its published contours.
+
+The publisher's legend colour order is mapped into an aqua-to-navy palette. Shading shows **relative** shallow-to-deep appearance; it does not assume a linear stretch or infer numerical depths from rendered colours. The source's actual transparent gaps remain blank, and an OpenStreetMap water mask keeps land visible. Missing shore tiles leave their area unshaded. Contour labels and measurements continue to use the original local contour records. A compilation's source dates, spacing and datum can differ from those contour records. Imagery never enables point depths, numeric profiles or higher-resolution claims. The map legend links directly to the active publisher layer; service errors have a retry control and preserve contours.
+
 ## Nearby stays
 
 Select a beach to load nearby campgrounds, caravan parks and cabins. The default radius is 25 km, adjustable to 5/10/50 km. Distances are straight-line from the beach reference, not travel distances. Maps and provider links allow independent access and booking checks.
@@ -28,7 +34,7 @@ Unknown amenities, access and seasonality are not inferred. Optional mapped amen
 
 ## Photos and activity guides
 
-`web/social.json` contains curated Instagram/X post URLs, location associations and publisher sources. Posts are embedded only after an explicit load click. No social image files or CDN thumbnails are downloaded or rehosted. Source links remain available if a post is deleted, private or blocked. Galleries with no matching posts are hidden. A regional photograph is labelled as regional context, not necessarily the selected beach. Historical images do not establish present conditions.
+`web/social.json` contains curated Instagram/X post URLs, location associations and publisher sources. Posts are embedded only after an explicit load click. No social image files or CDN thumbnails are downloaded or rehosted. Source links remain available if a post is deleted, private or blocked. Every beach has a Photos tab with an Instagram location search and a form to load a public post/reel URL. Up to eight added links per beach are saved in browser local storage, scoped to this site/device; returning to a beach never automatically loads an embed. Links can be removed. If storage is blocked they work for the current visit. Added links are labelled as having an unverified location association. A regional photograph is labelled as regional context, not necessarily the selected beach. Historical images do not establish present conditions.
 
 Only validated HTTPS Instagram post/reel and X status URLs are accepted. Fixed official embed interfaces are used; arbitrary embed HTML is not accepted. No social API key, automatic search subscription or application backend is needed. New curated entries should be checked against the original creator or an attributable publisher before adding their location association.
 

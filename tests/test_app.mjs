@@ -16,7 +16,7 @@ const regions=JSON.parse(await readFile(new URL('../depth_explorer/regions.json'
 for(const area of directory.areas){area.map_region=area.id;regions.push({id:area.id,name:area.name,center:area.center,zoom:10,rasters:[],tiles:{},contour_file:null,status:'empty'});}
 regions.push({id:'unavailable-configured-survey',name:'Unavailable survey',state:'TEST',center:[151,-34],zoom:10,rasters:[],tiles:{},contour_file:'data/contours/unavailable.geojson',contours:null,status:'empty'});
 const guides=await readFile(new URL('../web/guides.json',import.meta.url),'utf8'),social=await readFile(new URL('../web/social.json',import.meta.url),'utf8');
-for(const name of ['document','location','history','Event','MouseEvent','HTMLCanvasElement'])globalThis[name]=window[name];
+for(const name of ['document','location','history','Event','MouseEvent','HTMLCanvasElement','localStorage'])globalThis[name]=window[name];
 globalThis.devicePixelRatio=1;globalThis.ResizeObserver=class{observe(){}};
 const ctx=new Proxy({measureText:text=>({width:text.length*7})},{get:(target,key)=>target[key]||(()=>{})});window.HTMLCanvasElement.prototype.getContext=()=>ctx;
 const originalFetch=globalThis.fetch;let contourRequests=0,areaRequests=0;
@@ -36,7 +36,7 @@ globalThis.fetch=async url=>{
 const $=id=>document.getElementById(id),waitFor=async predicate=>{for(let i=0;i<150;i++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,5));}throw Error('App timed out: '+$('notice').textContent);};
 try{
  await import('../web/app.js');await waitFor(()=>document.querySelectorAll('.area-button').length>0&&!$('measure-start').disabled);
- assert.equal(contourRequests,1,'The home page opens one published map');assert.equal($('explorer').hidden,false);assert.equal($('search-options').open,false);assert.equal(document.querySelector('.directory-menu').open,false);assert.equal(areaRequests,1,'Only the open map’s regional context is loaded for shoreline fallback');assert.equal($('basemap-layer').checked,true);assert.equal($('contour-legend').hidden,false);assert.equal($('basemap-attribution').hidden,false);assert.equal($('origin-filter'),null);assert.equal($('transport-status'),null);
+ assert.equal(contourRequests,1,'The home page opens one published map');assert.equal($('explorer').hidden,false);assert.equal($('search-options').open,false);assert.equal(document.querySelector('.directory-menu').open,false);assert.equal(areaRequests,1,'Only the open map’s regional context is loaded for shoreline fallback');assert.equal($('basemap-layer').checked,true);assert.equal($('depth-layer').closest('label').hidden,false,'Publisher imagery exposes the shading toggle');assert.equal($('surface-legend').hidden,false);assert.equal($('surface-source').textContent,'Seabed shading ↗');assert.equal($('contour-legend').hidden,false);assert.equal($('basemap-attribution').hidden,false);assert.equal($('origin-filter'),null);assert.equal($('transport-status'),null);
  assert.ok($('map').compareDocumentPosition($('beach-summary'))&window.Node.DOCUMENT_POSITION_FOLLOWING,'Map precedes potentially long beach details');
  document.querySelector('[data-view="maps"]').click();await waitFor(()=>!$('measure-start').disabled);assert.equal($('explorer').hidden,false);assert.equal($('survey-select').options.length,regions.filter(r=>r.status!=='empty'&&r.contour_file).length);assert.equal($('empty-state').hidden,true);assert.equal($('search-results-panel').hidden,true);assert.ok(contourRequests>0);
  document.querySelector('[data-view="discover"]').click();
@@ -44,6 +44,7 @@ try{
  const states=[...document.querySelectorAll('#region-picker .state-group>summary')].map(s=>s.textContent);assert.deepEqual(states,states.slice().sort((a,b)=>a.localeCompare(b)));
  $('beach-search').value='greenfield';$('beach-search').dispatchEvent(new window.Event('input'));assert.equal($('search-results-panel').hidden,false,'Map search reveals the compact results');document.querySelector('#beach-results .beach-open').click();
  await waitFor(()=>$('place-title').textContent==='Greenfield Beach');assert.equal(new URL(location.href).searchParams.get('site'),'greenfield');assert.equal($('explorer').hidden,false);assert.ok($('beach-summary').textContent.includes('Camping, caravan parks & cabins nearby'));
+ assert.ok(document.querySelector('.instagram-form'),'Every selected beach offers Instagram, even with no curated photo');assert.equal(document.querySelectorAll('.social-gallery iframe').length,0);assert.equal(document.querySelector('.place-tab').getAttribute('aria-selected'),'true');
  assert.equal(document.querySelectorAll('.stay-card').length,1);document.querySelector('.stay-filters input').click();assert.equal(document.querySelectorAll('.stay-card').length,2);
  const amenity=document.querySelector('select[aria-label="Stay amenities"]');amenity.value='showers';amenity.dispatchEvent(new window.Event('change'));assert.equal(document.querySelectorAll('.stay-card').length,0);
  $('beach-search').value='jervis';$('beach-search').dispatchEvent(new window.Event('input'));
