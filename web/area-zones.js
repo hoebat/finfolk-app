@@ -1,73 +1,11 @@
 const METRES_PER_DEGREE = 111320;
 const CLUSTER_DISTANCE = 18000;
 const CLUSTER_RADIUS = 30000;
-const EDGE_BUFFER = 900;
-const LONE_POINT_RADIUS = 1200;
+const EDGE_BUFFER = 650;
+const LONE_POINT_RADIUS = 900;
 
 function distance(a, b) {
   return Math.hypot(a.x - b.x, a.y - b.y);
-}
-
-function convexHull(points) {
-  const sorted = [...points].sort((a, b) => a.x - b.x || a.y - b.y);
-  if (sorted.length <= 2) return sorted;
-  const cross = (o, a, b) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
-  const lower = [];
-  for (const point of sorted) {
-    while (lower.length >= 2 && cross(lower.at(-2), lower.at(-1), point) <= 0) lower.pop();
-    lower.push(point);
-  }
-  const upper = [];
-  for (const point of sorted.reverse()) {
-    while (upper.length >= 2 && cross(upper.at(-2), upper.at(-1), point) <= 0) upper.pop();
-    upper.push(point);
-  }
-  lower.pop();
-  upper.pop();
-  return lower.concat(upper);
-}
-
-function circle(center, radius, count = 18) {
-  return Array.from({length: count}, (_, index) => {
-    const angle = index * Math.PI * 2 / count;
-    return {x: center.x + Math.cos(angle) * radius, y: center.y + Math.sin(angle) * radius};
-  });
-}
-
-function capsule(a, b, radius, steps = 9) {
-  const angle = Math.atan2(b.y - a.y, b.x - a.x);
-  const result = [];
-  for (let index = 0; index <= steps; index++) {
-    const theta = angle - Math.PI / 2 + index * Math.PI / steps;
-    result.push({x: b.x + Math.cos(theta) * radius, y: b.y + Math.sin(theta) * radius});
-  }
-  for (let index = 0; index <= steps; index++) {
-    const theta = angle + Math.PI / 2 + index * Math.PI / steps;
-    result.push({x: a.x + Math.cos(theta) * radius, y: a.y + Math.sin(theta) * radius});
-  }
-  return result;
-}
-
-function bufferedHull(points) {
-  if (points.length === 1) return circle(points[0], LONE_POINT_RADIUS);
-  const hull = convexHull(points);
-  if (hull.length <= 2) return capsule(hull[0], hull.at(-1), EDGE_BUFFER);
-  const center = hull.reduce((sum, point) => ({x: sum.x + point.x / hull.length, y: sum.y + point.y / hull.length}), {x: 0, y: 0});
-  const expanded = hull.map(point => {
-    const length = Math.max(1, distance(point, center));
-    return {x: point.x + (point.x - center.x) / length * EDGE_BUFFER, y: point.y + (point.y - center.y) / length * EDGE_BUFFER};
-  });
-  let smooth = expanded;
-  for (let iteration = 0; iteration < 2; iteration++) {
-    smooth = smooth.flatMap((point, index) => {
-      const next = smooth[(index + 1) % smooth.length];
-      return [
-        {x: point.x * .75 + next.x * .25, y: point.y * .75 + next.y * .25},
-        {x: point.x * .25 + next.x * .75, y: point.y * .25 + next.y * .75}
-      ];
-    });
-  }
-  return smooth;
 }
 
 function splitCoastClusters(points) {
@@ -92,7 +30,38 @@ function splitCoastClusters(points) {
   return clusters;
 }
 
-// These are approximate browse zones around the app's beach references, not official boundaries.
+function coastalLinks(points) {
+  if (points.length < 2) return [];
+  const selected = new Uint8Array(points.length), nearestDistance = new Float64Array(points.length), parent = new Int32Array(points.length);
+  nearestDistance.fill(Infinity);
+  parent.fill(-1);
+  selected[0] = 1;
+  for (let index = 1; index < points.length; index++) {
+    nearestDistance[index] = distance(points[0], points[index]);
+    parent[index] = 0;
+  }
+  const links = [];
+  for (let count = 1; count < points.length; count++) {
+    let next = -1;
+    for (let index = 0; index < points.length; index++) {
+      if (!selected[index] && (next < 0 || nearestDistance[index] < nearestDistance[next])) next = index;
+    }
+    if (next < 0 || nearestDistance[next] > CLUSTER_DISTANCE) break;
+    selected[next] = 1;
+    links.push([points[parent[next]], points[next]]);
+    for (let index = 0; index < points.length; index++) {
+      if (selected[index]) continue;
+      const candidate = distance(points[next], points[index]);
+      if (candidate < nearestDistance[index]) {
+        nearestDistance[index] = candidate;
+        parent[index] = next;
+      }
+    }
+  }
+  return links;
+}
+
+// Rounded, shoreline-adjacent browse bands are approximate references, not official boundaries.
 export function buildAreaZones(areas = [], beaches = []) {
   const areaById = new Map(areas.filter(area => !area.fallback && !area.id.endsWith('-other-coast')).map(area => [area.id, area]));
   const members = new Map();
@@ -112,9 +81,22 @@ export function buildAreaZones(areas = [], beaches = []) {
     const points = unique.map(point => ({x: (point.lon - origin.lon) * lonScale, y: (point.lat - origin.lat) * METRES_PER_DEGREE}));
     const area = areaById.get(areaId);
     for (const cluster of splitCoastClusters(points)) {
-      const polygon = bufferedHull(cluster).map(point => [origin.lon + point.x / lonScale, origin.lat + point.y / METRES_PER_DEGREE]);
-      const xs = polygon.map(point => point[0]), ys = polygon.map(point => point[1]);
-      zones.push({id: areaId, name: area.name, polygon, bounds: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]});
+      const radius = cluster.length === 1 ? LONE_POINT_RADIUS : EDGE_BUFFER;
+      const locations = cluster.map(point => [origin.lon + point.x / lonScale, origin.lat + point.y / METRES_PER_DEGREE]);
+      const xs = locations.map(point => point[0]), ys = locations.map(point => point[1]);
+      const marginLon = radius / lonScale, marginLat = radius / METRES_PER_DEGREE;
+      const links = coastalLinks(cluster).map(([a, b]) => [
+        [origin.lon + a.x / lonScale, origin.lat + a.y / METRES_PER_DEGREE],
+        [origin.lon + b.x / lonScale, origin.lat + b.y / METRES_PER_DEGREE]
+      ]);
+      zones.push({
+        id: areaId,
+        name: area.name,
+        points: locations,
+        lines: links,
+        radius_m: radius,
+        bounds: [Math.min(...xs) - marginLon, Math.min(...ys) - marginLat, Math.max(...xs) + marginLon, Math.max(...ys) + marginLat]
+      });
     }
   }
   return zones;
