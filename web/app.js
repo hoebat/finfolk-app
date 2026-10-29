@@ -1,4 +1,5 @@
 import {estimateContourDepth} from './contour-estimate.js';
+import {buildAreaZones} from './area-zones.js';
 import {installMapSearch} from './map-search.js';
 import {installAppShell} from './mobile-shell.js';
 import {installSystemPanel} from './activity.js';
@@ -195,7 +196,7 @@ async function openArea(area){
   try{await load(survey||area.map_region);if(request!==selectionRequest)return;try{const context=await discovery.getAreaData(area);if(request!==selectionRequest)return;setAreaContext(context);}catch{setAreaContext();}map.beaches=beachCatalog.beaches.filter(b=>b.area_id===area.id);map.center=area.center;map.zoom=10;map.resize();map.draw();map.onview?.();}catch(e){notice(e.message);}
 }
 async function start(){
-  try{beachCatalog=await data.json('beaches.json');}catch(e){notice(`Beach locations are unavailable: ${e.message}`);}
+  try{beachCatalog=await data.json('beaches.json');map.areaZones=buildAreaZones(beachCatalog.areas,beachCatalog.beaches);map.draw();}catch(e){notice(`Beach locations are unavailable: ${e.message}`);}
   const [summaries,guides,social]=await Promise.all([data.json('data/beach-summaries.json').catch(()=>({beaches:[]})),data.json('guides.json'),data.json('social.json').catch(()=>({posts:[]}))]);
   catalog=await data.catalog();region=catalog.regions[0];
   const published=catalog.regions.filter(hasPublishedData);for(const state of [...new Set(published.map(r=>r.state))].sort((a,b)=>a.localeCompare(b))){const group=elem('optgroup');group.label=state;for(const r of published.filter(r=>r.state===state).sort((a,b)=>a.name.localeCompare(b.name))){const option=elem('option',r.name);option.value=r.id;group.append(option);}$('survey-select').append(group);}
