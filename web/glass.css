@@ -263,3 +263,17 @@ footer { color: #78869a; padding-bottom: 16px; }
   .system-panel { bottom: calc(136px + env(safe-area-inset-bottom)); right: 12px; max-height: calc(100svh - 164px - env(safe-area-inset-bottom)); padding: 18px; border-radius: 23px; }
 }
 @media(prefers-reduced-motion:reduce) { .system-dot,.request-dot,.system-panel { animation: none!important; } }
+/* Keep the chart clear; optional controls and source explanations live in Map data. */
+.map-view-controls { display:flex; gap:7px; padding:12px 0 4px; }
+.map-view-controls button { display:grid; place-items:center; width:37px; height:35px; padding:8px; }
+.map-view-controls svg, .map-overlay-toggle svg { display:block; width:19px; height:19px; }
+.surface-details { display:grid; gap:8px; padding:14px 4px; font-size:10px; color:var(--muted); }
+.surface-details a { color:var(--teal); font-size:11px; }
+.surface-details button { justify-self:start; padding:7px 10px; border-radius:8px; background:#007aff0c; color:var(--teal); }
+.contour-key { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 4px; font-size:9px; color:var(--muted); }
+.contour-key i { font-style:normal; border-top:2px solid var(--contour); padding-top:4px; min-width:16px; text-align:center; }
+.map-overlay-toggle { position:absolute; top:14px; right:14px; z-index:2; display:grid; place-items:center; width:38px; height:38px; padding:9px; border:1px solid #ffffffaa; border-radius:13px; background:#f9fcffcf; color:#344f6c; box-shadow:0 3px 14px #00162b20; -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); }
+.map-overlay-toggle[aria-pressed=false] { color:#7c8b9e; }
+.inspection { top:16px; }
+.map-bottom { justify-content:flex-end; }
+@media(prefers-reduced-transparency:reduce) { .map-overlay-toggle { background:#f4f8ff; -webkit-backdrop-filter:none; backdrop-filter:none; } }
