@@ -14,10 +14,11 @@ export function unproject([x,y],z) {const size=256*2**z;return [x/size*360-180,M
 export class DepthMap {
   constructor(canvas) {
     this.active=true;this.touchPoints=new Map();this.pendingTiles=[];this.tileActive=0;this.viewEpoch=0;this.ready=false;this.imageLimit=globalThis.matchMedia?.('(max-width:700px)').matches?128:256;this.canvas=canvas;this.ctx=canvas.getContext('2d');this.center=[144.86,-38.08];this.zoom=10;
-    this.layers={depth:true,contours:true,context:true,pins:false,coverage:false,basemap:true,measurement:true};this.contours=[];this.contextContours=[];this.contextSource=null;this.derived=[];this.sourcePins=[];this.pinGroups=new Map();this.pinHits=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';this.pointPicking=false;this.measurement=null;this.beaches=[];this.beachHits=[];this.stays=[];this.stayHits=[];this.coastline=[];
+    this.layers={depth:true,contours:true,context:true,pins:false,coverage:false,basemap:true,measurement:true};this.contours=[];this.contextContours=[];this.contextSource=null;this.derived=[];this.sourcePins=[];this.pinGroups=new Map();this.pinHits=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';this.pointPicking=false;this.measurement=null;this.beaches=[];this.beachHits=[];this.stays=[];this.stayHits=[];this.coastline=[];this.areaZones=[];this.areaHits=[];this.hoveredAreaId=null;
     new ResizeObserver(()=>this.resize()).observe(canvas);
     canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);if(e.pointerType==='touch'){this.touchPoints.set(e.pointerId,[e.offsetX,e.offsetY]);if(this.touchPoints.size>=2){const [a,b]=[...this.touchPoints.values()],mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];this.pinch={distance:Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1])),zoom:this.zoom,anchor:this.fromScreen(mid)};this.touchWasPinch=true;this.drag=null;return;}}this.drag={x:e.offsetX,y:e.offsetY,start:project(this.center,this.zoom),distance:0};});
-    canvas.addEventListener('pointermove',e=>{const point=[e.offsetX,e.offsetY];if(e.pointerType==='touch'&&this.touchPoints.has(e.pointerId)){this.touchPoints.set(e.pointerId,point);if(this.pinch&&this.touchPoints.size>=2){const [a,b]=[...this.touchPoints.values()],mid=[(a[0]+b[0])/2,(a[1]+b[1])/2],size=Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1]));this.zoom=Math.max(5,Math.min(20,this.pinch.zoom+Math.round(Math.log2(size/this.pinch.distance))));const anchor=project(this.pinch.anchor,this.zoom);this.center=unproject([anchor[0]-mid[0]+this.width/2,anchor[1]-mid[1]+this.height/2],this.zoom);this.schedule();return;}}this.onmove?.(this.fromScreen(point));const stay=this.pointPicking?null:this.hitStay(...point),beach=this.pointPicking?null:this.hitBeach(...point),pin=this.pointPicking?null:this.hitDataPin(...point);canvas.title=stay?`${stay.name} — nearby stay`:beach?`${beach.name} — open beach summary`:pin?(pin.members.length>1?`${pin.members.length} data records — click to zoom or choose a record`:pin.kind==='contour'?`${pin.feature.properties.depth_m} m contour — click for source details`:'Raster data — click for details'):'';if(canvas.style)canvas.style.cursor=stay||beach||pin?'pointer':'crosshair';if(!this.drag)return;const dx=point[0]-this.drag.x,dy=point[1]-this.drag.y;this.drag.distance=Math.max(this.drag.distance,Math.hypot(dx,dy));if(this.drag.distance>4){this.center=unproject([this.drag.start[0]-dx,this.drag.start[1]-dy],this.zoom);this.schedule();}});
+    canvas.addEventListener('pointermove',e=>{const point=[e.offsetX,e.offsetY];if(e.pointerType==='touch'&&this.touchPoints.has(e.pointerId)){this.touchPoints.set(e.pointerId,point);if(this.pinch&&this.touchPoints.size>=2){const [a,b]=[...this.touchPoints.values()],mid=[(a[0]+b[0])/2,(a[1]+b[1])/2],size=Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1]));this.zoom=Math.max(5,Math.min(20,this.pinch.zoom+Math.round(Math.log2(size/this.pinch.distance))));const anchor=project(this.pinch.anchor,this.zoom);this.center=unproject([anchor[0]-mid[0]+this.width/2,anchor[1]-mid[1]+this.height/2],this.zoom);this.schedule();return;}}this.onmove?.(this.fromScreen(point));const stay=this.pointPicking?null:this.hitStay(...point),beach=this.pointPicking?null:this.hitBeach(...point),pin=this.pointPicking?null:this.hitDataPin(...point),area=this.pointPicking||this.drag||e.pointerType==='touch'?null:this.hitArea(...point);const hoverId=area?.id||null;if(hoverId!==this.hoveredAreaId){this.hoveredAreaId=hoverId;this.schedule();}canvas.title=stay?`${stay.name} — nearby stay`:beach?`${beach.name} — open beach summary`:area?`${area.name} · approximate coastal area`:pin?(pin.members.length>1?`${pin.members.length} data records — click to zoom or choose a record`:pin.kind==='contour'?`${pin.feature.properties.depth_m} m contour — click for source details`:'Raster data — click for details'):'';if(canvas.style)canvas.style.cursor=stay||beach||pin?'pointer':area?'help':'crosshair';if(!this.drag)return;const dx=point[0]-this.drag.x,dy=point[1]-this.drag.y;this.drag.distance=Math.max(this.drag.distance,Math.hypot(dx,dy));if(this.drag.distance>4){this.center=unproject([this.drag.start[0]-dx,this.drag.start[1]-dy],this.zoom);this.schedule();}});
+    canvas.addEventListener('pointerleave',()=>{if(this.hoveredAreaId){this.hoveredAreaId=null;this.schedule();}canvas.title='';if(canvas.style)canvas.style.cursor='crosshair';});
     canvas.addEventListener('pointerup',e=>{if(e.pointerType==='touch'){this.touchPoints.delete(e.pointerId);if(this.pinch||this.touchWasPinch){this.pinch=null;this.drag=null;if(!this.touchPoints.size)this.touchWasPinch=false;this.schedule();this.onview?.();return;}}if(!this.drag)return;const moved=this.drag.distance;this.drag=null;if(moved<5){const stay=this.pointPicking?null:this.hitStay(e.offsetX,e.offsetY);if(stay){this.onStay?.(stay);return;}const beach=this.pointPicking?null:this.hitBeach(e.offsetX,e.offsetY);if(beach){this.onBeach?.(beach);return;}const pin=this.pointPicking?null:this.hitDataPin(e.offsetX,e.offsetY);this.onclick?.(pin?.point||this.fromScreen([e.offsetX,e.offsetY]),pin?.feature||this.hitContour(e.offsetX,e.offsetY),pin);}else{this.schedule();this.onview?.();}});
     canvas.addEventListener('pointercancel',e=>{if(e?.pointerType==='touch')this.touchPoints.delete(e.pointerId);this.pinch=null;this.touchWasPinch=this.touchPoints.size>0;this.drag=null;this.schedule();this.onview?.();});
     canvas.addEventListener('wheel',e=>{e.preventDefault();if(this.wheelTime&&Date.now()-this.wheelTime<100)return;this.wheelTime=Date.now();this.zoomBy(e.deltaY<0?1:-1,[e.offsetX,e.offsetY]);},{passive:false});
@@ -29,7 +30,7 @@ export class DepthMap {
   toScreen(point){const p=project(point,this.zoom),c=project(this.center,this.zoom);return [p[0]-c[0]+this.width/2,p[1]-c[1]+this.height/2];}
   fromScreen(point){const c=project(this.center,this.zoom);return unproject([c[0]+point[0]-this.width/2,c[1]+point[1]-this.height/2],this.zoom);}
   bounds(){const a=this.fromScreen([0,this.height]),b=this.fromScreen([this.width,0]);return [...a,...b];}
-  setRegion(region,view={}){this.ready=true;this.region=region.id;this.center=view.center||region.center;this.zoom=view.zoom||region.zoom;this.rasters=region.rasters;this.tileFiles=region.tiles||{};this.tileMaxZoom=region.tile_max_zoom||this.zoom;this.contours=[];this.contextContours=[];this.contextSource=null;this.derived=[];this.setDataPins([]);this.line=[];this.marker=null;this.measurement=null;this.coastline=[];this.stays=[];this.stayHits=[];this.contourRenderer?.clear();this.surfaceController?.abort();this.surface=surfaceForRegion(region);this.surfaceState=null;this.surfaceImage=null;this.surfaceKey=null;this.surfaceRequest=(this.surfaceRequest||0)+1;clearTimeout(this.surfaceTimer);this.draw();}
+  setRegion(region,view={}){this.ready=true;this.region=region.id;this.center=view.center||region.center;this.zoom=view.zoom||region.zoom;this.rasters=region.rasters;this.tileFiles=region.tiles||{};this.tileMaxZoom=region.tile_max_zoom||this.zoom;this.contours=[];this.contextContours=[];this.contextSource=null;this.derived=[];this.setDataPins([]);this.line=[];this.marker=null;this.measurement=null;this.coastline=[];this.stays=[];this.stayHits=[];this.hoveredAreaId=null;this.contourRenderer?.clear();this.surfaceController?.abort();this.surface=surfaceForRegion(region);this.surfaceState=null;this.surfaceImage=null;this.surfaceKey=null;this.surfaceRequest=(this.surfaceRequest||0)+1;clearTimeout(this.surfaceTimer);this.draw();}
   setDataPins(pins){this.sourcePins=pins;this.pinGroups.clear();this.pinHits=[];}
   fitPoints(points,padding=70){if(!points.length||!this.width||!this.height)return;const projected=points.map(p=>project(p,0)),xs=projected.map(p=>p[0]),ys=projected.map(p=>p[1]),left=Math.min(...xs),right=Math.max(...xs),top=Math.min(...ys),bottom=Math.max(...ys);this.center=unproject([(left+right)/2,(top+bottom)/2],0);const scale=Math.min(Math.max(40,this.width-padding*2)/Math.max(right-left,.00001),Math.max(40,this.height-padding*2)/Math.max(bottom-top,.00001));this.zoom=Math.max(5,Math.min(20,Math.floor(Math.log2(scale))));this.draw();this.onview?.();}
   zoomBy(delta,anchor=[this.width/2,this.height/2]){const before=this.fromScreen(anchor);const z=Math.max(5,Math.min(20,this.zoom+delta));if(z===this.zoom)return;this.zoom=z;const p=project(before,z);this.center=unproject([p[0]-anchor[0]+this.width/2,p[1]-anchor[1]+this.height/2],z);this.draw();this.onview?.();}
@@ -86,7 +87,7 @@ export class DepthMap {
     }
     const baseKey=`${this.zoom}/${left}/${top}/${w}/${h}`;
     if(this.layers.basemap&&!this.rasters.length&&!this.drag&&totalTiles&&currentTiles===totalTiles&&this.baseFrame?.key!==baseKey){const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(this.canvas,0,0,w,h);this.baseFrame={canvas,bounds:this.bounds(),key:baseKey};}
-    c.imageSmoothingEnabled=true;this.drawSurface();
+    c.imageSmoothingEnabled=true;this.drawSurface();this.drawAreaZones(left,top);
     if((!this.layers.basemap||!basemapTiles)&&this.coastline?.length){c.save();c.strokeStyle='#a8bdce';c.lineWidth=1.5;c.beginPath();for(const line of this.coastline){line.map(p=>this.toScreen(p)).forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));}c.stroke();c.restore();}
     if(this.layers.coverage){c.save();c.setLineDash([5,4]);c.strokeStyle='#715c42';c.lineWidth=1.5;for(const r of this.rasters){const a=this.toScreen([r.bounds[0],r.bounds[3]]),b=this.toScreen([r.bounds[2],r.bounds[1]]);c.strokeRect(...a,b[0]-a[0],b[1]-a[1]);}c.restore();}
     if(this.layers.contours||this.layers.context){this.contourRenderer??=new ContourRenderer(()=>this.schedule());this.contourRenderer.update(this.layers.context?this.contextContours:EMPTY_FEATURES,this.layers.contours?this.contours:EMPTY_FEATURES,this.layers.contours?this.derived:EMPTY_FEATURES);this.contourRenderer.draw(c,{left,top,zoom:this.zoom,width:w,height:h,shaded:!!(this.surfaceImage&&this.layers.depth)});}
@@ -103,6 +104,51 @@ export class DepthMap {
   }
   hitStay(x,y){return (this.stayHits||[]).slice().reverse().find(p=>Math.hypot(p.x-x,p.y-y)<=12)?.stay||null;}
   hitBeach(x,y){return (this.beachHits||[]).slice().reverse().find(p=>Math.hypot(p.x-x,p.y-y)<=12)?.beach||null;}
+  drawAreaZones(left,top){
+    this.areaHits=[];
+    if(!this.areaZones?.length)return;
+    const view=this.bounds(),visible=this.areaZones.filter(zone=>zone.bounds[0]<=view[2]&&zone.bounds[2]>=view[0]&&zone.bounds[1]<=view[3]&&zone.bounds[3]>=view[1]);
+    if(!visible.length)return;
+    const w=this.width,h=this.height;
+    this.areaCanvas??=document.createElement('canvas');this.areaMaskCanvas??=document.createElement('canvas');
+    for(const canvas of [this.areaCanvas,this.areaMaskCanvas])if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;this.areaMaskKey=null;}
+    const layer=this.areaCanvas,layerCtx=layer.getContext('2d');layerCtx.clearRect(0,0,w,h);
+    for(const zone of visible.sort((a,b)=>(a.id===this.hoveredAreaId?1:0)-(b.id===this.hoveredAreaId?1:0))){
+      const points=zone.polygon.map(point=>this.toScreen(point)),xs=points.map(point=>point[0]),ys=points.map(point=>point[1]),bounds=[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];
+      if(bounds[2]<0||bounds[3]<0||bounds[0]>w||bounds[1]>h)continue;
+      layerCtx.beginPath();points.forEach((point,index)=>index?layerCtx.lineTo(...point):layerCtx.moveTo(...point));layerCtx.closePath();
+      const active=zone.id===this.hoveredAreaId;layerCtx.fillStyle=active?'rgba(94,224,231,.22)':'rgba(91,190,203,.075)';layerCtx.strokeStyle=active?'rgba(189,255,255,.76)':'rgba(119,211,220,.24)';layerCtx.lineWidth=active?1.5:.8;layerCtx.fill();layerCtx.stroke();
+      this.areaHits.push({zone,points,bounds});
+    }
+    const mask=this.areaMaskCanvas,key=`${this.zoom}/${left}/${top}/${w}/${h}/${this.shoreRevision||0}`;
+    if(key!==this.areaMaskKey){
+      const maskCtx=mask.getContext('2d');maskCtx.clearRect(0,0,w,h);
+      for(let x=Math.floor(left/256);x<=Math.floor((left+w)/256);x++)for(let y=Math.floor(top/256);y<=Math.floor((top+h)/256);y++){
+        const tile=cachedTile(this.images,this.zoom,x,y),waterMask=tile?.image.styled?.waterMask;if(!waterMask)continue;
+        const dx=x*256-left,dy=y*256-top;maskCtx.drawImage(waterMask,tile.sx,tile.sy,tile.sw,tile.sh,dx,dy,257,257);
+      }
+      this.areaMaskKey=key;
+    }
+    layerCtx.save();layerCtx.globalCompositeOperation='destination-in';layerCtx.drawImage(mask,0,0);layerCtx.restore();
+    this.ctx.drawImage(layer,0,0,w,h);
+  }
+  isWaterAtScreen(x,y){
+    const world=project(this.fromScreen([x,y]),this.zoom),tileX=Math.floor(world[0]/256),tileY=Math.floor(world[1]/256),tile=cachedTile(this.images,this.zoom,tileX,tileY),styled=tile?.image.styled;
+    if(!styled?.waterPixels)return false;
+    const width=styled.width||256,height=styled.height||256,px=Math.max(0,Math.min(width-1,Math.floor(tile.sx+(world[0]-tileX*256)/256*tile.sw))),py=Math.max(0,Math.min(height-1,Math.floor(tile.sy+(world[1]-tileY*256)/256*tile.sh)));
+    return styled.waterPixels[py*width+px]===1;
+  }
+  hitArea(x,y){
+    if(!this.isWaterAtScreen(x,y))return null;
+    for(const hit of [...this.areaHits].reverse()){
+      const [left,top,right,bottom]=hit.bounds;if(x<left||x>right||y<top||y>bottom)continue;
+      let inside=false;for(let i=0,j=hit.points.length-1;i<hit.points.length;j=i++){
+        const [xi,yi]=hit.points[i],[xj,yj]=hit.points[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)inside=!inside;
+      }
+      if(inside)return hit.zone;
+    }
+    return null;
+  }
   hitDataPin(x,y){if(!this.layers.pins)return null;return this.pinHits.slice().reverse().find(pin=>Math.hypot(pin.x-x,pin.y-17-y)<=17)||null;}
   hitContour(x,y){if(!this.layers.contours&&!this.layers.context)return null;if(this.contourRenderer?.entries.length){const center=project(this.center,this.zoom),hit=this.contourRenderer.hit(x,y,{left:center[0]-this.width/2,top:center[1]-this.height/2,zoom:this.zoom});if(hit?.properties?.coverage_class==='regional-context'&&!this.layers.context)return null;if(hit?.properties?.coverage_class!=='regional-context'&&!this.layers.contours)return null;return hit;}let closest=null,best=7;for(const f of [...(this.layers.context?this.contextContours:[]),...(this.layers.contours?this.contours:[]),...(this.layers.contours?this.derived:[])]){const lines=f.geometry.type==='LineString'?[f.geometry.coordinates]:f.geometry.coordinates;for(const line of lines){for(let i=1;i<line.length;i++){const a=this.toScreen(line[i-1]),b=this.toScreen(line[i]),dx=b[0]-a[0],dy=b[1]-a[1],len=dx*dx+dy*dy,t=len?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/len)):0,d=Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy);if(d<best){best=d;closest=f;}}}}return closest;}
 }
