@@ -20,9 +20,17 @@ Automatic 5/10/15/20 m summaries use the same spherical nearest-segment calculat
 
 ## Filled water shading
 
-NSW packages use the NSW 2018 marine-lidar bathymetry DEM map service. Port Phillip/Western Port, Corner Inlet and Mallacoota use the relevant CoastKit bathymetry compilation layers. Imagery is requested directly from the publisher after the map settles, capped at 1400 pixels per side. These services require internet; the app still has no backend. No raster service has been configured for southeast Tasmania, which retains its published contours.
+NSW packages use the NSW 2018 marine-lidar bathymetry DEM map service. Port Phillip/Western Port, Corner Inlet and Mallacoota use the relevant CoastKit bathymetry compilation layers. Imagery is requested directly from the publisher after the map settles, padded by 128 screen pixels and capped at 1400 image pixels per side. Small pans within a loaded view reuse it; obsolete requests and image-processing workers are cancelled. The last valid image stays anchored to its geographic bounds until a replacement succeeds. These services require internet; the app still has no backend. No raster service has been configured for southeast Tasmania, which retains its published contours.
 
 The publisher's legend colour order is mapped into an aqua-to-navy palette. Shading shows **relative** shallow-to-deep appearance; it does not assume a linear stretch or infer numerical depths from rendered colours. The source's actual transparent gaps remain blank, and an OpenStreetMap water mask keeps land visible. Missing shore tiles leave their area unshaded. Contour labels and measurements continue to use the original local contour records. A compilation's source dates, spacing and datum can differ from those contour records. Imagery never enables point depths, numeric profiles or higher-resolution claims. The map legend links directly to the active publisher layer; service errors have a retry control and preserve contours.
+
+## Interface and system activity
+
+The interface uses system typography, translucent glass materials, segmented controls and restrained scale/entrance motion. Mobile navigation floats above the safe area. Reduced-motion preferences remove animations; reduced-transparency preferences use solid surfaces.
+
+The **System** button opens a non-modal live activity panel. It shows active/finished operations, a 32-second request-start timeline, services, request durations, failures, superseded work and recent map paint times. Fetches stay active until the body has been read. Transfer totals use browser-exposed resource timing only; payload bytes are separately labelled “read”. Cross-origin imagery often hides transfer size, and activity inside social embeds cannot be observed. The session log is bounded, keeps in-flight operations, and is never saved or uploaded. Clearing finished entries does not cancel work.
+
+The Canvas renderer prepares reusable contour paths in small batches, culls features outside the viewport, and caches water masks against geographic imagery bounds. A worker colours imagery away from the UI thread, with a yielding fallback for browsers without workers. Cached parent shoreline tiles and the last complete shore frame bridge zoom changes. Tile downloads are limited to six concurrent requests, prioritised near the centre, and stale queued views are discarded before download. Drag painting is coalesced with animation frames. Native numeric data, gaps and measurement geometry remain the source of depth calculations. Initial beach links start at the selected location instead of downloading an unrelated overview. Tile caches are bounded more tightly on mobile devices.
 
 ## Nearby stays
 

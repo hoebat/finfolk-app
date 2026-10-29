@@ -1,3 +1,4 @@
+import {readResource} from './activity.js';
 // Browser-only access to native survey chunks. No service endpoints or range server.
 const EARTH=6371008.8;
 export function distance(a,b){const l1=a[1]*Math.PI/180,l2=b[1]*Math.PI/180,dl=l2-l1,dn=(b[0]-a[0])*Math.PI/180;return EARTH*2*Math.asin(Math.min(1,Math.sqrt(Math.sin(dl/2)**2+Math.cos(l1)*Math.cos(l2)*Math.sin(dn/2)**2)));}
@@ -23,13 +24,13 @@ export function profileCSV(profile){const columns=['distance_m','longitude','lat
 export class StaticData {
   constructor(base=new URL('./',import.meta.url),fetcher=globalThis.fetch,projector=nativePoint){this.base=base;this.fetcher=fetcher.bind(globalThis);this.projector=projector;this.cache=new Map();}
   url(path){return new URL(path,this.base).href;}
-  async json(path){const response=await this.fetcher(this.url(path),{cache:'no-cache'});if(!response.ok)throw Error(`Static data unavailable (${response.status}): ${path}`);const text=await response.text();if(text.startsWith('version https://git-lfs.github.com/spec/v1'))throw Error('An unresolved Git LFS pointer was deployed; rebuild with LFS checkout enabled');return JSON.parse(text);}
+  async json(path){return readResource(this.url(path),{fetcher:this.fetcher,cache:'no-cache',parse(text){if(text.startsWith('version https://git-lfs.github.com/spec/v1'))throw Error('An unresolved Git LFS pointer was deployed; rebuild with LFS checkout enabled');return JSON.parse(text);}});}
   async catalog(){const catalog=await this.json('data/catalog.json');if(catalog.format_version!==1)throw Error('Unsupported static dataset version');this.current=catalog;return catalog;}
   region(id){const region=this.current?.regions.find(r=>r.id===id);if(!region)throw Error('Unknown region');return region;}
   async contours(id){const path=this.region(id).contour_file;return path?this.json(path):{type:'FeatureCollection',features:[]};}
   async chunk(meta,key){
     const file=meta.grid.chunks[key];if(!file)return null;const path=this.url(file);if(this.cache.has(path))return this.cache.get(path);
-    const pending=(async()=>{const response=await this.fetcher(path);if(!response.ok)throw Error(`Numeric survey chunk failed (${response.status}); depth cannot be determined`);if(typeof DecompressionStream==='undefined')throw Error('This browser needs support for gzip DecompressionStream');const compressed=await response.arrayBuffer(),decoded=await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();if(decoded.byteLength!==meta.grid.chunk_size**2*4)throw Error('Numeric survey chunk has an invalid size');return new DataView(decoded);})();
+    const pending=(async()=>{if(typeof DecompressionStream==='undefined')throw Error('This browser needs support for gzip DecompressionStream');const compressed=await readResource(path,{fetcher:this.fetcher,read:'arrayBuffer'}),decoded=await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();if(decoded.byteLength!==meta.grid.chunk_size**2*4)throw Error('Numeric survey chunk has an invalid size');return new DataView(decoded);})();
     this.cache.set(path,pending);if(this.cache.size>64)this.cache.delete(this.cache.keys().next().value);try{return await pending;}catch(e){this.cache.delete(path);throw e;}
   }
   async sampleMany(id,points){

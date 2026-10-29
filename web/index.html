@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#102a35">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#edf2f8">
   <title>Depth Atlas · Australia’s coast, depth & nearby stays</title>
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./glass.css">
 </head>
 <body>
   <aside class="sidebar">
-    <a class="brand" href="./" aria-label="Depth Atlas home"><span class="brand-mark">≋</span><span>DEPTH ATLAS<small>A closer look beneath the surface</small></span></a>
-    <nav class="primary-nav" aria-label="Main navigation"><button data-view="maps">Depth maps</button><button data-view="discover">Discover</button><button data-view="areas">Areas</button><button data-view="guides">Guides</button></nav>
+    <a class="brand" href="./" aria-label="Depth Atlas home"><span class="brand-mark">≋</span><span>Depth Atlas<small>A closer look beneath the surface</small></span></a>
+    <nav class="primary-nav" aria-label="Main navigation"><button data-view="maps"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2Z"/><path d="M9 3v16M15 5v16"/></svg>Depth maps</button><button data-view="discover"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5Z"/></svg>Discover</button><button data-view="areas"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Areas</button><button data-view="guides"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></svg>Guides</button></nav>
     <details class="directory-menu"><summary>Browse coastal areas</summary><div id="region-picker" class="region-picker" role="group" aria-label="Choose map region"></div></details>
     <details class="map-data"><summary>Map data &amp; layers</summary>
     <section class="layer-section"><div class="section-label">MAP LAYERS</div>
@@ -69,6 +70,16 @@
     <footer>Surveyed reference depths · no tide adjustment. <span>Sources: governments, OpenStreetMap contributors (ODbL) &amp; Natural Earth. Survey data are not supplied for navigation or a safety assessment.</span></footer>
   </main>
   <dialog id="guide"><div class="dialog-header"><div><div class="eyebrow">GOVERNMENT SOURCES</div><h2 id="guide-title">Get the data</h2></div><button id="close-guide" aria-label="Close data guide">×</button></div><div id="guide-content"></div></dialog>
+  <button id="system-toggle" class="system-toggle" aria-controls="system-panel" aria-expanded="false" aria-label="Show system activity"><span class="system-dot" aria-hidden="true"></span><span id="system-label">System</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 13h4l3-7 4 13 3-6h4"/></svg></button>
+  <section id="system-panel" class="system-panel" role="region" aria-labelledby="system-title" hidden>
+    <div class="system-heading"><div><p class="eyebrow">LIVE ON THIS DEVICE</p><h2 id="system-title">System activity</h2></div><button id="system-close" aria-label="Close system activity">×</button></div>
+    <div class="system-status"><span id="system-network">Online</span><span id="system-indicator">Idle</span></div>
+    <div class="system-stats"><div><strong id="system-active">0</strong><span>In progress</span></div><div><strong id="system-complete">0</strong><span>Finished</span></div><div><strong id="system-transfer">—</strong><span>Visible transfer</span></div><div><strong id="system-paint">—</strong><span>Map paint</span></div></div>
+    <div class="system-chart-label"><span>Operation starts</span><small>Last 32 seconds</small></div><div id="system-chart" class="system-chart" aria-label="Operations started each second over the last 32 seconds"></div>
+    <div id="system-services" class="system-services"></div>
+    <div class="system-log-heading"><div class="system-filters" role="group" aria-label="Filter operations"><button data-activity-filter="all" aria-pressed="true">All</button><button data-activity-filter="loading" aria-pressed="false">Loading</button><button data-activity-filter="error" aria-pressed="false">Failed</button></div><button id="system-clear" class="text-button">Clear finished</button></div>
+    <ol id="system-requests" class="system-requests" aria-label="Recent operations"></ol><p class="system-footnote">This session only. Cross-origin services may hide transfer sizes. “Read” is payload size, not network usage. Activity inside Instagram/X embeds is not visible here.</p>
+  </section>
   <script type="module" src="./app.js"></script>
 </body>
 </html>

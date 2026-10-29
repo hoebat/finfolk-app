@@ -56,3 +56,15 @@ const surface=surfaceForRegion({id:'bondi',rasters:[]});assert.equal(surface.lay
 const url=new URL(surfaceURL(surface,[151,-34,152,-33],2000,1000));assert.equal(url.searchParams.get('size'),'1400,700');assert.equal(url.searchParams.get('bboxSR'),'3857');assert.equal(url.searchParams.get('layers'),'show:2');assert.equal(url.searchParams.get('transparent'),'true');const box=url.searchParams.get('bbox').split(',').map(Number);assert.ok(box[0]<box[2]&&box[1]<box[3]);
 const surfacePixels=new Uint8ClampedArray([255,0,0,255,0,0,255,127,17,31,43,0]);recolourSurface(surfacePixels,[[255,0,0],[0,0,255]]);assert.deepEqual([...surfacePixels],[174,231,228,255,6,22,46,127,17,31,43,0],'Legend order is recoloured while transparent source gaps stay blank');
 map.setRegion({id:'bondi',center:[151,-34],zoom:11,rasters:[]});assert.ok(map.surface);map.surfaceImage={image:{}};map.setRegion({id:'tas-southeast',center:[147,-43],zoom:11,rasters:[]});assert.equal(map.surface,null);assert.equal(map.surfaceImage,null,'Changing regions clears previous imagery');
+
+const controller=new AbortController();map.surfaceController=controller;map.surfaceImage={bounds:[150,-35,152,-33],zoom:12};const retained=map.surfaceImage;map.surfaceState='loading';map.cancelSurface();assert.equal(controller.signal.aborted,true,'Turning shading off cancels network/worker work');assert.equal(map.surfaceImage,retained,'Cancelling an update retains the previous valid view');assert.equal(map.surfaceState,'ready');
+
+const imageInstances=[],networkStarts=[];
+globalThis.Image=class{constructor(){this.complete=false;this.naturalWidth=0;imageInstances.push(this);}set src(value){this.url=value;networkStarts.push(value);}get src(){return this.url;}};
+const queuedMap=new module.DepthMap(canvas);queuedMap.schedule=()=>{};
+for(let i=0;i<10;i++)queuedMap.image(`https://example.test/tile-${i}.png`,false,9-i);
+queuedMap.pumpTiles();assert.equal(networkStarts.length,6,'Only six tile requests start concurrently');assert.equal(networkStarts[0],'https://example.test/tile-9.png','Visible centre tiles are prioritised');
+queuedMap.viewEpoch++;queuedMap.pruneTiles();assert.equal(queuedMap.pendingTiles.length,0,'Stale queued zooms are discarded before download');assert.equal(networkStarts.length,6);
+queuedMap.image('https://example.test/current.png');queuedMap.pumpTiles();assert.equal(networkStarts.length,6,'The concurrency cap also applies across view changes');
+let next;while((next=imageInstances.find(image=>image.url&&!image.complete))){next.complete=true;next.naturalWidth=256;next.onload();}
+assert.ok(networkStarts.includes('https://example.test/current.png'));assert.equal(networkStarts.length,7,'Superseded queued tiles never use the network');assert.equal(queuedMap.tileActive,0);clearTimeout(queuedMap.tileTimer);delete globalThis.Image;
