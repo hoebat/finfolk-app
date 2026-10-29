@@ -32,16 +32,17 @@ export function recolourSurface(pixels,colours){
     if(!rgb){let best=Infinity,index=0;for(let j=0;j<colours.length-1;j++){const c=colours[j],next=colours[j+1],v=next.map((n,k)=>n-c[k]),length=v.reduce((n,x)=>n+x*x,0),f=length?Math.max(0,Math.min(1,((r-c[0])*v[0]+(g-c[1])*v[1]+(b-c[2])*v[2])/length)):0,d=(r-c[0]-f*v[0])**2+(g-c[1]-f*v[1])**2+(b-c[2]-f*v[2])**2;if(d<best){best=d;index=j+f;}}rgb=palette(index/(colours.length-1));lookup.set(key,rgb);}pixels[i]=rgb[0];pixels[i+1]=rgb[1];pixels[i+2]=rgb[2];
   }return pixels;
 }
-async function colourInBackground(pixels,colours,signal){
+export async function colourInBackground(pixels,colours,signal){
   signal?.throwIfAborted();
   if(typeof Worker!=='undefined'){
     let worker;
     try{worker=new Worker(new URL('./surface-worker.js',import.meta.url),{type:'module'});}catch{}
-    if(worker){return new Promise((resolve,reject)=>{
+    if(worker){const result=await new Promise((resolve,reject)=>{
       const cleanup=()=>{worker.terminate();signal?.removeEventListener('abort',abort);},abort=()=>{cleanup();reject(signal.reason||new DOMException('Superseded','AbortError'));};
-      signal?.addEventListener('abort',abort,{once:true});worker.onmessage=event=>{cleanup();if(event.data.error)reject(Error(event.data.error));else resolve(new Uint8ClampedArray(event.data.buffer));};worker.onerror=()=>{cleanup();reject(Error('Background image processing failed'));};
-      worker.postMessage({buffer:pixels.buffer,colours},[pixels.buffer]);
-    });}
+      signal?.addEventListener('abort',abort,{once:true});worker.onmessage=event=>{cleanup();if(event.data.error)resolve(null);else resolve(new Uint8ClampedArray(event.data.buffer));};worker.onerror=()=>{cleanup();resolve(null);};
+      // Retain the input so a missing worker asset can recover in an older tab.
+      try{worker.postMessage({buffer:pixels.buffer,colours});}catch{cleanup();resolve(null);}
+    });if(result)return result;}
   }
   // Yield on older browsers; do not block pan/zoom with a full-image loop.
   for(let offset=0;offset<pixels.length;offset+=32768){signal?.throwIfAborted();recolourSurface(pixels.subarray(offset,offset+32768),colours);await new Promise(resolve=>setTimeout(resolve,0));}return pixels;
