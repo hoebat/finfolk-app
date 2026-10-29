@@ -12,7 +12,7 @@ globalThis.ResizeObserver=class{constructor(cb){observation=cb;}observe(){}};
 globalThis.devicePixelRatio=1;
 const events={};
 const canvas={clientWidth:800,clientHeight:500,getContext:()=>({setTransform(){}}),addEventListener:(event,fn)=>events[event]=fn,setPointerCapture(){}};
-const map=new module.DepthMap(canvas);map.width=800;map.height=500;map.draw=()=>{};
+const map=new module.DepthMap(canvas);assert.equal(map.layers.basemap,true,'The shore and place names are visible by default');map.width=800;map.height=500;map.draw=()=>{};
 let changed=0;map.onview=()=>changed++;
 const anchor=[150,100],before=map.fromScreen(anchor);map.zoomBy(1,anchor);const after=map.fromScreen(anchor);
 assert.ok(Math.abs(before[0]-after[0])<1e-9&&Math.abs(before[1]-after[1])<1e-9);
@@ -39,3 +39,14 @@ const beach={id:'test',name:'Test beach'};map.beachHits=[{x:300,y:183,beach}];le
 map.pointPicking=true;beachSelected=null;events.pointerdown({button:0,pointerId:5,offsetX:300,offsetY:183});events.pointerup({offsetX:300,offsetY:183});assert.equal(beachSelected,null,'Measurement starts bypass beach pins');
 map.pointPicking=false;const stay={id:'test-stay',name:'TEST stay'};map.stayHits=[{x:400,y:200,stay}];let staySelected;map.onStay=s=>staySelected=s;events.pointerdown({button:0,pointerId:6,offsetX:400,offsetY:200});events.pointerup({offsetX:400,offsetY:200});assert.equal(staySelected,stay);
 console.log('Map checks passed: projection, anchor zoom, pan/click separation, contour hit testing.');
+
+const {styleShorePixels,contourColour}=await import('../web/map-style.js');
+const pixels=new Uint8ClampedArray([170,211,223,255,242,239,233,255,20,20,20,200]);
+styleShorePixels(pixels);
+assert.deepEqual([...pixels.slice(0,4)],[6,22,46,255]);
+assert.ok(pixels[4]>pixels[0]+35,'Land remains visibly lighter than ocean');
+assert.ok(pixels[8]>pixels[4],'Place-name text remains lighter than land');
+assert.equal(pixels[11],200,'Styling preserves transparency');
+assert.notEqual(contourColour(5),contourColour(20));
+
+const placeName=new Uint8ClampedArray([45,84,105,255]);styleShorePixels(placeName);assert.ok(placeName[0]>90,'Blue place-name text stays legible instead of being coloured as water');

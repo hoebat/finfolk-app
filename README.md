@@ -120,3 +120,7 @@ Downloads run for up to three regions concurrently; one writer updates the inven
 `metadata/coastal-expansion-review.json` records the validated feature counts and source hashes. The proposed Fremantle–Cockburn numeric raster was inspected and deferred: the archive supplies sparse offshore 35–57 m data, and its vertical reference is not explicitly verified in embedded metadata. It is not published as a beach-depth raster. The existing numeric import still requires verified datum and metre units.
 
 Checksum-pinned source transfers can seed previously reviewed government responses when build-worker connections time out. The importer verifies the bundle hash, each original response hash, feature count and configured publisher URLs before using the normal acquisition store. Published maps and later builds use the Git LFS archives; temporary transfer services are not application dependencies. Empty configured packages are excluded from the published-map selector.
+
+## Ocean chart styling
+
+Shore and place names are enabled by default using OpenStreetMap tiles, styled in the browser with navy water and muted blue-grey land. Survey contours use contrasting aqua and blue lines with a metre legend. Geographic water colour provides map context; reference depths come from the published survey lines or verified raster cells. If online tiles are unavailable, the local coarse context coastline provides an approximate outline. The layer can be switched off under Map data & layers. PNG exports retain attribution and the applicable survey colour legend.

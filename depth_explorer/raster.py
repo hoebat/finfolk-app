@@ -5,8 +5,8 @@ import zlib
 from pathlib import Path
 
 RADIUS = 6378137.0
-PALETTE = [(0, (166, 232, 209)), (5, (83, 200, 194)), (10, (40, 157, 182)),
-           (20, (36, 102, 151)), (30, (39, 64, 115)), (50, (27, 35, 71))]
+PALETTE = [(0, (174, 231, 228)), (5, (83, 196, 218)), (10, (39, 150, 201)),
+           (20, (29, 96, 158)), (30, (23, 58, 110)), (50, (6, 22, 46))]
 
 
 def mercator(lon, lat):
@@ -28,7 +28,7 @@ def colour(depth):
     if depth is None or not math.isfinite(depth):
         return (0, 0, 0, 0)
     if depth < 0:
-        return (209, 213, 201, 210)  # observed positive elevation, not missing data
+        return (58, 75, 99, 230)  # observed positive elevation, not missing data
     for (a, ca), (b, cb) in zip(PALETTE, PALETTE[1:]):
         if depth <= b:
             t = max(0, (depth - a) / (b - a))
@@ -133,7 +133,7 @@ class Raster:
                 for channel in range(3):
                     output[:, :, channel] = np.interp(depths, [p[0] for p in PALETTE], [p[1][channel] for p in PALETTE]).astype("uint8")
                 output[:, :, 3] = np.where(valid, 230, 0)
-                output[valid & (depths < 0)] = [209, 213, 201, 210]
+                output[valid & (depths < 0)] = [58, 75, 99, 230]
                 return output.tobytes()
 
     def surface(self, bbox, width, height):

@@ -1,3 +1,4 @@
+import {DEPTH_COLOURS,contourColour} from './map-style.js';
 import {DepthMap} from './map.js';
 import {StaticData,profileCSV} from './data-client.js';
 import {dataLocations} from './data-pins.js';
@@ -25,8 +26,8 @@ function showMeasurement(result,label='Selected start point'){
 function measureFrom(point,label){try{showMeasurement(nearestContour(point,map.contours,Number($('measure-depth').value)),label);}catch(e){stopMeasuring();notice(e.message);}}
 function measureEdithvale(){resetProfile();try{const result=edithvaleMeasurement(map.contours,Number($('measure-depth').value));showMeasurement(result,result.start_label);}catch(e){notice(e.message);}}
 async function openSurvey(id){
-  ++selectionRequest;activeAreaId='';discovery?.setView('maps',{notify:false});notice('Loading published depth map…');
-  try{await load(id);$('explorer').hidden=false;map.resize();notice('');$('explorer').scrollIntoView?.({behavior:'smooth',block:'start'});}catch(error){notice(error.message);}
+  const request=++selectionRequest;activeAreaId='';discovery?.setView('maps',{notify:false});notice('Loading published depth map…');
+  try{await load(id);if(request!==selectionRequest)return;const counts=new Map();for(const beach of beachCatalog.beaches.filter(b=>b.region===region.id))counts.set(beach.area_id,(counts.get(beach.area_id)||0)+1);const area=beachCatalog.areas.find(a=>a.id===[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0]);if(area){try{const context=await discovery.getAreaData(area);if(request!==selectionRequest)return;map.coastline=context.coastline||[];}catch{map.coastline=[];}}$('explorer').hidden=false;map.resize();notice('');$('explorer').scrollIntoView?.({behavior:'smooth',block:'start'});}catch(error){notice(error.message);}
 }
 $('survey-select').onchange=()=>openSurvey($('survey-select').value);
 function hasPublishedData(r){return r.status!=='empty'&&(r.rasters.length>0||r.contours?.count>0);}
@@ -34,7 +35,7 @@ function updateBeachPicker(){discovery?.render();}
 function updateCapabilities(){
   const c=capabilities(region,map.contours);
   for(const [id,available] of [['depth-layer',c.raster],['coverage-layer',c.raster],['contour-layer',c.raster||c.contours],['pin-layer',!!map.sourcePins.length],['interval',c.fine]])$(id).closest('label').hidden=!available;
-  document.querySelector('.map-tag').textContent=c.raster||c.contours?'SURVEYED SEABED':'COASTAL DIRECTORY';$('raster-legend').hidden=!c.raster;$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!c.measure;$('fetch').hidden=!c.contours;
+  document.querySelector('.map-tag').textContent=c.raster||c.contours?'SURVEYED SEABED':'COASTAL DIRECTORY';$('raster-legend').hidden=!c.raster;$('contour-legend').hidden=!c.contours||!map.layers.contours;$('basemap-attribution').hidden=!map.layers.basemap;$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!c.measure;$('fetch').hidden=!c.contours;
 }
 async function chooseBeach(id,{writeURL=true,depth=Number($('target-filter').value)}={}){
   const request=++selectionRequest;let beach=findBeach(beachCatalog,id);if(beach&&discovery){try{beach=await discovery.getBeach(beach.id);}catch{notice('Detailed site facts are unavailable; using the listed reference position.');}}if(request!==selectionRequest)return;if(id&&!beach){notice('That beach is not in the location list. Choose a beach from the picker.');return;}
@@ -59,14 +60,14 @@ async function load(selected,retainView=false){
   $('fetch').disabled=!region.contours;
   $('empty-state').hidden=region.status!=='empty';$('profile-tool').disabled=region.status!=='raster';
   $('datum-tag').textContent=region.rasters.length?`Depth below ${region.rasters[0].datum}`:region.contours?`Contours · ${region.contours.datum}`:'Reference datum shown per source';
-  $('map-attribution').textContent=`${region.map_attribution||region.state+' government data'}${map.layers.basemap?' · © OpenStreetMap contributors':''}`;
+  $('map-attribution').textContent=`${region.map_attribution||region.state+' government data'}`;
   const canFine=region.rasters.length&&region.rasters.every(r=>r.resolution_m<=5&&r.quality==='measured');$('interval').options[1].disabled=!canFine;if(!canFine)$('interval').value='5';
   $('measure-start').disabled=true;$('edithvale').disabled=true;$('edithvale').hidden=true;updateCapabilities();
   const requestedRegion=region.id;const collection=await data.contours(requestedRegion);if(generation!==loadRequest||region.id!==requestedRegion)return;map.contours=collection.features;map.setDataPins(dataLocations(region,collection.features));map.derived=[];
   const depths=[...new Set(collection.features.map(f=>f.properties.depth_m).filter(d=>Number.isFinite(d)&&d>0&&d<=200))].sort((a,b)=>a-b),selectedDepth=Number($('measure-depth').value);$('measure-depth').replaceChildren(...depths.map(depth=>{const option=elem('option',`${number(depth)} m`);option.value=depth;return option;}));if(depths.includes(selectedDepth))$('measure-depth').value=selectedDepth;else if(depths.includes(10))$('measure-depth').value='10';
   $('measure-start').disabled=!depths.length;$('measure-depth').disabled=!depths.length;$('edithvale').disabled=!depths.length;contoursReady=true;updateBeachPicker();updateCapabilities();map.draw();updateDerived();
 }
-for(const [id,key] of [['depth-layer','depth'],['contour-layer','contours'],['pin-layer','pins'],['coverage-layer','coverage'],['basemap-layer','basemap']])$(id).onchange=()=>{map.layers[key]=$(id).checked;map.draw();$('map-attribution').textContent=`${region.map_attribution||region.state+' government data'}${map.layers.basemap?' · © OpenStreetMap contributors':''}`;if(key==='contours')updateDerived();};
+for(const [id,key] of [['depth-layer','depth'],['contour-layer','contours'],['pin-layer','pins'],['coverage-layer','coverage'],['basemap-layer','basemap']])$(id).onchange=()=>{map.layers[key]=$(id).checked;map.draw();$('map-attribution').textContent=`${region.map_attribution||region.state+' government data'}`;if(key==='contours')updateDerived();updateCapabilities();};
 $('zoom-in').onclick=()=>map.zoomBy(1);$('zoom-out').onclick=()=>map.zoomBy(-1);$('home').onclick=()=>{map.center=region.center;map.zoom=region.zoom;map.draw();updateDerived();};
 $('refresh').onclick=()=>load(region.id,true).catch(e=>notice(e.message));
 map.onmove=([lon,lat])=>{$('coordinates').textContent=`${Math.abs(lat).toFixed(5)}°${lat<0?'S':'N'}   ${Math.abs(lon).toFixed(5)}°${lon<0?'W':'E'}`;};
@@ -140,7 +141,7 @@ $('export-map').onclick=()=>{
     const sources=region.rasters.map(r=>`${r.title} | ${r.datum} | ${r.survey_date} | ${r.resolution_m} m | ${r.quality}`).join('; ')||(region.contours?`Published contours | ${region.contours.datum} | ${region.contour_survey}`:'No survey data is published for this area.');
     const wrap=(text,y)=>{let line='';for(const word of text.split(' ')){if(c.measureText(line+word).width>w-40){c.fillText(line,20,y);y+=14;line='';}line+=word+' ';}c.fillText(line,20,y);return y+17;};
     let y=wrap(sources,map.height+23);y=wrap(region.attribution+' · '+region.licence,y);if(map.layers.basemap)y=wrap('Basemap © OpenStreetMap contributors · openstreetmap.org/copyright',y);y=wrap('Reference depths only. No tide adjustment. Not supplied for navigation.',y);
-    for(const [i,[depth,color]] of [[0,[166,232,209]],[5,[83,200,194]],[10,[40,157,182]],[20,[36,102,151]],[30,[39,64,115]],[50,[27,35,71]]].entries()){c.fillStyle=`rgb(${color.join(',')})`;c.fillRect(20+i*64,y,54,8);c.fillStyle='#426765';c.fillText(`${depth}${depth===50?'+':''} m`,20+i*64,y+23);}canvas.toBlob(blob=>{if(blob)download(blob,`${region.id}-depth-map.png`);else notice('PNG export failed. Disable the online basemap and retry.');},'image/png');
+    for(const [i,[depth,color]] of DEPTH_COLOURS.entries()){c.fillStyle=region.rasters.length?`rgb(${color.join(',')})`:contourColour(depth);c.fillRect(20+i*64,y,54,8);c.fillStyle='#426765';c.fillText(`${depth}${depth===50?'+':''} m`,20+i*64,y+23);}canvas.toBlob(blob=>{if(blob)download(blob,`${region.id}-depth-map.png`);else notice('PNG export failed. Disable the online basemap and retry.');},'image/png');
   }catch(e){notice(`Map export failed: ${e.message}. Try disabling the online basemap.`);}
 };
 function showGuide(){
