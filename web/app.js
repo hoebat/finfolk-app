@@ -1,3 +1,5 @@
+// Keep an invite through OAuth redirects without putting it in the identity provider callback.
+try { const invite = new URL(location.href).searchParams.get('invite'); if (/^[A-Za-z0-9_-]{24}$/.test(invite || '')) sessionStorage.setItem('finfolk:invite', invite); } catch {}
 import {installOfflineUI} from './offline-ui.js';
 import {installCommunity} from './community.js';
 import {welcomeOnFirstVisit} from './welcome.js';

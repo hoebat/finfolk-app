@@ -20,12 +20,34 @@
   "vars": {
     "NEON_AUTH_BASE_URL": "https://ep-crimson-queen-a7q4vgfn.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth",
     "NEON_AUTH_JWKS_URL": "https://ep-crimson-queen-a7q4vgfn.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth/.well-known/jwks.json",
-    "NEON_HYPERDRIVE_CA_ID": "d698b258-d68d-4f71-b814-be9d39248d5e"
+    "NEON_HYPERDRIVE_CA_ID": "d698b258-d68d-4f71-b814-be9d39248d5e",
+    "INSTAGRAM_ENABLED": "false"
   },
   "routes": [
     {
       "pattern": "api.finfolk.com.au",
       "custom_domain": true
     }
-  ]
+  ],
+  "queues": {
+    "producers": [
+      {
+        "queue": "finfolk-instagram-actions",
+        "binding": "INSTAGRAM_QUEUE"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "finfolk-instagram-actions",
+        "max_batch_size": 10,
+        "max_retries": 5,
+        "dead_letter_queue": "finfolk-instagram-dead-letter"
+      }
+    ]
+  },
+  "triggers": {
+    "crons": [
+      "17 * * * *"
+    ]
+  }
 }

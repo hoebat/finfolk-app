@@ -14,6 +14,9 @@ click('Next');document.querySelector('.tour-demo form').dispatchEvent(new w.Even
 click('Next');for(let i=0;i<3;i++)click('Add an example visit day');assert.match(document.querySelector('.tour-demo').textContent,/Regular/);
 click('Next');click('Send example buddy request');assert.match(document.querySelector('[role=status]').textContent,/Waiting/);
 click('Next');assert.equal(document.querySelector('input[type=checkbox]').checked,false);
+click('Next');click('Get example connection code');assert.match(document.querySelector('[role=status]').textContent,/DEMO-CODE/);
+click('Next');click('Confirm example action');assert.match(document.querySelector('[role=status]').textContent,/Waiting/);
+click('Next');click('Show example invite link');assert.match(document.querySelector('[role=status]').textContent,/real invite link/);
 click('Next');click('Log a session');assert.deepEqual(routes,['logbook']);assert.equal(document.querySelector('.member-tour'),null);
 showMemberTour({userId:'alice',shell});assert.equal(document.querySelector('.member-tour'),null,'Completion suppresses repeat display');
 showMemberTour({userId:'alice',shell,force:true});assert.ok(document.querySelector('.member-tour'));click('Close walkthrough');

@@ -1,3 +1,4 @@
+import { renderActions } from './actions.js';
 import { instagramURL } from './logbook-model.js';
 import { showMemberTour } from './member-tour.js';
 import { readResource } from './activity.js';
@@ -208,10 +209,10 @@ export function installCommunity({
       const jump = id => document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'});
       links.append(
         button('Check in at a beach', () => shell.navigate('discover'), 'social-menu-action'),
+        button('Instagram & actions', () => jump('member-actions'), 'social-menu-action'),
         button('Your buddies', () => jump('social-buddies'), 'social-menu-action'),
         button('Your check-ins', () => { const section = document.getElementById('social-checkins'); if (section) section.open = true; jump('social-checkins'); }, 'social-menu-action'),
         button('My sessions', () => shell.navigate('logbook'), 'social-menu-action'),
-        button(p.instagram ? 'Edit your Instagram' : 'Add your Instagram', () => { jump('social-profile'); const input = form.querySelector('[name=instagram]'); input?.focus({preventScroll:true}); }, 'social-menu-action'),
         button('Profile & privacy', () => jump('social-profile'), 'social-menu-action'),
       );
       menu.append(links);
@@ -219,7 +220,6 @@ export function installCommunity({
       function showInstagram(value) {
         instagramSummary.replaceChildren();
         if (value) instagramSummary.append(link('Your Instagram profile ↗', value));
-        for (const b of links.querySelectorAll('button')) if (b.textContent === 'Add your Instagram' || b.textContent === 'Edit your Instagram') b.textContent = value ? 'Edit your Instagram' : 'Add your Instagram';
       }
       showInstagram(p.instagram);
       menu.append(instagramSummary);
@@ -471,6 +471,7 @@ export function installCommunity({
         );
         buddies.append(card);
       }
+      if (generation !== epoch) return;
       const visits = el('details');
       visits.id = 'social-checkins';
       visits.append(el('summary', 'Your check-ins'));
@@ -487,6 +488,7 @@ export function installCommunity({
         );
         visits.append(line);
       }
+      if (generation !== epoch) return;
       root.append(visits);
       const blocks = el('details');
       blocks.append(el('summary', 'Blocked profiles'));
@@ -500,6 +502,7 @@ export function installCommunity({
         );
         blocks.append(line);
       }
+      if (generation !== epoch) return;
       root.append(blocks);
       root.append(
         button('Sign out', async () => {
@@ -530,7 +533,9 @@ export function installCommunity({
           await account();
         }),
       );
+      if (generation !== epoch) return;
       root.append(deletion);
+      await renderActions({host:root,api:a,beaches:getBeaches(),refresh:account});
       if (generation === epoch) showMemberTour({userId: a.user.uid, shell});
     } catch (error) {
       if (generation === epoch) {
@@ -639,6 +644,7 @@ export function installCommunity({
             el('p', p.bio || ''),
             el('small', p.reasons.join(' · ')),
           );
+          if (Number.isInteger(p.participationPoints)) card.append(el('small', `${p.participationPoints} participation points`));
           if (p.instagram) card.append(link('Instagram', p.instagram));
           if (p.tiktok) card.append(link('TikTok', p.tiktok));
           card.append(

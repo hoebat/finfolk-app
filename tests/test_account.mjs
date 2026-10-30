@@ -53,7 +53,7 @@ assert.ok(
 );
 assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Your buddies'));
 assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Check in at a beach'));
-assert.ok([...document.querySelectorAll('button')].some(b=>b.textContent==='Add your Instagram'));
+assert.ok([...document.querySelectorAll('button')].some(b=>b.textContent==='Instagram & actions'));
 document.querySelector('[name=instagram]').value = '@alice.dives';
 assert.equal(document.querySelector('[name=open]').checked, false);
 document.querySelector('[name=open]').checked = true;
@@ -66,7 +66,7 @@ await new Promise((r) => setTimeout(r, 20));
 const saved = calls.find((c) => c.action === 'preferences');
 assert.equal(saved.profile.instagram, 'https://www.instagram.com/alice.dives/');
 assert.ok([...document.querySelectorAll('a')].some(a => a.textContent === 'Your Instagram profile ↗' && a.href === saved.profile.instagram));
-assert.ok([...document.querySelectorAll('button')].some(b => b.textContent === 'Edit your Instagram'));
+
 assert.equal(saved.profile.open, true);
 assert.equal(saved.profile.sharing.visits, true);
 assert.equal(saved.profile.sharing.depth, false);

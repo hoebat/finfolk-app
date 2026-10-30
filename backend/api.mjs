@@ -1,3 +1,6 @@
+import { invitationAction } from './invitations.mjs';
+import { instagramAction } from './instagram-actions.mjs';
+import { instagramWebhook } from './instagram-webhook.mjs';
 import { createShopCheckout } from './shop.mjs';
 import { Hono } from 'hono';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
@@ -60,6 +63,7 @@ export function createAPI({
     if (c.req.method === 'OPTIONS') return c.body(null, 204);
     await next();
   });
+  app.all('/instagram/webhook', c => instagramWebhook(c.req.raw, c.env || {}, q));
   app.get('/health', (c) =>
     c.json({ ok: true, service: 'FinFolk account API' }),
   );
@@ -112,7 +116,7 @@ export function createAPI({
       const profile = preferences({ displayName: identity.name });
       me = (
         await q(
-          'INSERT INTO finfolk.members(user_id,profile) VALUES($1,$2::jsonb) ON CONFLICT(user_id) DO UPDATE SET user_id=excluded.user_id RETURNING *',
+          'INSERT INTO finfolk.members(user_id,profile,invite_eligible) VALUES($1,$2::jsonb,true) ON CONFLICT(user_id) DO UPDATE SET user_id=excluded.user_id RETURNING *',
           [uid, JSON.stringify(profile)],
         )
       )[0];
@@ -171,6 +175,7 @@ export function createAPI({
       bio: m.profile.bio,
       instagram: m.profile.instagram,
       tiktok: m.profile.tiktok,
+      ...(Number.isInteger(m.participationPoints) ? {participationPoints:m.participationPoints} : {}),
       open: m.profile.open,
     });
     async function statsFor(target, b) {
@@ -197,6 +202,11 @@ export function createAPI({
       };
     }
     let result;
+    if (typeof action === 'string' && action.startsWith('invitation')) return c.json({data:await invitationAction({action,v,uid,q,verified})});
+    if (typeof action === 'string' && action.startsWith('instagram')) {
+      const result = await instagramAction({action,v,uid,env:c.env || {},q,verified});
+      return c.json({data:result});
+    }
     switch (action) {
       case 'profile': {
         const target = await member(v.target);
@@ -264,6 +274,10 @@ export function createAPI({
           [b.id, start, today, cursor, uid],
         );
         const page = candidates.slice(0, 20);
+        if (page.length) {
+          const totals = await q("SELECT c.user_id, ((SELECT count(*) FROM finfolk.points_ledger p WHERE p.user_id=c.user_id AND reversed=false)+(SELECT count(*) FROM finfolk.invitation_joins j WHERE j.inviter_id=c.user_id AND rewarded_at IS NOT NULL))::integer AS total FROM finfolk.instagram_connections c WHERE c.public_points=true AND c.status='connected' AND c.user_id IN (SELECT jsonb_array_elements_text($1::jsonb))",[JSON.stringify(page.map(m=>m.user_id))]);
+          for (const m of page) { const total=totals.find(t=>t.user_id===m.user_id); if(total)m.participationPoints=total.total; }
+        }
         result = {
           people: page
             .map((m) => ({
@@ -516,6 +530,11 @@ export function createAPI({
         break;
       }
       case 'deleteAccount':
+        await q('DELETE FROM finfolk.points_ledger WHERE user_id=$1',[uid]);
+        await q('DELETE FROM finfolk.instagram_actions WHERE owner_id=$1',[uid]);
+        await q('DELETE FROM finfolk.instagram_connections WHERE user_id=$1',[uid]);
+        await q('DELETE FROM finfolk.invitation_joins WHERE invitee_id=$1 OR inviter_id=$1',[uid]);
+        await q('DELETE FROM finfolk.invitations WHERE inviter_id=$1',[uid]);
         await q(
           "UPDATE finfolk.members SET deleted=true,profile='{}'::jsonb,updated_at=now() WHERE user_id=$1",
           [uid],

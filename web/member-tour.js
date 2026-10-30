@@ -1,4 +1,4 @@
-const VERSION = '2';
+const VERSION = '3';
 const seen = new Set();
 const node = (tag, text, cls) => { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; };
 const action = (text, fn, cls = 'secondary') => { const b = node('button', text, cls); b.type = 'button'; b.onclick = fn; return b; };
@@ -44,6 +44,9 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
     else if (step === 4) { for (let i = 1; i <= 3; i++) press(buttons[0], `Example visit day ${i}: each visit must be on a different day.`); }
     else if (step === 5) press(buttons[0], 'Send a request. The other diver decides whether to accept.');
     else if (step === 6) { press(inputs[0], 'Open enables discovery. You still control each shared statistic.'); press(inputs[0], 'Switch back to Closed to pause discovery.'); }
+    else if (step === 7) { type(inputs[0], '@ocean.diver', 'Enter your Instagram handle.'); press(buttons[0], 'Send the real verification code from that Instagram account.'); }
+    else if (step === 8) press(buttons[0], 'Confirm only your own dive. FinFolk keeps the draft private.');
+    else if (step === 9) press(buttons[0], 'Share your real invite link with friends. Points follow verified joins.');
     else add(() => { caption.textContent = step === 0 ? 'Watch the controls move, or pause and try them yourself.' : 'Use the shortcuts below to start with your real account.'; });
     add(() => { caption.textContent = 'Demonstration complete. Continue when you’re ready, or replay this step.'; playing = false; playButton.textContent = 'Play demonstration'; pointer.hidden = true; });
     scheduleFrame();
@@ -64,6 +67,9 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
     ['Check in and become a regular', 'At the beach, open its details and “The folk here”, then Check in. Visits are self-reported. Three distinct visit days in the last 30 days make you a regular. The window keeps moving, so regular status expires when visits fall outside it.'],
     ['Meet people at your spots', 'Open “The folk here” for regulars and suggested buddies. Suggestions use shared interests and preferences, not a safety qualification. Send a buddy request; they choose whether to accept. Manage requests in Your buddies.'],
     ['Choose what you share', 'Profiles start Closed. Open lets you appear in discovery. Activity stats require both Open divers to have 3 recent visit days; dive summaries require 5. Accepted buddies bypass visit gates, but only see statistics you permit. Closed pauses discovery; it does not revoke accepted buddies.'],
+    ['Connect Instagram once', 'Open Instagram & actions, enter your handle and get a verification code. Send that exact code to @finfolk.com.au in Instagram. We review the actual sender before marking your account Connected. A profile link alone does not verify ownership.'],
+    ['Turn mentions into actions', 'On a public Instagram post, mention @finfolk.com.au with a request such as log Bondi Beach depth 8m duration 30min. FinFolk prepares an action. Confirm your own dive details or exact public stats reply in My actions. Administrators review replies and awards. Private-post mentions are unavailable.'],
+    ['Invite your people', 'Open Invite friends to copy your invite link and see joins and verified connections. A new member can accept your invitation and verify Instagram to unlock a referral point for you. These are FinFolk referrals, not verified Instagram mutuals. Public points are opt-in.'],
     ['Take it into the water', 'Your setup is yours to control. Keep photos and videos on Instagram or TikTok and add profile links in Profile & privacy. Those links do not verify ownership or grant follower-only access. Ready to make FinFolk yours?'],
   ];
   function demo(host) {
@@ -89,12 +95,20 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
       const status = node('p'); status.setAttribute('role','status'); host.append(action('Send example buddy request', () => { status.textContent = 'Request sent · Waiting for them to accept. This is a demonstration.'; }), status);
     } else if (step === 6) {
       const toggle = node('label', 'Open profile '), input = node('input'); input.type = 'checkbox'; toggle.append(input); const status = node('p', 'Closed · discovery paused'); input.onchange = () => { status.textContent = input.checked ? 'Open · discovery enabled; field-level sharing still applies' : 'Closed · discovery paused'; }; host.append(toggle, status);
+    } else if (step === 7) {
+      const input=node('input');input.placeholder='@yourhandle';input.setAttribute('aria-label','Example Instagram handle');const status=node('p');status.setAttribute('role','status');host.append(input,action('Get example connection code',()=>{status.textContent='Send FINFOLK DEMO-CODE to @finfolk.com.au · Example only, not a valid code.';}),status);
+    } else if (step === 8) {
+      host.append(node('strong','Dive action · Awaiting your confirmation'),node('p','Example: Bondi Beach · 8m · 30min'));
+      const status=node('p');status.setAttribute('role','status');host.append(action('Confirm example action',()=>{status.textContent='Example confirmed · Waiting for administrator review. No real session saved.';}),status);
+    } else if (step === 9) {
+      host.append(node('strong','Invitation statistics · Example'),node('p','3 joins · 1 verified Instagram connection · 1 referral point'));
+      const status=node('p');status.setAttribute('role','status');host.append(action('Show example invite link',()=>{status.textContent='Your real invite link is available in Instagram & actions → Invite friends.';}),status);
     } else host.append(node('p', step === 0 ? 'Discover → Pick spots → Log sessions → Check in → Meet regulars' : 'Explore freely. Choose your spots. Share on your terms.'));
   }
   function draw() {
     stop(); dialog.replaceChildren(); const top = node('div', undefined, 'tour-top'); top.append(node('small', `HOW FINFOLK WORKS · ${step + 1} / ${steps.length}`), action('Close walkthrough', () => close()));
     const title = node('h2', steps[step][0]); title.id = 'member-tour-title'; title.tabIndex = -1;
-    preview = node('section', undefined, 'tour-demo'); preview.setAttribute('aria-label', 'FinFolk interface example'); preview.dataset.screen = ['Welcome', 'Discover · Beach search', 'Check In · Profile & privacy', 'My sessions · New session', 'Beach · The folk here', 'Beach · Suggested buddies', 'Check In · Sharing', 'Your FinFolk'][step]; demo(preview);
+    preview = node('section', undefined, 'tour-demo'); preview.setAttribute('aria-label', 'FinFolk interface example'); preview.dataset.screen = ['Welcome', 'Discover · Beach search', 'Check In · Profile & privacy', 'My sessions · New session', 'Beach · The folk here', 'Beach · Suggested buddies', 'Check In · Sharing', 'Instagram · Connect', 'My actions · Confirm', 'Invite friends · Statistics', 'Your FinFolk'][step]; demo(preview);
     const controls = node('div', undefined, 'tour-controls'); if (step) controls.append(action('Back', () => { step--; playing = !reduced; draw(); }));
     if (step === steps.length - 1) controls.append(action('Choose favourite spots', () => { close('account'); document.getElementById('social-profile')?.scrollIntoView?.(); }, 'primary'), action('Log a session', () => close('logbook')), action('Explore beaches', () => close('discover')));
     else controls.append(action('Next', () => { step++; playing = !reduced; draw(); }, 'primary'));
