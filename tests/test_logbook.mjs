@@ -164,6 +164,12 @@ try {
   click("Sign out");
   await wait(() => document.querySelector(".auth-card"));
   assert.ok(!document.body.textContent.includes("Private reef notes"));
+  session.visibility = "public";
+  shell.navigate("logbook", { params: { session: "one" } });
+  await wait(() => document.querySelector(".session-detail"));
+  click("Sign in");
+  await wait(() => document.querySelector(".auth-card"));
+  assert.equal(new URL(location.href).searchParams.has("session"), false);
   console.log(
     "Logbook checks passed: Instagram validation, draft retry, publication preview, unpublish and sign-out privacy.",
   );

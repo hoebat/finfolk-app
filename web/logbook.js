@@ -124,6 +124,8 @@ export function installLogbook({
           await render();
         }),
       );
+    } else if (title !== "Logbook") {
+      actions.append(button("Sign in", () => navigate(), "primary"));
     }
     head.append(actions);
     root.append(head, status);
