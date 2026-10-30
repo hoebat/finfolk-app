@@ -152,7 +152,23 @@ await httpsCallable(
   alice.functions,
   "uploadSessionPhoto",
 )({ id: "account-test", slot: "0", image });
+// Instagram callables enforce verified email, pilot access and the admin claim.
+await assert.rejects(httpsCallable(alice.functions,"requestInstagramVerification")({handle:"callable.diver",consent:true}));
+const adminAuth=adminRequire("firebase-admin/auth").getAuth(admin);
+await adminAuth.updateUser(uid,{emailVerified:true});
+await alice.auth.currentUser.getIdToken(true);
+await adminDB.doc("system/instagram").set({enabled:true,pilotOnly:true,pilotUids:[uid]});
+const igRequest=(await httpsCallable(alice.functions,"requestInstagramVerification")({handle:"callable.diver",consent:true})).data;
+await assert.rejects(httpsCallable(alice.functions,"approveInstagram")({uid,code:igRequest.code,ownershipChecked:true,followChecked:true}));
+await assert.rejects(httpsCallable(bob.functions,"instagramAdminQueue")({}));
+await adminAuth.setCustomUserClaims(uid,{instagramAdmin:true});
+await alice.auth.currentUser.getIdToken(true);
+await assert.rejects(httpsCallable(alice.functions,"approveInstagram")({uid,code:igRequest.code,ownershipChecked:true,followChecked:false}));
+await httpsCallable(alice.functions,"approveInstagram")({uid,code:igRequest.code,ownershipChecked:true,followChecked:true});
+assert.equal((await adminDB.doc(`instagramConnections/${uid}`).get()).data().status,"verified");
 await httpsCallable(alice.functions, "deleteAccount")({});
+assert.equal((await adminDB.doc(`instagramConnections/${uid}`).get()).exists,false);
+assert.equal((await adminDB.doc("instagramHandles/callable.diver").get()).exists,false);
 await assert.rejects(
   setDoc(doc(alice.db, "sessions", "after-account-delete"), data),
 );

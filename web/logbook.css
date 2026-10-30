@@ -281,3 +281,13 @@
     display: none;
   }
 }
+
+.instagram-connect { display:grid; gap:12px; }
+.instagram-connect form { display:grid; gap:12px; }
+.instagram-connect label { display:grid; gap:6px; }
+.instagram-connect label:has(input[type="checkbox"]) { display:flex; align-items:flex-start; gap:10px; }
+.instagram-connect input[type="checkbox"] { width:auto; margin-top:4px; }
+.instagram-connect code { display:block; padding:14px; overflow-wrap:anywhere; background:var(--glass, #eff8f7); border-radius:12px; }
+.instagram-connect .social-gallery { margin-top:0; }
+.instagram-connect select { max-width:100%; }
+.instagram-pending { color:var(--teal,#007f90); font-weight:600; }

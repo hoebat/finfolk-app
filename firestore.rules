@@ -40,6 +40,14 @@ service cloud.firestore {
       allow update: if owner(resource.data.ownerId) && !resource.data.get('deleting',false) && sessionValid(request.resource.data) && request.resource.data.ownerId == resource.data.ownerId && request.resource.data.createdAt == resource.data.createdAt;
       allow delete: if false;
     }
+    match /instagramConnections/{uid} {
+      allow read: if owner(uid);
+      allow write: if false;
+    }
+    match /instagramPosts/{id} {
+      allow read: if resource.data.visibility == 'public' && get(/databases/$(database)/documents/system/instagram).data.enabled == true;
+      allow write: if false;
+    }
     match /{document=**} { allow read, write: if false; }
   }
 }

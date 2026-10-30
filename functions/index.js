@@ -63,6 +63,8 @@ export const deleteAccount = onCall(options, async (request) => {
     .bucket()
     .deleteFiles({ prefix: `sessions/${uid}/` });
   await db.doc(`profiles/${uid}`).delete();
+  const { instagramService } = await import("./instagram-service.js");
+  await instagramService(db).cleanup(uid);
   await getAuth().deleteUser(uid);
   // Keep the tombstone: it denies writes from an already-issued token.
   return { deleted: true };
@@ -210,3 +212,5 @@ export const removeSessionPhoto = onCall(options, async (request) => {
     .delete({ ignoreNotFound: true });
   return { deleted: true };
 });
+
+export { requestInstagramVerification, manageInstagram, editInstagramPost, instagramAdminQueue, approveInstagram, resolveInstagramMedia, instagramWebhook, syncInstagram } from "./instagram.js";

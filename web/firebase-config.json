@@ -1,1 +1,9 @@
-{"enabled":false,"firebase":{},"functionsRegion":"australia-southeast1","instagramHandle":""}
+{
+  "enabled": false,
+  "firebase": {},
+  "functionsRegion": "australia-southeast1",
+  "instagramHandle": "finfolk.com.au",
+  "instagram": {
+    "enabled": false
+  }
+}

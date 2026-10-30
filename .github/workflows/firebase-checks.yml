@@ -2,9 +2,9 @@ name: Check FinFolk logbook access
 on:
   push:
     branches: [main]
-    paths: ['web/logbook*', 'web/firebase*', 'functions/**', 'firestore*', 'storage*', 'firebase.json', 'tests/test_logbook*', 'package*.json', '.github/workflows/firebase-checks.yml']
+    paths: ['web/logbook*', 'web/firebase*', 'functions/**', 'firestore*', 'storage*', 'firebase.json', 'tests/test_logbook*', 'tests/test_instagram*', 'web/instagram*', 'scripts/*instagram*', 'web/beaches.json', 'package*.json', '.github/workflows/firebase-checks.yml']
   pull_request:
-    paths: ['web/logbook*', 'web/firebase*', 'functions/**', 'firestore*', 'storage*', 'firebase.json', 'tests/test_logbook*', 'package*.json', '.github/workflows/firebase-checks.yml']
+    paths: ['web/logbook*', 'web/firebase*', 'functions/**', 'firestore*', 'storage*', 'firebase.json', 'tests/test_logbook*', 'tests/test_instagram*', 'web/instagram*', 'scripts/*instagram*', 'web/beaches.json', 'package*.json', '.github/workflows/firebase-checks.yml']
 permissions:
   contents: read
 jobs:
@@ -23,6 +23,6 @@ jobs:
           java-version: '21'
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm ci --prefix functions --ignore-scripts --no-audit --no-fund
-      - run: node tests/test_logbook.mjs
+      - run: node tests/test_logbook.mjs && node tests/test_instagram.mjs && node scripts/check_instagram_beaches.mjs
       - name: Verify Firebase rules and cleanup callables
-        run: npx --yes firebase-tools@15.34.2 emulators:exec --project demo-finfolk --only auth,firestore,storage,functions 'node tests/test_logbook_rules.mjs && node tests/test_logbook_functions.mjs'
+        run: npx --yes firebase-tools@15.34.2 emulators:exec --project demo-finfolk --only auth,firestore,storage,functions 'node tests/test_logbook_rules.mjs && node tests/test_logbook_functions.mjs && node tests/test_instagram_service.mjs'

@@ -48,6 +48,22 @@ const session = (context, id = "one") =>
 try {
   await env.clearFirestore();
   await env.clearStorage();
+  await env.withSecurityRulesDisabled(async context => {
+    const db=context.firestore();
+    await setDoc(doc(db,"system","instagram"),{enabled:true});
+    await setDoc(doc(db,"instagramConnections","alice"),{status:"verified",handle:"alice"});
+    await setDoc(doc(db,"instagramPosts","100"),{visibility:"public",ownerId:"alice"});
+    await setDoc(doc(db,"instagramChallenges","secret"),{uid:"alice"});
+  });
+  await assertSucceeds(getDoc(doc(alice.firestore(),"instagramConnections","alice")));
+  await assertFails(getDoc(doc(bob.firestore(),"instagramConnections","alice")));
+  await assertFails(updateDoc(doc(alice.firestore(),"instagramConnections","alice"),{status:"verified"}));
+  await assertFails(getDoc(doc(alice.firestore(),"instagramChallenges","secret")));
+  await assertSucceeds(getDoc(doc(anon.firestore(),"instagramPosts","100")));
+  await assertFails(setDoc(doc(alice.firestore(),"instagramPosts","101"),{visibility:"public",ownerId:"alice"}));
+  await env.withSecurityRulesDisabled(async context => {await updateDoc(doc(context.firestore(),"system","instagram"),{enabled:false});});
+  await assertFails(getDoc(doc(anon.firestore(),"instagramPosts","100")));
+
   await assertFails(setDoc(session(anon), input("alice")));
   await assertFails(setDoc(session(bob), input("alice")));
   await assertSucceeds(setDoc(session(alice), input("alice")));

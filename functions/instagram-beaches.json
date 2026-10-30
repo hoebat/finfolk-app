@@ -1,0 +1,302 @@
+[
+  {
+    "id": "bondi",
+    "name": "Bondi Beach"
+  },
+  {
+    "id": "bronte",
+    "name": "Bronte Beach"
+  },
+  {
+    "id": "clovelly",
+    "name": "Clovelly Beach"
+  },
+  {
+    "id": "coogee",
+    "name": "Coogee Beach"
+  },
+  {
+    "id": "gordons-bay",
+    "name": "Gordon’s Bay"
+  },
+  {
+    "id": "tamarama",
+    "name": "Tamarama Beach"
+  },
+  {
+    "id": "congwong-bay",
+    "name": "Congwong Bay"
+  },
+  {
+    "id": "frenchmans-bay",
+    "name": "Frenchmans Bay"
+  },
+  {
+    "id": "little-bay",
+    "name": "Little Bay Beach"
+  },
+  {
+    "id": "malabar",
+    "name": "Malabar Beach"
+  },
+  {
+    "id": "maroubra",
+    "name": "Maroubra Beach"
+  },
+  {
+    "id": "south-maroubra",
+    "name": "South Maroubra Beach"
+  },
+  {
+    "id": "yarra-bay",
+    "name": "Yarra Bay"
+  },
+  {
+    "id": "camp-cove",
+    "name": "Camp Cove"
+  },
+  {
+    "id": "watsons-bay",
+    "name": "Watsons Bay"
+  },
+  {
+    "id": "aspendale",
+    "name": "Aspendale Beach"
+  },
+  {
+    "id": "carrum",
+    "name": "Carrum Beach"
+  },
+  {
+    "id": "chelsea",
+    "name": "Chelsea Beach"
+  },
+  {
+    "id": "edithvale",
+    "name": "Edithvale Beach"
+  },
+  {
+    "id": "frankston",
+    "name": "Frankston Beach — Life Saving Club"
+  },
+  {
+    "id": "frankston-coast-guard",
+    "name": "Frankston — Coast Guard"
+  },
+  {
+    "id": "mentone",
+    "name": "Mentone Beach"
+  },
+  {
+    "id": "mordialloc",
+    "name": "Mordialloc Beach"
+  },
+  {
+    "id": "parkdale",
+    "name": "Parkdale Beach"
+  },
+  {
+    "id": "seaford",
+    "name": "Seaford Beach"
+  },
+  {
+    "id": "beaumaris",
+    "name": "Beaumaris Beach"
+  },
+  {
+    "id": "black-rock",
+    "name": "Black Rock Beach"
+  },
+  {
+    "id": "brighton",
+    "name": "Brighton Beach"
+  },
+  {
+    "id": "elwood",
+    "name": "Elwood Beach"
+  },
+  {
+    "id": "half-moon-bay",
+    "name": "Half Moon Bay"
+  },
+  {
+    "id": "hampton",
+    "name": "Hampton Beach"
+  },
+  {
+    "id": "port-melbourne",
+    "name": "Port Melbourne Beach"
+  },
+  {
+    "id": "sandridge",
+    "name": "Sandridge Beach"
+  },
+  {
+    "id": "sandringham",
+    "name": "Sandringham Beach"
+  },
+  {
+    "id": "south-melbourne",
+    "name": "South Melbourne Beach"
+  },
+  {
+    "id": "st-kilda",
+    "name": "St Kilda Beach"
+  },
+  {
+    "id": "blairgowrie",
+    "name": "Blairgowrie Beach"
+  },
+  {
+    "id": "canadian-bay",
+    "name": "Canadian Bay"
+  },
+  {
+    "id": "dromana",
+    "name": "Dromana Beach"
+  },
+  {
+    "id": "mornington",
+    "name": "Mornington Beach"
+  },
+  {
+    "id": "mount-martha",
+    "name": "Mount Martha Beach"
+  },
+  {
+    "id": "portsea",
+    "name": "Portsea Beach"
+  },
+  {
+    "id": "rosebud",
+    "name": "Rosebud Beach"
+  },
+  {
+    "id": "rye",
+    "name": "Rye Beach"
+  },
+  {
+    "id": "safety-beach",
+    "name": "Safety Beach"
+  },
+  {
+    "id": "sorrento",
+    "name": "Sorrento Beach"
+  },
+  {
+    "id": "altona",
+    "name": "Altona Beach"
+  },
+  {
+    "id": "eastern-beach",
+    "name": "Eastern Beach"
+  },
+  {
+    "id": "portarlington",
+    "name": "Portarlington Beach"
+  },
+  {
+    "id": "santa-casa",
+    "name": "Santa Casa Beach — Queenscliff"
+  },
+  {
+    "id": "st-leonards",
+    "name": "St Leonards Beach"
+  },
+  {
+    "id": "the-dell",
+    "name": "The Dell"
+  },
+  {
+    "id": "werribee-south",
+    "name": "Werribee South Beach"
+  },
+  {
+    "id": "williamstown",
+    "name": "Williamstown Beach"
+  },
+  {
+    "id": "cowes",
+    "name": "Cowes Beach"
+  },
+  {
+    "id": "ventnor",
+    "name": "Ventnor Beach"
+  },
+  {
+    "id": "smiths-beach",
+    "name": "Smiths Beach"
+  },
+  {
+    "id": "ycw",
+    "name": "YCW Beach"
+  },
+  {
+    "id": "cape-woolamai",
+    "name": "Cape Woolamai · Anzacs"
+  },
+  {
+    "id": "san-remo",
+    "name": "San Remo Beach"
+  },
+  {
+    "id": "silverleaves",
+    "name": "Silverleaves Beach"
+  },
+  {
+    "id": "berrys-beach",
+    "name": "Berrys Beach"
+  },
+  {
+    "id": "corinella",
+    "name": "Corinella Beach"
+  },
+  {
+    "id": "huskisson",
+    "name": "Huskisson Beach"
+  },
+  {
+    "id": "shark-net",
+    "name": "Shark Net Beach"
+  },
+  {
+    "id": "collingwood",
+    "name": "Collingwood Beach · Vincentia"
+  },
+  {
+    "id": "orion-beach",
+    "name": "Orion Beach · Vincentia"
+  },
+  {
+    "id": "blenheim",
+    "name": "Blenheim Beach"
+  },
+  {
+    "id": "greenfield",
+    "name": "Greenfield Beach"
+  },
+  {
+    "id": "chinamans-jervis",
+    "name": "Chinamans Beach · Jervis Bay"
+  },
+  {
+    "id": "hyams-beach",
+    "name": "Hyams Beach"
+  },
+  {
+    "id": "nelson-beach",
+    "name": "Nelson Beach"
+  },
+  {
+    "id": "murrays-beach",
+    "name": "Murrays Beach"
+  },
+  {
+    "id": "cave-beach",
+    "name": "Cave Beach"
+  },
+  {
+    "id": "abrahams-bosom",
+    "name": "Abrahams Bosom Beach · Currarong"
+  }
+]

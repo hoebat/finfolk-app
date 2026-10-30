@@ -56,3 +56,5 @@ For manual development, use a local public config with project `demo-finfolk`, `
 Check Authentication sign-ins, callable errors, Storage bytes/operations, Firestore reads/writes and billing after launch. Functions cap at three instances. The app's System callout shows logbook operations without logging email addresses, notes or photo contents. Keep profiles/session content user-editable; owners can unpublish or delete their sessions from their logbook.
 
 Instagram is a public profile link and follow invitation, not verified ownership or follower-based authorization. Configure the FinFolk invitation handle once supplied; individual divers may add their own handles in Account.
+
+The optional [Instagram indexing integration](INSTAGRAM_SETUP.md) adds verified ownership and follow checks, with automatic public post indexing after explicit opt-in. It has separate disabled frontend/server switches. Plain profile links remain self-reported.

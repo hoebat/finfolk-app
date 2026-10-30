@@ -95,6 +95,29 @@ export async function createLogbookClient(config) {
     return snap.exists() ? { id, ...snap.data() } : null;
   }
   return {
+    instagramStatus: () => operation("Checking Instagram verification", async () => {
+      const snap = await getDoc(doc(db, "instagramConnections", uid()));
+      return snap.exists() ? snap.data() : null;
+    }),
+    requestInstagramVerification: (handle, consent) => operation("Requesting Instagram verification", async () => (await httpsCallable(functions,"requestInstagramVerification")({handle,consent})).data),
+    manageInstagram: action => operation("Updating Instagram imports", () => httpsCallable(functions,"manageInstagram")({action})),
+    editInstagramPost: (id,action,beachId) => operation("Updating Instagram post", () => httpsCallable(functions,"editInstagramPost")({id,action,beachId})),
+    instagramAdminQueue: async () => (await httpsCallable(functions,"instagramAdminQueue")({})).data,
+    approveInstagram: data => httpsCallable(functions,"approveInstagram")(data),
+    resolveInstagramMedia: data => httpsCallable(functions,"resolveInstagramMedia")(data),
+    isInstagramAdmin: async () => !!auth.currentUser && (await auth.currentUser.getIdTokenResult()).claims.instagramAdmin === true,
+    instagramPosts: ({owner,beachId,cursor}={}) => operation("Loading community Instagram posts", async () => {
+      const filters=[where("visibility","==","public")];
+      if(owner) filters.push(where("ownerId","==",owner));
+      if(beachId) filters.push(where("beachId","==",beachId));
+      filters.push(orderBy("postedAt","desc"),orderBy("__name__","desc"));
+      if(cursor)filters.push(startAfter(cursor));
+      filters.push(limit(30));
+      const rows=await getDocs(query(collection(db,"instagramPosts"),...filters));
+      const posts=rows.docs.map(d=>({id:d.id,...d.data(),community:true}));
+      posts.cursor=rows.docs.at(-1) || null;posts.more=rows.size===30;
+      return posts;
+    }),
     get user() {
       return auth.currentUser;
     },

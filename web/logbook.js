@@ -1,3 +1,5 @@
+import { instagramPanel } from "./instagram.js";
+import { socialGallery } from "./media.js";
 import { readResource } from "./activity.js";
 import {
   instagramURL,
@@ -60,11 +62,14 @@ export function installLogbook({
     ready,
     epoch = 0,
     urls = [],
-    editor = null;
+    editor = null,
+    instagramUI = null;
   const status = el("p", "", "logbook-status");
   status.setAttribute("role", "status");
   status.setAttribute("aria-live", "polite");
   function release() {
+    instagramUI?.dispose();
+    instagramUI = null;
     for (const url of urls) URL.revokeObjectURL(url);
     urls = [];
   }
@@ -346,6 +351,10 @@ export function installLogbook({
         );
         root.append(banner);
       }
+      if (config.instagram?.enabled) {
+        instagramUI=instagramPanel({api,beaches:getBeaches(),notify:message,brand:config.instagramHandle || "finfolk.com.au"});
+        root.append(instagramUI.root);
+      }
       await list(api.user.uid);
     } catch (error) {
       if (generation !== epoch) return;
@@ -363,6 +372,12 @@ export function installLogbook({
     const ig = instagram(p);
     if (ig) root.append(ig);
     root.append(action("Share profile", () => share(profileLink(id))));
+    if (config.instagram?.enabled) {
+      const posts=await api.instagramPosts({owner:id});
+      if(generation !== epoch) return;
+      const gallery=socialGallery(posts);
+      if(gallery) root.append(gallery);
+    }
     await list(id, true);
   }
   async function share(url) {
@@ -705,6 +720,10 @@ export function installLogbook({
       }, save);
     };
     root.append(form);
+    if (config.instagram?.enabled) {
+      instagramUI=instagramPanel({api,beaches:getBeaches(),notify:message,brand:config.instagramHandle || "finfolk.com.au"});
+      root.append(instagramUI.root);
+    }
     const settings = el("section", undefined, "logbook-card");
     settings.append(el("h2", "Sign-in methods"), el("p", api.user.email || ""));
     const providers = api.user.providerData.map((p) => p.providerId);
@@ -785,6 +804,11 @@ export function installLogbook({
   return {
     get enabled() {
       return !!config?.enabled;
+    },
+    async publicInstagramPosts(beachId) {
+      await start();
+      if (!config.enabled || !config.instagram?.enabled) return [];
+      return api.instagramPosts({beachId});
     },
     async newSession(beach) {
       await start();

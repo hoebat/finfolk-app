@@ -153,3 +153,5 @@ Google/email accounts, private freediving sessions, explicitly published public 
 ## Custom domain
 
 The root `CNAME` declares `finfolk.com.au` and is copied into the Pages artifact. GitHub Actions deployments require the domain to be configured separately in repository Settings → Pages; the CNAME file alone does not activate it. See [custom domain setup](docs/CUSTOM_DOMAIN.md) for DNS, HTTPS and Firebase settings.
+
+Instagram onboarding and automatic public tag indexing are implemented behind disabled feature switches. Members opt in, verify Instagram ownership and following, then tag FinFolk. The server holds ambiguous authors for review; private sessions stay separate. See [Instagram setup, pilot and administration](docs/INSTAGRAM_SETUP.md).
