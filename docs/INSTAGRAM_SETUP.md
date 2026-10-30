@@ -10,6 +10,8 @@ The app is **unpublished**. Meta's current dashboard states that unpublished app
 
 The app secret and verification token are saved in the ignored `.env.local`, uploaded to Worker secret storage, and included in verified encrypted local backups. See [local secrets backup instructions](SECRETS_BACKUP.md). No app secret, token or recovery key is committed.
 
+Facebook Login for Business configuration **FinFolk Instagram Actions** (`1823789635502060`) is saved using user access tokens and scopes `instagram_basic`, `instagram_manage_comments`, `instagram_manage_messages`, `pages_read_engagement` and `pages_show_list`. Creating this configuration does not authorize an Instagram account or issue an access token. The ID is also stored locally as `INSTAGRAM_LOGIN_CONFIG_ID`.
+
 ## Current controls
 
 `INSTAGRAM_ENABLED=false` is intentional. No provider requests or public replies are sent until acceptance tests pass. With no `INSTAGRAM_ADMIN_IDS`, connection challenges are also disabled so members do not wait for an unconfigured reviewer. Public profile links remain available separately.
