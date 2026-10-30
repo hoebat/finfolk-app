@@ -51,6 +51,8 @@ assert.ok(
     .getElementById('account-page')
     .textContent.includes('Closed pauses discovery'),
 );
+assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Your buddies'));
+assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Check in at a beach'));
 assert.equal(document.querySelector('[name=open]').checked, false);
 document.querySelector('[name=open]').checked = true;
 document.querySelector('[name=visits]').checked = true;

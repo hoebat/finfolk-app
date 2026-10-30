@@ -275,3 +275,9 @@
 .signin-status:empty { display: none; }
 .signin-status { color: #b9364c; line-height: 1.5; }
 @media (max-width: 900px) { .signin-card { margin: 22px auto; padding: 24px; } }
+.social-menu { max-width: 760px; margin: 22px 0; padding: 24px; border-radius: 24px; background: #ffffffc9; border: 1px solid #fff; box-shadow: 0 12px 36px #005a6b12; }
+.social-menu h2 { margin: 0 0 6px; color: #173e48; }
+.social-menu p { color: #628087; margin: 0 0 18px; }
+.social-menu-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 9px; }
+.account-page .social-menu-action { margin: 0; min-height: 48px; padding: 12px 14px; text-align: left; border-radius: 14px; color: #086c79; background: #e8f6f3; font-weight: 700; }
+.account-page .social-menu-action:hover { background: #d6f0eb; }

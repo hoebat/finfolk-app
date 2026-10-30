@@ -188,6 +188,21 @@ export function installCommunity({
       if (generation !== epoch) return;
       const p = me.profile,
         form = el('form', undefined, 'account-card');
+      form.id = 'social-profile';
+      const menu = el('section', undefined, 'social-menu');
+      menu.setAttribute('aria-label', 'Social menu');
+      menu.append(el('h2', `Welcome${p.displayName ? ', ' + p.displayName : ''}`), el('p', 'Check in, find your people and keep your diving close.'));
+      const links = el('div', undefined, 'social-menu-actions');
+      const jump = id => document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'});
+      links.append(
+        button('Check in at a beach', () => shell.navigate('discover'), 'social-menu-action'),
+        button('Your buddies', () => jump('social-buddies'), 'social-menu-action'),
+        button('Your check-ins', () => { const section = document.getElementById('social-checkins'); if (section) section.open = true; jump('social-checkins'); }, 'social-menu-action'),
+        button('My sessions', () => shell.navigate('logbook'), 'social-menu-action'),
+        button('Profile & privacy', () => jump('social-profile'), 'social-menu-action'),
+      );
+      menu.append(links);
+      root.append(menu);
       form.append(el('h2', 'Profile & social links'));
       const name = field(form, 'Display name', 'displayName', p.displayName),
         bio = field(form, 'A little about you', 'bio', p.bio, 'textarea'),
@@ -382,6 +397,7 @@ export function installCommunity({
         root.append(verify);
       }
       const buddies = el('section', undefined, 'account-card');
+      buddies.id = 'social-buddies';
       buddies.append(el('h2', 'Your buddies'));
       root.append(buddies);
       for (const row of await a.call('connections')) {
@@ -424,6 +440,7 @@ export function installCommunity({
         buddies.append(card);
       }
       const visits = el('details');
+      visits.id = 'social-checkins';
       visits.append(el('summary', 'Your check-ins'));
       for (const row of await a.call('myCheckins')) {
         const line = el('p', `${row.name} · ${row.day} `);
