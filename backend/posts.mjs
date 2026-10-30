@@ -20,9 +20,10 @@ export function postInput(v) {
   if (v.publicConsent !== true || v.ownPost !== true || v.tagged !== true) fail('Confirm ownership, the @finfolk.com.au tag and permission to list this post publicly.');
   return { url, platform, handle };
 }
-export async function publicPosts({ q, env, beachId, cursor = '', viewer = '' }) {
+export async function publicPosts({ q, env, beachId, cursor = '', viewer = '', postId = '' }) {
   if (!postsEnabled(env)) return { enabled: false, posts: [], cursor: null };
   if (typeof beachId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(beachId)) fail('Choose a beach.');
+  const selectedPost = postId ? uuid(postId) : null;
   let before = '9999-01-01T00:00:00.000Z', beforeId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
   if (cursor) {
     const parts = cursor.split('~');
@@ -33,15 +34,16 @@ export async function publicPosts({ q, env, beachId, cursor = '', viewer = '' })
     FROM finfolk.posts p JOIN finfolk.members m ON m.user_id=p.owner_id
     WHERE p.beach_id=$1 AND p.status='approved' AND p.public_consent AND NOT m.deleted
     AND ($4='' OR NOT EXISTS(SELECT 1 FROM finfolk.blocks bl WHERE (bl.owner_id=$4 AND bl.target_id=p.owner_id) OR (bl.target_id=$4 AND bl.owner_id=p.owner_id)))
+    AND ($5::uuid IS NULL OR p.id=$5::uuid)
     AND (p.created_at,p.id)<($2::timestamptz,$3::uuid)
-    ORDER BY p.created_at DESC,p.id DESC LIMIT 21`, [beachId, before, beforeId, viewer]);
+    ORDER BY p.created_at DESC,p.id DESC LIMIT 21`, [beachId, before, beforeId, viewer, selectedPost]);
   const posts = rows.slice(0,20), last = posts.at(-1);
   return { enabled: true, posts: posts.map(({cursor_at,...post}) => post), cursor: rows.length > 20 ? `${last.cursor_at}~${last.id}` : null };
 }
 export async function postAction({action,v,uid,env,q,verified,beach}) {
   const admin = isInstagramAdmin(uid,env);
   if (action === 'postStatus') return { enabled: postsEnabled(env), admin, tag: 'finfolk.com.au', pilotBeaches: (env.COMMUNITY_PILOT_BEACHES || '').split(',').map(s=>s.trim()).filter(Boolean) };
-  if (action === 'posts') return publicPosts({q,env,beachId:v.beachId,cursor:v.cursor || '',viewer:uid});
+  if (action === 'posts') return publicPosts({q,env,beachId:v.beachId,cursor:v.cursor || '',viewer:uid,postId:v.postId || ''});
   if (action === 'followedPosts') {
     if (!postsEnabled(env)) return {posts:[]};
     return {posts:await q(`SELECT p.id,p.beach_id,p.url,p.platform,p.creator_handle,b.name AS beach_name

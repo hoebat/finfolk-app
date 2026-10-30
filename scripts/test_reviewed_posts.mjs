@@ -17,7 +17,7 @@ async function call(uid,action,data={},expected=200){
  const response=await app.request('http://localhost/api',{method:'POST',headers:{'Content-Type':'application/json',...(uid?{Authorization:'Bearer '+uid}:{})},body:JSON.stringify({action,...data})},env);
  const value=await response.json();assert.equal(response.status,expected,JSON.stringify(value));return value.data;
 }
-async function feed(cursor='',settings=env){const response=await app.request('http://localhost/community/posts?beachId=bondi&cursor='+encodeURIComponent(cursor),{},settings);assert.equal(response.status,200);return response.json();}
+async function feed(cursor='',settings=env,postId=''){const response=await app.request('http://localhost/community/posts?beachId=bondi&cursor='+encodeURIComponent(cursor)+'&postId='+postId,{},settings);assert.equal(response.status,200);return response.json();}
 const submission={beachId:'bondi',url:'https://www.instagram.com/p/FinfolkPilotTest/',creatorHandle:'test.diver',ownPost:true,tagged:true,publicConsent:true};
 try {
  for(const uid of ids)await q(`INSERT INTO neon_auth."user"(id,name,email,"emailVerified","createdAt","updatedAt") VALUES($1,'Pilot test',$2,$3,now(),now())`,[uid,uid+'@example.com',uid!==unverified]);
@@ -61,6 +61,8 @@ try {
  const first=await feed(),second=await feed(first.cursor);
  assert.equal(first.posts.length,20);assert.equal(second.posts.length,3);
  assert.equal(new Set([...first.posts,...second.posts].map(p=>p.id)).size,23);
+ assert.equal((await feed('',env,second.posts[2].id)).posts[0].id,second.posts[2].id);
+ assert.equal((await feed('',env,post.id)).posts.length,0);
  const click=await app.request('http://localhost/community/referral',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({postId:first.posts[0].id})},env);assert.equal(click.status,200);
  assert.ok((await call(admin,'communityMetrics')).referrals.some(r=>Number(r.clicks)>0));
  await call(owner,'deleteAccount');

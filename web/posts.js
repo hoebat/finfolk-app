@@ -23,7 +23,7 @@ const notice = () => { const node = el('p'); node.setAttribute('role','status');
 const endpoint = (config, path) => new URL(path, config.apiUrl.endsWith('/') ? config.apiUrl : config.apiUrl + '/');
 const original = (post, config) => {
   const link = el('a', `@${post.creator_handle} · Open on ${post.platform === 'tiktok' ? 'TikTok' : 'Instagram'} ↗`);
-  link.href = post.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+  link.href = post.url; link.referrerPolicy = 'no-referrer'; link.target = '_blank'; link.rel = 'noopener noreferrer';
   link.onclick = () => {
     // Aggregate clicks only; no visitor ID, handle, beach history or referrer is sent.
     if (config?.apiUrl) fetch(endpoint(config,'community/referral'), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({postId:post.id}),cache:'no-store',keepalive:true,referrerPolicy:'no-referrer'}).catch(()=>{});
@@ -44,15 +44,17 @@ export async function renderPostFeed({host,beach,config,loadAPI,signIn,isCurrent
   try { api = await loadAPI(); } catch {}
   if (!isCurrent()) return;
   let cursor = '', enabled = false;
+  const requested = new URL(location.href).searchParams.get('post') || '';
   const more = action('More posts', page, status);
   more.hidden = true; host.append(more);
   async function page() {
     status.textContent = 'Loading beach posts…';
     let data;
-    if (api?.user) data = await api.call('posts',{beachId:beach.id,cursor});
+    if (api?.user) data = await api.call('posts',{beachId:beach.id,cursor,postId:requested});
     else {
       const url = endpoint(config,'community/posts'); url.searchParams.set('beachId',beach.id);
       if (cursor) url.searchParams.set('cursor',cursor);
+      if (requested) url.searchParams.set('postId',requested);
       const response = await fetch(url,{cache:'no-store',referrerPolicy:'no-referrer'});
       data = await response.json();
       if (!response.ok) throw Error(data.error || 'Beach posts could not load.');
@@ -88,7 +90,6 @@ export async function renderPostFeed({host,beach,config,loadAPI,signIn,isCurrent
     }
     cursor = data.cursor || ''; more.hidden = !cursor;
     status.textContent = !enabled ? 'Beach posts are opening soon.' : cards.children.length ? '' : 'No approved posts here yet. Share your first tagged post.';
-    const requested = new URL(location.href).searchParams.get('post');
     const selected = [...cards.children].find(n=>n.dataset.post === requested);
     if (selected) { selected.classList.add('shared-post'); selected.scrollIntoView?.({block:'nearest'}); }
     else if (requested && !cursor && enabled) status.textContent = 'That shared post may be unavailable or no longer listed. You can still explore the posts here.';
@@ -98,6 +99,7 @@ export async function renderPostFeed({host,beach,config,loadAPI,signIn,isCurrent
     status.textContent=error.message; host.append(action('Retry posts',page,status));
   }
   if (!isCurrent()) return;
+  if (requested) host.append(action('View all posts at this beach',()=>{const url=new URL(location.href);url.searchParams.delete('post');location.href=url.href;},status));
   if (enabled) host.append(action(api?.user ? 'Share your tagged post' : 'Sign in to share a post',()=>signIn('posts'),status));
 }
 export async function renderPostManager({host,api,beaches,refresh}) {

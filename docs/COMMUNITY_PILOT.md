@@ -16,7 +16,7 @@ Original-post links work without loading an embed. Previews load only on request
 
 ## API and configuration
 
-- `GET /community/posts?beachId=...&cursor=...`: anonymous approved posts, 20 per page; the returned cursor retains database timestamp precision. Returns an empty disabled feed before activation.
+- `GET /community/posts?beachId=...&cursor=...&postId=...`: anonymous approved posts, 20 per page; the returned cursor retains database timestamp precision. Optional postId resolves an approved shared post directly, including older posts. Returns an empty disabled feed before activation.
 - `POST /community/referral`: aggregate outbound clicks for a listed post. Stores only a Sydney-local day, platform and count. Counts are referral indicators, not verified external interactions or unique people; bots can inflate them.
 - Existing authenticated `/api` actions: `postStatus`, `post`, `myPosts`, `removePost`, `posts`, `followedPosts`, `reportPost`.
 - Administrator-only actions: `reviewPosts`, `reviewPost`, `resolvePostReport`, `communityMetrics`. Uses the existing server-only `INSTAGRAM_ADMIN_IDS` allowlist. Never trust a browser-supplied role.

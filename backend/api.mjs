@@ -83,7 +83,7 @@ export function createAPI({
       e.status || 503,
     );
   });
-  app.get('/community/posts', async c => c.json(await publicPosts({q,env:c.env || {},beachId:c.req.query('beachId'),cursor:c.req.query('cursor') || ''})));
+  app.get('/community/posts', async c => c.json(await publicPosts({q,env:c.env || {},beachId:c.req.query('beachId'),cursor:c.req.query('cursor') || '',postId:c.req.query('postId') || ''})));
   app.post('/community/referral', async c => {
     if (!postsEnabled(c.env || {})) return c.json({ok:true});
     const raw = await c.req.text();
