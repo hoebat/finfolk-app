@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function active() { return signedIn() && !exists(/databases/$(database)/documents/deletingAccounts/$(request.auth.uid)); }
+    function owner(uid) { return active() && request.auth.uid == uid; }
+    function verified() { return active() && request.auth.token.email_verified == true; }
+    function profileValid(d) {
+      return d.keys().hasOnly(['displayName','bio','instagram','updatedAt'])
+        && d.keys().hasAll(['displayName','bio','instagram','updatedAt'])
+        && d.displayName is string && d.displayName.size() > 0 && d.displayName.size() <= 80
+        && d.bio is string && d.bio.size() <= 500
+        && d.instagram is string && (d.instagram == '' || d.instagram.matches('^[A-Za-z0-9._]{1,30}$'))
+        && d.updatedAt == request.time;
+    }
+    function sessionValid(d) {
+      return d.keys().hasOnly(['ownerId','date','locationName','beachId','point','durationMinutes','maxDepthMetres','notes','visibility','photos','createdAt','updatedAt','deleting'])
+        && d.keys().hasAll(['ownerId','date','locationName','beachId','point','durationMinutes','maxDepthMetres','notes','visibility','photos','createdAt','updatedAt'])
+        && d.ownerId == request.auth.uid && d.date is string && d.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && d.locationName is string && d.locationName.size() > 0 && d.locationName.size() <= 160
+        && d.beachId is string && d.beachId.size() <= 200
+        && (d.point == null || (d.point is list && d.point.size() == 2 && d.point[0] is number && d.point[1] is number && d.point[0] >= -180 && d.point[0] <= 180 && d.point[1] >= -85 && d.point[1] <= 85))
+        && (d.durationMinutes == null || (d.durationMinutes is number && d.durationMinutes >= 0 && d.durationMinutes <= 1440))
+        && (d.maxDepthMetres == null || (d.maxDepthMetres is number && d.maxDepthMetres >= 0 && d.maxDepthMetres <= 300))
+        && d.notes is string && d.notes.size() <= 10000
+        && d.visibility in ['private','public'] && (d.visibility == 'private' || verified())
+        && d.photos is list && d.photos.size() <= 6 && d.photos.toSet().size() == d.photos.size()
+        && d.photos.hasOnly(['0','1','2','3','4','5'])
+        && (!('deleting' in d) || d.deleting == false)
+        && d.updatedAt == request.time;
+    }
+    match /profiles/{uid} {
+      allow read: if true;
+      allow create, update: if owner(uid) && profileValid(request.resource.data);
+      allow delete: if false;
+    }
+    match /sessions/{id} {
+      allow read: if (resource.data.visibility == 'public' && resource.data.get('deleting',false) == false) || (signedIn() && resource.data.ownerId == request.auth.uid);
+      allow create: if active() && sessionValid(request.resource.data) && request.resource.data.createdAt == request.time && request.resource.data.visibility == 'private';
+      allow update: if owner(resource.data.ownerId) && !resource.data.get('deleting',false) && sessionValid(request.resource.data) && request.resource.data.ownerId == resource.data.ownerId && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

@@ -1,0 +1,14 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function session(id) { return firestore.get(/databases/(default)/documents/sessions/$(id)); }
+    function active(uid) { return request.auth != null && request.auth.uid == uid && !firestore.exists(/databases/(default)/documents/deletingAccounts/$(uid)); }
+    match /sessions/{uid}/{id}/{slot} {
+      allow read: if session(id).data.ownerId == uid && (session(id).data.visibility == 'public' && !session(id).data.get('deleting',false) && slot in session(id).data.photos || request.auth != null && request.auth.uid == uid);
+      // Photo writes go through validated callable functions. Admin-created
+      // objects do not carry permanent Firebase download tokens.
+      allow write: if false;
+    }
+    match /{path=**} { allow read, write: if false; }
+  }
+}

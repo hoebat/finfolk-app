@@ -1,6 +1,6 @@
-# Shore Depth Explorer
+# FinFolk
 
-A backend-free GitHub Pages guide to Australian coastal beaches, reference depths, ocean activities and nearby camping, caravan parks and cabins.
+A coastal atlas and freediving logbook for Australia. Beaches, depth charts and nearby stays run on GitHub Pages; optional Firebase accounts keep sessions private until their owners publish them.
 
 **Discover** offers Suggested places and an All beaches index, sorted by state/territory → coastal region → beach. **Map** has independent beach/region search and an on-demand Place / Layers sidebar. Existing beach links such as `?site=edithvale`, `?site=maroubra` and `?site=hyams-beach` remain supported. Legacy `view=areas` links open All beaches; `view=guides` links open Suggested. Official activity and fisheries links remain in each beach’s sourced details.
 
@@ -145,3 +145,7 @@ Checksum-pinned source transfers can seed previously reviewed government respons
 ## Ocean chart styling
 
 Shore and place names are enabled by default using OpenStreetMap tiles, styled in the browser with navy water and muted blue-grey land. Survey contours use contrasting aqua and blue lines with a metre legend. Geographic water colour provides map context; reference depths come from the published survey lines or verified raster cells. If online tiles are unavailable, the local coarse context coastline provides an approximate outline. The layer can be switched off under Map data & layers. PNG exports retain attribution and the applicable survey colour legend.
+
+## FinFolk logbook
+
+Google/email accounts, private freediving sessions, explicitly published public sessions, Instagram profile links and private photo storage are implemented with Firebase. Accounts remain disabled until a dedicated project is configured. See [Firebase setup and deployment](docs/FIREBASE_SETUP.md) for backend deployment, billing, rules checks and enabling the frontend.

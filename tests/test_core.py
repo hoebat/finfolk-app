@@ -216,7 +216,7 @@ class HTTPTests(FixtureCase):
         self.assertTrue(set(REGIONS).issubset({r["id"] for r in json.loads(body)["regions"]}))
         status, body = self.request("/")
         self.assertEqual(status, 200)
-        self.assertIn(b"Depth Atlas", body)
+        self.assertIn(b"FinFolk", body)
 
     def test_invalid_inputs_and_no_file_traversal(self):
         for path in ("/api/sample?lon=NaN&lat=1", "/api/sample?region=missing&lon=1&lat=1", "/api/tiles/bondi/30/1/1.png"):

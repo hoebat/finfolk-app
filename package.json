@@ -3,18 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Australian coastal discovery, reference depths, activity guides and nearby stays",
+  "description": "FinFolk coastal atlas and freediving logbook",
   "scripts": {
     "build": "python3 -m depth_explorer build-static",
-    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs && node tests/test_estimate.mjs"
+    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs && node tests/test_estimate.mjs && node tests/test_logbook.mjs",
+    "test:rules": "npx --yes firebase-tools@15.34.2 emulators:exec --project demo-finfolk --only firestore,storage \"node tests/test_logbook_rules.mjs\""
   },
   "dependencies": {
+    "firebase": "^13.1.0",
     "proj4": "2.22.0"
   },
   "overrides": {
-    "wkt-parser": "1.5.5"
+    "wkt-parser": "1.5.5",
+    "@grpc/grpc-js": "1.14.7"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "@playwright/test": "^1.64.1",
+    "esbuild": "^0.28.2",
     "happy-dom": "21.0.4"
   }
 }

@@ -1,0 +1,239 @@
+:root {
+  --finfolk-teal: #009db2;
+  --finfolk-coral: #ff435d;
+  --finfolk-cream: #fffdf0;
+  --finfolk-ink: #173f49;
+  --teal: #00899d;
+  --accent: #00899d;
+  --line: #d9e8e4;
+  --muted: #58767c;
+  --glass: #fffdf0e8;
+  --shadow: 0 8px 28px #164d5417;
+  color: var(--finfolk-ink);
+  background: var(--finfolk-cream);
+}
+body {
+  color: var(--finfolk-ink);
+  background: var(--finfolk-cream);
+}
+button,
+select,
+input,
+textarea {
+  accent-color: var(--finfolk-teal);
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+canvas:focus-visible {
+  outline: 3px solid var(--finfolk-coral);
+  outline-offset: 3px;
+}
+.primary {
+  background: var(--finfolk-teal);
+  color: #fff;
+}
+.primary:hover:not(:disabled) {
+  background: #00889c;
+}
+.primary.active {
+  background: #d72f4b;
+}
+.secondary,
+.text-button {
+  color: #076f7c;
+}
+.app-rail.sidebar {
+  background: linear-gradient(180deg, #fffdf0f5, #eef6f1f0);
+  border-color: #d8e6de;
+}
+.primary-nav button {
+  color: #4e6b71;
+}
+.primary-nav button.active {
+  color: #007b8b;
+  background: linear-gradient(110deg, #009db21c, #009db20a);
+  border-color: #009db22b;
+  box-shadow: inset 0 1px 0 #ffffffb8;
+}
+.primary-nav button.active svg {
+  stroke: #00899d;
+}
+.primary-nav button.active:after {
+  background: var(--finfolk-coral);
+}
+.primary-nav svg,
+.layers-callout svg,
+.map-view-controls svg,
+.system-toggle svg {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+.layers-callout,
+.data-panel-heading button,
+.data-panel .measurement-visibility {
+  color: #007e90;
+}
+.layers-callout[data-busy="true"]:after,
+.system-dot {
+  background: var(--finfolk-coral);
+}
+.map-search-results button:hover,
+.map-search-results button.active {
+  background: #009db215;
+}
+.map-search-results {
+  background: #fffef7f5;
+}
+.map-search-results small {
+  color: #5b747a;
+}
+#map-search {
+  color: var(--finfolk-ink);
+  background: #fffdf0ee;
+}
+.discover-page,
+.logbook-page {
+  background: radial-gradient(
+    ellipse at top right,
+    #e0f2ed,
+    var(--finfolk-cream) 70%
+  );
+}
+.discover-header h1,
+.beach-summary h2,
+.data-panel h2,
+.data-panel h3,
+.logbook-header h1 {
+  color: #16434c;
+}
+.discover-tabs,
+.data-tabs {
+  background: #009db210;
+}
+.discover-tabs button[aria-selected="true"],
+.data-tabs button[aria-selected="true"] {
+  color: #007d8f;
+  background: #fffefa;
+}
+.data-panel {
+  background: #fffdf0ef;
+}
+.data-panel .layer-list .toggle input:checked {
+  background: var(--finfolk-teal);
+}
+.discovery,
+.state-card,
+.beach-card,
+.recommendation-card,
+.source-card,
+.compare-card {
+  background: #fffef8d9;
+  border-color: #d8e8e0;
+}
+.tags span {
+  background: #009db210;
+  color: #126a76;
+}
+.place-tabs button[aria-selected="true"],
+.stay-filters button.active {
+  color: #007e90;
+  background: #009db213;
+}
+.surface-details a,
+.data-panel a,
+.beach-summary a {
+  color: #087f8d;
+}
+.map-bottom {
+  background: #0a2939d9;
+  color: #d0e6e3;
+}
+.map-bottom a {
+  color: #c4f2eb;
+}
+.map-page > #notice {
+  background: #fffdf0f0;
+  color: #5e4e35;
+}
+.system-toggle {
+  background: #fffdf0ed;
+  color: #166b76;
+}
+.system-panel {
+  background: #fffdf0f5;
+}
+.system-heading h2 {
+  color: #16434c;
+}
+.system-filters button[aria-pressed="true"] {
+  background: #009db21b;
+  color: #007588;
+}
+.system-chart i {
+  background: var(--finfolk-teal);
+}
+.system-request[data-state="error"] {
+  border-left-color: var(--finfolk-coral);
+}
+dialog {
+  background: #fffdf4;
+  color: var(--finfolk-ink);
+}
+@media (max-width: 900px) {
+  .primary-nav {
+    background: #fffdf0ed;
+    border-color: #fffdf0;
+    box-shadow: 0 -4px 30px #164c4c16;
+  }
+  .primary-nav button.active {
+    background: #009db215;
+  }
+  .primary-nav button {
+    min-width: 0;
+  }
+  .primary-nav {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .map-toolbar:before {
+    content: "";
+    display: block;
+    position: relative;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 48px;
+    background: url("./finfolk-icon.svg") center/30px no-repeat;
+    filter: drop-shadow(0 2px 5px #173f4926);
+  }
+  #map-search-form {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+  }
+  .map-toolbar {
+    gap: 7px;
+  }
+  .layers-callout {
+    flex: 0 0 48px;
+  }
+}
+.primary {
+  background: #007f91;
+}
+.logbook-page .primary {
+  background: #007f91;
+}
+.discover-header h1:before,
+.logbook-header h1:before {
+  content: "";
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  margin-right: 10px;
+  background: url("./finfolk-icon.svg") center/contain no-repeat;
+  vertical-align: -5px;
+}

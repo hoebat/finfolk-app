@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {Window} from 'happy-dom';
 import {installAppShell,routeFromURL} from '../web/mobile-shell.js';
-for(const [query,view,section] of [['','maps','suggested'],['?site=edithvale','maps','suggested'],['?view=areas','discover','index'],['?view=guides','discover','suggested'],['?view=discover&site=edithvale&section=index','discover','index']])assert.deepEqual(routeFromURL('https://example.test/'+query),{view,section,site:query.includes('site=')?'edithvale':''});
+for(const [query,view,section] of [['?view=logbook&session=one','logbook','suggested'],['','maps','suggested'],['?site=edithvale','maps','suggested'],['?view=areas','discover','index'],['?view=guides','discover','suggested'],['?view=discover&site=edithvale&section=index','discover','index']])assert.deepEqual(routeFromURL('https://example.test/'+query),{view,section,site:query.includes('site=')?'edithvale':''});
 const window=new Window({width:390,height:844,url:'https://example.test/?view=areas',settings:{disableJavaScriptFileLoading:true,disableCSSFileLoading:true}}),doc=window.document;
 doc.write(await readFile(new URL('../web/index.html',import.meta.url),'utf8'));
 for(const key of ['document','location','history'])globalThis[key]=window[key];globalThis.addEventListener=window.addEventListener.bind(window);globalThis.innerHeight=844;
@@ -18,5 +18,6 @@ try{
  $('index-tab').click();assert.equal(shell.route.section,'index');assert.equal(new URL(location.href).searchParams.get('section'),'index');
  history.replaceState(null,'','?view=maps&site=edithvale');window.dispatchEvent(new window.PopStateEvent('popstate'));assert.equal(shell.route.view,'maps');assert.equal(shell.route.site,'edithvale');assert.equal(shell.panelOpen,false);
  window.innerWidth=1440;window.dispatchEvent(new window.Event('resize'));assert.equal(canvas.parentElement,parent);assert.equal(doc.querySelectorAll('#map').length,1);assert.equal(doc.querySelectorAll('#beach-search').length,1);const desktopCSS=await readFile(new URL('../web/mobile.css',import.meta.url),'utf8');assert.ok(desktopCSS.includes('@media (max-width:900px)'));
+ shell.navigate('logbook',{params:{session:'one'}});assert.equal($('logbook-page').hidden,false);assert.equal($('explorer').hidden,true);assert.equal(active,false);shell.navigate('maps');assert.equal(new URL(location.href).searchParams.has('session'),false);assert.equal($('logbook-page').hidden,true);
  console.log('Shell checks passed: routes/history, bottom navigation, desktop rail, non-modal tabs, focus/Escape, outside dismissal and stable canvas.');
 }finally{await window.happyDOM.close();}

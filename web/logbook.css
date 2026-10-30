@@ -1,0 +1,283 @@
+.logbook-page {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  padding: 38px 40px 70px;
+  background: radial-gradient(ellipse at top right, #d9eeed, #edf2f8 65%);
+  color: #193b47;
+}
+.logbook-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 auto 22px;
+  max-width: 1040px;
+}
+.logbook-header h1 {
+  font: 600 34px system-ui;
+  letter-spacing: -1.3px;
+  margin: 4px 0;
+}
+.logbook-page > .logbook-actions,
+.logbook-page > .logbook-status,
+.logbook-page > .instagram-profile,
+.logbook-page > p {
+  max-width: 1040px;
+  margin: 16px auto;
+}
+.logbook-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.logbook-card,
+.session-card {
+  background: #ffffffbd;
+  border: 1px solid #fff;
+  border-radius: 22px;
+  box-shadow: 0 8px 28px #1c484b0a;
+  padding: 24px;
+  backdrop-filter: blur(18px);
+  max-width: 760px;
+  margin: 20px auto;
+}
+.auth-card {
+  max-width: 440px;
+}
+.logbook-page form {
+  display: grid;
+  gap: 18px;
+}
+.logbook-page label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.logbook-page input,
+.logbook-page textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 12px;
+  border: 1px solid #bccfce;
+  border-radius: 12px;
+  background: #fffffff0;
+  color: #193b47;
+  font: inherit;
+  resize: vertical;
+}
+.logbook-page input[type="file"] {
+  font-size: 13px;
+}
+.logbook-page button {
+  min-height: 42px;
+  border-radius: 12px;
+}
+.logbook-page small {
+  color: #5b737d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.logbook-status:empty {
+  display: none;
+}
+.logbook-status {
+  padding: 12px 16px;
+  background: #fff3d8;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.session-grid {
+  max-width: 1040px;
+  margin: 24px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.session-card {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.session-title {
+  display: block;
+  text-align: left;
+  background: none;
+  padding: 8px 0;
+  color: #155f65;
+  font-size: 21px;
+  font-weight: 650;
+  white-space: normal;
+}
+.session-stats {
+  display: flex;
+  gap: 24px;
+  font-size: 21px;
+}
+.session-notes {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+.session-photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+.session-photos figure {
+  margin: 0;
+  min-width: 0;
+}
+.session-photos img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+.instagram-profile {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.instagram-profile a {
+  color: #155f65;
+  font-weight: 650;
+}
+.logbook-empty {
+  line-height: 1.7;
+}
+.logbook-page > button {
+  display: block;
+  margin: 20px auto;
+}
+.logbook-dialog {
+  border: 1px solid #fff;
+  border-radius: 24px;
+  padding: 28px;
+  width: min(660px, calc(100vw - 32px));
+  max-height: 85vh;
+  overflow: auto;
+  color: #193b47;
+  background: #f8fcfc;
+}
+.logbook-dialog::backdrop {
+  background: #092b4670;
+  backdrop-filter: blur(6px);
+}
+.logbook-dialog .logbook-actions {
+  margin-top: 24px;
+}
+.logbook-dialog .session-photos {
+  margin-bottom: 20px;
+}
+@media (max-width: 900px) {
+  .logbook-page {
+    padding: 24px 16px calc(var(--nav-height) + 24px);
+  }
+  .logbook-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .logbook-header h1 {
+    font-size: 30px;
+  }
+  .logbook-card {
+    padding: 20px;
+  }
+  .logbook-page input,
+  .logbook-page textarea {
+    font-size: 16px;
+  }
+  .session-photos img {
+    height: 180px;
+  }
+  .logbook-actions {
+    gap: 8px;
+  }
+  .session-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.app-rail .brand {
+  display: flex;
+  justify-content: center;
+  padding: 10px 4px;
+  margin: 0 0 22px;
+  letter-spacing: 0;
+}
+.app-rail .brand img {
+  display: block;
+  width: 142px;
+  height: auto;
+  max-width: 100%;
+  border-radius: 18px;
+}
+.logbook-page .primary {
+  background: #009db2;
+  color: white;
+}
+.logbook-page .primary:hover {
+  background: #00899d;
+}
+.logbook-page button:focus-visible {
+  outline-color: #ff435d;
+}
+.logbook-page .auth-card:before {
+  content: "";
+  display: block;
+  width: 110px;
+  height: 100px;
+  margin: 0 auto 20px;
+  background: url("./finfolk-logo.jpeg") center/contain no-repeat;
+  border-radius: 14px;
+}
+.logbook-page .logbook-header .eyebrow {
+  color: #007f91;
+}
+.logbook-page .session-card {
+  border-top: 3px solid #009db2;
+}
+.logbook-page .session-card:has(small:first-child) {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.logbook-page .session-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px #164f5e13;
+}
+#log-session {
+  width: 100%;
+  margin: 12px 0;
+}
+.follow-invitation {
+  max-width: 760px;
+  margin: 24px auto;
+  padding: 18px 22px;
+  border-radius: 18px;
+  background: #fff5f4;
+  color: #873241;
+}
+.follow-invitation a {
+  color: #a52540;
+  font-weight: 650;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logbook-page .session-card {
+    transition: none;
+  }
+  .logbook-page .session-card:hover {
+    transform: none;
+  }
+}
+@media (max-width: 900px) {
+  .app-rail > .brand {
+    display: none;
+  }
+}
