@@ -322,3 +322,9 @@
 @media (prefers-reduced-motion: reduce) { .tour-pointer { transition: none; } .tour-click { animation: none; } }
 
 .tour-demo::before { content: 'FinFolk / ' attr(data-screen); }
+.actions-panel code { display: block; padding: 12px; border-radius: 12px; background: #e8f6f3; overflow-wrap: anywhere; user-select: all; }
+.actions-panel textarea { min-height: 90px; }
+.actions-panel details { margin: 16px 0; padding: 12px; border: 1px solid #cce4df; border-radius: 14px; }
+.actions-panel summary { cursor: pointer; font-weight: 700; color: #086c79; }
+.actions-panel a { color: #007f8e; overflow-wrap: anywhere; }
+.instagram-verification { padding: 16px; background: #f1f8f4; border-radius: 16px; margin: 14px 0; }

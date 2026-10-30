@@ -83,6 +83,13 @@ try {
     bob = await register('bob');
   await call(alice, 'me');
   await call(bob, 'me');
+  const instagram = await call(alice, 'instagramStatus');
+  assert.equal(instagram.admin, false);
+  assert.equal(typeof instagram.enabled, 'boolean');
+  assert.deepEqual(await call(alice, 'instagramActions'), []);
+  await call(alice, 'instagramAdminInbox', {}, 403);
+  await call(alice, 'instagramConnect', {handle:'temporary_test'}, instagram.setupReady ? 403 : 503);
+  console.log('Instagram Actions: member status, private action list, admin denial and connection rollout gate passed.');
   await call(alice, 'preferences', {
     profile: {
       displayName: 'Temporary deployment test',
