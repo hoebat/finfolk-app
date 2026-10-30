@@ -151,7 +151,7 @@ def _metric_union(geometries):
     if dissolved.is_empty:
         return dissolved
     to_metric = Transformer.from_crs(SOURCE_CRS, AREA_CRS, always_xy=True).transform
-    to_geographic = Transformer.from_crs(AREA_CRS, SOURCE_CRS, always_xy=True).transform
+    to_geographic = Transformer.from_crs(AREA_CRS, "EPSG:4326", always_xy=True).transform
     projected = transform(to_metric, dissolved)
     projected = projected.buffer(1500).buffer(-800)
     projected = projected.simplify(125, preserve_topology=True)
@@ -162,10 +162,13 @@ def _metric_union(geometries):
 
 def build_area_regions(areas, beaches, source_zip, territory_zip=None):
     """Return compact merged locality geometry for the app's curated coastal areas."""
+    from pyproj import Transformer
+
     areas_by_id = {area["id"]: area for area in areas if not area.get("fallback") and not area["id"].endswith("-other-coast")}
     members = [beach for beach in beaches if beach.get("area_id") in areas_by_id
                and isinstance(beach.get("point"), list) and len(beach["point"]) == 2]
-    points = [Point(beach["point"]) for beach in members]
+    to_source = Transformer.from_crs("EPSG:4326", SOURCE_CRS, always_xy=True).transform
+    points = [Point(to_source(*beach["point"])) for beach in members]
     beach_tree = STRtree(points) if points else None
     closest = {}
 
