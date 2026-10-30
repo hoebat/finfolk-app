@@ -1,4 +1,4 @@
-const VERSION = '1';
+const VERSION = '2';
 const seen = new Set();
 const node = (tag, text, cls) => { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; };
 const action = (text, fn, cls = 'secondary') => { const b = node('button', text, cls); b.type = 'button'; b.onclick = fn; return b; };
@@ -11,8 +11,47 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
   try { localStorage.setItem('finfolk:welcome', '1'); } catch {}
   const previous = document.activeElement, dialog = node('dialog', undefined, 'member-tour');
   dialog.setAttribute('aria-labelledby', 'member-tour-title');
-  let step = 0;
+  let step = 0, timer, frames = [], frameIndex = 0, caption, pointer, preview;
+  const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  let playing = !reduced, playButton;
+  function stop() { clearTimeout(timer); timer = null; }
+  function scheduleFrame() {
+    stop();
+    if (!playing || document.hidden || !dialog.isConnected || frameIndex >= frames.length) return;
+    const frame = frames[frameIndex];
+    timer = setTimeout(() => { if (!playing || !dialog.isConnected) return; frameIndex++; frame.run(); scheduleFrame(); }, frame.delay);
+  }
+  function pause() { playing = false; stop(); if (playButton) playButton.textContent = 'Play demonstration'; }
+  function aim(target, text) {
+    caption.textContent = text;
+    preview.querySelectorAll('.tour-highlight').forEach(n => n.classList.remove('tour-highlight'));
+    if (!target) return;
+    target.classList.add('tour-highlight');
+    const box = preview.getBoundingClientRect(), rect = target.getBoundingClientRect();
+    pointer.style.left = `${rect.left - box.left + Math.min(rect.width / 2, 100)}px`;
+    pointer.style.top = `${rect.top - box.top + rect.height / 2}px`;
+    pointer.hidden = false;
+  }
+  function animateScene() {
+    frames = []; frameIndex = 0;
+    const add = (run, delay = 1300) => frames.push({run, delay});
+    const buttons = [...preview.querySelectorAll('button')], inputs = [...preview.querySelectorAll('input')];
+    const press = (b, text) => { add(() => aim(b, text)); add(() => { b?.click(); pointer.classList.remove('tour-click'); void pointer.offsetWidth; pointer.classList.add('tour-click'); }, 650); };
+    const type = (input, value, text) => { input.value = ''; add(() => aim(input, text)); for (let i = 1; i <= value.length; i++) add(() => { input.value = value.slice(0, i); input.dispatchEvent(new window.Event('input', {bubbles:true})); }, 65); };
+    if (step === 1) { type(inputs[0], 'Bondi', 'Search for a beach or coastal region.'); press(buttons[0], 'Open the beach to inspect depth references and community details.'); }
+    else if (step === 2) { press(buttons[0], 'Choose a beach you return to.'); press(buttons[1], 'Add another favourite. Save these choices in Profile & privacy.'); }
+    else if (step === 3) { type(inputs[0], 'Bondi Beach', 'Choose your session location.'); type(inputs[2], 'Easy session with my buddy', 'Add notes to remember the session.'); type(inputs[3], '30', 'Record time in the water.'); type(inputs[4], '8', 'Record your maximum depth.'); press(buttons[0], 'Save the session. It starts private.'); }
+    else if (step === 4) { for (let i = 1; i <= 3; i++) press(buttons[0], `Example visit day ${i}: each visit must be on a different day.`); }
+    else if (step === 5) press(buttons[0], 'Send a request. The other diver decides whether to accept.');
+    else if (step === 6) { press(inputs[0], 'Open enables discovery. You still control each shared statistic.'); press(inputs[0], 'Switch back to Closed to pause discovery.'); }
+    else add(() => { caption.textContent = step === 0 ? 'Watch the controls move, or pause and try them yourself.' : 'Use the shortcuts below to start with your real account.'; });
+    add(() => { caption.textContent = 'Demonstration complete. Continue when you’re ready, or replay this step.'; playing = false; playButton.textContent = 'Play demonstration'; pointer.hidden = true; });
+    scheduleFrame();
+  }
+  const visibility = () => { if (document.hidden) pause(); };
+  document.addEventListener('visibilitychange', visibility);
   function close(destination) {
+    stop(); document.removeEventListener('visibilitychange', visibility);
     seen.add(key); try { localStorage.setItem(key, 'done'); } catch {}
     dialog.close(); dialog.remove(); previous?.focus?.();
     if (destination) shell?.navigate(destination);
@@ -53,13 +92,23 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
     } else host.append(node('p', step === 0 ? 'Discover → Pick spots → Log sessions → Check in → Meet regulars' : 'Explore freely. Choose your spots. Share on your terms.'));
   }
   function draw() {
-    dialog.replaceChildren(); const top = node('div', undefined, 'tour-top'); top.append(node('small', `HOW FINFOLK WORKS · ${step + 1} / ${steps.length}`), action('Close walkthrough', () => close()));
+    stop(); dialog.replaceChildren(); const top = node('div', undefined, 'tour-top'); top.append(node('small', `HOW FINFOLK WORKS · ${step + 1} / ${steps.length}`), action('Close walkthrough', () => close()));
     const title = node('h2', steps[step][0]); title.id = 'member-tour-title'; title.tabIndex = -1;
-    const preview = node('section', undefined, 'tour-demo'); preview.setAttribute('aria-label', 'FinFolk interface example'); demo(preview);
-    const controls = node('div', undefined, 'tour-controls'); if (step) controls.append(action('Back', () => { step--; draw(); }));
+    preview = node('section', undefined, 'tour-demo'); preview.setAttribute('aria-label', 'FinFolk interface example'); preview.dataset.screen = ['Welcome', 'Discover · Beach search', 'Check In · Profile & privacy', 'My sessions · New session', 'Beach · The folk here', 'Beach · Suggested buddies', 'Check In · Sharing', 'Your FinFolk'][step]; demo(preview);
+    const controls = node('div', undefined, 'tour-controls'); if (step) controls.append(action('Back', () => { step--; playing = !reduced; draw(); }));
     if (step === steps.length - 1) controls.append(action('Choose favourite spots', () => { close('account'); document.getElementById('social-profile')?.scrollIntoView?.(); }, 'primary'), action('Log a session', () => close('logbook')), action('Explore beaches', () => close('discover')));
-    else controls.append(action('Next', () => { step++; draw(); }, 'primary'));
-    dialog.append(top, title, node('p', steps[step][1], 'tour-description'), preview, controls); title.focus();
+    else controls.append(action('Next', () => { step++; playing = !reduced; draw(); }, 'primary'));
+    pointer = node('span', '↖', 'tour-pointer'); pointer.setAttribute('aria-hidden', 'true'); pointer.hidden = true; preview.append(pointer);
+    caption = node('p', 'Press Play to watch, or try the controls yourself.', 'tour-caption');
+    const playback = node('div', undefined, 'tour-playback');
+    playButton = action(playing ? 'Pause demonstration' : 'Play demonstration', () => {
+      if (playing) pause(); else { playing = true; playButton.textContent = 'Pause demonstration'; if (frameIndex >= frames.length) { draw(); } else scheduleFrame(); }
+    });
+    playback.append(playButton, action('Replay step', () => { playing = !reduced; draw(); }));
+    preview.addEventListener('pointerdown', pause);
+    preview.addEventListener('keydown', pause);
+    dialog.append(top, title, node('p', steps[step][1], 'tour-description'), playback, preview, caption, controls); title.focus();
+    animateScene();
   }
   dialog.addEventListener('cancel', e => { e.preventDefault(); close(); }); document.body.append(dialog); draw(); dialog.showModal();
 }

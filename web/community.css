@@ -306,3 +306,19 @@
 .tour-demo [aria-pressed=true] { background: #007f8e; color: #fff; }
 .tour-demo label { font-size: 13px; font-weight: 600; }
 @media (prefers-reduced-transparency: reduce) { .member-tour::backdrop { backdrop-filter: none; } }
+.member-tour { width: min(820px, calc(100vw - 24px)); }
+.tour-demo { position: relative; overflow: hidden; border: 1px solid #c8e1db; box-shadow: inset 0 1px #ffffff; }
+.tour-demo::before { content: 'FinFolk'; display: block; color: #007f8e; font-size: 14px; font-weight: 800; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #c8e1db; }
+.tour-demo form { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.tour-demo form label:first-child, .tour-demo form label:nth-child(3), .tour-demo form [role=status] { grid-column: 1 / -1; }
+.tour-pointer { position: absolute; z-index: 2; font-size: 32px; line-height: 1; color: #003e50; text-shadow: 1px 1px white, -1px -1px white; pointer-events: none; transition: left .5s ease, top .5s ease; }
+.tour-highlight { outline: 3px solid #ff5368; outline-offset: 3px; }
+.tour-click { animation: tour-tap .55s ease; }
+.tour-caption { min-height: 3em; border-left: 3px solid #009db2; padding: 6px 12px; color: #305c65; line-height: 1.5; font-size: 14px; }
+.tour-playback { display: flex; gap: 8px; flex-wrap: wrap; }
+.tour-playback button { font-size: 12px; }
+@keyframes tour-tap { 50% { transform: scale(.8); color: #ff435d; } }
+@media (max-width: 480px) { .tour-demo form { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .tour-pointer { transition: none; } .tour-click { animation: none; } }
+
+.tour-demo::before { content: 'FinFolk / ' attr(data-screen); }
