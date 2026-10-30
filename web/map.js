@@ -138,8 +138,8 @@ export class DepthMap {
       drawRings(shapeCtx,zones);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=fill;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(shape,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
       drawRings(edgesCtx,zones,true);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=edge;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(edges,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
     };
-    tint(prepared,'rgba(67,157,190,.10)','rgba(185,235,239,.38)');
-    const active=prepared.filter(hit=>hit.zone.id===this.hoveredAreaId||hit.zone.id===this.focusedAreaId);if(active.length)tint(active,'rgba(64,211,220,.23)','rgba(223,255,245,.92)');
+    tint(prepared,'rgba(67,157,190,.14)','rgba(185,235,239,.55)');
+    const active=prepared.filter(hit=>hit.zone.id===this.hoveredAreaId||hit.zone.id===this.focusedAreaId);if(active.length)tint(active,'rgba(64,211,220,.30)','rgba(223,255,245,.98)');
   }
   isWaterAtScreen(x,y){
     const world=project(this.fromScreen([x,y]),this.zoom),tileX=Math.floor(world[0]/256),tileY=Math.floor(world[1]/256),tile=cachedTile(this.images,this.zoom,tileX,tileY),styled=tile?.image.styled;
