@@ -14,10 +14,10 @@ export function unproject([x,y],z) {const size=256*2**z;return [x/size*360-180,M
 export class DepthMap {
   constructor(canvas) {
     this.active=true;this.touchPoints=new Map();this.pendingTiles=[];this.tileActive=0;this.viewEpoch=0;this.ready=false;this.imageLimit=globalThis.matchMedia?.('(max-width:700px)').matches?128:256;this.canvas=canvas;this.ctx=canvas.getContext('2d');this.center=[144.86,-38.08];this.zoom=10;
-    this.layers={depth:true,contours:true,context:true,pins:false,coverage:false,basemap:true,measurement:true};this.contours=[];this.contextContours=[];this.contextSource=null;this.derived=[];this.sourcePins=[];this.pinGroups=new Map();this.pinHits=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';this.pointPicking=false;this.measurement=null;this.beaches=[];this.beachHits=[];this.stays=[];this.stayHits=[];this.coastline=[];this.areaZones=[];this.areaHits=[];this.hoveredAreaId=null;
+    this.layers={depth:true,contours:true,context:true,pins:false,coverage:false,basemap:true,measurement:true};this.contours=[];this.contextContours=[];this.contextSource=null;this.derived=[];this.sourcePins=[];this.pinGroups=new Map();this.pinHits=[];this.line=[];this.rasters=[];this.images=new Map();this.region='port-phillip';this.pointPicking=false;this.measurement=null;this.beaches=[];this.beachHits=[];this.stays=[];this.stayHits=[];this.coastline=[];this.areaZones=[];this.areaHits=[];this.areaGeometryCache=new WeakMap();this.hoveredAreaId=null;
     new ResizeObserver(()=>this.resize()).observe(canvas);
     canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);if(e.pointerType==='touch'){this.touchPoints.set(e.pointerId,[e.offsetX,e.offsetY]);if(this.touchPoints.size>=2){const [a,b]=[...this.touchPoints.values()],mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];this.pinch={distance:Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1])),zoom:this.zoom,anchor:this.fromScreen(mid)};this.touchWasPinch=true;this.drag=null;return;}}this.drag={x:e.offsetX,y:e.offsetY,start:project(this.center,this.zoom),distance:0};});
-    canvas.addEventListener('pointermove',e=>{const point=[e.offsetX,e.offsetY];if(e.pointerType==='touch'&&this.touchPoints.has(e.pointerId)){this.touchPoints.set(e.pointerId,point);if(this.pinch&&this.touchPoints.size>=2){const [a,b]=[...this.touchPoints.values()],mid=[(a[0]+b[0])/2,(a[1]+b[1])/2],size=Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1]));this.zoom=Math.max(5,Math.min(20,this.pinch.zoom+Math.round(Math.log2(size/this.pinch.distance))));const anchor=project(this.pinch.anchor,this.zoom);this.center=unproject([anchor[0]-mid[0]+this.width/2,anchor[1]-mid[1]+this.height/2],this.zoom);this.schedule();return;}}this.onmove?.(this.fromScreen(point));const stay=this.pointPicking?null:this.hitStay(...point),beach=this.pointPicking?null:this.hitBeach(...point),pin=this.pointPicking?null:this.hitDataPin(...point),area=this.pointPicking||this.drag||e.pointerType==='touch'?null:this.hitArea(...point);const hoverId=area?.id||null;if(hoverId!==this.hoveredAreaId){this.hoveredAreaId=hoverId;this.schedule();}canvas.title=stay?`${stay.name} — nearby stay`:beach?`${beach.name} — open beach summary`:area?`${area.name} · approximate coastal area`:pin?(pin.members.length>1?`${pin.members.length} data records — click to zoom or choose a record`:pin.kind==='contour'?`${pin.feature.properties.depth_m} m contour — click for source details`:'Raster data — click for details'):'';if(canvas.style)canvas.style.cursor=stay||beach||pin?'pointer':area?'help':'crosshair';if(!this.drag)return;const dx=point[0]-this.drag.x,dy=point[1]-this.drag.y;this.drag.distance=Math.max(this.drag.distance,Math.hypot(dx,dy));if(this.drag.distance>4){this.center=unproject([this.drag.start[0]-dx,this.drag.start[1]-dy],this.zoom);this.schedule();}});
+    canvas.addEventListener('pointermove',e=>{const point=[e.offsetX,e.offsetY];if(e.pointerType==='touch'&&this.touchPoints.has(e.pointerId)){this.touchPoints.set(e.pointerId,point);if(this.pinch&&this.touchPoints.size>=2){const [a,b]=[...this.touchPoints.values()],mid=[(a[0]+b[0])/2,(a[1]+b[1])/2],size=Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1]));this.zoom=Math.max(5,Math.min(20,this.pinch.zoom+Math.round(Math.log2(size/this.pinch.distance))));const anchor=project(this.pinch.anchor,this.zoom);this.center=unproject([anchor[0]-mid[0]+this.width/2,anchor[1]-mid[1]+this.height/2],this.zoom);this.schedule();return;}}this.onmove?.(this.fromScreen(point));const stay=this.pointPicking?null:this.hitStay(...point),beach=this.pointPicking?null:this.hitBeach(...point),pin=this.pointPicking?null:this.hitDataPin(...point),area=this.pointPicking||this.drag||e.pointerType==='touch'?null:this.hitArea(...point);const hoverId=area?.id||null;if(hoverId!==this.hoveredAreaId){this.hoveredAreaId=hoverId;this.schedule();}canvas.title=stay?`${stay.name} — nearby stay`:beach?`${beach.name} — open beach summary`:area?`${area.name} · coastal region`:pin?(pin.members.length>1?`${pin.members.length} data records — click to zoom or choose a record`:pin.kind==='contour'?`${pin.feature.properties.depth_m} m contour — click for source details`:'Raster data — click for details'):'';if(canvas.style)canvas.style.cursor=stay||beach||pin||area?'pointer':'crosshair';if(!this.drag)return;const dx=point[0]-this.drag.x,dy=point[1]-this.drag.y;this.drag.distance=Math.max(this.drag.distance,Math.hypot(dx,dy));if(this.drag.distance>4){this.center=unproject([this.drag.start[0]-dx,this.drag.start[1]-dy],this.zoom);this.schedule();}});
     canvas.addEventListener('pointerleave',()=>{if(this.hoveredAreaId){this.hoveredAreaId=null;this.schedule();}canvas.title='';if(canvas.style)canvas.style.cursor='crosshair';});
     canvas.addEventListener('pointerup',e=>{if(e.pointerType==='touch'){this.touchPoints.delete(e.pointerId);if(this.pinch||this.touchWasPinch){this.pinch=null;this.drag=null;if(!this.touchPoints.size)this.touchWasPinch=false;this.schedule();this.onview?.();return;}}if(!this.drag)return;const moved=this.drag.distance;this.drag=null;if(moved<5){const stay=this.pointPicking?null:this.hitStay(e.offsetX,e.offsetY);if(stay){this.onStay?.(stay);return;}const beach=this.pointPicking?null:this.hitBeach(e.offsetX,e.offsetY);if(beach){this.onBeach?.(beach);return;}const pin=this.pointPicking?null:this.hitDataPin(e.offsetX,e.offsetY);if(pin){this.onclick?.(pin.point,pin.feature,pin);return;}const area=this.pointPicking?null:this.hitArea(e.offsetX,e.offsetY);if(area&&(area.id!==this.focusedAreaId||this.zoom<=10)){this.onArea?.(area);return;}this.onclick?.(this.fromScreen([e.offsetX,e.offsetY]),this.hitContour(e.offsetX,e.offsetY),null);}else{this.schedule();this.onview?.();}});
     canvas.addEventListener('pointercancel',e=>{if(e?.pointerType==='touch')this.touchPoints.delete(e.pointerId);this.pinch=null;this.touchWasPinch=this.touchPoints.size>0;this.drag=null;this.schedule();this.onview?.();});
@@ -110,33 +110,28 @@ export class DepthMap {
     if(!this.areaZones?.length)return;
     const view=this.bounds(),visible=this.areaZones.filter(zone=>zone.bounds[0]<=view[2]&&zone.bounds[2]>=view[0]&&zone.bounds[1]<=view[3]&&zone.bounds[3]>=view[1]);
     if(!visible.length)return;
-    const w=this.width,h=this.height;
-    this.areaCanvas??=document.createElement('canvas');this.areaMaskCanvas??=document.createElement('canvas');this.areaOverlayCanvas??=document.createElement('canvas');this.areaEdgesCanvas??=document.createElement('canvas');
-    for(const canvas of [this.areaCanvas,this.areaMaskCanvas,this.areaOverlayCanvas,this.areaEdgesCanvas])if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;this.areaMaskKey=null;}
-    const prepared=[];for(const zone of visible){
-      const rings=(zone.polygons||[]).map(ring=>ring.map(point=>this.toScreen(point))),points=rings.flat(),xs=points.map(point=>point[0]),ys=points.map(point=>point[1]),bounds=[Math.min(...xs)-2,Math.min(...ys)-2,Math.max(...xs)+2,Math.max(...ys)+2];
+    const w=this.width,h=this.height,scale=2**this.zoom,prepared=[];for(const zone of visible){
+      let geometry=this.areaGeometryCache.get(zone);
+      if(!geometry){
+        const rings=(zone.polygons||[]).map(ring=>ring.map(point=>project(point,0))),path=typeof Path2D==='function'?new Path2D():null;
+        if(path)for(const ring of rings){if(ring.length<3)continue;path.moveTo(...ring[0]);for(let i=1;i<ring.length;i++)path.lineTo(...ring[i]);path.closePath();}
+        geometry={rings,path};this.areaGeometryCache.set(zone,geometry);
+      }
+      const northwest=project([zone.bounds[0],zone.bounds[3]],0),southeast=project([zone.bounds[2],zone.bounds[1]],0),worldBounds=[northwest[0],northwest[1],southeast[0],southeast[1]],bounds=[worldBounds[0]*scale-left-2,worldBounds[1]*scale-top-2,worldBounds[2]*scale-left+2,worldBounds[3]*scale-top+2];
       if(bounds[2]<0||bounds[3]<0||bounds[0]>w||bounds[1]>h)continue;
-      const hit={zone,rings,bounds};prepared.push(hit);this.areaHits.push(hit);
+      const screenRings=geometry.path?null:geometry.rings.map(ring=>ring.map(([x,y])=>[x*scale-left,y*scale-top]));
+      const hit={zone,path:geometry.path,rings:geometry.rings,screenRings,worldBounds,bounds};prepared.push(hit);this.areaHits.push(hit);
     }
     if(!prepared.length)return;
-    const mask=this.areaMaskCanvas,key=`${this.zoom}/${left}/${top}/${w}/${h}/${this.shoreRevision||0}`;
-    if(key!==this.areaMaskKey){
-      const maskCtx=mask.getContext('2d');maskCtx.clearRect(0,0,w,h);
-      for(let x=Math.floor(left/256);x<=Math.floor((left+w)/256);x++)for(let y=Math.floor(top/256);y<=Math.floor((top+h)/256);y++){
-        const tile=cachedTile(this.images,this.zoom,x,y),waterMask=tile?.image.styled?.waterMask;if(!waterMask)continue;
-        const dx=x*256-left,dy=y*256-top;maskCtx.drawImage(waterMask,tile.sx,tile.sy,tile.sw,tile.sh,dx,dy,257,257);
-      }
-      this.areaMaskKey=key;
-    }
-    const shape=this.areaCanvas,shapeCtx=shape.getContext('2d'),overlay=this.areaOverlayCanvas,overlayCtx=overlay.getContext('2d'),edges=this.areaEdgesCanvas,edgesCtx=edges.getContext('2d');
-    const drawRings=(context,zones,stroke=false,clipWater=true)=>{
-      context.clearRect(0,0,w,h);context.save();context.fillStyle='#fff';context.strokeStyle='#fff';context.lineWidth=1.5;context.lineJoin='round';context.lineCap='round';
-      for(const hit of zones){context.beginPath();for(const ring of hit.rings){if(ring.length<3)continue;context.moveTo(...ring[0]);for(let i=1;i<ring.length;i++)context.lineTo(...ring[i]);context.closePath();}if(stroke)context.stroke();else context.fill('evenodd');}
-      if(clipWater){context.globalCompositeOperation='destination-in';context.drawImage(mask,0,0);}context.restore();
-    };
     const tint=(zones,fill,edge)=>{
-      drawRings(shapeCtx,zones);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=fill;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(shape,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
-      drawRings(edgesCtx,zones,true,false);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=edge;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(edges,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
+      this.ctx.save();this.ctx.translate(-left,-top);this.ctx.scale(scale,scale);this.ctx.fillStyle=fill;this.ctx.strokeStyle=edge;this.ctx.lineWidth=1.5/scale;this.ctx.lineJoin='round';this.ctx.lineCap='round';
+      for(const hit of zones){
+        if(hit.path){this.ctx.fill(hit.path,'evenodd');this.ctx.stroke(hit.path);continue;}
+        this.ctx.save();this.ctx.setTransform(this.pixelRatio||1,0,0,this.pixelRatio||1,0,0);this.ctx.beginPath();
+        for(const ring of hit.screenRings){if(ring.length<3)continue;this.ctx.moveTo(...ring[0]);for(let i=1;i<ring.length;i++)this.ctx.lineTo(...ring[i]);this.ctx.closePath();}
+        this.ctx.fill('evenodd');this.ctx.strokeStyle=edge;this.ctx.lineWidth=1.5;this.ctx.stroke();this.ctx.restore();
+      }
+      this.ctx.restore();
     };
     tint(prepared,'rgba(67,157,190,.14)','rgba(185,235,239,.55)');
     const active=prepared.filter(hit=>hit.zone.id===this.hoveredAreaId||hit.zone.id===this.focusedAreaId);if(active.length)tint(active,'rgba(64,211,220,.30)','rgba(223,255,245,.98)');
@@ -148,9 +143,11 @@ export class DepthMap {
     return styled.waterPixels[py*width+px]===1;
   }
   hitArea(x,y){
+    const center=project(this.center,this.zoom),left=center[0]-this.width/2,top=center[1]-this.height/2,scale=2**this.zoom,worldX=(left+x)/scale,worldY=(top+y)/scale;
     for(const hit of [...this.areaHits].reverse()){
       const [left,top,right,bottom]=hit.bounds;if(x<left||x>right||y<top||y>bottom)continue;
-      let inside=false;for(const ring of hit.rings){for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;}}
+      if(hit.path){this.areaHitContext??=document.createElement('canvas').getContext('2d');if(this.areaHitContext.isPointInPath(hit.path,worldX,worldY,'evenodd'))return hit.zone;continue;}
+      let inside=false;for(const ring of hit.screenRings){for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;}}
       if(inside)return hit.zone;
     }
     return null;

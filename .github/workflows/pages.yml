@@ -51,9 +51,16 @@ jobs:
           path: datasets
           key: coastal-v3-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-${{ github.run_id }}
           restore-keys: coastal-v3-${{ runner.os }}-${{ hashFiles('datasets/inventory.json') }}-
+      - uses: actions/cache@v4
+        with:
+          path: .cache/area-boundaries
+          key: abs-boundaries-2021-gda94-v2
       - name: Refresh national beaches, stays and survey inventory
         if: github.event_name != 'pull_request'
         run: python -m scripts.acquire_national
+      - name: Cache ABS boundaries for coastal map regions
+        if: github.event_name != 'pull_request'
+        run: python -m scripts.fetch_area_boundaries
       - name: Prepare Australia-wide broad-scale depth context
         if: github.event_name != 'pull_request'
         run: python -m scripts.fetch_national_context

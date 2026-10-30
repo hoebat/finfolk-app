@@ -185,7 +185,7 @@ function makeClusterRings(points) {
   return rings.length ? rings.map(ring => smoothRing(ring, 1)) : bufferedFarthestPair();
 }
 
-export function buildAreaZones(areas = [], beaches = []) {
+function buildInferredAreaZones(areas = [], beaches = []) {
   const areaById = new Map(areas.filter(area => !area.fallback && !area.id.endsWith('-other-coast')).map(area => [area.id, area]));
   const members = new Map();
   for (const beach of beaches) {
@@ -213,4 +213,31 @@ export function buildAreaZones(areas = [], beaches = []) {
       bounds: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]});
   }
   return zones;
+}
+
+function zoneFromFeature(feature, area) {
+  const geometry = feature?.geometry;
+  if (!area || !geometry || !['Polygon', 'MultiPolygon'].includes(geometry.type)) return null;
+  const rings = geometry.type === 'Polygon' ? geometry.coordinates : geometry.coordinates.flat();
+  const polygons = rings.filter(ring => Array.isArray(ring) && ring.length >= 4
+    && ring.every(point => Array.isArray(point) && point.length >= 2 && point.slice(0, 2).every(Number.isFinite)));
+  if (!polygons.length) return null;
+  let west = Infinity, south = Infinity, east = -Infinity, north = -Infinity;
+  for (const ring of polygons) for (const [lon, lat] of ring) {
+    west = Math.min(west, lon); south = Math.min(south, lat); east = Math.max(east, lon); north = Math.max(north, lat);
+  }
+  return {id: area.id, name: area.name, polygons,
+    bounds: [west, south, east, north],
+    boundarySource: feature.properties?.boundary_source || 'ABS locality boundaries'};
+}
+
+export function buildAreaZones(areas = [], beaches = [], regionCollection = null) {
+  const eligible = areas.filter(area => !area.fallback && !area.id.endsWith('-other-coast'));
+  const byId = new Map(eligible.map(area => [area.id, area]));
+  const official = (regionCollection?.features || [])
+    .map(feature => zoneFromFeature(feature, byId.get(feature.properties?.id)))
+    .filter(Boolean);
+  const included = new Set(official.map(zone => zone.id));
+  const inferred = buildInferredAreaZones(eligible.filter(area => !included.has(area.id)), beaches);
+  return [...official, ...inferred];
 }

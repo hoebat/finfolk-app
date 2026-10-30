@@ -88,6 +88,13 @@ def prepare(stage,write,catalog,store=None):
     seed=json.loads((ROOT/'web/beaches.json').read_text());config=json.loads((ROOT/'config/areas.json').read_text());snapshot=ROOT/'.cache/national/snapshot.json'
     national=json.loads(snapshot.read_text()) if snapshot.exists() else {}
     output=directory(seed,national,config,catalog['regions']);known={r['id'] for r in catalog['regions']}
+    boundary_archive=ROOT/'.cache/area-boundaries/SAL_2021_AUST_GDA94_SHP.zip'
+    if boundary_archive.is_file():
+        from .area_boundaries import build_area_regions
+        territory_archive=ROOT/'.cache/area-boundaries/STE_2021_AUST_SHP_GDA94.zip'
+        regions=build_area_regions(output['areas'],output['beaches'],boundary_archive,territory_archive if territory_archive.is_file() else None)
+        output['area_regions_file']='data/area-regions.json'
+        write('data/area-regions.json',json.dumps(regions,ensure_ascii=False,separators=(',',':')).encode())
     for a in output['areas']:
         if a['id'] not in known:
             catalog['regions'].append({'id':a['id'],'name':a['name'],'state':next(s['name'] for s in config['states'] if s['id']==a['state_id']),'bbox':a['bbox'],'center':a['center'],'zoom':10,'rasters':[],'tiles':{},'contours':None,'contour_file':None,'status':'empty','notes':'This directory area has no detailed depth package published in the app. Check the survey inventory for available source data.','attribution':'Place-name sources are listed per location.','licence':'See source records','contour_survey':'unavailable'})
