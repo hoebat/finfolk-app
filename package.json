@@ -17,7 +17,9 @@
     "deploy:api": "wrangler deploy",
     "provision:api": "node scripts/provision_api.mjs",
     "test:deployed": "node --env-file=.env.local scripts/test_deployed_api.mjs",
-    "test:instagram-actions": "node --env-file=.env.test.local scripts/test_instagram_actions.mjs"
+    "test:instagram-actions": "node --env-file=.env.test.local scripts/test_instagram_actions.mjs",
+    "env:backup": "node scripts/backup_env.mjs",
+    "env:restore": "node scripts/restore_env.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",

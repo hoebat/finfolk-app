@@ -1,0 +1,15 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {createDecipheriv} from 'node:crypto';
+import {homedir} from 'node:os';
+import {join,resolve} from 'node:path';
+const input=process.argv[2];
+if(!input)throw Error('Usage: npm run env:restore -- /path/to/backup.enc.json [new-output-file]');
+const output=resolve(process.argv[3]||'.env.restored.local');
+const key=await readFile(join(homedir(),'.config','finfolk','env-backup.key'));
+const backup=JSON.parse(await readFile(input,'utf8'));
+if(backup.version!==1||backup.algorithm!=='aes-256-gcm'||key.length!==32)throw Error('Unsupported backup or key.');
+const decipher=createDecipheriv('aes-256-gcm',key,Buffer.from(backup.iv,'base64'));
+decipher.setAuthTag(Buffer.from(backup.tag,'base64'));
+const plaintext=Buffer.concat([decipher.update(Buffer.from(backup.ciphertext,'base64')),decipher.final()]);
+await writeFile(output,plaintext,{mode:0o600,flag:'wx'});
+console.log('Environment restored to '+output+'. Existing files were not overwritten.');
