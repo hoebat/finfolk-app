@@ -173,6 +173,9 @@ export function installCommunity({
           }),
           status,
         );
+        const instagram = link('Follow @finfolk.com.au on Instagram ↗', 'https://www.instagram.com/finfolk.com.au/');
+        instagram.className = 'finfolk-social-link';
+        box.append(instagram);
         root.append(box);
         const token = new URL(location.href).searchParams.get('token');
         if (token) {
@@ -209,6 +212,9 @@ export function installCommunity({
         button('Profile & privacy', () => jump('social-profile'), 'social-menu-action'),
       );
       menu.append(links);
+      const brandInstagram = link('Follow @finfolk.com.au on Instagram ↗', 'https://www.instagram.com/finfolk.com.au/');
+      brandInstagram.className = 'finfolk-social-link';
+      menu.append(brandInstagram);
       root.append(menu);
       form.append(el('h2', 'Profile & social links'));
       const name = field(form, 'Display name', 'displayName', p.displayName),

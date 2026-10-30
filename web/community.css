@@ -290,3 +290,5 @@
 .account-page-guest .signin-form label { margin: 9px 0; }
 .account-page-guest .signin-form input:not([type='checkbox']) { min-height: 42px; padding: 9px 11px; }
 .account-page-guest .signin-card > .signin-toggle { background: transparent; color: #007f8e; box-shadow: none; font-size: 13px; font-weight: 700; padding: 9px 4px; }
+.finfolk-social-link { display: inline-block; margin-top: 16px; color: #007f8e; font-size: 13px; font-weight: 700; text-decoration: none; }
+.finfolk-social-link:hover { text-decoration: underline; }
