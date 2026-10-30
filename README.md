@@ -120,7 +120,7 @@ Large source rasters and archives use Git LFS. Materialised derived files are pu
 
 ## Deploy and verify
 
-Repository Settings → Pages must use GitHub Actions. Pushes to `main`, manual runs and weekly refreshes run the build and publish to https://hoebat.github.io/shore-depth-explorer/. Pull requests test and build without refreshing external sources or deploying. Actions caches national sources independently from survey archives. Survey caches are partitioned by the committed dataset inventory so new imported data is not overwritten by an incompatible cached inventory.
+Repository Settings → Pages must use GitHub Actions. Pushes to `main`, manual runs and weekly refreshes run the build and publish to https://hoebat.github.io/finfolk-app/. Pull requests test and build without refreshing external sources or deploying. Actions caches national sources independently from survey archives. Survey caches are partitioned by the committed dataset inventory so new imported data is not overwritten by an incompatible cached inventory.
 
 ```sh
 python3 -m unittest discover -s tests -v

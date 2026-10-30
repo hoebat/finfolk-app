@@ -3,6 +3,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 import { getAuth } from "firebase-admin/auth";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { createHash } from "node:crypto";
 initializeApp();
 const db = getFirestore(),
   options = {
@@ -111,9 +112,10 @@ export const uploadSessionPhoto = onCall(
       );
     await writableSession(uid, id);
     const { default: sharp } = await import("sharp");
-    let bytes;
+    let bytes, inputHash;
     try {
       const source = Buffer.from(encoded, "base64");
+      inputHash = createHash("sha256").update(source).digest("hex");
       if (source.length > 2 * 1024 * 1024) throw Error();
       bytes = await sharp(source, { limitInputPixels: 30_000_000 })
         .rotate()
@@ -133,14 +135,39 @@ export const uploadSessionPhoto = onCall(
       );
     }
     const file = getStorage().bucket().file(`sessions/${uid}/${id}/${slot}`);
-    await file.save(bytes, {
-      resumable: false,
-      metadata: {
-        contentType: "image/jpeg",
-        cacheControl: "private,no-store",
-        metadata: { sessionId: id },
-      },
-    });
+    let created = false;
+    let existing;
+    try {
+      [existing] = await file.getMetadata();
+    } catch (error) {
+      if (Number(error.code) !== 404) throw error;
+    }
+    if (existing && existing.metadata?.inputHash !== inputHash)
+      throw new HttpsError(
+        "already-exists",
+        "This photo slot changed. Reopen the session before adding more photos.",
+      );
+    try {
+      if (!existing)
+        await file.save(bytes, {
+          resumable: false,
+          preconditionOpts: { ifGenerationMatch: 0 },
+          metadata: {
+            contentType: "image/jpeg",
+            cacheControl: "private,no-store",
+            metadata: { sessionId: id, inputHash },
+          },
+        });
+      created = !existing;
+    } catch (error) {
+      if (Number(error.code) !== 412) throw error;
+      const [existing] = await file.getMetadata();
+      if (existing.metadata?.inputHash !== inputHash)
+        throw new HttpsError(
+          "already-exists",
+          "This photo slot changed. Reopen the session before adding more photos.",
+        );
+    }
     try {
       await writableSession(uid, id);
       await db.runTransaction(async (t) => {
@@ -155,7 +182,7 @@ export const uploadSessionPhoto = onCall(
         t.update(ref, { photos, updatedAt: new Date() });
       });
     } catch (error) {
-      await file.delete({ ignoreNotFound: true });
+      if (created) await file.delete({ ignoreNotFound: true });
       throw error;
     }
     return { uploaded: true };
@@ -164,10 +191,6 @@ export const uploadSessionPhoto = onCall(
 export const removeSessionPhoto = onCall(options, async (request) => {
   const { uid, id, slot } = photoInput(request);
   await writableSession(uid, id);
-  await getStorage()
-    .bucket()
-    .file(`sessions/${uid}/${id}/${slot}`)
-    .delete({ ignoreNotFound: true });
   await db.runTransaction(async (t) => {
     const ref = db.doc(`sessions/${id}`),
       s = await t.get(ref);
@@ -181,5 +204,9 @@ export const removeSessionPhoto = onCall(options, async (request) => {
       updatedAt: new Date(),
     });
   });
+  await getStorage()
+    .bucket()
+    .file(`sessions/${uid}/${id}/${slot}`)
+    .delete({ ignoreNotFound: true });
   return { deleted: true };
 });

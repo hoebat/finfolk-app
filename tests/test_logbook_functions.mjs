@@ -114,6 +114,24 @@ await httpsCallable(
   alice.functions,
   "uploadSessionPhoto",
 )({ id: "function-test", slot: "0", image });
+// A retry of the same image is safe; a different image cannot overwrite a slot.
+await httpsCallable(
+  alice.functions,
+  "uploadSessionPhoto",
+)({ id: "function-test", slot: "0", image });
+const otherImage = (
+  await sharp({
+    create: { width: 4, height: 4, channels: 3, background: "#ff435d" },
+  })
+    .jpeg()
+    .toBuffer()
+).toString("base64");
+await assert.rejects(
+  httpsCallable(
+    alice.functions,
+    "uploadSessionPhoto",
+  )({ id: "function-test", slot: "0", image: otherImage }),
+);
 const object = ref(alice.storage, `sessions/${uid}/function-test/0`);
 assert.deepEqual(
   (await getDoc(doc(alice.db, "sessions", "function-test"))).data().photos,
