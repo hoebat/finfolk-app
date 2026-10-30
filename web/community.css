@@ -8,9 +8,29 @@
   background: #fffdf0d9;
   color: #008e9f;
 }
-.account-entry svg {
-  width: 22px;
-  height: 22px;
+@media (min-width: 901px) {
+  .account-entry {
+    gap: 11px;
+    margin: -15px 0 0;
+    padding: 12px 13px;
+    min-height: 44px;
+    border-radius: 13px;
+    background: transparent;
+    color: #4e6b71;
+    font-size: 13px;
+    font-weight: 550;
+    text-align: left;
+  }
+  .account-entry:hover { background: #ffffffb0; }
+  .account-entry.active {
+    color: #007b8b;
+    background: linear-gradient(110deg, #009db21c, #009db20a);
+    box-shadow: inset 0 1px 0 #ffffffb8;
+  }
+  .account-entry svg { width: 19px; height: 19px; flex: 0 0 19px; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+}
+@media (max-width: 900px) {
+  .account-entry svg { width: 22px; height: 22px; }
 }
 .account-page {
   position: absolute;
