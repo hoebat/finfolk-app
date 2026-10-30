@@ -1,3 +1,4 @@
+export const FINFOLK_COLOURS={teal:'#009db2',action:'#007f91',coral:'#ff435d',coralInk:'#b12742',cream:'#fffdf0',ink:'#173f49'};
 // A navy ocean chart with legible blue/aqua survey contours.
 export const OCEAN_COLOUR='#06162e';
 export const DEPTH_COLOURS=[[0,[174,231,228]],[5,[83,196,218]],[10,[39,150,201]],[20,[29,96,158]],[30,[23,58,110]],[50,[6,22,46]]];
