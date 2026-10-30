@@ -1,3 +1,4 @@
+import { instagramURL } from './logbook-model.js';
 import { showMemberTour } from './member-tour.js';
 import { readResource } from './activity.js';
 import { showWelcome } from './welcome.js';
@@ -210,9 +211,18 @@ export function installCommunity({
         button('Your buddies', () => jump('social-buddies'), 'social-menu-action'),
         button('Your check-ins', () => { const section = document.getElementById('social-checkins'); if (section) section.open = true; jump('social-checkins'); }, 'social-menu-action'),
         button('My sessions', () => shell.navigate('logbook'), 'social-menu-action'),
+        button(p.instagram ? 'Edit your Instagram' : 'Add your Instagram', () => { jump('social-profile'); const input = form.querySelector('[name=instagram]'); input?.focus({preventScroll:true}); }, 'social-menu-action'),
         button('Profile & privacy', () => jump('social-profile'), 'social-menu-action'),
       );
       menu.append(links);
+      const instagramSummary = el('div');
+      function showInstagram(value) {
+        instagramSummary.replaceChildren();
+        if (value) instagramSummary.append(link('Your Instagram profile ↗', value));
+        for (const b of links.querySelectorAll('button')) if (b.textContent === 'Add your Instagram' || b.textContent === 'Edit your Instagram') b.textContent = value ? 'Edit your Instagram' : 'Add your Instagram';
+      }
+      showInstagram(p.instagram);
+      menu.append(instagramSummary);
       const brandInstagram = link('Follow @finfolk.com.au on Instagram ↗', 'https://www.instagram.com/finfolk.com.au/');
       brandInstagram.className = 'finfolk-social-link';
       menu.append(brandInstagram);
@@ -222,12 +232,19 @@ export function installCommunity({
         bio = field(form, 'A little about you', 'bio', p.bio, 'textarea'),
         instagram = field(
           form,
-          'Instagram profile link',
+          'Instagram handle or profile link',
           'instagram',
           p.instagram,
-          'url',
+          'text',
         ),
         tiktok = field(form, 'TikTok profile link', 'tiktok', p.tiktok, 'url');
+      instagram.placeholder = '@yourhandle or https://instagram.com/yourhandle';
+      instagram.autocomplete = 'off';
+      instagram.spellcheck = false;
+      const instagramHelp = el('small', 'Add your handle, then Save profile. This adds a profile link; it does not verify your Instagram account or import posts.');
+      instagramHelp.id = 'instagram-profile-help';
+      instagram.setAttribute('aria-describedby', instagramHelp.id);
+      instagram.parentElement.append(instagramHelp);
       name.required = true;
       name.maxLength = 80;
       bio.maxLength = 500;
@@ -370,7 +387,7 @@ export function installCommunity({
             profile: {
               displayName: name.value,
               bio: bio.value,
-              instagram: instagram.value,
+              instagram: instagram.value.trim() ? instagramURL(instagram.value) : '',
               tiktok: tiktok.value,
               open: open.checked,
               beaches: [...selected],
@@ -383,6 +400,7 @@ export function installCommunity({
               ),
             },
           });
+          showInstagram(instagram.value.trim() ? instagramURL(instagram.value) : '');
           status.textContent = 'Saved.';
         } catch (error) {
           status.textContent = error.message;
