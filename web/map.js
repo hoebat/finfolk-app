@@ -129,14 +129,14 @@ export class DepthMap {
       this.areaMaskKey=key;
     }
     const shape=this.areaCanvas,shapeCtx=shape.getContext('2d'),overlay=this.areaOverlayCanvas,overlayCtx=overlay.getContext('2d'),edges=this.areaEdgesCanvas,edgesCtx=edges.getContext('2d');
-    const drawRings=(context,zones,stroke=false)=>{
+    const drawRings=(context,zones,stroke=false,clipWater=true)=>{
       context.clearRect(0,0,w,h);context.save();context.fillStyle='#fff';context.strokeStyle='#fff';context.lineWidth=1.5;context.lineJoin='round';context.lineCap='round';
       for(const hit of zones){context.beginPath();for(const ring of hit.rings){if(ring.length<3)continue;context.moveTo(...ring[0]);for(let i=1;i<ring.length;i++)context.lineTo(...ring[i]);context.closePath();}if(stroke)context.stroke();else context.fill('evenodd');}
-      context.globalCompositeOperation='destination-in';context.drawImage(mask,0,0);context.restore();
+      if(clipWater){context.globalCompositeOperation='destination-in';context.drawImage(mask,0,0);}context.restore();
     };
     const tint=(zones,fill,edge)=>{
       drawRings(shapeCtx,zones);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=fill;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(shape,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
-      drawRings(edgesCtx,zones,true);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=edge;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(edges,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
+      drawRings(edgesCtx,zones,true,false);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=edge;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(edges,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
     };
     tint(prepared,'rgba(67,157,190,.14)','rgba(185,235,239,.55)');
     const active=prepared.filter(hit=>hit.zone.id===this.hoveredAreaId||hit.zone.id===this.focusedAreaId);if(active.length)tint(active,'rgba(64,211,220,.30)','rgba(223,255,245,.98)');
@@ -148,7 +148,6 @@ export class DepthMap {
     return styled.waterPixels[py*width+px]===1;
   }
   hitArea(x,y){
-    if(!this.isWaterAtScreen(x,y))return null;
     for(const hit of [...this.areaHits].reverse()){
       const [left,top,right,bottom]=hit.bounds;if(x<left||x>right||y<top||y>bottom)continue;
       let inside=false;for(const ring of hit.rings){for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;}}
