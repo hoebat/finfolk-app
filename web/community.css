@@ -292,3 +292,17 @@
 .account-page-guest .signin-card > .signin-toggle { background: transparent; color: #007f8e; box-shadow: none; font-size: 13px; font-weight: 700; padding: 9px 4px; }
 .finfolk-social-link { display: inline-block; margin-top: 16px; color: #007f8e; font-size: 13px; font-weight: 700; text-decoration: none; }
 .finfolk-social-link:hover { text-decoration: underline; }
+.member-tour { width: min(640px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; box-sizing: border-box; padding: clamp(20px, 4vw, 32px); border: 1px solid #d2e9e3; border-radius: 26px; background: #fffefa; color: #173e48; box-shadow: 0 30px 100px #003e5055; }
+.member-tour::backdrop { background: #0c344980; backdrop-filter: blur(8px); }
+.tour-top, .tour-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.tour-top small { color: #56777d; font-size: 10px; letter-spacing: .1em; }
+.member-tour h2 { font-size: clamp(24px, 4vw, 32px); line-height: 1.15; margin: 20px 0 12px; }
+.tour-description { line-height: 1.65; color: #45666c; }
+.member-tour button { min-height: 42px; padding: 10px 14px; border-radius: 12px; }
+.tour-demo { padding: 18px; border-radius: 18px; background: #eaf6f2; margin: 20px 0; }
+.tour-demo-label { display: block; font-size: 10px; letter-spacing: .06em; color: #526e74; margin-bottom: 14px; }
+.tour-demo input:not([type=checkbox]) { display: block; box-sizing: border-box; width: 100%; border: 1px solid #adcecb; border-radius: 10px; padding: 10px; background: #fff; color: #173e48; font: inherit; margin: 6px 0 12px; }
+.tour-demo button { margin: 4px; }
+.tour-demo [aria-pressed=true] { background: #007f8e; color: #fff; }
+.tour-demo label { font-size: 13px; font-weight: 600; }
+@media (prefers-reduced-transparency: reduce) { .member-tour::backdrop { backdrop-filter: none; } }

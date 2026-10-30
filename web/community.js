@@ -1,3 +1,4 @@
+import { showMemberTour } from './member-tour.js';
 import { readResource } from './activity.js';
 import { showWelcome } from './welcome.js';
 const el = (tag, text, cls) => {
@@ -101,7 +102,7 @@ export function installCommunity({
       el('p', 'Your spots. Your people. Your kind of water.', 'account-intro'),
     );
     root.append(
-      button('How FinFolk works', () => showWelcome()),
+      button('How FinFolk works', () => client?.user ? showMemberTour({userId: client.user.uid, shell, force: true}) : showWelcome()),
       button('My sessions', () => shell.navigate('logbook')),
     );
     try {
@@ -512,6 +513,7 @@ export function installCommunity({
         }),
       );
       root.append(deletion);
+      if (generation === epoch) showMemberTour({userId: a.user.uid, shell});
     } catch (error) {
       if (generation === epoch) {
         root.append(
