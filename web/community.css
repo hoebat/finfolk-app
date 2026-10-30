@@ -1,0 +1,230 @@
+.account-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 12px;
+  padding: 12px;
+  border-radius: 50px;
+  background: #fffdf0d9;
+  color: #008e9f;
+}
+.account-entry svg {
+  width: 22px;
+  height: 22px;
+}
+.account-page {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  padding: 32px clamp(18px, 5vw, 90px) 110px;
+  background: linear-gradient(135deg, #fffdf0, #ddf6f3);
+  color: #173e48;
+}
+.account-page h1 {
+  font-size: clamp(28px, 4vw, 48px);
+  margin: 0;
+}
+.account-intro {
+  color: #52767a;
+}
+.account-card,
+.regulars-panel {
+  padding: 22px;
+  border: 1px solid #fff;
+  border-radius: 24px;
+  background: #ffffffb8;
+  box-shadow: 0 8px 32px #005a6b0a;
+  margin: 18px 0;
+  max-width: 760px;
+}
+.account-card label,
+.account-card fieldset,
+.regulars-panel label {
+  display: block;
+  margin: 12px 0;
+}
+.account-card input:not([type='checkbox']),
+.account-card textarea,
+.account-card select,
+.regulars-panel input,
+.regulars-panel textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 5px;
+  padding: 11px;
+  border-radius: 12px;
+  border: 1px solid #8ec8ca;
+  background: #ffffffd9;
+  font: inherit;
+}
+.account-card input[type='checkbox'] {
+  margin-left: 10px;
+}
+.account-card fieldset {
+  border: 1px solid #b6dfe0;
+  border-radius: 14px;
+  padding: 12px;
+}
+.account-card small,
+.regulars-panel small {
+  display: block;
+  color: #4b6c71;
+  line-height: 1.6;
+}
+.account-page button,
+.regulars-panel button,
+.storage-controls button {
+  margin: 5px 7px 5px 0;
+}
+.buddy-card {
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid #acd7d9;
+  background: #fffefa;
+}
+.buddy-card h4 {
+  margin: 0 0 7px;
+}
+.buddy-card a {
+  display: inline-block;
+  margin-right: 14px;
+}
+.buddy-card button {
+  font-size: 12px;
+}
+.buddy-stats {
+  border-left: 3px solid #00a0ad;
+  padding-left: 12px;
+}
+.regulars-panel iframe {
+  width: 100%;
+  height: 480px;
+  border: 0;
+  border-radius: 14px;
+}
+.storage-controls {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #acd7d9;
+}
+.storage-controls h3 {
+  margin: 0;
+}
+.storage-controls p {
+  font-size: 12px;
+}
+.saved-region {
+  padding: 10px 0;
+}
+.saved-region span {
+  display: block;
+  font-size: 12px;
+}
+#download-callout {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 45;
+  max-width: 430px;
+  width: calc(100% - 40px);
+  padding: 15px;
+  border: 1px solid #fff;
+  border-radius: 18px;
+  background: #fffdf0ed;
+  box-shadow: 0 10px 50px #005a6b33;
+  backdrop-filter: blur(20px);
+}
+#download-callout strong,
+#download-callout small,
+#download-callout progress {
+  display: block;
+  width: 100%;
+  margin-bottom: 7px;
+}
+#download-callout small {
+  font-size: 12px;
+}
+.welcome-dialog {
+  max-width: 420px;
+  width: calc(100vw - 56px);
+  border: 1px solid #fff;
+  border-radius: 30px;
+  background: #fffdf0;
+  color: #173e48;
+  padding: 28px;
+  box-shadow: 0 20px 90px #006b7655;
+}
+.welcome-dialog::backdrop {
+  background: #173e4877;
+  backdrop-filter: blur(8px);
+}
+.welcome-art {
+  height: 130px;
+  border-radius: 28px;
+  background: repeating-linear-gradient(
+    145deg,
+    #009eaf 0 24px,
+    #75d5d4 24px 48px,
+    #fffdf0 48px 66px,
+    #ff455c 66px 82px
+  );
+  display: grid;
+  place-items: center;
+  font-size: 90px;
+  color: #fff;
+  margin-bottom: 20px;
+  transform: rotate(-2deg);
+}
+.welcome-dialog h2 {
+  font-size: 28px;
+}
+.welcome-dialog p {
+  line-height: 1.65;
+}
+.welcome-dialog button {
+  margin-right: 10px;
+}
+.welcome-dialog small {
+  color: #57787c;
+}
+@media (max-width: 900px) {
+  .account-entry {
+    position: fixed;
+    right: 14px;
+    top: calc(72px + env(safe-area-inset-top));
+    z-index: 16;
+    margin: 0;
+    padding: 10px;
+    box-shadow: 0 5px 20px #005a6b22;
+  }
+  .account-entry span {
+    display: none;
+  }
+  .account-page {
+    padding-top: 28px;
+  }
+  .account-card {
+    padding: 17px;
+  }
+  #download-callout {
+    bottom: calc(85px + env(safe-area-inset-bottom));
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .welcome-dialog[open] {
+    animation: welcome-in 0.24s ease-out;
+  }
+  @keyframes welcome-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

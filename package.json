@@ -5,22 +5,43 @@
   "type": "module",
   "description": "FinFolk coastal atlas and freediving logbook",
   "scripts": {
-    "build": "python3 -m depth_explorer build-static",
-    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs && node tests/test_estimate.mjs && node tests/test_logbook.mjs && node tests/test_instagram.mjs && node scripts/check_instagram_beaches.mjs",
-    "test:rules": "npx --yes firebase-tools@15.34.2 emulators:exec --project demo-finfolk --only firestore,storage \"node tests/test_logbook_rules.mjs\""
+    "build": "node scripts/build.mjs",
+    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs && node tests/test_estimate.mjs && node tests/test_logbook.mjs && node tests/test_instagram.mjs && node scripts/check_instagram_beaches.mjs && node tests/test_offline.mjs && node tests/test_regulars.mjs && node tests/test_account.mjs",
+    "test:rules": "npm run test:regulars && npm run test:neon",
+    "dev": "node --env-file=.env.local backend/server.mjs",
+    "dev:web": "python3 -m http.server 8000 --directory _site",
+    "db:migrate": "node --env-file=.env.local scripts/migrate_neon.mjs",
+    "test:neon": "node --env-file=.env.test.local scripts/test_neon_e2e.mjs",
+    "test:offline": "node tests/test_offline.mjs",
+    "test:regulars": "node tests/test_regulars.mjs",
+    "deploy:api": "wrangler deploy",
+    "provision:api": "node scripts/provision_api.mjs"
   },
   "dependencies": {
-    "firebase": "^13.1.0",
+    "@hono/node-server": "^2.1.5",
+    "@neon/config": "^1.9.6",
+    "@neon/env": "^1.6.6",
+    "@neondatabase/auth": "^0.6.0-beta",
+    "drizzle-orm": "^0.45.4",
+    "hono": "^4.13.14",
+    "jose": "^6.2.14",
+    "pg": "^8.23.1",
     "proj4": "2.22.0"
   },
   "overrides": {
     "wkt-parser": "1.5.5",
-    "@grpc/grpc-js": "1.14.7"
+    "@grpc/grpc-js": "1.14.7",
+    "better-auth": "1.7.14",
+    "zod": "4.6.7"
   },
   "devDependencies": {
-    "@firebase/rules-unit-testing": "^6.0.0",
     "@playwright/test": "^1.64.1",
+    "@types/pg": "^8.23.1",
     "esbuild": "^0.28.2",
-    "happy-dom": "21.0.4"
+    "fake-indexeddb": "^6.2.7",
+    "happy-dom": "21.0.4",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.156.0"
   }
 }

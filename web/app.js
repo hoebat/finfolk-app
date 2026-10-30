@@ -1,3 +1,6 @@
+import {installOfflineUI} from './offline-ui.js';
+import {installCommunity} from './community.js';
+import {welcomeOnFirstVisit} from './welcome.js';
 import {installLogbook} from './logbook.js';
 import {estimateContourDepth} from './contour-estimate.js';
 import {buildAreaZones} from './area-zones.js';
@@ -20,6 +23,8 @@ let beachCatalog={beaches:[]},selectedBeachId='',contoursReady=false,discovery,s
 const shell=installAppShell({onLayout:()=>map.resize(),onMapActivity:active=>map.setActive(active),onOpen:()=>map.cancelGesture()});
 let mapSearch;
 const logbook=installLogbook({shell,getBeaches:()=>beachCatalog.beaches,getSelectedBeach:()=>findBeach(beachCatalog,selectedBeachId)});
+installOfflineUI(data.downloads,{region:()=>region,onOpen:id=>openSurvey(id)});
+const community=installCommunity({shell,getBeaches:()=>beachCatalog.beaches,getSelectedBeach:()=>findBeach(beachCatalog,selectedBeachId)});
 $('log-session').onclick=()=>logbook.newSession(findBeach(beachCatalog,selectedBeachId)).catch(e=>notice(e.message));
 function revealMap(){map.resize();}
 const number=(value,places=1)=>Number(value).toLocaleString('en-AU',{maximumFractionDigits:places});
@@ -69,7 +74,7 @@ async function chooseBeach(id,{writeURL=true,depth=Number($('measure-depth').val
   updateBeachPicker();if(writeURL){const url=new URL(location.href);if(beach){url.searchParams.set('site',beach.id);}else url.searchParams.delete('site');history.replaceState(null,'',url);}mapSearch?.setSelection(beach);return beach;
 }
 async function load(selected,retainView=false,view={}){
-  const generation=++loadRequest;viewRequest++;const previous=region?.id,nextCatalog=await data.catalog();if(generation!==loadRequest)return;catalog=nextCatalog;region=catalog.regions.find(r=>r.id===(selected||previous))||catalog.regions[0];
+  const generation=++loadRequest;viewRequest++;const previous=region?.id,nextCatalog=await data.catalog(selected||previous);if(generation!==loadRequest)return;catalog=nextCatalog;region=catalog.regions.find(r=>r.id===(selected||previous))||catalog.regions[0];
   $('survey-select').value=region.id;contoursReady=false;if(!retainView||previous!==region.id){selectedBeachId='';$('log-session').hidden=true;map.setRegion(region,view);map.beaches=beachCatalog.beaches.filter(b=>activeAreaId?b.area_id===activeAreaId:b.region===region.id);discovery?.select('');resetProfile();clearMeasurement();$('inspection').hidden=true;inspectionRequest++;}else{map.rasters=region.rasters;map.tileFiles=region.tiles;map.tileMaxZoom=region.tile_max_zoom||map.zoom;map.images.clear();}
   map.version=catalog.updated_at||0;const title=findBeach(beachCatalog,selectedBeachId)?.name||region.name;$('place-title').textContent=title;document.title=`${title} · FinFolk`;updateBeachPicker();
   document.querySelectorAll('[data-region]').forEach(b=>b.classList.toggle('active',b.dataset.region===region.id));
@@ -192,7 +197,7 @@ $('data-guide').onclick=showGuide;$('empty-guide').onclick=showGuide;$('close-gu
 $('fetch').onclick=async()=>{try{const collection=await data.contours(region.id);download(new Blob([JSON.stringify(collection)],{type:'application/geo+json'}),`${region.id}-contours.geojson`);}catch(e){notice(e.message);}};
 async function openBeach(id,options={}){
   shell.navigate('maps',{params:{site:id}});const epoch=shell.route.epoch;
-  try{const beach=await chooseBeach(id,options);if(beach&&shell.route.epoch===epoch&&shell.route.view==='maps')shell.openPanel('place');}catch(e){notice(e.message);}
+  try{const beach=await chooseBeach(id,options);if(beach&&shell.route.epoch===epoch&&shell.route.view==='maps'){shell.openPanel('place');community.beachPanel(beach);}}catch(e){notice(e.message);}
 }
 async function openArea(area){
   const request=++selectionRequest;activeAreaId=area.id;map.focusedAreaId=area.id;const counts=new Map();for(const b of beachCatalog.beaches.filter(b=>b.area_id===area.id)){if(catalog.regions.some(r=>r.id===b.region&&hasPublishedData(r)))counts.set(b.region,(counts.get(b.region)||0)+1);}const survey=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0];
@@ -208,8 +213,9 @@ async function start(){
   map.onArea=zone=>{const area=beachCatalog.areas.find(candidate=>candidate.id===zone.id);if(!area)return;shell.navigate('maps',{params:{site:null}});openArea(area);};
   map.onBeach=beach=>openBeach(beach.id);
   map.onStay=stay=>{$('inspection').hidden=false;$('inspection-kind').textContent='NEARBY STAY';$('inspection-value').textContent=stay.name;$('inspection-details').replaceChildren(elem('p',`${(stay.distance_m/1000).toFixed(1)} km straight-line from beach reference`),elem('p',stay.status),link(stay.operator_url?'Provider & bookings ↗':'Mapped listing ↗',stay.operator_url||stay.source_url));};
-  async function restoreMap(route){if(route.view!=='maps')return;const site=new URL(location.href).searchParams.get('site'),requested=findBeach(beachCatalog,site);if(requested&&requested.id!==selectedBeachId)await chooseBeach(requested.id,{writeURL:false});else if(!map.ready)await openSurvey(published[0]?.id,{reveal:false});else map.resize();}
+  async function restoreMap(route){if(route.view!=='maps')return;const site=new URL(location.href).searchParams.get('site'),requested=findBeach(beachCatalog,site);if(requested&&requested.id!==selectedBeachId)await chooseBeach(requested.id,{writeURL:false});else if(!map.ready)await openSurvey(data.downloads.offlineRegion||published[0]?.id,{reveal:false});else map.resize();}
   shell.subscribe(route=>{mapSearch.close();if(route.reason==='popstate'||!map.ready)restoreMap(route).catch(e=>notice(e.message));});
   await restoreMap(shell.route);
+  welcomeOnFirstVisit();
 }
 start().catch(e=>notice(`Cannot load published data: ${e.message}`));

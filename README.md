@@ -1,6 +1,6 @@
 # FinFolk
 
-A coastal atlas and freediving logbook for Australia. Beaches, depth charts and nearby stays run on GitHub Pages; optional Firebase accounts keep sessions private until their owners publish them.
+A coastal atlas and social companion for Australian divers. Beaches, depth charts and nearby stays run on GitHub Pages. IndexedDB saves map regions on-device; Neon Auth and Postgres power opt-in profiles, recent Regulars and buddy connections. Photos and videos stay on Instagram or TikTok.
 
 **Discover** offers Suggested places and an All beaches index, sorted by state/territory → coastal region → beach. **Map** has independent beach/region search and an on-demand Place / Layers sidebar. Existing beach links such as `?site=edithvale`, `?site=maroubra` and `?site=hyams-beach` remain supported. Legacy `view=areas` links open All beaches; `view=guides` links open Suggested. Official activity and fisheries links remain in each beach’s sourced details.
 
@@ -146,12 +146,16 @@ Checksum-pinned source transfers can seed previously reviewed government respons
 
 Shore and place names are enabled by default using OpenStreetMap tiles, styled in the browser with navy water and muted blue-grey land. Survey contours use contrasting aqua and blue lines with a metre legend. Geographic water colour provides map context; reference depths come from the published survey lines or verified raster cells. If online tiles are unavailable, the local coarse context coastline provides an approximate outline. The layer can be switched off under Map data & layers. PNG exports retain attribution and the applicable survey colour legend.
 
-## FinFolk logbook
+## Accounts, Regulars and offline regions
 
-Google/email accounts, private freediving sessions, explicitly published public sessions, Instagram profile links and private photo storage are implemented with Firebase. Accounts remain disabled until a dedicated project is configured. See [Firebase setup and deployment](docs/FIREBASE_SETUP.md) for backend deployment, billing, rules checks and enabling the frontend.
+Account is available from the avatar; Map and Discover remain the main navigation. Users can link Instagram/TikTok, choose beaches and sharing fields, check in, and send buddy requests. Closed is the default. Both Open divers need 3 distinct visit days in the last 30 days for allowed activity statistics and 5 for allowed dive summaries. Accepted buddies bypass visit gates, while blocking and field-level privacy always apply. These checks run in the API against current Postgres rows.
+
+Large downloads start automatically with progress and Cancel. System contains recent-cache limits, saved regions, quota estimates and removal controls. Complete saved packages and the app shell can reopen offline; government imagery and social embeds remain online services.
+
+The active backend is Neon, replacing the disabled Firebase implementation. Production Postgres/Auth services are provisioned; public account activation waits for the Cloudflare API deployment and browser acceptance checks. See [Neon setup, deployment and verification](docs/NEON_SETUP.md). The legacy Firebase and Instagram webhook files are retained for reference, excluded from active frontend deployment, and not enabled.
 
 ## Custom domain
 
-The root `CNAME` declares `finfolk.com.au` and is copied into the Pages artifact. GitHub Actions deployments require the domain to be configured separately in repository Settings → Pages; the CNAME file alone does not activate it. See [custom domain setup](docs/CUSTOM_DOMAIN.md) for DNS, HTTPS and Firebase settings.
+The root `CNAME` declares `finfolk.com.au` and is copied into the Pages artifact. GitHub Actions deployments require the domain to be configured separately in repository Settings → Pages; the CNAME file alone does not activate it. See [custom domain setup](docs/CUSTOM_DOMAIN.md) for DNS and HTTPS settings.
 
 Instagram onboarding and automatic public tag indexing are implemented behind disabled feature switches. Members opt in, verify Instagram ownership and following, then tag FinFolk. The server holds ambiguous authors for review; private sessions stay separate. See [Instagram setup, pilot and administration](docs/INSTAGRAM_SETUP.md).

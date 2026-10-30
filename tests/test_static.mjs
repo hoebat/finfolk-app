@@ -48,7 +48,7 @@ build(store,root/'site',max_zoom=5)
   assert.equal(profile.samples[0].distance_m,0);assert.equal(profile.samples.at(-1).distance_m,profile.length_m);
   const csv=profileCSV(profile);assert.ok(csv.includes('"no-data"'));assert.ok(csv.includes('"TEST DATUM"'));assert.ok(csv.includes(',"","no-data",'));
   const meta=client.region('bondi').rasters[0];client.region('bondi').rasters.push({...meta,id:'different',datum:'OTHER'});await assert.rejects(client.profile('bondi',[[151.27,-33.9],[151.28,-33.9]]),/incompatible/);client.region('bondi').rasters.pop();
-  const broken=new StaticData(client.base,async url=>url.endsWith('.gz')?new Response('bad chunk'):client.fetcher(url));await broken.catalog();await assert.rejects(broken.sample('bondi',[151.2705,-33.8975]));
+  const broken=new StaticData(client.base,async url=>new URL(url).pathname.endsWith('.gz')?new Response('bad chunk'):client.fetcher(url));await broken.catalog();await assert.rejects(broken.sample('bondi',[151.2705,-33.8975]));
   const pointer=new StaticData(client.base,async()=>new Response('version https://git-lfs.github.com/spec/v1\noid sha256:test'));await assert.rejects(pointer.catalog(),/Git LFS/);
   assert.deepEqual(cellFor({transform:[2,0,100,0,-2,200]},[105,195]),[2,2]);
   assert.throws(()=>profileCoordinates([[NaN,0],[1,1]],5));

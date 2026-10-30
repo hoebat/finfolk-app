@@ -18,3 +18,8 @@ storage-debug.log
 
 functions/.env*
 functions/.secret*
+.neon
+
+.env
+.env.*
+!.env.example

@@ -4,6 +4,7 @@ import gzip
 import hashlib
 import json
 import math
+import os
 import shutil
 import subprocess
 import sys
@@ -139,12 +140,17 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
             path = stage / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
-        web_files = {p.name: p.read_bytes() for p in (PROJECT / "web").iterdir() if p.is_file()}
+        web_files = {p.name: p.read_bytes() for p in (PROJECT / "web").iterdir() if p.is_file() and p.name not in ("sw-template.js", "firebase-client.js", "firebase-config.json")}
         custom_domain = PROJECT / "CNAME"
         if custom_domain.is_file():
             web_files["CNAME"] = custom_domain.read_bytes()
-        bundled = subprocess.run(["node", str(PROJECT / "scripts/bundle_firebase.mjs")], check=True, capture_output=True)
-        web_files["firebase-client.js"] = bundled.stdout
+        neon_bundle = subprocess.run(["node", str(PROJECT / "scripts/bundle_neon.mjs")], check=True, capture_output=True)
+        web_files["neon-client.js"] = neon_bundle.stdout
+        neon_config = json.loads(web_files["neon-config.json"])
+        auth_url = os.environ.get("NEON_AUTH_BASE_URL", neon_config.get("authUrl", ""))
+        api_url = os.environ.get("NEON_API_URL", neon_config.get("apiUrl", ""))
+        neon_config.update(authUrl=auth_url, apiUrl=api_url, enabled=bool(auth_url))
+        web_files["neon-config.json"] = json.dumps(neon_config).encode()
         digest = hashlib.sha256(b"".join(name.encode() + b"\0" + data for name, data in sorted(web_files.items()))).hexdigest()[:12]
         assets = {name: f"{Path(name).stem}.{digest}{Path(name).suffix}" for name in web_files if Path(name).suffix in (".js", ".css")}
         for name, data in web_files.items():
@@ -214,6 +220,29 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
         prepared = subprocess.run(["node", str(PROJECT / "scripts/build_beach_summaries.mjs"), str(stage), "--stdout"], check=True, capture_output=True)
         write("data/beach-summaries.json", prepared.stdout)
         finish(directory, stage, write)
+        # Content versions and package sizes are public; never include server env files.
+        files = {}
+        for file in sorted(stage.rglob("*")):
+            if file.is_file() and (file.suffix in (".json", ".geojson", ".gz", ".png")) and file.name != "firebase-config.json":
+                relative = file.relative_to(stage).as_posix()
+                body = file.read_bytes()
+                files[relative] = {"hash": hashlib.sha256(body).hexdigest(), "bytes": len(body), "label": file.stem.replace("-", " ")}
+        shared = [name for name in ("beaches.json", "guides.json", "social.json", "data/catalog.json", "data/beach-summaries.json", "data/area-regions.json") if name in files]
+        packages = {}
+        for region in catalog["regions"]:
+            paths = set(shared + [region["contour_file"]] + list(region.get("tiles", {}).values()))
+            for raster in region["rasters"]:
+                paths.update(raster["grid"]["chunks"].values())
+            for area in directory.get("areas", []):
+                if area.get("map_region") == region["id"] or any(b.get("region") == region["id"] and b.get("area_id") == area["id"] for b in directory.get("beaches", [])):
+                    paths.add(area["detail_file"])
+            paths = sorted(path for path in paths if path in files)
+            packages[region["id"]] = {"name": region["name"], "files": paths, "bytes": sum(files[path]["bytes"] for path in paths)}
+        revision = hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()
+        write("data/downloads.json", json.dumps({"version": 1, "revision": revision, "files": files, "regions": packages}, separators=(",", ":")).encode())
+        shell = ["./", "./index.html"] + ["./" + name for name in assets.values()] + ["./" + name for name in ("finfolk-logo.jpeg", "finfolk-icon.svg", "neon-config.json") if (stage / name).exists()]
+        worker = (PROJECT / "web/sw-template.js").read_text().replace("__SHELL__", json.dumps(shell)).replace("__VERSION__", digest)
+        write("sw.js", worker.encode())
         report = {"bytes": total, "assets": assets, "regions": {r["id"]: {"rasters": len(r["rasters"]), "tiles": len(r["tiles"]), "status": r["status"]} for r in catalog["regions"]}, "built_at": catalog["built_at"]}
         write("build-report.json", json.dumps(report, indent=2).encode())
         if output.exists():

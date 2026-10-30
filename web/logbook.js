@@ -53,7 +53,7 @@ export function installLogbook({
   getSelectedBeach = () => null,
   loadJSON = (path) =>
     readResource(new URL(path, import.meta.url), { read: "json" }),
-  loadClient = () => import("./firebase-client.js"),
+  loadClient = () => import("./neon-client.js"),
 } = {}) {
   const root = document.getElementById("logbook-page"),
     nav = document.querySelector('.primary-nav [data-view="logbook"]');
@@ -122,7 +122,7 @@ export function installLogbook({
     if (api?.user) {
       actions.append(
         button("My sessions", () => navigate()),
-        button("Account", () => account()),
+        button("Account", () => shell.navigate("account")),
         action("Sign out", async () => {
           editor = null;
           await api.signOut();
@@ -137,8 +137,8 @@ export function installLogbook({
     message("");
   }
   async function init() {
-    config = await loadJSON("firebase-config.json");
-    nav.hidden = !config.enabled;
+    config = await loadJSON("neon-config.json");
+    nav.hidden = true;
     if (!config.enabled) return;
     const module = await loadClient();
     api = await module.createLogbookClient(config);
@@ -606,6 +606,8 @@ export function installLogbook({
     const files = field(form, "Photos (up to six)", "photos", "file");
     files.accept = "image/jpeg,image/png,image/webp";
     files.multiple = true;
+    files.closest("label").hidden = true;
+    form.append(el("p", "Keep photos on Instagram or TikTok. Add post links on a beach page."));
     let pending = [];
     files.onchange = () => {
       pending = [...files.files];
@@ -613,7 +615,7 @@ export function installLogbook({
     form.append(
       el(
         "small",
-        "JPEG, PNG or WebP. Photos are resized and location metadata is removed.",
+        "Post links can be added on each beach page.",
       ),
     );
     const submit = el("button", "Save private session", "primary");
@@ -790,10 +792,10 @@ export function installLogbook({
     if (shell.route.view === "logbook") render();
     else editor = null;
   });
-  loadJSON("firebase-config.json")
+  loadJSON("neon-config.json")
     .then((value) => {
       config = value;
-      nav.hidden = !value.enabled;
+      nav.hidden = true;
       const logButton = document.getElementById("log-session");
       if (logButton) logButton.hidden = !value.enabled || !getSelectedBeach();
     })

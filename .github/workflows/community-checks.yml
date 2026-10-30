@@ -1,0 +1,23 @@
+name: Check FinFolk community and storage
+on:
+  push:
+    branches: [main]
+    paths: ['backend/**', 'web/**', 'scripts/*neon*', 'scripts/migrate*', 'tests/**', 'package*.json', 'neon.ts', 'wrangler.jsonc', '.github/workflows/community-checks.yml']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  community:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node tests/test_regulars.mjs && node tests/test_offline.mjs && node tests/test_account.mjs
+      - run: npx wrangler deploy --dry-run --outdir .cache/worker

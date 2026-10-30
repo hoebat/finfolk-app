@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "finfolk-community",
+  "main": "backend/worker.mjs",
+  "compatibility_date": "2026-10-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "b048221dbe18365ea667373f6fda1f73",
+  "workers_dev": true,
+  "observability": { "enabled": false }
+}

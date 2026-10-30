@@ -10,3 +10,5 @@ const resource=activity.begin({url:'https://provider.test/export?bbox=private',l
 await assert.rejects(readResource('https://example.test/corrupt.json',{read:'json',fetcher:async()=>new Response('{bad json')}));assert.equal(activity.records.at(-1).state,'error','Parsing failures appear as failures in the activity panel');
 assert.equal(resourceLabel('https://tile.openstreetmap.org/13/1/2.png').kind,'Shore tiles');
 console.log('Activity checks passed: concurrent bodies, native fetch binding, failure/cancellation, bounded history and honest transfer sizes.');
+
+const recovered=new ActivityStore();recovered.begin({url:'https://atlas.test/contours.json?v=old'}).finish({state:'error'});recovered.begin({url:'https://atlas.test/other.json'}).finish({state:'error'});recovered.begin({url:'https://atlas.test/contours.json?v=new'}).finish();assert.equal(recovered.snapshot().failed,1,'A successful new dataset version resolves the old failure without hiding unrelated errors');
