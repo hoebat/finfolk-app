@@ -108,6 +108,8 @@ export function installCommunity({
       const a = await api();
       if (generation !== epoch) return;
       if (!a.user) {
+        root.replaceChildren();
+        root.classList.add('account-page-guest');
         const box = el('section', undefined, 'account-card signin-card'),
           form = el('form', undefined, 'signin-form');
         const mark = el('img', undefined, 'signin-mark');
@@ -121,6 +123,9 @@ export function installCommunity({
         const name = field(form, 'Display name', 'name'),
           email = field(form, 'Email', 'email', '', 'email'),
           password = field(form, 'Password', 'password', '', 'password');
+        let creating = false;
+        name.parentElement.hidden = true;
+        name.autocomplete = 'nickname';
         email.autocomplete = 'email';
         password.autocomplete = 'current-password';
         password.minLength = 8;
@@ -132,7 +137,11 @@ export function installCommunity({
           e.preventDefault();
           submit.disabled = true;
           try {
-            await a.email(email.value, password.value);
+            if (creating) {
+              const result = await a.auth.signUp.email({email: email.value, password: password.value, name: name.value.trim() || 'Diver'});
+              if (result.error) throw Error(result.error.message);
+              await a.refresh();
+            } else await a.email(email.value, password.value);
             await account();
           } catch (error) {
             status.textContent = error.message;
@@ -146,20 +155,17 @@ export function installCommunity({
           const google = button('Continue with Google', () => a.google(), 'signin-google');
           box.append(google, el('div', 'or continue with email', 'signin-divider'));
         }
+        const toggle = button('Create an account', () => {
+            creating = !creating;
+            name.parentElement.hidden = !creating;
+            password.autocomplete = creating ? 'new-password' : 'current-password';
+            submit.textContent = creating ? 'Create account' : 'Sign in';
+            toggle.textContent = creating ? 'Already have an account? Sign in' : 'Create an account';
+            status.textContent = '';
+          }, 'signin-toggle');
         box.append(
-          form,
-          button('Create account', async () => {
-            if (!form.reportValidity()) return;
-            const result = await a.auth.signUp.email({
-              email: email.value,
-              password: password.value,
-              name: name.value.trim() || 'Diver',
-            });
-            if (result.error) throw Error(result.error.message);
-            await a.refresh();
-            await account();
-          }),
-          button('Reset password', async () => {
+          form, toggle,
+          button('Forgot password?', async () => {
             if (!email.value || !email.reportValidity()) return;
             await a.reset(email.value);
             status.textContent =
@@ -184,6 +190,7 @@ export function installCommunity({
         }
         return;
       }
+      root.classList.remove('account-page-guest');
       const me = await a.call('me');
       if (generation !== epoch) return;
       const p = me.profile,

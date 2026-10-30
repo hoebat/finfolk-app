@@ -281,3 +281,12 @@
 .social-menu-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 9px; }
 .account-page .social-menu-action { margin: 0; min-height: 48px; padding: 12px 14px; text-align: left; border-radius: 14px; color: #086c79; background: #e8f6f3; font-weight: 700; }
 .account-page .social-menu-action:hover { background: #d6f0eb; }
+.account-page-guest { display: flex; flex-direction: column; justify-content: safe center; align-items: center; padding-top: 24px; }
+.account-page-guest .signin-card { width: min(100%, 420px); margin: auto; padding: 28px; }
+.account-page-guest .signin-mark { width: 42px; height: 42px; margin-bottom: 12px; }
+.account-page-guest .signin-card h2 { font-size: clamp(25px, 3vw, 30px); }
+.account-page-guest .signin-description { margin-bottom: 16px; font-size: 14px; }
+.account-page-guest .signin-divider { margin: 14px 0 3px; }
+.account-page-guest .signin-form label { margin: 9px 0; }
+.account-page-guest .signin-form input:not([type='checkbox']) { min-height: 42px; padding: 9px 11px; }
+.account-page-guest .signin-card > .signin-toggle { background: transparent; color: #007f8e; box-shadow: none; font-size: 13px; font-weight: 700; padding: 9px 4px; }
