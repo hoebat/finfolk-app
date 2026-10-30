@@ -12,6 +12,8 @@ The app secret and verification token are saved in the ignored `.env.local`, upl
 
 Facebook Login for Business configuration **FinFolk Instagram Actions** (`1823789635502060`) is saved using user access tokens and scopes `instagram_basic`, `instagram_manage_comments`, `instagram_manage_messages`, `pages_read_engagement` and `pages_show_list`. Creating this configuration does not authorize an Instagram account or issue an access token. The ID is also stored locally as `INSTAGRAM_LOGIN_CONFIG_ID`.
 
+A Facebook Page **FinFolk** (Page ID `1387107281155901`, public profile `61596205344691`) has been created with category Community, the supplied logo and website `https://finfolk.com.au`. The existing Instagram brand account still needs to be linked; Meta currently lists no Instagram accounts in the authorization flow.
+
 ## Current controls
 
 `INSTAGRAM_ENABLED=false` is intentional. No provider requests or public replies are sent until acceptance tests pass. With no `INSTAGRAM_ADMIN_IDS`, connection challenges are also disabled so members do not wait for an unconfigured reviewer. Public profile links remain available separately.
