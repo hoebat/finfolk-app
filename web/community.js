@@ -18,8 +18,9 @@ export function installCommunity({
   getBeaches = () => [],
   getSelectedBeach = () => null,
   loadConfig = () =>
-    readResource(new URL('./neon-config.json', import.meta.url), {
+    readResource(new URL('./neon-config.json?v=' + encodeURIComponent(new URL(import.meta.url).pathname.split('/').pop()), import.meta.url), {
       read: 'json',
+      cache: 'no-cache',
     }),
   loadClient = () => import('./neon-client.js'),
 } = {}) {

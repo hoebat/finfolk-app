@@ -52,7 +52,7 @@ export function installLogbook({
   getBeaches = () => [],
   getSelectedBeach = () => null,
   loadJSON = (path) =>
-    readResource(new URL(path, import.meta.url), { read: "json" }),
+    readResource(new URL(path, import.meta.url), { read: "json", cache: "no-cache" }),
   loadClient = () => import("./neon-client.js"),
 } = {}) {
   const root = document.getElementById("logbook-page"),
@@ -137,7 +137,7 @@ export function installLogbook({
     message("");
   }
   async function init() {
-    config = await loadJSON("neon-config.json");
+    config = await loadJSON("neon-config.json?v=" + encodeURIComponent(new URL(import.meta.url).pathname.split("/").pop()));
     nav.hidden = true;
     if (!config.enabled) return;
     const module = await loadClient();
@@ -792,7 +792,7 @@ export function installLogbook({
     if (shell.route.view === "logbook") render();
     else editor = null;
   });
-  loadJSON("neon-config.json")
+  loadJSON("neon-config.json?v=" + encodeURIComponent(new URL(import.meta.url).pathname.split("/").pop()))
     .then((value) => {
       config = value;
       nav.hidden = true;
