@@ -2,6 +2,14 @@
 
 The active implementation uses Neon Postgres, Neon Auth and the `finfolk-community` Cloudflare Worker. Legacy Firebase Instagram functions are not used. The brand account is `@finfolk.com.au`.
 
+## Meta setup status
+
+Meta app **FinFolk**, ID `1667613151655339`, has been created with the Instagram use case. Its domain is `finfolk.com.au`. The Instagram callback `https://api.finfolk.com.au/instagram/webhook` is verified, and `mentions` and `messages` are subscribed on **v26.0**. Both dashboard test deliveries passed. These demonstrate webhook transport, not live account association or draft creation.
+
+The app is **unpublished**. Meta's current dashboard states that unpublished apps receive dashboard tests only, including for app administrators. Brand account authorization, a production access token, required publishing/review prerequisites and real-account acceptance tests remain incomplete. No FinFolk admin identity has been configured yet.
+
+The app secret and verification token are saved in the ignored `.env.local`, uploaded to Worker secret storage, and included in verified encrypted local backups. See [local secrets backup instructions](SECRETS_BACKUP.md). No app secret, token or recovery key is committed.
+
 ## Current controls
 
 `INSTAGRAM_ENABLED=false` is intentional. No provider requests or public replies are sent until acceptance tests pass. With no `INSTAGRAM_ADMIN_IDS`, connection challenges are also disabled so members do not wait for an unconfigured reviewer. Public profile links remain available separately.
