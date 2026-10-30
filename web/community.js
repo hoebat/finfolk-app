@@ -108,11 +108,15 @@ export function installCommunity({
       const a = await api();
       if (generation !== epoch) return;
       if (!a.user) {
-        const box = el('section', undefined, 'account-card'),
-          form = el('form');
+        const box = el('section', undefined, 'account-card signin-card'),
+          form = el('form', undefined, 'signin-form');
+        const mark = el('img', undefined, 'signin-mark');
+        mark.src = new URL('./finfolk-icon.svg', import.meta.url).href;
+        mark.alt = '';
+        box.append(mark, el('span', 'YOUR OCEAN COMMUNITY', 'signin-eyebrow'));
         box.append(
-          el('h2', 'Join the folk'),
-          el('p', 'Explore freely. Sign in to check in and meet divers.'),
+          el('h2', 'Find your people in the water.'),
+          el('p', 'Save your sessions, discover your regular spots and connect with other divers.', 'signin-description'),
         );
         const name = field(form, 'Display name', 'name'),
           email = field(form, 'Email', 'email', '', 'email'),
@@ -136,8 +140,12 @@ export function installCommunity({
             submit.disabled = false;
           }
         };
-        const status = el('p');
+        const status = el('p', '', 'signin-status');
         status.setAttribute('role', 'status');
+        if (config.googleEnabled) {
+          const google = button('Continue with Google', () => a.google(), 'signin-google');
+          box.append(google, el('div', 'or continue with email', 'signin-divider'));
+        }
         box.append(
           form,
           button('Create account', async () => {
@@ -159,8 +167,6 @@ export function installCommunity({
           }),
           status,
         );
-        if (config.googleEnabled)
-          box.append(button('Continue with Google', () => a.google()));
         root.append(box);
         const token = new URL(location.href).searchParams.get('token');
         if (token) {

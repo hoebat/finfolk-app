@@ -228,3 +228,30 @@
     }
   }
 }
+
+/* A compact, welcoming entry point for the FinFolk community. */
+.signin-card {
+  max-width: 440px;
+  margin: 28px auto;
+  padding: clamp(24px, 5vw, 38px);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 24px 70px #0759671c;
+  backdrop-filter: blur(20px);
+}
+.signin-mark { width: 56px; height: 56px; display: block; margin-bottom: 20px; }
+.signin-eyebrow { color: #008b9a; font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+.signin-card h2 { margin: 10px 0; color: #153d47; font-size: clamp(27px, 4vw, 36px); line-height: 1.08; letter-spacing: -.035em; }
+.signin-description { color: #628087; line-height: 1.5; margin: 0 0 22px; }
+.signin-card .signin-google, .signin-form .primary { width: 100%; min-height: 48px; margin: 0; border-radius: 14px; font-weight: 700; }
+.signin-card .signin-google { border: 1px solid #d1e5e4; background: white; color: #1b4149; }
+.signin-google::before { content: 'G'; color: #4285f4; font-weight: 800; margin-right: 12px; }
+.signin-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0 4px; color: #829b9e; font-size: 12px; }
+.signin-divider::before, .signin-divider::after { content: ''; flex: 1; height: 1px; background: #e1eeee; }
+.signin-form label { color: #45676d; font-size: 12px; font-weight: 700; }
+.signin-form input:not([type='checkbox']) { min-height: 48px; border-color: #d5e8e7; background: #f8fbfa; font-size: 16px; }
+.signin-form input:focus-visible { outline: 3px solid #58c9cd77; border-color: #008f9d; }
+.signin-card > .secondary { background: transparent; color: #007f8e; box-shadow: none; font-size: 13px; font-weight: 700; padding: 9px 4px; }
+.signin-status:empty { display: none; }
+.signin-status { color: #b9364c; line-height: 1.5; }
+@media (max-width: 900px) { .signin-card { margin: 22px auto; padding: 24px; } }
