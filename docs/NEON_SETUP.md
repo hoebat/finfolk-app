@@ -12,7 +12,7 @@ The atlas remains on GitHub Pages. The active account client uses Neon Auth; the
 
 `neon deploy` succeeded and pulled Postgres and Auth variables into ignored `.env.local`. Never commit that file. `npm run build` reads `.env` if it exists, otherwise `.env.local`, and emits only the public Auth URL and `NEON_API_URL`. Database passwords and JWKS bearer tokens never belong in browser config.
 
-Neon Functions are not available in Sydney. Keep this database and Auth in Sydney and deploy the small API on Cloudflare Workers with Hyperdrive. The Worker is declared in `wrangler.jsonc`. It must not be advertised as operational until the Hyperdrive binding and Auth URLs have been provisioned and tested.
+Neon Functions are not available in Sydney. Keep this database and Auth in Sydney and deploy the small API on Cloudflare Workers with Hyperdrive. The Worker is declared in `wrangler.jsonc`. The API is deployed at `https://api.finfolk.com.au/` (also available at `https://finfolk-community.zcaudate.workers.dev/`). Production and localhost CORS, real Neon Auth sign-in/session flows, profile writes and private-session access were verified through the deployed Worker.
 
 ## Local development
 
@@ -44,7 +44,7 @@ NEON_TEST_API_URL=http://127.0.0.1:8787/ npm run test:neon
 ## Production API deployment
 
 1. Run `npx wrangler login` and finish the browser authorization.
-2. Run `npm run provision:api`. It uses Wrangler's documented token command without printing the token, creates a least-privilege database role if needed, and provisions Hyperdrive over verified TLS. Credentials travel in HTTPS request bodies, not CLI arguments. The role can access the FinFolk schema and only the Auth user columns required to verify identity.
+2. For a new Hyperdrive configuration, upload the public CA used by Neon with `npx wrangler cert upload certificate-authority --ca-cert /path/to/ca.pem --name finfolk-neon-ca`, then set its ID as `NEON_HYPERDRIVE_CA_ID` in the ignored env file (or the public `wrangler.jsonc` vars). The existing production configuration uses ISRG Root X1. Run `npm run provision:api`. It uses Wrangler's documented token command without printing the token, creates a least-privilege database role if needed, and provisions Hyperdrive over verified TLS. Credentials travel in HTTPS request bodies, not CLI arguments. The role can access the FinFolk schema and only the Auth user columns required to verify identity.
 3. Hyperdrive query caching is disabled: privacy changes and expiring access must be evaluated against current rows. The script refuses an existing cached configuration.
 4. The script writes public Auth URLs and the Hyperdrive binding into `wrangler.jsonc`, then deploys the Worker. Keep its private origin URL in ignored env only.
 5. Set `NEON_API_URL` to the deployed Worker URL. Copy only the public Auth URL and API URL into `web/neon-config.json` (with `enabled:true`) for GitHub Pages builds that have no local env file. Leave Google disabled until production OAuth credentials are configured.
@@ -78,6 +78,7 @@ python3 -m unittest discover -s tests -v
 npm run build
 npx wrangler deploy --dry-run --outdir .cache/worker
 npm run test:neon
+npm run test:deployed
 ```
 
-Live tests passed against Neon Auth and Postgres, including real signup/JWT issuance, session restoration, private-session denial, duplicate check-ins, reciprocal 3/5 gates, accepted buddies, Closed mode and blocking. HTTP tests also passed against the running local server. Google OAuth, email delivery and the deployed Cloudflare Worker remain separate production acceptance checks.
+Live tests passed against Neon Auth and Postgres, including real signup/JWT issuance, session restoration, private-session denial, duplicate check-ins, reciprocal 3/5 gates, accepted buddies, Closed mode and blocking. HTTP tests also passed against the running local server. The deployed Cloudflare Worker also passed `npm run test:deployed` for production and localhost origins. Google OAuth and email delivery remain separate acceptance checks.

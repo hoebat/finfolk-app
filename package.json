@@ -15,7 +15,8 @@
     "test:offline": "node tests/test_offline.mjs",
     "test:regulars": "node tests/test_regulars.mjs",
     "deploy:api": "wrangler deploy",
-    "provision:api": "node scripts/provision_api.mjs"
+    "provision:api": "node scripts/provision_api.mjs",
+    "test:deployed": "node --env-file=.env.local scripts/test_deployed_api.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",

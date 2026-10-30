@@ -45,6 +45,8 @@ if (existing && !existing.caching?.disabled)
   throw Error(
     'Existing Hyperdrive query caching must be disabled before using private account data.',
   );
+if (existing && existing.mtls?.sslmode !== 'verify-full')
+  throw Error('Existing Hyperdrive must use hostname-verified TLS.');
 if (!drive) {
   const direct = new URL(process.env.DATABASE_URL_UNPOOLED);
   direct.searchParams.set('sslmode', 'verify-full');
@@ -106,13 +108,19 @@ if (!drive) {
         password: decodeURIComponent(appURL.password),
       },
       caching: { disabled: true },
-      mtls: { sslmode: 'verify-full' },
+      mtls: {
+        sslmode: 'verify-full',
+        ca_certificate_id:
+          process.env.NEON_HYPERDRIVE_CA_ID ||
+          config.vars?.NEON_HYPERDRIVE_CA_ID,
+      },
       origin_connection_limit: 5,
     }),
   });
 }
 config.hyperdrive = [{ binding: 'HYPERDRIVE', id: drive.id }];
 config.vars = {
+  ...config.vars,
   NEON_AUTH_BASE_URL: process.env.NEON_AUTH_BASE_URL,
   NEON_AUTH_JWKS_URL: process.env.NEON_AUTH_JWKS_URL,
 };
