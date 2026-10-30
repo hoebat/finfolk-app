@@ -149,3 +149,7 @@ Shore and place names are enabled by default using OpenStreetMap tiles, styled i
 ## FinFolk logbook
 
 Google/email accounts, private freediving sessions, explicitly published public sessions, Instagram profile links and private photo storage are implemented with Firebase. Accounts remain disabled until a dedicated project is configured. See [Firebase setup and deployment](docs/FIREBASE_SETUP.md) for backend deployment, billing, rules checks and enabling the frontend.
+
+## Custom domain
+
+The root `CNAME` declares `finfolk.com.au` and is copied into the Pages artifact. GitHub Actions deployments require the domain to be configured separately in repository Settings → Pages; the CNAME file alone does not activate it. See [custom domain setup](docs/CUSTOM_DOMAIN.md) for DNS, HTTPS and Firebase settings.

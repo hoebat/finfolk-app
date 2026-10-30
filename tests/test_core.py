@@ -145,6 +145,7 @@ class StaticBuildTests(FixtureCase):
         self.ingest()
         site = self.root / "site"
         report = build(self.store, site, max_zoom=5)
+        self.assertEqual((site / "CNAME").read_text().strip(), "finfolk.com.au")
         catalog = json.loads((site / "data/catalog.json").read_text())
         region = catalog["regions"][1]
         grid = region["rasters"][0]["grid"]

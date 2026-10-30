@@ -6,7 +6,7 @@ The atlas remains on GitHub Pages. Accounts use a **new, dedicated Firebase proj
 
 1. Run `npx firebase-tools@15.34.2 login`. Create a dedicated project in Firebase Console (or `firebase projects:create PROJECT_ID --display-name FinFolk`). Do not reuse another application's project.
 2. Enable Blaze billing explicitly in the console. Set budget alerts (for example AUD $5/$15/$30); alerts **do not cap costs**. Storage and Functions require billing. Choose `australia-southeast1` for Firestore and Storage when creating them; functions use this region. Location choices are difficult to change later.
-3. Enable Google and Email/Password in Authentication. Set the public app name to **FinFolk**, configure a support email and a minimum 8-character password policy. Add `hoebat.github.io` to Authorized domains. For local development, also add `localhost` and `127.0.0.1`. The default Firebase auth domain hosts the OAuth handler; the app uses user-initiated Google popups so Pages does not require a reverse proxy for redirects.
+3. Enable Google and Email/Password in Authentication. Set the public app name to **FinFolk**, configure a support email and a minimum 8-character password policy. Add `hoebat.github.io`, `finfolk.com.au` and `www.finfolk.com.au` to Authorized domains. For local development, also add `localhost` and `127.0.0.1`. The default Firebase auth domain hosts the OAuth handler; the app uses user-initiated Google popups so Pages does not require a reverse proxy for redirects.
 4. Register a Web app and save its public SDK configuration as a temporary JSON file. Do not put Admin SDK keys, OAuth secrets or service-account files in the frontend or repository.
 
 ## Deploy backend before enabling the frontend

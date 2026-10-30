@@ -140,6 +140,9 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
         web_files = {p.name: p.read_bytes() for p in (PROJECT / "web").iterdir() if p.is_file()}
+        custom_domain = PROJECT / "CNAME"
+        if custom_domain.is_file():
+            web_files["CNAME"] = custom_domain.read_bytes()
         bundled = subprocess.run(["node", str(PROJECT / "scripts/bundle_firebase.mjs")], check=True, capture_output=True)
         web_files["firebase-client.js"] = bundled.stdout
         digest = hashlib.sha256(b"".join(name.encode() + b"\0" + data for name, data in sorted(web_files.items()))).hexdigest()[:12]

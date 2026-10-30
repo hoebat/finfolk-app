@@ -1,1 +1,20 @@
-[{"origin":["https://hoebat.github.io","http://localhost:8000","http://127.0.0.1:8000"],"method":["GET","HEAD"],"responseHeader":["Content-Type","Authorization"],"maxAgeSeconds":3600}]
+[
+  {
+    "origin": [
+      "https://hoebat.github.io",
+      "http://localhost:8000",
+      "http://127.0.0.1:8000",
+      "https://finfolk.com.au",
+      "https://www.finfolk.com.au"
+    ],
+    "method": [
+      "GET",
+      "HEAD"
+    ],
+    "responseHeader": [
+      "Content-Type",
+      "Authorization"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]
