@@ -111,13 +111,14 @@ export class DepthMap {
     const view=this.bounds(),visible=this.areaZones.filter(zone=>zone.bounds[0]<=view[2]&&zone.bounds[2]>=view[0]&&zone.bounds[1]<=view[3]&&zone.bounds[3]>=view[1]);
     if(!visible.length)return;
     const w=this.width,h=this.height;
-    this.areaCanvas??=document.createElement('canvas');this.areaMaskCanvas??=document.createElement('canvas');this.areaOverlayCanvas??=document.createElement('canvas');
-    for(const canvas of [this.areaCanvas,this.areaMaskCanvas,this.areaOverlayCanvas])if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;this.areaMaskKey=null;}
+    this.areaCanvas??=document.createElement('canvas');this.areaMaskCanvas??=document.createElement('canvas');this.areaOverlayCanvas??=document.createElement('canvas');this.areaEdgesCanvas??=document.createElement('canvas');
+    for(const canvas of [this.areaCanvas,this.areaMaskCanvas,this.areaOverlayCanvas,this.areaEdgesCanvas])if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;this.areaMaskKey=null;}
     const prepared=[];for(const zone of visible){
-      const points=zone.points.map(point=>this.toScreen(point)),lines=zone.lines.map(edge=>edge.map(point=>this.toScreen(point))),metresPerPixel=2*Math.PI*R*Math.cos(this.center[1]*Math.PI/180)/(256*2**this.zoom),radius=Math.max(2,Math.min(26,zone.radius_m/metresPerPixel)),xs=points.map(point=>point[0]),ys=points.map(point=>point[1]),bounds=[Math.min(...xs)-radius-2,Math.min(...ys)-radius-2,Math.max(...xs)+radius+2,Math.max(...ys)+radius+2];
+      const rings=(zone.polygons||[]).map(ring=>ring.map(point=>this.toScreen(point))),points=rings.flat(),xs=points.map(point=>point[0]),ys=points.map(point=>point[1]),bounds=[Math.min(...xs)-2,Math.min(...ys)-2,Math.max(...xs)+2,Math.max(...ys)+2];
       if(bounds[2]<0||bounds[3]<0||bounds[0]>w||bounds[1]>h)continue;
-      const hit={zone,points,lines,radius,bounds};prepared.push(hit);this.areaHits.push(hit);
+      const hit={zone,rings,bounds};prepared.push(hit);this.areaHits.push(hit);
     }
+    if(!prepared.length)return;
     const mask=this.areaMaskCanvas,key=`${this.zoom}/${left}/${top}/${w}/${h}/${this.shoreRevision||0}`;
     if(key!==this.areaMaskKey){
       const maskCtx=mask.getContext('2d');maskCtx.clearRect(0,0,w,h);
@@ -127,15 +128,18 @@ export class DepthMap {
       }
       this.areaMaskKey=key;
     }
-    const shape=this.areaCanvas,shapeCtx=shape.getContext('2d'),overlay=this.areaOverlayCanvas,overlayCtx=overlay.getContext('2d');
-    const tint=(zones,colour,padding=0)=>{
-      shapeCtx.clearRect(0,0,w,h);shapeCtx.save();shapeCtx.strokeStyle='#fff';shapeCtx.fillStyle='#fff';shapeCtx.lineCap='round';shapeCtx.lineJoin='round';
-      for(const hit of zones){const radius=hit.radius+padding;shapeCtx.lineWidth=radius*2;shapeCtx.beginPath();for(const edge of hit.lines){shapeCtx.moveTo(...edge[0]);shapeCtx.lineTo(...edge[1]);}if(hit.lines.length)shapeCtx.stroke();for(const point of hit.points){shapeCtx.beginPath();shapeCtx.arc(point[0],point[1],radius,0,Math.PI*2);shapeCtx.fill();}}
-      shapeCtx.globalCompositeOperation='destination-in';shapeCtx.drawImage(mask,0,0);shapeCtx.restore();
-      overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=colour;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(shape,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
+    const shape=this.areaCanvas,shapeCtx=shape.getContext('2d'),overlay=this.areaOverlayCanvas,overlayCtx=overlay.getContext('2d'),edges=this.areaEdgesCanvas,edgesCtx=edges.getContext('2d');
+    const drawRings=(context,zones,stroke=false)=>{
+      context.clearRect(0,0,w,h);context.save();context.fillStyle='#fff';context.strokeStyle='#fff';context.lineWidth=1.5;context.lineJoin='round';context.lineCap='round';
+      for(const hit of zones){context.beginPath();for(const ring of hit.rings){if(ring.length<3)continue;context.moveTo(...ring[0]);for(let i=1;i<ring.length;i++)context.lineTo(...ring[i]);context.closePath();}if(stroke)context.stroke();else context.fill('evenodd');}
+      context.globalCompositeOperation='destination-in';context.drawImage(mask,0,0);context.restore();
     };
-    tint(prepared,'rgba(91,190,203,.075)');
-    const active=prepared.filter(hit=>hit.zone.id===this.hoveredAreaId);if(active.length)tint(active,'rgba(94,224,231,.22)',1);
+    const tint=(zones,fill,edge)=>{
+      drawRings(shapeCtx,zones);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=fill;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(shape,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
+      drawRings(edgesCtx,zones,true);overlayCtx.clearRect(0,0,w,h);overlayCtx.fillStyle=edge;overlayCtx.fillRect(0,0,w,h);overlayCtx.save();overlayCtx.globalCompositeOperation='destination-in';overlayCtx.drawImage(edges,0,0);overlayCtx.restore();this.ctx.drawImage(overlay,0,0,w,h);
+    };
+    tint(prepared,'rgba(67,157,190,.075)','rgba(185,235,239,.34)');
+    const active=prepared.filter(hit=>hit.zone.id===this.hoveredAreaId);if(active.length)tint(active,'rgba(64,211,220,.17)','rgba(223,255,245,.92)');
   }
   isWaterAtScreen(x,y){
     const world=project(this.fromScreen([x,y]),this.zoom),tileX=Math.floor(world[0]/256),tileY=Math.floor(world[1]/256),tile=cachedTile(this.images,this.zoom,tileX,tileY),styled=tile?.image.styled;
@@ -147,8 +151,8 @@ export class DepthMap {
     if(!this.isWaterAtScreen(x,y))return null;
     for(const hit of [...this.areaHits].reverse()){
       const [left,top,right,bottom]=hit.bounds;if(x<left||x>right||y<top||y>bottom)continue;
-      if(hit.points.some(point=>Math.hypot(x-point[0],y-point[1])<=hit.radius+2))return hit.zone;
-      for(const [a,b] of hit.lines){const dx=b[0]-a[0],dy=b[1]-a[1],length=dx*dx+dy*dy,t=length?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/length)):0;if(Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy)<=hit.radius+2)return hit.zone;}
+      let inside=false;for(const ring of hit.rings){for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;}}
+      if(inside)return hit.zone;
     }
     return null;
   }
