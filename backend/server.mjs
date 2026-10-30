@@ -5,7 +5,7 @@ const db = database(process.env.DATABASE_URL),
   app = createAPI({ db, verify: managedVerifier(process.env) });
 serve(
   {
-    fetch: app.fetch,
+    fetch: (request) => app.fetch(request, process.env),
     port: Number(process.env.PORT || 8787),
     hostname: '127.0.0.1',
   },

@@ -1,3 +1,4 @@
+import { createShopCheckout } from './shop.mjs';
 import { Hono } from 'hono';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import {
@@ -62,6 +63,14 @@ export function createAPI({
   app.get('/health', (c) =>
     c.json({ ok: true, service: 'FinFolk account API' }),
   );
+  app.post('/shop/checkout', async (c) => {
+    const raw = await c.req.text();
+    if (raw.length > 8192) return c.json({error:'Cart is too large.'}, 413);
+    let input;
+    try { input = JSON.parse(raw); } catch { return c.json({error:'Invalid cart.'}, 400); }
+    const result = await createShopCheckout(input, c.env || {});
+    return c.json(result.body, result.status);
+  });
   app.onError((e, c) => {
     if (!e.status) console.error('Account operation failed', e.code || e.name);
     return c.json(
