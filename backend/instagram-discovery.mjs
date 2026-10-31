@@ -79,7 +79,7 @@ export function normalizeInstagramMedia(media, source) {
     source: String(source).slice(0, 120),
   };
 }
-export async function ingestInstagramMedia(media, source, env, q) {
+export async function ingestInstagramMedia(media, source, env, q, options = {}) {
   const item = normalizeInstagramMedia(media, source);
   if (!item) return null;
   const suppressed = item.authorId
@@ -91,7 +91,8 @@ export async function ingestInstagramMedia(media, source, env, q) {
       ).length
     : false;
   if (suppressed) return null;
-  const candidates = matchInstagramBeach(item.caption);
+  const requested = options.beachId && places.find(p => p.id === options.beachId);
+  const candidates = requested ? [{id:requested.id,name:requested.name}] : matchInstagramBeach(item.caption);
   const member = item.authorId
     ? (
         await q(
@@ -101,6 +102,7 @@ export async function ingestInstagramMedia(media, source, env, q) {
       )[0]
     : null;
   const auto =
+    !options.forceReview &&
     env.INSTAGRAM_PUBLICATION_ENABLED === "true" &&
     member?.share_posts &&
     candidates.length === 1;

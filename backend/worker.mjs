@@ -1,3 +1,4 @@
+import { sendCommandReply } from './instagram-commands.mjs';
 import { processInstagramDM, reconcileInstagramDM } from './instagram-dm.mjs';
 import {
   scheduleInstagramDiscovery,
@@ -16,12 +17,14 @@ export default {
     try {
       for (const message of batch.messages) {
         try {
-          if (message.body.kind === "instagram-dm")
+          if (message.body.kind === "instagram-comment-reply")
+            await sendCommandReply(String(message.body.id), env, db);
+          else if (message.body.kind === "instagram-dm")
             await processInstagramDM(String(message.body.id), env, db);
           else if (message.body.kind === "discovery-source")
             await collectInstagramSource(message.body.key, env, db.query);
           else
-            await processInstagramEvent(String(message.body.id), env, db.query);
+            await processInstagramEvent(String(message.body.id), env, db.query, db);
           message.ack();
         } catch {
           message.retry({ delaySeconds: 300 });

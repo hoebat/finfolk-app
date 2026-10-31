@@ -6,7 +6,7 @@
   "description": "FinFolk coastal atlas and freediving logbook",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs && node tests/test_estimate.mjs && node tests/test_logbook.mjs && node tests/test_instagram.mjs && node scripts/check_instagram_beaches.mjs && node tests/test_offline.mjs && node tests/test_regulars.mjs && node tests/test_account.mjs && node tests/test_member_tour.mjs && node tests/test_tour_animation.mjs && node tests/test_actions_ui.mjs && node tests/test_posts.mjs && node tests/test_auth_session.mjs && node tests/test_instagram_discovery.mjs && node tests/test_instagram_discovery_ui.mjs && node tests/test_trips.mjs && node tests/test_trips_ui.mjs && node tests/test_instagram_dm.mjs && node tests/test_instagram_claim_ui.mjs",
+    "test": "node tests/test_map.mjs && node tests/test_static.mjs && node tests/test_pins.mjs && node tests/test_measure.mjs && node tests/test_beaches.mjs && node tests/test_discovery.mjs && node tests/test_app.mjs && node tests/test_media.mjs && node tests/test_activity.mjs && node tests/test_rendering.mjs && node tests/test_mobile.mjs && node tests/test_app_mobile.mjs && node tests/test_app_routes.mjs && node tests/test_search.mjs && node tests/test_estimate.mjs && node tests/test_logbook.mjs && node tests/test_instagram.mjs && node scripts/check_instagram_beaches.mjs && node tests/test_offline.mjs && node tests/test_regulars.mjs && node tests/test_account.mjs && node tests/test_member_tour.mjs && node tests/test_tour_animation.mjs && node tests/test_actions_ui.mjs && node tests/test_posts.mjs && node tests/test_auth_session.mjs && node tests/test_instagram_discovery.mjs && node tests/test_instagram_discovery_ui.mjs && node tests/test_trips.mjs && node tests/test_trips_ui.mjs && node tests/test_instagram_dm.mjs && node tests/test_instagram_claim_ui.mjs && node tests/test_instagram_commands.mjs && node tests/test_instagram_commands_ui.mjs",
     "test:rules": "npm run test:regulars && npm run test:neon",
     "dev": "node --env-file=.env.local backend/server.mjs",
     "dev:web": "python3 -m http.server 8000 --directory _site",
@@ -25,7 +25,8 @@
     "test:instagram-discovery": "node --env-file=.env.test.local scripts/test_instagram_discovery.mjs",
     "test:trips": "node --env-file=.env.test.local scripts/test_trips.mjs",
     "test:instagram-dm": "node tests/test_instagram_dm.mjs && node tests/test_instagram_claim_ui.mjs",
-    "test:instagram-dm:integration": "node scripts/test_instagram_dm.mjs"
+    "test:instagram-dm:integration": "node scripts/test_instagram_dm.mjs",
+    "test:instagram-commands": "node --env-file=.env.test.local scripts/test_instagram_commands.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",
