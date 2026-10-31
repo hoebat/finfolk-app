@@ -67,6 +67,24 @@ export class InstagramProvider {
     }
     if (!response.ok || data.error) {
       const providerCode = Number(data.error?.code);
+      if (
+        this.config.provider === "instagram-facebook" &&
+        path.includes("/subscribed_apps") &&
+        providerCode === 200
+      ) {
+        if (/permissions is needed: pages_messaging\b/.test(data.error?.message || ""))
+          throw messagingError(
+            "page_messaging_permission_missing",
+            "Reconnect FinFolk and grant Page messaging access to subscribe to message webhooks.",
+            503,
+          );
+        if (/Requires pages_manage_metadata permission\b/.test(data.error?.message || ""))
+          throw messagingError(
+            "page_webhook_permission_missing",
+            "Reconnect FinFolk and grant Page webhook access.",
+            503,
+          );
+      }
       if (response.status === 401 || providerCode === 190)
         throw messagingError(
           "token_invalid",

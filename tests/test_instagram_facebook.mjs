@@ -127,6 +127,20 @@ pageSub = [{ id: "111", subscribed_fields: ["messages"] }];
 await p.subscribe();
 assert.ok(calls.some((u) => u.pathname === "/v26.0/222/subscribed_apps"));
 assert.ok(calls.some((u) => u.pathname === "/v26.0/333/subscribed_apps"));
+for (const [message, code] of [
+  ["(#200) To subscribe to the messages field, one of these permissions is needed: pages_messaging", "page_messaging_permission_missing"],
+  ["Requires pages_manage_metadata permission to manage the object", "page_webhook_permission_missing"],
+]) {
+  const rejected = new InstagramProvider(p.config, async () => ({
+    ok: false,
+    status: 403,
+    json: async () => ({ error: { code: 200, message } }),
+  }));
+  await assert.rejects(
+    () => rejected.request('/222/subscribed_apps', { method: 'POST', body: { subscribed_fields: ['messages'] } }),
+    { code, status: 503 },
+  );
+}
 let refreshed = false;
 await refreshAuthorization(
   async () => [

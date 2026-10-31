@@ -48,3 +48,11 @@ The first hoebat.km ping was rejected by Instagram because FinFolk blocks new me
 `GET /1387107281155901/subscribed_apps` with the valid Page token returns HTTP 403, error 200: `Requires pages_manage_metadata permission to manage the object`. A Page-based messaging connection must subscribe and verify both the Page and the linked Instagram account. The overall subscription flag was set false on this evidence; messaging remains disabled.
 
 The Meta app initially rejected this scope as invalid. Adding the **Manage everything on your Page** use case makes `pages_manage_metadata` available as **Ready for testing**. The consent request is restricted to the current FinFolk Page and finfolk.com.au Instagram account; new permission approval is required before saving. The Threads API use case was also enabled at the user's request; no Threads account authorization or publishing is claimed.
+
+## Permission grant and publication follow-up
+
+FinFolk's Meta app is now **Published**, confirmed after reloading the dashboard. Public privacy and deletion URLs are configured. Meta's Page webhook screen warns that unpublished apps receive only dashboard tests, including for admins/developers/testers; this is separate from app-role permission access.
+
+`pages_manage_metadata` is now granted. App-authenticated token inspection confirms a valid app-bound `PAGE` token, with this permission targeted to the configured FinFolk Page. `/me` matches the Page, and its linked Instagram account matches the canonical brand. Page subscription readback now returns HTTP 200 with an empty list.
+
+The next actual Page subscription POST returns HTTP 403/error 200: `To subscribe to the messages field, one of these permissions is needed: pages_messaging`. Instagram-account subscription still succeeds. The Facebook Page OAuth request now includes `pages_messaging`; its broader Page-conversation access needs separate approval. Overall subscription readiness remains false until that grant, Page POST/readback and the shared finalizer succeed. Real DM delivery has not been verified.
