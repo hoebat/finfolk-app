@@ -1,3 +1,4 @@
+import { collectInstagramDM } from './instagram-dm.mjs';
 import { collectMention } from "./instagram-collector.mjs";
 import { createHmac, createHash, timingSafeEqual } from "node:crypto";
 import { parseActionRequest } from "./instagram-actions.mjs";
@@ -43,6 +44,7 @@ export async function instagramWebhook(request, env, q) {
   for (const entry of data.entry || []) {
     if (String(entry.id) !== env.INSTAGRAM_ACCOUNT_ID) continue;
     for (const event of entry.messaging || []) {
+      await collectInstagramDM(event,env,q);
       const match = String(event.message?.text || "")
           .trim()
           .match(/^FINFOLK ([a-f0-9]{24})$/i),

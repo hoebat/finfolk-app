@@ -1,3 +1,4 @@
+import { clearInstagramClaimStorage } from './instagram-claim.js';
 import { accountToken } from './auth-session.js';
 import { createAuthClient } from '@neondatabase/auth';
 import { activity } from './activity.js';
@@ -86,13 +87,14 @@ export async function createLogbookClient(config) {
       unwrap(
         await auth.signIn.social({
           provider: 'google',
-          callbackURL: new URL('?view=account', location.href).href,
+          callbackURL: new URL(new URL(location.href).searchParams.get('tab')==='instagram'?'?view=account&tab=instagram':'?view=account', location.href).href,
         }),
       );
       await refresh();
     },
     async signOut() {
       unwrap(await auth.signOut());
+      clearInstagramClaimStorage();
       user = null;
       for (const fn of listeners) await fn(null);
     },

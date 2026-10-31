@@ -463,6 +463,19 @@
 :root[data-theme='night'] .social-menu { background: var(--account-surface); border-color: var(--account-line); }
 :root[data-theme='night'] .social-menu :is(h2,p,a), :root[data-theme='night'] .signin-card :is(h2,p,label,a) { color: var(--account-ink); }
 :root[data-theme='night'] .account-page .social-menu-action { color: var(--account-accent); background: var(--account-bg); }
+
+.instagram-claim .claim-state { display: inline-block; margin: 12px 0; padding: 8px 12px; border-radius: 10px; background: var(--account-bg); color: var(--account-accent); }
+.instagram-claim-steps { padding-left: 26px; }
+.instagram-claim-steps > li { padding: 12px 0 22px 8px; border-bottom: 1px solid var(--account-line); }
+.instagram-claim-steps h3 { color: var(--account-ink); font-size: 18px; margin: 0 0 10px; }
+.instagram-claim-steps input[readonly] { font-family: ui-monospace, monospace; font-size: 14px; }
+.instagram-claim .claim-instagram-link { display: inline-block; padding: 12px 0; color: var(--account-accent); }
+.instagram-claim .claim-feedback:empty { display: none; }
+.instagram-claim time { white-space: normal; }
+.instagram-command-guide, .instagram-optional-actions { margin-top: 24px; }
+.instagram-claim summary, .instagram-optional-actions > summary { cursor: pointer; padding: 12px 0; color: var(--account-accent); }
+.instagram-command-guide code { display: inline-block; padding: 4px 6px; background: var(--account-bg); border-radius: 6px; overflow-wrap: anywhere; }
+@media(max-width:600px) { .instagram-claim-steps { padding-left: 20px; } .instagram-claim-steps > li { padding-left: 3px; } .instagram-claim button { max-width:100%; } }
 /* Trip reports keep raw dive records private and summary charts readable. */
 .trip-page { position: absolute; inset: 0; height: 100%; overflow: auto; padding: 24px max(18px, calc((100vw - 1080px) / 2)) 100px; background: var(--account-bg, #eef8f3); color: var(--account-ink, #173e48); }
 .trip-report { max-width: 1000px; margin: 20px auto; padding: clamp(18px, 4vw, 44px); border: 1px solid var(--account-line, #c8dfd9); border-radius: 26px; background: var(--account-surface, #fffef8); color: var(--account-ink, #173e48); }

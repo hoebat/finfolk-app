@@ -239,7 +239,7 @@ export function createAPI({
     if (tripActions.has(action)) return c.json({data:await tripAction({action,v,uid,q,env:c.env||{},verified})});
     if (discoveryActions.has(action)) return c.json({data:await discoveryAction({action,v,uid,env:c.env||{},q})});
     if (typeof action === 'string' && action.startsWith('instagram')) {
-      const result = await instagramAction({action,v,uid,env:c.env || {},q,verified});
+      const result = await instagramAction({action,v,uid,env:c.env || {},q,db,verified});
       return c.json({data:result});
     }
     if (['postStatus','followedPosts','post','posts','myPosts','removePost','reportPost','reviewPosts','reviewPost','resolvePostReport','communityMetrics'].includes(action))
@@ -536,6 +536,10 @@ export function createAPI({
         break;
       }
       case 'deleteAccount':
+        await q("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null WHERE user_id=$1",[uid]);
+        await q('DELETE FROM finfolk.instagram_dm_events WHERE owner_id=$1',[uid]);
+        await q('DELETE FROM finfolk.instagram_dm_limits WHERE sender_id IN (SELECT sender_id FROM finfolk.instagram_connections WHERE user_id=$1)',[uid]);
+        await q('DELETE FROM finfolk.instagram_claims WHERE user_id=$1',[uid]);
         await q('DELETE FROM finfolk.trips WHERE owner_id=$1',[uid]);
         await q("UPDATE finfolk.instagram_discoveries SET state='hidden',owner_id=NULL,author_id=NULL,author=NULL,caption='',updated_at=now() WHERE owner_id=$1",[uid]);
         await q('DELETE FROM finfolk.points_ledger WHERE user_id=$1',[uid]);

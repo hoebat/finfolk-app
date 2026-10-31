@@ -72,10 +72,10 @@ try {
             ? 'Indian/Cocos'
             : zones[state]) ||
       'Australia/Sydney';
-    return { id: b.id, name: b.name, timezone: zone };
+    return { id: b.id, name: b.name, timezone: zone, area_name: b.area_name || '', state };
   });
   await client.query(
-    'INSERT INTO finfolk.beaches(id,name,timezone) SELECT id,name,timezone FROM jsonb_to_recordset($1::jsonb) AS b(id text,name text,timezone text) ON CONFLICT(id) DO UPDATE SET name=excluded.name,timezone=excluded.timezone',
+    'INSERT INTO finfolk.beaches(id,name,timezone,area_name,state) SELECT id,name,timezone,area_name,state FROM jsonb_to_recordset($1::jsonb) AS b(id text,name text,timezone text,area_name text,state text) ON CONFLICT(id) DO UPDATE SET name=excluded.name,timezone=excluded.timezone,area_name=excluded.area_name,state=excluded.state',
     [JSON.stringify(canonical)],
   );
   await client.query('COMMIT');
