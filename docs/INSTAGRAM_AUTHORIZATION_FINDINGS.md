@@ -4,7 +4,7 @@ Observed 31 October 2026 UTC.
 
 ## Recovery
 
-The Facebook Page-based route successfully reads Page `1387107281155901` and its linked `finfolk.com.au` account `17841461601419539`, even though `/me/accounts` returns an empty list. A valid app-bound Page token has been obtained, retained encrypted, and activated through the shared account/subscription finalizer. Authorization and subscription checks pass. The connection remains paused until the real sender pilot completes.
+The Facebook Page-based route successfully reads Page `1387107281155901` and its linked `finfolk.com.au` account `17841461601419539`, even though `/me/accounts` returns an empty list. A valid app-bound Page token has been obtained, retained encrypted, and activated through the shared account/subscription finalizer. Account authorization passes. The Instagram-account subscription passes, but the Facebook Page subscription requires an additional permission; overall subscription readiness is false and the connection remains paused.
 
 The Instagram subscription readback for this Page token omits the app ID and returns only `subscribed_fields`. Verification now binds the token to the correct app using Meta's debugger and to the configured Page via `/me` before accepting exactly one subscription entry containing `messages`.
 
@@ -40,3 +40,11 @@ FinFolk callback request IDs for correlation with application logs: `551fdc45-81
 ## Recovery acceptance
 
 After a confirmed repair, use the saved-grant verifier first. Consent refresh is needed only if Meta requires a new grant. Require exactly the expected brand, subscribe to messages and verify readback, then test signed receipts and visible `/ping` and `/help` replies from the allowlisted real `chriszfree` sender. Public messaging stays disabled throughout investigation. This report is a draft and has not been sent to Meta.
+
+## Page webhook permission and pilot follow-up
+
+The first hoebat.km ping was rejected by Instagram because FinFolk blocks new message requests from nonfollowers. After following the brand, a new ping was accepted by the Instagram UI, but no signed webhook arrived. Do not treat the initial rejection as a webhook transport failure.
+
+`GET /1387107281155901/subscribed_apps` with the valid Page token returns HTTP 403, error 200: `Requires pages_manage_metadata permission to manage the object`. A Page-based messaging connection must subscribe and verify both the Page and the linked Instagram account. The overall subscription flag was set false on this evidence; messaging remains disabled.
+
+The Meta app initially rejected this scope as invalid. Adding the **Manage everything on your Page** use case makes `pages_manage_metadata` available as **Ready for testing**. The consent request is restricted to the current FinFolk Page and finfolk.com.au Instagram account; new permission approval is required before saving. The Threads API use case was also enabled at the user's request; no Threads account authorization or publishing is claimed.

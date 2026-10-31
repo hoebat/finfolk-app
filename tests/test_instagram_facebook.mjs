@@ -24,7 +24,8 @@ let appId = "111",
   pageId = "222",
   username = "finfolk.com.au",
   type = "PAGE",
-  sub = [{ subscribed_fields: ["messages"] }];
+  sub = [{ subscribed_fields: ["messages"] }],
+  pageSub = [{ id: "111", subscribed_fields: ["messages"] }];
 const calls = [];
 const fetcher = async (input, opts = {}) => {
   const u = new URL(input);
@@ -57,7 +58,10 @@ const fetcher = async (input, opts = {}) => {
         : {}),
     };
   else if (u.pathname.endsWith("/subscribed_apps"))
-    data = opts.method === "POST" ? { success: true } : { data: sub };
+    data =
+      opts.method === "POST"
+        ? { success: true }
+        : { data: u.pathname.includes("/222/") ? pageSub : sub };
   else throw Error("Unexpected URL");
   return { ok: true, status: 200, json: async () => data };
 };
@@ -108,6 +112,21 @@ sub = [
   { subscribed_fields: ["messages"] },
 ];
 assert.equal(await p.subscriptions(), false);
+sub = [{ subscribed_fields: ["messages"] }];
+pageSub = [];
+assert.equal(
+  await p.subscriptions(),
+  false,
+  "An Instagram subscription alone is insufficient",
+);
+pageSub = [{ id: "999", subscribed_fields: ["messages"] }];
+assert.equal(await p.subscriptions(), false);
+pageSub = [{ id: "111", subscribed_fields: ["feed"] }];
+assert.equal(await p.subscriptions(), false);
+pageSub = [{ id: "111", subscribed_fields: ["messages"] }];
+await p.subscribe();
+assert.ok(calls.some((u) => u.pathname === "/v26.0/222/subscribed_apps"));
+assert.ok(calls.some((u) => u.pathname === "/v26.0/333/subscribed_apps"));
 let refreshed = false;
 await refreshAuthorization(
   async () => [
