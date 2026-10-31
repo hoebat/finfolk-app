@@ -15,3 +15,18 @@ assert.deepEqual(await instagramSender('100',env,async()=>({ok:true,json:async()
 console.log('Instagram DM parser/provider checks passed: exact slash syntax, code hashing, private command parsing and fail-closed follow/identity checks.');
 
 await assert.rejects(()=>instagramSender('100',env,async()=>({ok:true,json:async()=>({id:'wrong',username:'alice',is_user_follow_business:true})})),/could not confirm/);
+
+const {helpText} = await import('../backend/instagram-dm-commands.mjs');
+const {requiresFollower,hasPersonalCommands} = await import('../backend/messaging-config.mjs');
+for (const command of ['help','ping','unknown','prompt']) assert.equal(requiresFollower(command),false);
+for (const command of ['claim','claim_usage','status','checkin','points']) assert.equal(requiresFollower(command),true);
+assert.equal(hasPersonalCommands(['help','ping']),false);
+assert.equal(hasPersonalCommands(['help','claim']),true);
+const basicHelp=helpText(['help','ping']);
+assert.match(basicHelp,/Hey! Welcome to FinFolk/);
+assert.match(basicHelp,/https:\/\/finfolk\.com\.au/);
+assert.match(basicHelp,/You don’t need to follow or connect/);
+assert.ok(!basicHelp.includes('/claim'));
+assert.ok(!basicHelp.includes('/checkin'));
+assert.ok(Buffer.byteLength(helpText(),'utf8')<900);
+console.log('PUBLIC_HELP_PASS: welcoming bounded help, enabled commands only, no registration or follower requirement; personal commands retain follower policy.');

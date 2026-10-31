@@ -14,6 +14,7 @@ import {
   encryptionKey,
   oauthSettings,
   oauthFlowKey,
+  hasPersonalCommands,
 } from "./messaging-config.mjs";
 import { InstagramProvider, exchangeOAuth } from "./instagram-provider.mjs";
 const fail = (code, message, status = 400) => {
@@ -361,6 +362,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
           "visibleRepliesConfirmed",
           "productionAccessConfirmed",
           "nonFollowerTestConfirmed",
+          "nonFollowerHelpEventId",
         ]);
         if (
           !uuid(input.acceptance.pingEventId) ||
@@ -373,7 +375,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
           );
         const evidence = await ctx.db.query(
           `SELECT e.command,e.sender_id FROM finfolk.instagram_dm_events e JOIN finfolk.messaging_outbox o ON o.event_id=e.id
-    WHERE e.event_id IN ($1::uuid,$2::uuid) AND e.provider_scope=$3 AND e.processing_state='completed' AND e.follow_checked_at IS NOT NULL AND o.state='provider_accepted' AND e.created_at>now()-interval '24 hours'`,
+    WHERE e.event_id IN ($1::uuid,$2::uuid) AND e.provider_scope=$3 AND e.processing_state='completed' AND o.state='provider_accepted' AND e.created_at>now()-interval '24 hours'`,
           [
             input.acceptance.pingEventId,
             input.acceptance.helpEventId,
@@ -391,6 +393,33 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
             "Signed real-account test evidence is incomplete.",
             409,
           );
+        if (input.acceptance.nonFollowerHelpEventId !== undefined) {
+          if (
+            !uuid(input.acceptance.nonFollowerHelpEventId) ||
+            input.acceptance.nonFollowerTestConfirmed !== true
+          )
+            fail(
+              "acceptance_required",
+              "Confirm the visible /help reply from an unregistered nonfollower.",
+            );
+          const publicEvidence = await ctx.db.query(
+            `SELECT 1 FROM finfolk.instagram_dm_events e JOIN finfolk.messaging_outbox o ON o.event_id=e.id
+             WHERE e.event_id=$1::uuid AND e.provider_scope=$2 AND e.command='help' AND e.owner_id IS NULL
+             AND e.sender_id<>$3 AND e.processing_state='completed' AND o.state='provider_accepted'
+             AND e.created_at>now()-interval '24 hours'`,
+            [
+              input.acceptance.nonFollowerHelpEventId,
+              config.scope,
+              evidence[0].sender_id,
+            ],
+          );
+          if (!publicEvidence.length)
+            fail(
+              "acceptance_missing",
+              "A separate unregistered sender’s successful /help event is required.",
+              409,
+            );
+        }
         await ctx.db.query(
           "UPDATE finfolk.messaging_accounts SET checks=checks || $1::jsonb WHERE id='instagram'",
           [
@@ -398,14 +427,20 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
               liveDelivery: true,
               productionAccess:
                 input.acceptance.productionAccessConfirmed === true,
-              nonFollowerTest:
-                input.acceptance.nonFollowerTestConfirmed === true,
+              ...(input.acceptance.nonFollowerHelpEventId
+                ? { publicHelp: true }
+                : {
+                    nonFollowerTest:
+                      input.acceptance.nonFollowerTestConfirmed === true,
+                  }),
             }),
           ],
         );
       }
       if (input.mode !== "disabled") {
-        const state = await readiness(ctx.db.query, ctx.env);
+        const state = await readiness(ctx.db.query, ctx.env, {
+          enabledCommands: input.enabledCommands,
+        });
         const blocking = state.blockers.filter(
           (code) =>
             !["follow_lookup_unverified", "live_delivery_unverified"].includes(
@@ -438,7 +473,9 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
           input.mode === "live" &&
           (!state.ready ||
             !state.checks.productionAccess ||
-            !state.checks.nonFollowerTest)
+            (hasPersonalCommands(input.enabledCommands)
+              ? !state.checks.nonFollowerTest
+              : !state.checks.publicHelp))
         )
           fail(
             "acceptance_required",
