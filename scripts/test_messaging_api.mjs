@@ -92,14 +92,39 @@ const fetcher = async (input, options = {}) => {
       json: async () => data,
     });
     if (url.pathname.endsWith("/debug_token")) {
-      assert.equal(options.headers.Authorization, "Bearer 778|fixture-signature");
-      return ok({data:{app_id:"778",type:"SYSTEM_USER",is_valid:true,
-        scopes:["instagram_basic","instagram_manage_messages"],
-        granular_scopes:[{scope:"instagram_basic",target_ids:[brand]}]}});
+      assert.equal(
+        options.headers.Authorization,
+        "Bearer 778|fixture-signature",
+      );
+      return ok({
+        data: {
+          app_id: "778",
+          type:
+            env.INSTAGRAM_MESSAGING_PROVIDER === "instagram-facebook"
+              ? "PAGE"
+              : "SYSTEM_USER",
+          is_valid: true,
+          scopes: ["instagram_basic", "instagram_manage_messages"],
+          granular_scopes: [{ scope: "instagram_basic", target_ids: [brand] }],
+        },
+      });
     }
     if (url.pathname.endsWith("/oauth/access_token")) {
       businessExchanges++;
       return ok({ access_token: "fixture-business", expires_in: 0 });
+    }
+    if (env.INSTAGRAM_MESSAGING_PROVIDER === "instagram-facebook") {
+      if (
+        url.pathname.endsWith("/me") &&
+        url.searchParams.get("fields") === "id"
+      )
+        return ok({ id: env.INSTAGRAM_MESSAGING_PAGE_ID });
+      if (url.pathname.endsWith("/" + env.INSTAGRAM_MESSAGING_PAGE_ID))
+        return ok({
+          id: env.INSTAGRAM_MESSAGING_PAGE_ID,
+          instagram_business_account: { id: brand, username: "finfolk.com.au" },
+          access_token: "fixture-page",
+        });
     }
     if (url.pathname.endsWith("/me/assigned_instagram_accounts"))
       return ok({
@@ -113,7 +138,16 @@ const fetcher = async (input, options = {}) => {
       return ok(
         options.method === "POST"
           ? { success: true }
-          : { data: [{ id: "778", subscribed_fields: ["messages"] }] },
+          : {
+              data: [
+                {
+                  ...(env.INSTAGRAM_MESSAGING_PROVIDER === "instagram-facebook"
+                    ? {}
+                    : { id: "778" }),
+                  subscribed_fields: ["messages"],
+                },
+              ],
+            },
       );
     if (url.pathname.endsWith("/messages")) {
       replies.push(JSON.parse(options.body));
@@ -363,7 +397,13 @@ try {
   }
   await request(null, "GET", "/v1/me/instagram", null, 401);
   await request(owner, "GET", "/v1/admin/messaging/instagram", null, 403);
-  await request(owner, "GET", "/v1/admin/messaging/instagram/authorization/diagnostics", null, 403);
+  await request(
+    owner,
+    "GET",
+    "/v1/admin/messaging/instagram/authorization/diagnostics",
+    null,
+    403,
+  );
   const missingKey = await request(
     owner,
     "PUT",
@@ -802,7 +842,10 @@ try {
   assert.equal(unifiedURL.hostname, "www.facebook.com");
   assert.equal(unifiedURL.searchParams.get("client_id"), "778");
   assert.equal(unifiedURL.searchParams.get("config_id"), "5544");
-  assert.equal(unifiedURL.searchParams.get("override_default_response_type"), "true");
+  assert.equal(
+    unifiedURL.searchParams.get("override_default_response_type"),
+    "true",
+  );
   assert.equal(unifiedURL.searchParams.get("scope"), null);
   env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID = "5545";
   let staleAuth = await app.request(
@@ -836,14 +879,29 @@ try {
   assert.equal(pendingCallback.status, 409);
   const pendingConfig = await messagingConfig(q, env, { credentials: true });
   assert.equal(pendingConfig.token, "fixture-business");
-  const grantDiagnostic = await request(admin, "GET", "/v1/admin/messaging/instagram/authorization/diagnostics");
+  const grantDiagnostic = await request(
+    admin,
+    "GET",
+    "/v1/admin/messaging/instagram/authorization/diagnostics",
+  );
   assert.equal(grantDiagnostic.data.appMatches, true);
-  assert.equal(grantDiagnostic.data.granularScopes[0].includesExpectedAccount, true);
+  assert.equal(
+    grantDiagnostic.data.granularScopes[0].includesExpectedAccount,
+    true,
+  );
   assert.equal(grantDiagnostic.data.assignedAccounts.count, 0);
-  assert.equal(grantDiagnostic.response.headers.get("Cache-Control"), "private, no-store");
+  assert.equal(
+    grantDiagnostic.response.headers.get("Cache-Control"),
+    "private, no-store",
+  );
   assert.ok(!JSON.stringify(grantDiagnostic.data).includes("fixture-business"));
-  assert.ok(!JSON.stringify(grantDiagnostic.data).includes("fixture-signature"));
-  assert.equal((await messagingConfig(q, env)).checks.pendingVerification, true);
+  assert.ok(
+    !JSON.stringify(grantDiagnostic.data).includes("fixture-signature"),
+  );
+  assert.equal(
+    (await messagingConfig(q, env)).checks.pendingVerification,
+    true,
+  );
 
   assert.equal(pendingConfig.checks.pendingVerification, true);
   assert.equal(pendingConfig.checks.authorization, false);
@@ -1029,6 +1087,50 @@ try {
   assert.equal(publicFresh.owner_id, null);
   profileError = false;
 
+  env.INSTAGRAM_MESSAGING_PROVIDER = "instagram-facebook";
+  env.INSTAGRAM_MESSAGING_PAGE_ID = "12345";
+  const pageAuth = await request(
+    admin,
+    "POST",
+    "/v1/admin/messaging/instagram/authorization",
+    {},
+  );
+  const pageURL = new URL(pageAuth.data.authorizationUrl);
+  assert.equal(
+    pageURL.searchParams.get("scope"),
+    "instagram_basic,instagram_manage_messages,pages_show_list,pages_read_engagement",
+  );
+  assert.equal(pageURL.searchParams.get("config_id"), null);
+  const pageCallback = await app.request(
+    "/v1/integrations/instagram/oauth/callback?code=fixture-code&state=" +
+      pageURL.searchParams.get("state"),
+    {},
+    env,
+  );
+  assert.equal(pageCallback.status, 303);
+  const pageConfig = await messagingConfig(q, env, { credentials: true });
+  assert.equal(pageConfig.token, "fixture-page");
+  assert.equal(pageConfig.scope, "instagram-facebook:778:" + brand);
+  assert.equal(pageConfig.checks.subscription, true);
+  assert.equal(pageConfig.mode, "disabled");
+  const pageDiagnostics = (
+    await request(
+      admin,
+      "GET",
+      "/v1/admin/messaging/instagram/authorization/diagnostics",
+    )
+  ).data;
+  assert.equal(pageDiagnostics.pageBinding.expectedAccountFound, true);
+  await incoming(sender, "/ping");
+  await incoming(otherSender, "/help");
+  await rollout(["ping", "help"]);
+  const pagePing = await incoming(sender, "/ping");
+  assert.equal(pagePing.processing_state, "completed");
+  assert.equal((await outbox(pagePing.id)).state, "provider_accepted");
+  assert.match(replies.at(-1).message.text, /^Pong/);
+  console.log(
+    "FACEBOOK_PAGE_MESSAGING_SQL_PASS: Page OAuth, app/Page/brand binding, id-less subscription verification, encrypted separate namespace, admin diagnostics and pilot reply.",
+  );
   console.log(
     "UNIFIED_MESSAGING_SQL_PASS: actual role, Meta code exchange, business-account discovery, subscription, encrypted scoped credentials and changed-configuration OAuth rejection.",
   );

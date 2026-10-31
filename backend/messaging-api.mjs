@@ -331,8 +331,10 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
   app.get("/v1/admin/messaging/instagram", async (c) =>
     respond(c, await readiness(db.query, c.env || {})),
   );
-  app.get("/v1/admin/messaging/instagram/authorization/diagnostics", async (c) =>
-    respond(c, await authorizationDiagnostics(db, c.env || {}, fetcher)),
+  app.get(
+    "/v1/admin/messaging/instagram/authorization/diagnostics",
+    async (c) =>
+      respond(c, await authorizationDiagnostics(db, c.env || {}, fetcher)),
   );
   app.put("/v1/admin/messaging/instagram", (c) =>
     mutation(c, async (input, ctx) => {
@@ -723,7 +725,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
         [digest(state), ctx.uid, oauthFlowKey(ctx.env)],
       );
       const url = new URL(
-        settings.provider === "instagram-unified"
+        settings.provider !== "instagram-login"
           ? "https://www.facebook.com/dialog/oauth"
           : "https://www.instagram.com/oauth/authorize",
       );
@@ -735,6 +737,18 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
         url.searchParams.set("override_default_response_type", "true");
         url.searchParams.set("display", "popup");
         url.searchParams.set("prompt", "login");
+      } else if (settings.provider === "instagram-facebook") {
+        if (!/^\d{1,40}$/.test(settings.pageId))
+          fail(
+            "oauth_not_configured",
+            "Configure the FinFolk Facebook Page first.",
+            503,
+          );
+        url.searchParams.set(
+          "scope",
+          "instagram_basic,instagram_manage_messages,pages_show_list,pages_read_engagement",
+        );
+        url.searchParams.set("auth_type", "rerequest");
       } else
         url.searchParams.set(
           "scope",

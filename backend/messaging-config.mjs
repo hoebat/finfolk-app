@@ -111,7 +111,11 @@ export function unseal(value, env, aad) {
 }
 export function oauthSettings(env) {
   const provider = env.INSTAGRAM_MESSAGING_PROVIDER || "instagram-login";
-  if (!["instagram-login", "instagram-unified"].includes(provider))
+  if (
+    !["instagram-login", "instagram-unified", "instagram-facebook"].includes(
+      provider,
+    )
+  )
     throw messagingError(
       "provider_not_supported",
       "Unsupported messaging authorization type.",
@@ -120,11 +124,11 @@ export function oauthSettings(env) {
   const metaAppId =
     env.INSTAGRAM_MESSAGING_META_APP_ID || env.INSTAGRAM_APP_ID || "";
   const appId =
-    provider === "instagram-unified"
+    provider !== "instagram-login"
       ? metaAppId
       : env.INSTAGRAM_MESSAGING_APP_ID || "";
   const clientSecret =
-    provider === "instagram-unified"
+    provider !== "instagram-login"
       ? env.INSTAGRAM_MESSAGING_META_APP_SECRET ||
         (metaAppId === env.INSTAGRAM_APP_ID ? env.INSTAGRAM_APP_SECRET : "")
       : env.INSTAGRAM_MESSAGING_CLIENT_SECRET;
@@ -138,9 +142,13 @@ export function oauthSettings(env) {
         ? env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID || ""
         : "",
     graphHost:
-      provider === "instagram-unified"
+      provider !== "instagram-login"
         ? "https://graph.facebook.com"
         : "https://graph.instagram.com",
+    pageId:
+      provider === "instagram-facebook"
+        ? env.INSTAGRAM_MESSAGING_PAGE_ID || ""
+        : "",
     redirectURI:
       env.INSTAGRAM_MESSAGING_REDIRECT_URI ||
       "https://api.finfolk.com.au/v1/integrations/instagram/oauth/callback",
@@ -149,7 +157,17 @@ export function oauthSettings(env) {
 export function oauthFlowKey(env) {
   const c = oauthSettings(env);
   return digest(
-    JSON.stringify([c.provider, c.appId, c.loginConfigId, c.redirectURI]),
+    JSON.stringify(
+      c.provider === "instagram-facebook"
+        ? [
+            c.provider,
+            c.appId,
+            c.pageId,
+            env.INSTAGRAM_MESSAGING_ACCOUNT_ID,
+            c.redirectURI,
+          ]
+        : [c.provider, c.appId, c.loginConfigId, c.redirectURI],
+    ),
   );
 }
 export async function messagingConfig(q, env, { credentials = false } = {}) {
@@ -228,7 +246,9 @@ export async function readiness(q, env, { enabledCommands } = {}) {
   if (
     !c.appId ||
     !c.clientSecret ||
-    (c.provider === "instagram-unified" && !/^\d{1,40}$/.test(c.loginConfigId))
+    (c.provider === "instagram-unified" &&
+      !/^\d{1,40}$/.test(c.loginConfigId)) ||
+    (c.provider === "instagram-facebook" && !/^\d{1,40}$/.test(c.pageId))
   )
     blockers.push("oauth_not_configured");
   if (!c.credential_ciphertext) blockers.push("token_missing");

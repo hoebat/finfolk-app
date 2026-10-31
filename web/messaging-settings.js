@@ -117,10 +117,10 @@ export async function renderMessagingSettings({ host, api }) {
       ["Personal-command follower verification", state.checks.followLookup],
       ["Real-account acceptance", state.checks.liveDelivery],
       [
-        state.provider === "instagram-unified"
-          ? "Business authorization"
+        state.provider !== "instagram-login"
+          ? "Meta authorization"
           : "Token refresh",
-        state.provider === "instagram-unified"
+        state.provider !== "instagram-login"
           ? state.checks.authorization
           : state.checks.tokenRefresh !== false,
       ],
@@ -129,7 +129,13 @@ export async function renderMessagingSettings({ host, api }) {
         el("li", label + ": " + (value ? "verified" : "not verified")),
       );
     root.append(checks);
-    if (state.checks.pendingVerification) root.append(el('p', 'Meta approval received. The Instagram account and webhook subscription still need verification.'));
+    if (state.checks.pendingVerification)
+      root.append(
+        el(
+          "p",
+          "Meta approval received. The Instagram account and webhook subscription still need verification.",
+        ),
+      );
     if (state.blockers.length)
       root.append(el("p", "Setup needed: " + state.blockers.join(", ")));
     for (const [label, value] of [
@@ -161,11 +167,14 @@ export async function renderMessagingSettings({ host, api }) {
     );
     const diagnosticDetails = el("details");
     const diagnosticResult = el("pre");
-    diagnosticDetails.append(el("summary", "Authorization diagnostics"),
+    diagnosticDetails.append(
+      el("summary", "Authorization diagnostics"),
       button("Inspect saved Meta grant", async () => {
         const data = await call("instagram/authorization/diagnostics");
         diagnosticResult.textContent = JSON.stringify(data, null, 2);
-      }), diagnosticResult);
+      }),
+      diagnosticResult,
+    );
     root.append(diagnosticDetails);
     const form = el("form"),
       mode = el("select");
