@@ -120,12 +120,12 @@ try {
     'Temporary deployment test',
   );
   const beforeRemoval=(await call(alice,'me')).profile;
-  await call(alice,'preferences',{profile:{...beforeRemoval,instagram:'https://www.instagram.com/temporary_test/'}});
+  await call(alice,'instagramProfileLink',{handle:'@temporary_test'});
   await call(alice,'instagramDisconnect');
   assert.equal((await call(alice,'me')).profile.instagram,'');
   assert.equal((await call(alice,'me')).profile.displayName,beforeRemoval.displayName);
   assert.equal((await call(alice,'instagramClaimStatus')).state,'ready');
-  await call(alice,'preferences',{profile:{...beforeRemoval,instagram:'https://www.instagram.com/temporary_relink/'}});
+  await call(alice,'instagramProfileLink',{handle:'@temporary_relink'});
   assert.equal((await call(alice,'me')).profile.instagram,'https://www.instagram.com/temporary_relink/');
   console.log('Instagram profile removal and relinking passed on deployed API; automatic claims remain gated.');
   const session = await call(alice, 'saveSession', {

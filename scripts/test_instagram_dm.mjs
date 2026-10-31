@@ -35,11 +35,13 @@ try{
  await q('INSERT INTO finfolk.invitation_joins(invitee_id,inviter_id) VALUES($1,$2)',[owner,admin]);
  await call(unverified,'instagramClaimStart',{},403);
  const start=await command(owner);assert.match(start,/^\/claim [a-f0-9]{24}$/);
+ await call(owner,'instagramProfileLink',{handle:'@chriszfree'});assert.equal((await call(owner,'instagramClaimStatus')).profileUrl,'https://www.instagram.com/chriszfree/');assert.equal((await call(owner,'me')).profile.open,false);await call(owner,'instagramProfileLink',{handle:'https://example.com/no'},400);
  const record=(await q('SELECT * FROM finfolk.instagram_claims WHERE user_id=$1',[owner]))[0];assert.notEqual(record.code_hash,start.split(' ')[1]);
  follows=false;await incoming(sender,start);assert.equal((await call(owner,'instagramClaimStatus')).state,'follow_required');assert.match(replies.at(-1).message.text,/Follow @finfolk/);
  follows=true;const message='claim-'+base;await incoming(sender,start,message);assert.equal((await call(owner,'instagramClaimStatus')).state,'claimed');
  assert.equal((await call(owner,'me')).profile.instagram,'https://www.instagram.com/owner.dives/');assert.equal((await call(owner,'me')).profile.open,false);
  assert.equal((await q('SELECT count(*)::int AS n FROM finfolk.invitation_joins WHERE verified_sender_id=$1 AND rewarded_at IS NOT NULL',[sender]))[0].n,1);
+ await call(owner,'instagramProfileLink',{handle:'@different'},409);
  const count=replies.length;await incoming(sender,start,message);assert.equal(replies.length,count,'Duplicate webhook must not send twice');
  await incoming(sender,'/status');assert.match(replies.at(-1).message.text,/owner.dives.*claimed/);
  await incoming(sender,'/points');assert.match(replies.at(-1).message.text,/total/);

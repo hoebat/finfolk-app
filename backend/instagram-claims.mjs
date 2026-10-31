@@ -7,13 +7,13 @@ export const dmEnabled = env => env.INSTAGRAM_DM_ENABLED==='true' && dmConfigure
 export const claimsEnabled = env => dmEnabled(env) && env.INSTAGRAM_AUTO_CLAIM_ENABLED==='true';
 export const reviewAvailable = env => (env.INSTAGRAM_ADMIN_IDS || '').split(',').some(s=>s.trim());
 export async function claimStatus(q,uid,env) {
-  const connection=(await q("SELECT handle,status FROM finfolk.instagram_connections WHERE user_id=$1",[uid]))[0];
+  const connection=(await q("SELECT c.handle,c.status,m.profile->>'instagram' AS profile_url FROM finfolk.members m LEFT JOIN finfolk.instagram_connections c ON c.user_id=m.user_id WHERE m.user_id=$1",[uid]))[0];
   const claim=(await q('SELECT state,handle,error,expires_at,review_requested_at FROM finfolk.instagram_claims WHERE user_id=$1',[uid]))[0];
   let state=connection?.status==='connected'?'claimed':claim?.state || 'ready';
   if(state==='claimed' && connection?.status!=='connected')state='ready';
   if(claim && !['claimed','cancelled'].includes(state) && new Date(claim.expires_at).getTime()<=Date.now())state='expired';
   if(state==='cancelled')state='ready';
-  return {enabled:claimsEnabled(env),reviewAvailable:reviewAvailable(env),state,handle:connection?.status==='connected'?connection.handle:claim?.handle || null,error:claim?.error || '',expiresAt:claim?.expires_at || null};
+  return {profileUrl:connection?.profile_url || '',enabled:claimsEnabled(env),reviewAvailable:reviewAvailable(env),state,handle:connection?.status==='connected'?connection.handle:claim?.handle || null,error:claim?.error || '',expiresAt:claim?.expires_at || null};
 }
 // Caller supplies a transaction-scoped query. Locking the member serialises claims,
 // disconnects and command writes for the same FinFolk identity.

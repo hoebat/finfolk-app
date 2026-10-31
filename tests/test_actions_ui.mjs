@@ -34,7 +34,7 @@ await renderActions({
 });
 assert.match(host.textContent, /Follow @finfolk.com.au/);
 assert.match(host.textContent, /in preparation/);
-[...host.querySelectorAll("button")].find(b=>b.textContent==="Generate my claim command").click();
+[...host.querySelectorAll("button")].find(b=>b.textContent==="Start linking").click();
 await new Promise(r=>setTimeout(r,10));
 assert.ok(calls.find(c=>c.action==="instagramClaimStart"));
 assert.equal(host.querySelector('[readonly]').value,'/claim '+ 'a'.repeat(24));
