@@ -13,7 +13,7 @@ All gates default off in `wrangler.jsonc`:
 
 Before enabling collection, verify the final Meta app grant, current token scopes, linked brand ID `17841461601419539`, account-level webhook subscriptions, app publishing/review requirements and real-account deliveries. Dashboard test webhooks alone are insufficient. Keep tokens in Worker secrets and ignored `.env.local`, run `npm run env:backup` after changes. Do not put credentials in static client config. Configure `INSTAGRAM_ADMIN_IDS` using intended administrators' Neon IDs.
 
-Apply `0006_instagram_discovery.sql` using `npm run db:migrate`. The migration is additive and includes grants for `finfolk_api`. Existing manual community posts are unchanged. GitHub Pages still serves the static frontend; Cloudflare handles public feed and authenticated controls.
+Apply `0006_instagram_discovery.sql` using `npm run db:migrate`. The migration is additive and includes grants for `finfolk_api`. Existing reviewed Instagram/TikTok community posts keep their own moderation and rollout gate. Imported Instagram controls appear alongside manual submissions in Your posts; the profile retains connection and Actions controls. GitHub Pages still serves the static frontend; Cloudflare handles public feed and authenticated controls.
 
 ## Collection
 

@@ -1,3 +1,4 @@
+import { accountToken } from './auth-session.js';
 import { createAuthClient } from '@neondatabase/auth';
 import { activity } from './activity.js';
 const clients = new Map();
@@ -30,8 +31,12 @@ export async function createLogbookClient(config) {
       kind: 'Account',
     });
     try {
-      const token = unwrap(await auth.token())?.token;
-      if (!token) throw Error('Sign in first.');
+      const token = await accountToken(auth);
+      if (!token) {
+        user = null;
+        for (const fn of listeners) await fn(null);
+        throw Error('Your sign-in expired. Sign in again.');
+      }
       const response = await fetch(
         new URL(
           'api',

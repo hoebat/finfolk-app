@@ -58,7 +58,8 @@ document.querySelector('[name=instagram]').value = '@alice.dives';
 assert.equal(document.querySelector('[name=open]').checked, false);
 document.querySelector('[name=open]').checked = true;
 document.querySelector('[name=visits]').checked = true;
-const form = document.querySelector('#account-page form');
+document.getElementById('account-tab-profile').click();
+const form = document.querySelector('#account-profile form');
 form.dispatchEvent(
   new window.Event('submit', { bubbles: true, cancelable: true }),
 );
@@ -74,6 +75,29 @@ assert.deepEqual(saved.profile.beaches, ['bondi']);
 assert.ok(
   document.getElementById('account-page').textContent.includes('Saved.'),
 );
+document.getElementById('account-tab-settings').click();
+assert.equal(document.getElementById('account-settings').hidden, false);
+assert.equal(document.getElementById('account-profile').hidden, true);
+const night = document.querySelector('[name=theme][value=night]');
+night.checked = true;
+night.dispatchEvent(new window.Event('change', { bubbles: true }));
+assert.equal(document.documentElement.dataset.theme, 'night');
+assert.equal(localStorage.getItem('finfolk-theme'), 'night');
+const { applySavedTheme } = await import('../web/theme.js');
+document.documentElement.dataset.theme = 'coastal';
+applySavedTheme();
+assert.equal(document.documentElement.dataset.theme, 'night');
+localStorage.setItem('finfolk-theme', 'unknown');
+applySavedTheme();
+assert.equal(document.documentElement.dataset.theme, 'coastal');
+document.getElementById('account-tab-checkin').click();
+assert.equal(document.getElementById('account-checkin').hidden, false);
+const beach = document.querySelector('#account-checkin select');
+beach.value = 'bondi';
+document.querySelector('#account-checkin form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+await new Promise(r => setTimeout(r, 30));
+assert.equal(calls.find(c => c.action === 'checkin').beachId, 'bondi');
+assert.ok(document.querySelector('.checkin-success').textContent.includes('Bondi Beach'));
 document.querySelector('.member-tour')?.dispatchEvent(new window.Event('cancel', {cancelable:true}));
 window.happyDOM.abort();
 console.log(

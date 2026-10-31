@@ -5,6 +5,7 @@ data/
 .DS_Store
 test-results/
 metadata/*.local.json
+node_modules
 node_modules/
 _site/
 .cache/

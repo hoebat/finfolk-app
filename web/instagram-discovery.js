@@ -50,7 +50,7 @@ export async function renderInstagramDiscovery({
   refresh,
 }) {
   const section = el("section");
-  section.className = "instagram-discovery-controls";
+  section.className = "account-card instagram-discovery-controls";
   root.append(section);
   const status = el("p");
   status.setAttribute("role", "status");
