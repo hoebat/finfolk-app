@@ -1102,7 +1102,7 @@ try {
   const pageURL = new URL(pageAuth.data.authorizationUrl);
   assert.equal(
     pageURL.searchParams.get("scope"),
-    "instagram_basic,instagram_manage_messages,pages_show_list,pages_read_engagement,pages_manage_metadata",
+    "instagram_basic,instagram_manage_messages,pages_show_list,pages_read_engagement,pages_manage_metadata,pages_messaging",
   );
   assert.equal(pageURL.searchParams.get("config_id"), null);
   const pageCallback = await app.request(
