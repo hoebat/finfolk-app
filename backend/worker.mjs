@@ -1,3 +1,4 @@
+import { sendOutbox } from './messaging-engine.mjs';
 import { sendCommandReply } from './instagram-commands.mjs';
 import { processInstagramDM, reconcileInstagramDM } from './instagram-dm.mjs';
 import {
@@ -17,7 +18,9 @@ export default {
     try {
       for (const message of batch.messages) {
         try {
-          if (message.body.kind === "instagram-comment-reply")
+          if (message.body.kind === "instagram-dm-reply")
+            await sendOutbox(String(message.body.id),env,db);
+          else if (message.body.kind === "instagram-comment-reply")
             await sendCommandReply(String(message.body.id), env, db);
           else if (message.body.kind === "instagram-dm")
             await processInstagramDM(String(message.body.id), env, db);
@@ -34,17 +37,19 @@ export default {
       await db.pool.end();
     }
   },
-  async scheduled(_event, env) {
+  async scheduled(event, env) {
     const db = database(env.HYPERDRIVE.connectionString);
     try {
-      await reconcileInstagram(env, db.query);
-      await reconcileInstagramDM(env, db.query);
-      await scheduleInstagramDiscovery(env, db.query);
+      if(event.cron==='* * * * *')await reconcileInstagramDM(env,db.query);
+      else {await reconcileInstagram(env,db.query);await scheduleInstagramDiscovery(env,db.query);}
     } finally {
       await db.pool.end();
     }
   },
   async fetch(request, env, ctx) {
+    if(new URL(request.url).pathname==='/instagram/webhook' && request.method==='GET'){
+      const {instagramWebhook}=await import('./instagram-webhook.mjs');return instagramWebhook(request,env,()=>{});
+    }
     if (!env.HYPERDRIVE || !env.NEON_AUTH_BASE_URL || !env.NEON_AUTH_JWKS_URL)
       return Response.json(
         { error: "Account service is not configured." },

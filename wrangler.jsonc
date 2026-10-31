@@ -34,7 +34,9 @@
     "INSTAGRAM_DISCOVERY_ENABLED": "false",
     "INSTAGRAM_PUBLICATION_ENABLED": "false",
     "INSTAGRAM_HASHTAGS_ENABLED": "false",
-    "INSTAGRAM_ACCOUNT_ID": "17841461601419539"
+    "INSTAGRAM_ACCOUNT_ID": "17841461601419539",
+    "INSTAGRAM_MESSAGING_GRAPH_VERSION": "v26.0",
+    "INSTAGRAM_MESSAGING_REDIRECT_URI": "https://api.finfolk.com.au/v1/integrations/instagram/oauth/callback"
   },
   "routes": [
     {
@@ -60,6 +62,7 @@
   },
   "triggers": {
     "crons": [
+      "* * * * *",
       "*/15 * * * *"
     ]
   }

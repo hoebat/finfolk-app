@@ -73,7 +73,7 @@ export async function renderInstagramClaim({host,api,refresh=()=>{},initialState
       if(state?.reviewAvailable && ['failed','follow_required'].includes(stage))help.append(button('Request manual review',async()=>{await api.call('instagramClaimRequestReview');await load();}));root.append(help);
     }
     const guide=el('details',undefined,'instagram-command-guide');guide.append(el('summary','Instagram DM commands'));
-    for(const [syntax,description]of[['/help','See commands and examples.'],['/status','Check your connection.'],['/checkin <beach>','Record today’s beach visit.'],['/points','See your points.']]){const row=el('p');row.append(el('code',syntax),document.createTextNode(' — '+description));guide.append(row);}root.append(guide);
+    for(const [syntax,description]of[['/ping','Check that FinFolk is responding.'],['/help','See commands and examples.'],['/status','Check your connection.'],['/checkin <beach>','Record today’s beach visit.'],['/points','See your points.']]){const row=el('p');row.append(el('code',syntax),document.createTextNode(' — '+description));guide.append(row);}root.append(guide);
   }
   try{if(!state)state=await api.call('instagramClaimStatus');draw();}catch(error){root.replaceChildren(el('h2','Link Instagram'),message);message.textContent=error.message;root.append(button('Retry',load));}
   const timer=setInterval(()=>{

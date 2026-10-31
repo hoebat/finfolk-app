@@ -1,5 +1,7 @@
 # Instagram claiming and commands
 
+The authoritative transport/API lifecycle and activation guide is [Messaging API](MESSAGING_API.md), with [OpenAPI](openapi/messaging.yaml). The versioned Instagram Login transport supersedes the older DM transport configuration and retry descriptions below; Facebook Login discovery/comment features remain separate.
+
 ## Member workflow
 
 Instagram linking is managed in **Your FinFolk → Instagram**, with a **Manage Instagram** shortcut from Profile & buddies. While DM verification is unavailable, enter a username or profile URL and choose **Link profile**. The same screen shows **Profile linked · not verified**, **Change account** and **Remove link**. Saving changes only the Instagram profile field; it does not alter privacy, beaches or other profile settings. A saved profile link never grants DM commands, claim rewards or verified status.

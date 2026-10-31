@@ -2,6 +2,10 @@
 
 The active implementation uses Neon Postgres, Neon Auth and the `finfolk-community` Cloudflare Worker. Legacy Firebase Instagram functions are not used. The brand account is `@finfolk.com.au`.
 
+## Versioned messaging API
+
+The DM transport now has a versioned REST contract, Instagram Login authorization, durable receipt/outbox processing and admin diagnostics. See [Messaging API and activation](MESSAGING_API.md). Facebook Login discovery/comment credentials remain independent. Historical setup notes below do not prove the new messaging connection is authorized.
+
 ## Meta setup status
 
 Meta app **FinFolk**, ID `1667613151655339`, has been created with the Instagram use case. Its domain is `finfolk.com.au`. The Instagram callback `https://api.finfolk.com.au/instagram/webhook` is verified, and `mentions` and `messages` are subscribed on **v26.0**. Both dashboard test deliveries passed. These demonstrate webhook transport, not live account association or draft creation.
