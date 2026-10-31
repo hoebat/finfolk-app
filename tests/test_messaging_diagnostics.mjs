@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import { authorizationDiagnostics } from '../backend/messaging-diagnostics.mjs';
+import { seal } from '../backend/messaging-config.mjs';
+const env = { INSTAGRAM_MESSAGING_PROVIDER:'instagram-unified', INSTAGRAM_APP_ID:'111', INSTAGRAM_APP_SECRET:'private-app-secret', MESSAGING_ENCRYPTION_KEY:Buffer.alloc(32,8).toString('base64') };
+const row = { account_id:'444', checks:{}, credential_ciphertext:seal({accessToken:'private-user-token'},env,'instagram-unified:111:444') };
+const db = {query:async()=>[row]};
+let debug = {app_id:'111',is_valid:true,type:'SYSTEM_USER',scopes:['instagram_basic','instagram_manage_messages'],granular_scopes:[{scope:'instagram_basic',target_ids:['444','999']}],access_token:'never-return-this',user_id:'private-subject',expires_at:0};
+let fail=false, transport=false, calls=0;
+const fetcher = async (input, options) => {
+ calls++;
+ if(transport)throw Error('private-app-secret');
+ const url=new URL(input);
+ assert.equal(url.hostname,'graph.facebook.com');
+ if(url.pathname.endsWith('/debug_token')){
+  assert.equal(options.headers.Authorization,'Bearer 111|private-app-secret');
+  assert.equal(url.searchParams.get('input_token'),'private-user-token');
+  assert.equal(options.redirect,'error');
+  return {ok:!fail,json:async()=>fail?{error:{message:'private-user-token'}}:{data:debug}};
+ }
+ assert.equal(options.headers.Authorization,'Bearer private-user-token');
+ return {ok:true,json:async()=>({data:[]})};
+};
+let data=await authorizationDiagnostics(db,env,fetcher);
+assert.deepEqual(data.granularScopes,[{permission:'instagram_basic',targetsReported:true,targetCount:2,includesExpectedAccount:true}]);
+assert.equal(data.assignedAccounts.count,0);
+for(const secret of ['private-user-token','private-app-secret','never-return-this','private-subject','999'])assert.ok(!JSON.stringify(data).includes(secret));
+debug={...debug,granular_scopes:[{scope:'instagram_basic'}]};
+data=await authorizationDiagnostics(db,env,fetcher);
+assert.equal(data.granularScopes[0].targetsReported,false);
+assert.equal(data.granularScopes[0].targetCount,null);
+assert.equal(data.granularScopes[0].includesExpectedAccount,null);
+debug={...debug,app_id:'222'};calls=0;
+data=await authorizationDiagnostics(db,env,fetcher);assert.equal(data.appMatches,false);assert.equal(calls,1);
+debug={...debug,app_id:'111',is_valid:false};calls=0;
+data=await authorizationDiagnostics(db,env,fetcher);assert.equal(data.valid,false);assert.equal(calls,1);
+fail=true;
+await assert.rejects(()=>authorizationDiagnostics(db,env,fetcher),e=>e.code==='provider_diagnostics_failed'&&!e.message.includes('private'));
+transport=true;
+await assert.rejects(()=>authorizationDiagnostics(db,env,fetcher),e=>e.code==='provider_diagnostics_failed'&&!e.message.includes('private'));
+await assert.rejects(()=>authorizationDiagnostics(db,{...env,INSTAGRAM_APP_SECRET:''},fetcher),{code:'authorization_unavailable'});
+console.log('Authorization diagnostics: safe metadata, app binding, invalid grant, and provider failure checks passed.');

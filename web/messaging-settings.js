@@ -159,6 +159,14 @@ export async function renderMessagingSettings({ host, api }) {
         location.assign(data.authorizationUrl);
       }),
     );
+    const diagnosticDetails = el("details");
+    const diagnosticResult = el("pre");
+    diagnosticDetails.append(el("summary", "Authorization diagnostics"),
+      button("Inspect saved Meta grant", async () => {
+        const data = await call("instagram/authorization/diagnostics");
+        diagnosticResult.textContent = JSON.stringify(data, null, 2);
+      }), diagnosticResult);
+    root.append(diagnosticDetails);
     const form = el("form"),
       mode = el("select");
     mode.setAttribute("aria-label", "Messaging rollout mode");

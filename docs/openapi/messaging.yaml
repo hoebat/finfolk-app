@@ -541,6 +541,70 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RolloutInput'
+  /v1/admin/messaging/instagram/authorization/diagnostics:
+    get:
+      operationId: instagramAuthorizationDiagnostics
+      summary: Inspect the saved Unified Login grant without changing authorization
+      description: >-
+        Verified administrators only. Returns app binding, validity, permission names,
+        granular permission target counts and expected-account matches, expiration,
+        and assigned-account lookup metadata. Never returns credentials, token subject
+        IDs, raw provider errors, or unrelated asset IDs. Responses are private/no-store.
+      tags: [Administration]
+      security:
+        - memberJWT: []
+      responses:
+        '200':
+          description: Redacted Meta token inspection and assigned-account metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, requestId]
+                properties:
+                  data:
+                    type: object
+                    required: [appMatches, valid, grantedScopes, granularScopes, assignedAccounts]
+                    properties:
+                      appId: {type: string, nullable: true}
+                      appMatches: {type: boolean}
+                      tokenType: {type: string, nullable: true}
+                      valid: {type: boolean}
+                      expectedAccountId: {type: string}
+                      storedAccountId: {type: string}
+                      expiresAt: {type: string, format: date-time, nullable: true}
+                      grantedScopes:
+                        type: array
+                        items: {type: string}
+                      granularScopes:
+                        type: array
+                        items:
+                          type: object
+                          required: [permission, targetsReported, targetCount, includesExpectedAccount]
+                          properties:
+                            permission: {type: string}
+                            targetsReported: {type: boolean}
+                            targetCount: {type: integer, nullable: true}
+                            includesExpectedAccount: {type: boolean, nullable: true}
+                      assignedAccounts:
+                        type: object
+                        nullable: true
+                        properties:
+                          count: {type: integer}
+                          hasNext: {type: boolean}
+                          expectedAccountFound: {type: boolean}
+                          errorCode: {type: string}
+                  requestId: {type: string, format: uuid}
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '502':
+          description: Meta returned invalid inspection metadata
+        '503':
+          description: Meta inspection is temporarily unavailable
   /v1/admin/messaging/instagram/authorization:
     post:
       operationId: authorizeMessaging

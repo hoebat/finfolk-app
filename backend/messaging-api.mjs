@@ -2,6 +2,7 @@ import {
   stageMessagingAuthorization,
   completeMessagingAuthorization,
 } from "./messaging-authorization.mjs";
+import { authorizationDiagnostics } from "./messaging-diagnostics.mjs";
 import { readLimited } from "./messaging-http.mjs";
 import { randomBytes, randomUUID } from "node:crypto";
 import { preferences } from "./community-core.mjs";
@@ -329,6 +330,9 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
   );
   app.get("/v1/admin/messaging/instagram", async (c) =>
     respond(c, await readiness(db.query, c.env || {})),
+  );
+  app.get("/v1/admin/messaging/instagram/authorization/diagnostics", async (c) =>
+    respond(c, await authorizationDiagnostics(db, c.env || {}, fetcher)),
   );
   app.put("/v1/admin/messaging/instagram", (c) =>
     mutation(c, async (input, ctx) => {
@@ -728,6 +732,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
       url.searchParams.set("response_type", "code");
       if (settings.provider === "instagram-unified") {
         url.searchParams.set("config_id", settings.loginConfigId);
+        url.searchParams.set("override_default_response_type", "true");
         url.searchParams.set("display", "popup");
         url.searchParams.set("prompt", "login");
       } else
