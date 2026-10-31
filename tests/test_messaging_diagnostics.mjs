@@ -21,9 +21,14 @@ const fetcher = async (input, options) => {
  return {ok:true,json:async()=>({data:[]})};
 };
 let data=await authorizationDiagnostics(db,env,fetcher);
-assert.deepEqual(data.granularScopes,[{permission:'instagram_basic',targetCount:2,includesExpectedAccount:true}]);
+assert.deepEqual(data.granularScopes,[{permission:'instagram_basic',targetsReported:true,targetCount:2,includesExpectedAccount:true}]);
 assert.equal(data.assignedAccounts.count,0);
 for(const secret of ['private-user-token','private-app-secret','never-return-this','private-subject','999'])assert.ok(!JSON.stringify(data).includes(secret));
+debug={...debug,granular_scopes:[{scope:'instagram_basic'}]};
+data=await authorizationDiagnostics(db,env,fetcher);
+assert.equal(data.granularScopes[0].targetsReported,false);
+assert.equal(data.granularScopes[0].targetCount,null);
+assert.equal(data.granularScopes[0].includesExpectedAccount,null);
 debug={...debug,app_id:'222'};calls=0;
 data=await authorizationDiagnostics(db,env,fetcher);assert.equal(data.appMatches,false);assert.equal(calls,1);
 debug={...debug,app_id:'111',is_valid:false};calls=0;

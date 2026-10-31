@@ -571,6 +571,7 @@ paths:
                       tokenType: {type: string, nullable: true}
                       valid: {type: boolean}
                       expectedAccountId: {type: string}
+                      storedAccountId: {type: string}
                       expiresAt: {type: string, format: date-time, nullable: true}
                       grantedScopes:
                         type: array
@@ -579,11 +580,12 @@ paths:
                         type: array
                         items:
                           type: object
-                          required: [permission, targetCount, includesExpectedAccount]
+                          required: [permission, targetsReported, targetCount, includesExpectedAccount]
                           properties:
                             permission: {type: string}
-                            targetCount: {type: integer}
-                            includesExpectedAccount: {type: boolean}
+                            targetsReported: {type: boolean}
+                            targetCount: {type: integer, nullable: true}
+                            includesExpectedAccount: {type: boolean, nullable: true}
                       assignedAccounts:
                         type: object
                         nullable: true
