@@ -328,6 +328,13 @@
 .actions-panel summary { cursor: pointer; font-weight: 700; color: #086c79; }
 .actions-panel a { color: #007f8e; overflow-wrap: anywhere; }
 .instagram-verification { padding: 16px; background: #f1f8f4; border-radius: 16px; margin: 14px 0; }
+.instagram-discovery-controls { margin-top: 22px; padding-top: 18px; border-top: 1px solid #cce4df; }
+.instagram-discovery-controls select, .post-report-form select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #cce4df; border-radius: 12px; background: var(--account-surface, #fffdf7); color: var(--account-ink, #153e44); font: inherit; }
+.instagram-discovery-controls label { display: block; margin: 12px 0; line-height: 1.5; }
+.instagram-discovery-controls input[type=checkbox] { width: 20px; height: 20px; margin-right: 8px; vertical-align: middle; accent-color: #007f8e; }
+.instagram-discovery-controls small { display: block; line-height: 1.5; }
+.post-report-form { display: grid; gap: 10px; margin-top: 12px; }
+#instagram-system-status, #instagram-public-status { padding: 12px; border-top: 1px solid #cce4df; font-size: 13px; line-height: 1.5; }
 
 /* Account arrival, check-ins and personal appearance. */
 :root {

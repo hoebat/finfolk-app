@@ -631,7 +631,7 @@ export function installCommunity({
       if (generation !== epoch) return;
       root.append(deletion);
       for (const child of [...root.children].slice(profileStart)) panels.profile.append(child);
-      await renderActions({host:panels.profile,api:a,beaches:getBeaches(),refresh:account});
+      await renderActions({host:panels.profile,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       if (generation !== epoch) return;
       await renderPostManager({host:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       const state = await a.call('postStatus');

@@ -1,3 +1,4 @@
+import { discoveryAction, discoveryActions, publicInstagramFeed } from './instagram-discovery.mjs';
 import { postAction, publicPosts, postsEnabled } from './posts.mjs';
 import { invitationAction } from './invitations.mjs';
 import { instagramAction } from './instagram-actions.mjs';
@@ -63,6 +64,20 @@ export function createAPI({
     c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     if (c.req.method === 'OPTIONS') return c.body(null, 204);
     await next();
+  });
+  app.get('/instagram/posts', async c => {
+    const feed=await publicInstagramFeed(q,c.req.query('beachId'),c.req.query('cursor'));
+    const last=(await q('SELECT max(last_success) AS last_success FROM finfolk.instagram_sources'))[0];
+    return c.json({...feed,activity:{collecting:c.env?.INSTAGRAM_DISCOVERY_ENABLED==='true',lastSuccess:last?.last_success||null}});
+  });
+  app.post('/instagram/posts/:id/report', async c => {
+    const postId=c.req.param('id');
+    if(!/^[a-f0-9-]{36}$/.test(postId)) return c.json({error:'Invalid post.'},400);
+    const raw=await c.req.text();if(raw.length>256)return c.json({error:'Report too large.'},413);
+    let v;try{v=JSON.parse(raw);}catch{return c.json({error:'Invalid report.'},400);}
+    if(!['wrong_location','inappropriate','removed','other'].includes(v.reason))return c.json({error:'Choose a report reason.'},400);
+    await q("INSERT INTO finfolk.instagram_post_reports(discovery_id,reason) SELECT id,$2 FROM finfolk.instagram_discoveries WHERE id=$1 AND state='published' ON CONFLICT DO NOTHING",[postId,v.reason]);
+    return c.json({ok:true});
   });
   app.all('/instagram/webhook', c => instagramWebhook(c.req.raw, c.env || {}, q));
   app.get('/health', (c) =>
@@ -218,6 +233,7 @@ export function createAPI({
     }
     let result;
     if (typeof action === 'string' && action.startsWith('invitation')) return c.json({data:await invitationAction({action,v,uid,q,verified})});
+    if (discoveryActions.has(action)) return c.json({data:await discoveryAction({action,v,uid,env:c.env||{},q})});
     if (typeof action === 'string' && action.startsWith('instagram')) {
       const result = await instagramAction({action,v,uid,env:c.env || {},q,verified});
       return c.json({data:result});
@@ -516,6 +532,7 @@ export function createAPI({
         break;
       }
       case 'deleteAccount':
+        await q("UPDATE finfolk.instagram_discoveries SET state='hidden',owner_id=NULL,author_id=NULL,author=NULL,caption='',updated_at=now() WHERE owner_id=$1",[uid]);
         await q('DELETE FROM finfolk.points_ledger WHERE user_id=$1',[uid]);
         await q('DELETE FROM finfolk.instagram_actions WHERE owner_id=$1',[uid]);
         await q('DELETE FROM finfolk.instagram_connections WHERE user_id=$1',[uid]);

@@ -1,0 +1,706 @@
+[
+  {
+    "id": "bondi",
+    "name": "Bondi Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Bondi Beach"
+    ]
+  },
+  {
+    "id": "bronte",
+    "name": "Bronte Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Bronte Beach"
+    ]
+  },
+  {
+    "id": "clovelly",
+    "name": "Clovelly Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Clovelly Beach"
+    ]
+  },
+  {
+    "id": "coogee",
+    "name": "Coogee Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Coogee Beach"
+    ]
+  },
+  {
+    "id": "gordons-bay",
+    "name": "Gordon’s Bay",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Gordons Bay (East)",
+      "Gordon's Bay",
+      "Gordan's Bay",
+      "Gordans Bay"
+    ]
+  },
+  {
+    "id": "tamarama",
+    "name": "Tamarama Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Tamarama Beach"
+    ]
+  },
+  {
+    "id": "congwong-bay",
+    "name": "Congwong Bay",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Congwong Bay"
+    ]
+  },
+  {
+    "id": "frenchmans-bay",
+    "name": "Frenchmans Bay",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Frenchmans Bay"
+    ]
+  },
+  {
+    "id": "little-bay",
+    "name": "Little Bay Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Little Bay Beach"
+    ]
+  },
+  {
+    "id": "malabar",
+    "name": "Malabar Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Malabar Beach"
+    ]
+  },
+  {
+    "id": "maroubra",
+    "name": "Maroubra Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Maroubra Beach",
+      "Maroobra"
+    ]
+  },
+  {
+    "id": "south-maroubra",
+    "name": "South Maroubra Beach",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "South Maroubra Beach"
+    ]
+  },
+  {
+    "id": "yarra-bay",
+    "name": "Yarra Bay",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Yarra Bay"
+    ]
+  },
+  {
+    "id": "camp-cove",
+    "name": "Camp Cove",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Camp Cove"
+    ]
+  },
+  {
+    "id": "watsons-bay",
+    "name": "Watsons Bay",
+    "state": "New South Wales",
+    "region": "Sydney Eastern Beaches",
+    "aliases": [
+      "Watsons Bay"
+    ]
+  },
+  {
+    "id": "aspendale",
+    "name": "Aspendale Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Aspendale Life Saving Club"
+    ]
+  },
+  {
+    "id": "carrum",
+    "name": "Carrum Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Carrum Surf Life Saving Club"
+    ]
+  },
+  {
+    "id": "chelsea",
+    "name": "Chelsea Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": []
+  },
+  {
+    "id": "edithvale",
+    "name": "Edithvale Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": []
+  },
+  {
+    "id": "frankston",
+    "name": "Frankston Beach — Life Saving Club",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Frankston Surf Life Saving Club"
+    ]
+  },
+  {
+    "id": "frankston-coast-guard",
+    "name": "Frankston — Coast Guard",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Frankston Coast Guard"
+    ]
+  },
+  {
+    "id": "mentone",
+    "name": "Mentone Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Mentone"
+    ]
+  },
+  {
+    "id": "mordialloc",
+    "name": "Mordialloc Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Mordialloc"
+    ]
+  },
+  {
+    "id": "parkdale",
+    "name": "Parkdale Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": []
+  },
+  {
+    "id": "seaford",
+    "name": "Seaford Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Seaford"
+    ]
+  },
+  {
+    "id": "beaumaris",
+    "name": "Beaumaris Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Beaumaris"
+    ]
+  },
+  {
+    "id": "black-rock",
+    "name": "Black Rock Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Black Rock Life Saving Club"
+    ]
+  },
+  {
+    "id": "brighton",
+    "name": "Brighton Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Brighton Life Saving Club"
+    ]
+  },
+  {
+    "id": "elwood",
+    "name": "Elwood Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Elwood"
+    ]
+  },
+  {
+    "id": "half-moon-bay",
+    "name": "Half Moon Bay",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Half Moon Bay"
+    ]
+  },
+  {
+    "id": "hampton",
+    "name": "Hampton Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Hampton"
+    ]
+  },
+  {
+    "id": "port-melbourne",
+    "name": "Port Melbourne Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Port Melbourne"
+    ]
+  },
+  {
+    "id": "sandridge",
+    "name": "Sandridge Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Sandridge"
+    ]
+  },
+  {
+    "id": "sandringham",
+    "name": "Sandringham Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Sandringham"
+    ]
+  },
+  {
+    "id": "south-melbourne",
+    "name": "South Melbourne Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "South Melbourne Life Saving Club"
+    ]
+  },
+  {
+    "id": "st-kilda",
+    "name": "St Kilda Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "St Kilda"
+    ]
+  },
+  {
+    "id": "blairgowrie",
+    "name": "Blairgowrie Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Blairgowrie"
+    ]
+  },
+  {
+    "id": "canadian-bay",
+    "name": "Canadian Bay",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Canadian Bay"
+    ]
+  },
+  {
+    "id": "dromana",
+    "name": "Dromana Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Dromana"
+    ]
+  },
+  {
+    "id": "mornington",
+    "name": "Mornington Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Mornington Life Saving Club"
+    ]
+  },
+  {
+    "id": "mount-martha",
+    "name": "Mount Martha Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Mt Martha Life Saving Club"
+    ]
+  },
+  {
+    "id": "portsea",
+    "name": "Portsea Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Portsea"
+    ]
+  },
+  {
+    "id": "rosebud",
+    "name": "Rosebud Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Rosebud Life Saving Club"
+    ]
+  },
+  {
+    "id": "rye",
+    "name": "Rye Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Rye"
+    ]
+  },
+  {
+    "id": "safety-beach",
+    "name": "Safety Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Safety Beach"
+    ]
+  },
+  {
+    "id": "sorrento",
+    "name": "Sorrento Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Sorrento"
+    ]
+  },
+  {
+    "id": "altona",
+    "name": "Altona Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Altona"
+    ]
+  },
+  {
+    "id": "eastern-beach",
+    "name": "Eastern Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Eastern Beach"
+    ]
+  },
+  {
+    "id": "portarlington",
+    "name": "Portarlington Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Portarlington Beach (new site)"
+    ]
+  },
+  {
+    "id": "santa-casa",
+    "name": "Santa Casa Beach — Queenscliff",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Santa Casa"
+    ]
+  },
+  {
+    "id": "st-leonards",
+    "name": "St Leonards Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "St Leonards"
+    ]
+  },
+  {
+    "id": "the-dell",
+    "name": "The Dell",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "The Dell"
+    ]
+  },
+  {
+    "id": "werribee-south",
+    "name": "Werribee South Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Werribee Sth"
+    ]
+  },
+  {
+    "id": "williamstown",
+    "name": "Williamstown Beach",
+    "state": "Victoria",
+    "region": "Port Phillip Bay",
+    "aliases": [
+      "Williamstown"
+    ]
+  },
+  {
+    "id": "cowes",
+    "name": "Cowes Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "Main Beach",
+      "Phillip Island"
+    ]
+  },
+  {
+    "id": "ventnor",
+    "name": "Ventnor Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "Ventnor Beach",
+      "Phillip Island"
+    ]
+  },
+  {
+    "id": "smiths-beach",
+    "name": "Smiths Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "Smiths Beach",
+      "Phillip Island"
+    ]
+  },
+  {
+    "id": "ycw",
+    "name": "YCW Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "YCW",
+      "Phillip Island"
+    ]
+  },
+  {
+    "id": "cape-woolamai",
+    "name": "Cape Woolamai · Anzacs",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "Anzacs",
+      "Phillip Island"
+    ]
+  },
+  {
+    "id": "san-remo",
+    "name": "San Remo Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "San Remo Beach"
+    ]
+  },
+  {
+    "id": "silverleaves",
+    "name": "Silverleaves Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "Silverleaves",
+      "Phillip Island"
+    ]
+  },
+  {
+    "id": "berrys-beach",
+    "name": "Berrys Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "Berrys Beach",
+      "Phillip Island"
+    ]
+  },
+  {
+    "id": "corinella",
+    "name": "Corinella Beach",
+    "state": "Victoria",
+    "region": "Western Port & Phillip Island",
+    "aliases": [
+      "Corinella Beach"
+    ]
+  },
+  {
+    "id": "huskisson",
+    "name": "Huskisson Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Huskisson Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "shark-net",
+    "name": "Shark Net Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Shark Net Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "collingwood",
+    "name": "Collingwood Beach · Vincentia",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Collingwood Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "orion-beach",
+    "name": "Orion Beach · Vincentia",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Orion Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "blenheim",
+    "name": "Blenheim Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Blenheim Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "greenfield",
+    "name": "Greenfield Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Greenfields Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "chinamans-jervis",
+    "name": "Chinamans Beach · Jervis Bay",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Chinamans Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "hyams-beach",
+    "name": "Hyams Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Hyams Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "nelson-beach",
+    "name": "Nelson Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Nelson Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "murrays-beach",
+    "name": "Murrays Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Murrays Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "cave-beach",
+    "name": "Cave Beach",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Cave Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  },
+  {
+    "id": "abrahams-bosom",
+    "name": "Abrahams Bosom Beach · Currarong",
+    "state": "New South Wales",
+    "region": "Jervis Bay",
+    "aliases": [
+      "Abrahams Bosom Beach",
+      "Vincentia",
+      "Jervis Bay"
+    ]
+  }
+]

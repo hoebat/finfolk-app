@@ -12,7 +12,7 @@ The app secret and verification token are saved in the ignored `.env.local`, upl
 
 Facebook Login for Business configuration **FinFolk Instagram Actions** (`1823789635502060`) is saved using user access tokens and scopes `instagram_basic`, `instagram_manage_comments`, `instagram_manage_messages`, `pages_read_engagement` and `pages_show_list`. Creating this configuration does not authorize an Instagram account or issue an access token. The ID is also stored locally as `INSTAGRAM_LOGIN_CONFIG_ID`.
 
-A Facebook Page **FinFolk** (Page ID `1387107281155901`, public profile `61596205344691`) has been created with category Community, the supplied logo and website `https://finfolk.com.au`. The existing Instagram brand account still needs to be linked; Meta currently lists no Instagram accounts in the authorization flow.
+A Facebook Page **FinFolk** (Page ID `1387107281155901`, public profile `61596205344691`) has been created with category Community, the supplied logo and website `https://finfolk.com.au`. The brand Instagram account `@finfolk.com.au` (Instagram ID `17841461601419539`) is now linked, verified in Facebook Page settings, with messaging Inbox access enabled. Developer-app authorization and production token acceptance remain to be verified.
 
 ## Current controls
 
@@ -57,3 +57,7 @@ The initial default rewards the inviter only. These records represent FinFolk in
 `npm test` includes Actions UI and animated walkthrough checks. Run `npm run test:instagram-actions` only with the isolated `finfolk-regulars-dev` env file; it tests against actual Postgres rows with synthetic members and no external Instagram messages. `npm run test:neon` checks account/community regression.
 
 Before activation, use the real brand plus two public test accounts to verify own-post and third-party comment mentions, connection code ownership, private/deleted sources, duplicate deliveries, unknown senders, exact stats consent, private dive logs, admin-only replies, pause/disconnect, points limits, referral attribution and token expiry. Test uncertain-reply reconciliation explicitly. Inspect the Cloudflare dead-letter queue and pending event inbox. Do not advertise automatic Instagram connection, follower gating or universal mention coverage.
+
+## Automated post discovery
+
+The new discovery pipeline, public beach galleries, member sharing controls, admin review and source monitoring are implemented behind separate rollout gates. See [Instagram discovery operations](INSTAGRAM_DISCOVERY.md) for activation requirements, identity evidence, public APIs, polling budgets and tests. Live collection, public publication and hashtag polling remain disabled until real-provider acceptance.

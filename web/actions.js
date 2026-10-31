@@ -1,3 +1,4 @@
+import { renderInstagramDiscovery } from './instagram-discovery.js';
 const el = (tag, text, cls) => {
   const n = document.createElement(tag);
   if (text !== undefined) n.textContent = text;
@@ -6,6 +7,7 @@ const el = (tag, text, cls) => {
 };
 export async function renderActions({
   host,
+  discoveryHost,
   api,
   beaches = [],
   refresh = () => {},
@@ -294,6 +296,7 @@ export async function renderActions({
       }
       root.append(card);
     }
+    await renderInstagramDiscovery({root:discoveryHost||root,api,beaches,admin:state.admin,refresh});
     if (state.admin) {
       const inbox = el("details");
       inbox.append(el("summary", "Actions admin inbox"));
