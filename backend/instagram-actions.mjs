@@ -1,3 +1,4 @@
+import { commentCommandAction } from './instagram-commands.mjs';
 import { instagramClaimAction } from './instagram-claims.mjs';
 import { rewardInvitation } from "./invitations.mjs";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
@@ -38,6 +39,7 @@ async function audit(q, id, uid, event) {
 export async function instagramAction({ action, v, uid, env, q, db, verified }) {
   const admin = isInstagramAdmin(uid, env),
     enabled = env.INSTAGRAM_ENABLED === "true";
+  if (typeof action === 'string' && action.startsWith('instagramCommand')) return commentCommandAction({action,v,uid,env,q,db,verified,admin});
   if (typeof action === 'string' && action.startsWith('instagramClaim')) return instagramClaimAction({action,v,uid,env,q,db,verified,admin});
   if (action === "instagramProfileLink") {
     if (typeof v.handle !== 'string' || v.handle.length > 250) error('Enter your Instagram username.');
@@ -113,6 +115,8 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
     const disconnect = async tq => {
       await tq("SELECT user_id FROM finfolk.instagram_claims WHERE user_id=$1 FOR UPDATE",[uid]);
       await tq("SELECT user_id FROM finfolk.members WHERE user_id=$1 FOR UPDATE",[uid]);
+      await tq("DELETE FROM finfolk.instagram_comment_identities WHERE user_id=$1",[uid]);
+      await tq("UPDATE finfolk.instagram_commands SET state='cancelled',send_state=CASE WHEN send_state='pending' THEN 'skipped' ELSE send_state END WHERE owner_id=$1 AND (state='confirmation' OR send_state='pending')",[uid]);
       await tq("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null,updated_at=now() WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.instagram_connections SET status='disconnected',sender_id=null,challenge_hash=null,expires_at=null,public_points=false,share_posts=false,media_owner_id=null,updated_at=now() WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.members SET profile=jsonb_set(profile,'{instagram}','\"\"'::jsonb),updated_at=now() WHERE user_id=$1",[uid]);

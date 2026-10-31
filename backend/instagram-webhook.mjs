@@ -1,3 +1,5 @@
+import { processCommentCommand, reconcileCommentCommands } from './instagram-commands.mjs';
+import { instagramGraph } from './instagram-discovery.mjs';
 import { collectInstagramDM } from './instagram-dm.mjs';
 import { collectMention } from "./instagram-collector.mjs";
 import { createHmac, createHash, timingSafeEqual } from "node:crypto";
@@ -86,13 +88,14 @@ export async function instagramWebhook(request, env, q) {
     }
     for (const change of entry.changes || [])
       if (
-        change.field === "mentions" &&
-        /^\d{1,40}$/.test(String(change.value?.comment_id || ""))
+        ["mentions","comments"].includes(change.field) &&
+        /^\d{1,40}$/.test(String(change.value?.comment_id || change.value?.id || ""))
       ) {
-        const id = String(change.value.comment_id),
+        const id = String(change.value.comment_id || change.value.id),
           payload = {
             commentId: id,
-            mediaId: String(change.value.media_id || ""),
+            context: change.field === "comments" ? "owned" : "mention",
+            mediaId: String(change.value.media_id || change.value.media?.id || ""),
           };
         // Persist before enqueue; reconciliation re-enqueues stranded rows.
         await q(
@@ -104,7 +107,7 @@ export async function instagramWebhook(request, env, q) {
   }
   return new Response("Accepted");
 }
-export async function processInstagramEvent(id, env, q) {
+export async function processInstagramEvent(id, env, q, db) {
   if (
     env.INSTAGRAM_DISCOVERY_ENABLED === "true" &&
     /^media:\d{1,40}$/.test(id)
@@ -131,27 +134,10 @@ export async function processInstagramEvent(id, env, q) {
     }
     return;
   }
-  if (env.INSTAGRAM_DISCOVERY_ENABLED === "true" && /^\d{1,40}$/.test(id)) {
-    const event = (
-      await q(
-        "SELECT status,attempts FROM finfolk.instagram_events WHERE id=$1",
-        [id],
-      )
-    )[0];
-    if (!event || event.status === "done" || event.attempts >= 5) return;
-    try {
-      await collectMention(null, id, env, q);
-    } catch {
-      await q(
-        "UPDATE finfolk.instagram_events SET status='error',attempts=attempts+1,updated_at=now(),error='Mention discovery failed' WHERE id=$1",
-        [id],
-      );
-      throw Error("Mention discovery failed");
-    }
-  }
   if (
     env.INSTAGRAM_ENABLED !== "true" &&
-    env.INSTAGRAM_DISCOVERY_ENABLED !== "true"
+    env.INSTAGRAM_DISCOVERY_ENABLED !== "true" &&
+    env.INSTAGRAM_COMMAND_REPLIES_ENABLED !== "true"
   )
     return; // Keep pending until pilot activation.
   if (
@@ -168,21 +154,23 @@ export async function processInstagramEvent(id, env, q) {
   )[0];
   if (!row) return;
   try {
-    const url = new URL(
-      `https://graph.facebook.com/${env.INSTAGRAM_GRAPH_VERSION}/${env.INSTAGRAM_ACCOUNT_ID}`,
-    );
-    url.searchParams.set(
-      "fields",
-      `mentioned_comment.comment_id(${id}){id,text,from,media{id,permalink,caption,username,timestamp}}`,
-    );
-    const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${env.INSTAGRAM_ACCESS_TOKEN}` },
-        signal: AbortSignal.timeout(15000),
-      }),
-      output = await response.json();
-    const comment = output.mentioned_comment;
-    if (!response.ok || !comment || String(comment.id) !== id)
-      throw Error("Mention unavailable");
+    const context = row.payload?.context === 'owned' ? 'owned' : 'mention';
+    const fields = 'id,text,from{id,username},timestamp,media{id,permalink,caption,username,timestamp,owner}';
+    const output = await instagramGraph(context === 'owned' ? id : env.INSTAGRAM_ACCOUNT_ID, env,
+      {fields: context === 'owned' ? fields : `mentioned_comment.comment_id(${id}){${fields}}`});
+    const comment = context === 'owned' ? output : output.mentioned_comment;
+    if (!comment || String(comment.id) !== id) throw Error('Comment unavailable');
+    if (context === 'owned' && String(comment.media?.owner?.id) !== env.INSTAGRAM_ACCOUNT_ID)
+      throw Error('Comment media is not owned by FinFolk');
+    if (await processCommentCommand(comment, context, env, db)) {
+      await q("UPDATE finfolk.instagram_events SET status='done',error=null,updated_at=now() WHERE id=$1",[id]);
+      return;
+    }
+    if (context === 'owned') {
+      await q("UPDATE finfolk.instagram_events SET status='done',error=null,updated_at=now() WHERE id=$1",[id]);
+      return;
+    }
+    if (env.INSTAGRAM_DISCOVERY_ENABLED === 'true') await collectMention(null,id,env,q);
     const sender = String(comment.from?.id || ""),
       text = String(comment.text || "").slice(0, 5000),
       parsed = parseActionRequest(text);
@@ -267,6 +255,7 @@ export async function processInstagramEvent(id, env, q) {
   }
 }
 export async function reconcileInstagram(env, q) {
+  await reconcileCommentCommands(env,q);
   await q(
     "UPDATE finfolk.instagram_actions SET state='uncertain',updated_at=now() WHERE state='sending' AND updated_at<now()-interval '20 minutes'",
   );
@@ -278,7 +267,8 @@ export async function reconcileInstagram(env, q) {
   );
   if (
     env.INSTAGRAM_ENABLED === "true" ||
-    env.INSTAGRAM_DISCOVERY_ENABLED === "true"
+    env.INSTAGRAM_DISCOVERY_ENABLED === "true" ||
+    env.INSTAGRAM_COMMAND_REPLIES_ENABLED === "true"
   )
     for (const row of await q(
       "SELECT id FROM finfolk.instagram_events WHERE status IN ('queued','error') AND attempts<5 ORDER BY created_at LIMIT 50",

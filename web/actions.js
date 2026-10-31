@@ -1,3 +1,4 @@
+import { renderCommentCommands } from './instagram-commands.js';
 import { renderInstagramClaim, renderInstagramClaimReview } from './instagram-claim.js';
 import { renderInstagramDiscovery } from './instagram-discovery.js';
 const el = (tag, text, cls) => {
@@ -46,6 +47,7 @@ export async function renderActions({
   root.append(status);
   try {
     const [state] = await Promise.all([call("instagramStatus"),renderInstagramClaim({host:root,api,refresh})]);
+    await renderCommentCommands({host:root,api,beaches,admin:state.admin});
     const c = state.connection;
     const extrasMarker=el('div');root.append(extrasMarker);
     if (!state.enabled) root.append(el('p','Optional Instagram actions and replies are in preparation.'));
