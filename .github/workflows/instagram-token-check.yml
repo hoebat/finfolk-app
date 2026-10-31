@@ -1,0 +1,22 @@
+name: Read-only Instagram credential check
+on:
+  push:
+    branches: [test/instagram-live-check]
+permissions:
+  contents: read
+jobs:
+  token-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Read-only Meta account, permissions and subscription probes
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+        run: node scripts/check_instagram_credential.mjs
