@@ -4,7 +4,6 @@ import { renderPostManager, renderPostFeed, renderPostAdmin } from './posts.js';
 import { applySavedTheme, themeSettings } from './theme.js';
 applySavedTheme();
 import { renderActions } from './actions.js';
-import { instagramURL } from './logbook-model.js';
 import { showMemberTour } from './member-tour.js';
 import { readResource } from './activity.js';
 import { showWelcome } from './welcome.js';
@@ -245,6 +244,7 @@ export function installCommunity({
       root.append(tabs, ...Object.values(panels));
       panels.settings.append(themeSettings());
       selectTab(accountTab);
+      const instagramReady = renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       const profileStart = root.children.length;
       const me = await a.call('me');
       if (generation !== epoch) return;
@@ -258,7 +258,7 @@ export function installCommunity({
       const jump = id => { selectTab(id === 'social-checkins' ? 'checkin' : id === 'member-actions' ? 'instagram' : 'profile'); document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'}); };
       links.append(
         button('Check in at a beach', () => selectTab('checkin'), 'social-menu-action'),
-        button('Claim Instagram', () => jump('member-actions'), 'social-menu-action'),
+        button('Link Instagram', () => jump('member-actions'), 'social-menu-action'),
         button('Your buddies', () => jump('social-buddies'), 'social-menu-action'),
         button('Your check-ins', () => { const section = document.getElementById('social-checkins'); if (section) section.open = true; jump('social-checkins'); }, 'social-menu-action'),
         button('My sessions', () => shell.navigate('logbook'), 'social-menu-action'),
@@ -279,40 +279,8 @@ export function installCommunity({
       form.append(el('h2', 'Profile & social links'));
       const name = field(form, 'Display name', 'displayName', p.displayName),
         bio = field(form, 'A little about you', 'bio', p.bio, 'textarea'),
-        instagram = field(
-          form,
-          'Instagram handle or profile link',
-          'instagram',
-          p.instagram,
-          'text',
-        ),
         tiktok = field(form, 'TikTok profile link', 'tiktok', p.tiktok, 'url');
-      instagram.placeholder = '@yourhandle or https://instagram.com/yourhandle';
-      instagram.autocomplete = 'off';
-      instagram.spellcheck = false;
-      const instagramHelp = el('small', 'Add your handle, then Save profile. This adds a profile link; it does not verify your Instagram account or import posts.');
-      instagramHelp.id = 'instagram-profile-help';
-      instagram.setAttribute('aria-describedby', instagramHelp.id);
-      instagram.parentElement.append(instagramHelp);
-      const removeInstagram = button('Remove Instagram link', async () => {
-        removeInstagram.disabled = true;
-        try {
-          await a.call('instagramDisconnect');
-          instagram.value = '';
-          showInstagram('');
-          removeInstagram.hidden = true;
-          await account();
-          const feedback = document.querySelector('#account-profile form [role="status"]');
-          if (feedback) feedback.textContent = 'Instagram link removed. Add your new Instagram handle, then Save profile. Claim it in the Instagram tab to verify ownership.';
-        } catch (error) {
-          status.textContent = error.message;
-        } finally {
-          removeInstagram.disabled = false;
-        }
-      }, 'secondary');
-      removeInstagram.hidden = !p.instagram;
-      instagram.parentElement.append(removeInstagram);
-
+      form.append(el('p','Manage your Instagram link in the Instagram tab.'),button('Manage Instagram',()=>selectTab('instagram')));
       name.required = true;
       name.maxLength = 80;
       bio.maxLength = 500;
@@ -455,7 +423,7 @@ export function installCommunity({
             profile: {
               displayName: name.value,
               bio: bio.value,
-              instagram: instagram.value.trim() ? instagramURL(instagram.value) : '',
+              instagram: p.instagram || '',
               tiktok: tiktok.value,
               open: open.checked,
               beaches: [...selected],
@@ -468,8 +436,6 @@ export function installCommunity({
               ),
             },
           });
-          showInstagram(instagram.value.trim() ? instagramURL(instagram.value) : '');
-          removeInstagram.hidden = !instagram.value.trim();
           status.textContent = 'Saved.';
         } catch (error) {
           status.textContent = error.message;
@@ -655,7 +621,7 @@ export function installCommunity({
       if (generation !== epoch) return;
       root.append(deletion);
       for (const child of [...root.children].slice(profileStart)) panels.profile.append(child);
-      await renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
+      await instagramReady;
       if (generation !== epoch) return;
       await renderPostManager({host:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       await renderTripManager({host:panels.posts,api:a,beaches:getBeaches(),refresh:account});

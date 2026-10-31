@@ -43,11 +43,10 @@ export async function renderActions({
     return n;
   };
   const call = (action, v) => api.call(action, v);
-  root.append(el("h2", "Instagram"), status);
+  root.append(status);
   try {
-    const state = await call("instagramStatus"),
-      c = state.connection;
-    await renderInstagramClaim({host:root,api,refresh});
+    const [state] = await Promise.all([call("instagramStatus"),renderInstagramClaim({host:root,api,refresh})]);
+    const c = state.connection;
     const extrasMarker=el('div');root.append(extrasMarker);
     if (!state.enabled) root.append(el('p','Optional Instagram actions and replies are in preparation.'));
     const consent = input(

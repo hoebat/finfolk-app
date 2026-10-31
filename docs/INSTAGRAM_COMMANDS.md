@@ -2,7 +2,11 @@
 
 ## Member workflow
 
-Open **Your FinFolk → Instagram**. Verify your FinFolk email if requested, then choose **Generate my claim command**.
+Instagram linking is managed in **Your FinFolk → Instagram**, with a **Manage Instagram** shortcut from Profile & buddies. While DM verification is unavailable, enter a username or profile URL and choose **Link profile**. The same screen shows **Profile linked · not verified**, **Change account** and **Remove link**. Saving changes only the Instagram profile field; it does not alter privacy, beaches or other profile settings. A saved profile link never grants DM commands, claim rewards or verified status.
+
+When automatic claims are enabled, choose **Start linking**. The screen then shows two steps: follow the brand and send the generated command. Expiry, replacement and status retry controls are under **Need help?**. Claim controls and the command guide are hidden while verification is unavailable.
+
+Open **Your FinFolk → Instagram**. Verify your FinFolk email if requested, then choose **Start linking**.
 
 1. **Follow @finfolk.com.au.** Open the linked Instagram profile, tap Follow, then Message. Use the Instagram account you want to claim.
 2. **Send `/claim <CODE>`.** Copy the complete generated command from FinFolk and send it as an Instagram DM. Each code is valid for 24 hours; generating a replacement invalidates the old one.
@@ -12,7 +16,7 @@ The member never types their Instagram handle. Claiming does not permit public r
 
 The page displays Ready to claim, Waiting for your message, Checking your account, Follow required, Account claimed, Code expired, Could not verify or Review requested. A non-follower is asked to follow, then resend the same command. Failed provider checks never imply success. A member can retry or explicitly request manual review after a matching signed message has been received. Reviewers must check the actual sender and follow relationship.
 
-Codes are displayed only to the signed-in member, stored as hashes on the server, and retained in browser session storage scoped to that member so reloads can resume. The displayed command is cleared on successful claim, expiry and sign-out. If another browser generated a replacement, the old displayed command is discarded. Use **Remove Instagram link** in the Instagram tab or Profile & buddies to clear the profile link, disconnect the verified account and cancel old claim commands. You can then add a different profile link or generate a new claim command when claims are enabled. Removing the link does not delete the Instagram account or its posts.
+Codes are displayed only to the signed-in member, stored as hashes on the server, and retained in browser session storage scoped to that member so reloads can resume. The displayed command is cleared on successful claim, expiry and sign-out. If another browser generated a replacement, the old displayed command is discarded. Use **Remove link** in the Instagram tab to clear the profile link, disconnect the verified account and cancel old claim commands. You can then add a different profile link or generate a new claim command when claims are enabled. Removing the link does not delete the Instagram account or its posts.
 
 ## Commands
 

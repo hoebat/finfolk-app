@@ -39,6 +39,20 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
   const admin = isInstagramAdmin(uid, env),
     enabled = env.INSTAGRAM_ENABLED === "true";
   if (typeof action === 'string' && action.startsWith('instagramClaim')) return instagramClaimAction({action,v,uid,env,q,db,verified,admin});
+  if (action === "instagramProfileLink") {
+    if (typeof v.handle !== 'string' || v.handle.length > 250) error('Enter your Instagram username.');
+    let handle;
+    try { handle = instagramHandle(v.handle).toLowerCase(); } catch (validation) { error(validation.message); }
+    if (!handle) error('Enter your Instagram username.');
+    const profileUrl = 'https://www.instagram.com/' + handle + '/';
+    await db.transaction(async tq => {
+      await tq('SELECT user_id FROM finfolk.members WHERE user_id=$1 FOR UPDATE',[uid]);
+      if ((await tq("SELECT 1 FROM finfolk.instagram_connections WHERE user_id=$1 AND status='connected'",[uid])).length)
+        error('Remove the verified connection before linking a different account.',409);
+      await tq("UPDATE finfolk.members SET profile=jsonb_set(profile,'{instagram}',to_jsonb($2::text)),updated_at=now() WHERE user_id=$1",[uid,profileUrl]);
+    });
+    return {profileUrl};
+  }
   if (action === "instagramStatus") {
     const connection =
       (

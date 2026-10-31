@@ -20,6 +20,7 @@ const { installCommunity } = await import('../web/community.js');
 const profile = {
     displayName: 'Alice',
     bio: 'Hello',
+    instagram: 'https://www.instagram.com/alice.dives/',
     open: false,
     beaches: ['bondi'],
     sharing: {},
@@ -53,12 +54,12 @@ assert.ok(
 );
 assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Your buddies'));
 assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Check in at a beach'));
-assert.ok([...document.querySelectorAll('button')].some(b=>b.textContent==='Claim Instagram'));
+assert.ok([...document.querySelectorAll('button')].some(b=>b.textContent==='Link Instagram'));
 document.getElementById('account-tab-instagram').click();
 assert.equal(document.getElementById('account-instagram').hidden,false);
-assert.ok(document.getElementById('account-instagram').textContent.includes('Claim your Instagram account'));
+assert.ok(document.getElementById('account-instagram').textContent.includes('Link Instagram'));
 document.getElementById('account-tab-profile').click();
-document.querySelector('[name=instagram]').value = '@alice.dives';
+assert.equal(document.querySelector('#account-profile [name=instagram]'),null,'Instagram is managed in its own tab');
 assert.equal(document.querySelector('[name=open]').checked, false);
 document.querySelector('[name=open]').checked = true;
 document.querySelector('[name=visits]').checked = true;
@@ -79,14 +80,8 @@ assert.deepEqual(saved.profile.beaches, ['bondi']);
 assert.ok(
   document.getElementById('account-page').textContent.includes('Saved.'),
 );
-[...document.querySelectorAll('#account-profile button')].find(b=>b.textContent==='Remove Instagram link').click();
-await new Promise(r=>setTimeout(r,20));
-assert.ok(calls.some(c=>c.action==='instagramDisconnect'));
-assert.equal(document.querySelector('[name=instagram]').value,'');
-assert.ok(![...document.querySelectorAll('a')].some(a=>a.textContent==='Your Instagram profile ↗'));
-document.querySelector('[name=instagram]').value='@chriszfree';
-document.querySelector('#account-profile form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));await new Promise(r=>setTimeout(r,20));
-assert.equal(calls.filter(c=>c.action==='preferences').at(-1).profile.instagram,'https://www.instagram.com/chriszfree/');
+[...document.querySelectorAll('#account-profile button')].find(b=>b.textContent==='Manage Instagram').click();
+assert.equal(document.getElementById('account-instagram').hidden,false);
 document.getElementById('account-tab-settings').click();
 assert.equal(document.getElementById('account-settings').hidden, false);
 assert.equal(document.getElementById('account-profile').hidden, true);
