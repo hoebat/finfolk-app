@@ -1,3 +1,5 @@
+import { registerMessagingAPI,messagingProblem,messagingMemberAction,isMessagingMemberAction } from './messaging-api.mjs';
+import { randomUUID } from 'node:crypto';
 import {tripActions,tripAction,publicTrip,publicTrips} from './trips.mjs';
 import { discoveryAction, discoveryActions, publicInstagramFeed } from './instagram-discovery.mjs';
 import { postAction, publicPosts, postsEnabled } from './posts.mjs';
@@ -51,18 +53,23 @@ export function createAPI({
     'http://127.0.0.1:8000',
   ],
   now = () => new Date(),
+  messagingFetch = fetch,
 }) {
   const app = new Hono();
   const q = db.query;
   app.use('*', async (c, next) => {
+    if(c.req.path.startsWith('/v1/')){const requestId=randomUUID();c.set('requestId',requestId);c.header('X-Request-Id',requestId);}
     const origin = c.req.header('Origin');
-    if (origin && !origins.includes(origin))
+    if (origin && !origins.includes(origin)){
+      if(c.req.path.startsWith('/v1/'))return c.json(messagingProblem({code:'origin_not_allowed',status:403,message:'Origin not allowed.'},c.get('requestId')),403);
       return c.json({ error: 'Origin not allowed' }, 403);
+    }
     if (origin) c.header('Access-Control-Allow-Origin', origin);
     c.header('Vary', 'Origin');
     c.header('Cache-Control', 'private, no-store');
-    c.header('Access-Control-Allow-Headers', 'Authorization, Content-Type');
-    c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    c.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, Idempotency-Key');
+    c.header('Access-Control-Expose-Headers','X-Request-Id, Idempotency-Replayed, Retry-After');
+    c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     if (c.req.method === 'OPTIONS') return c.body(null, 204);
     await next();
   });
@@ -82,7 +89,9 @@ export function createAPI({
   });
   app.get('/trips', async c=>c.json(await publicTrips(q,{beachId:c.req.query('beachId'),ownerId:c.req.query('ownerId')})));
   app.get('/trips/:id', async c=>c.json(await publicTrip(q,c.req.param('id'))));
-  app.all('/instagram/webhook', c => instagramWebhook(c.req.raw, c.env || {}, q));
+  app.get('/instagram/webhook', c => instagramWebhook(c.req.raw, c.env || {}, q));
+  app.post('/instagram/webhook', c => instagramWebhook(c.req.raw, c.env || {}, q));
+  registerMessagingAPI(app,{db,verify,fetcher:messagingFetch});
   app.get('/health', (c) =>
     c.json({ ok: true, service: 'FinFolk account API' }),
   );
@@ -95,6 +104,7 @@ export function createAPI({
     return c.json(result.body, result.status);
   });
   app.onError((e, c) => {
+    if(c.req.path.startsWith('/v1/'))return c.json(messagingProblem(e,c.get('requestId') || randomUUID()),e.status || 503);
     if (!e.status) console.error('Account operation failed', e.code || e.name);
     return c.json(
       { error: e.status ? e.message : 'Service unavailable. Please retry.' },
@@ -239,7 +249,7 @@ export function createAPI({
     if (tripActions.has(action)) return c.json({data:await tripAction({action,v,uid,q,env:c.env||{},verified})});
     if (discoveryActions.has(action)) return c.json({data:await discoveryAction({action,v,uid,env:c.env||{},q})});
     if (typeof action === 'string' && action.startsWith('instagram')) {
-      const result = await instagramAction({action,v,uid,env:c.env || {},q,db,verified});
+      const result = isMessagingMemberAction(action) ? await messagingMemberAction({action,v,uid,env:c.env || {},db,verified}) : await instagramAction({action,v,uid,env:c.env || {},q,db,verified});
       return c.json({data:result});
     }
     if (['postStatus','followedPosts','post','posts','myPosts','removePost','reportPost','reviewPosts','reviewPost','resolvePostReport','communityMetrics'].includes(action))
@@ -536,30 +546,36 @@ export function createAPI({
         break;
       }
       case 'deleteAccount':
-        await q("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null WHERE user_id=$1",[uid]);
-        await q('DELETE FROM finfolk.instagram_dm_events WHERE owner_id=$1',[uid]);
-        await q('DELETE FROM finfolk.instagram_dm_limits WHERE sender_id IN (SELECT sender_id FROM finfolk.instagram_connections WHERE user_id=$1)',[uid]);
-        await q('DELETE FROM finfolk.instagram_claims WHERE user_id=$1',[uid]);
-        await q('DELETE FROM finfolk.trips WHERE owner_id=$1',[uid]);
-        await q("UPDATE finfolk.instagram_discoveries SET state='hidden',owner_id=NULL,author_id=NULL,author=NULL,caption='',updated_at=now() WHERE owner_id=$1",[uid]);
-        await q('DELETE FROM finfolk.points_ledger WHERE user_id=$1',[uid]);
-        await q('DELETE FROM finfolk.instagram_actions WHERE owner_id=$1',[uid]);
-        await q('DELETE FROM finfolk.instagram_connections WHERE user_id=$1',[uid]);
-        await q('DELETE FROM finfolk.invitation_joins WHERE invitee_id=$1 OR inviter_id=$1',[uid]);
-        await q('DELETE FROM finfolk.invitations WHERE inviter_id=$1',[uid]);
-        await q(
+        await db.transaction(async tq=>{
+          await tq("SELECT id FROM finfolk.messaging_accounts WHERE id='instagram' FOR UPDATE");
+        await tq("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null WHERE user_id=$1",[uid]);
+        await tq('DELETE FROM finfolk.instagram_dm_limits WHERE sender_id IN (SELECT rate_limit_key FROM finfolk.instagram_dm_events WHERE owner_id=$1)',[uid]);
+        await tq('DELETE FROM finfolk.instagram_dm_events WHERE owner_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.messaging_idempotency WHERE user_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.messaging_oauth_states WHERE user_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.instagram_dm_limits WHERE sender_id IN (SELECT sender_id FROM finfolk.instagram_connections WHERE user_id=$1)',[uid]);
+        await tq('DELETE FROM finfolk.instagram_claims WHERE user_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.trips WHERE owner_id=$1',[uid]);
+        await tq("UPDATE finfolk.instagram_discoveries SET state='hidden',owner_id=NULL,author_id=NULL,author=NULL,caption='',updated_at=now() WHERE owner_id=$1",[uid]);
+        await tq('DELETE FROM finfolk.points_ledger WHERE user_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.instagram_actions WHERE owner_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.instagram_connections WHERE user_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.invitation_joins WHERE invitee_id=$1 OR inviter_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.invitations WHERE inviter_id=$1',[uid]);
+        await tq(
           "UPDATE finfolk.members SET deleted=true,profile='{}'::jsonb,updated_at=now() WHERE user_id=$1",
           [uid],
         );
-        await q('DELETE FROM finfolk.checkins WHERE user_id=$1', [uid]);
-        await q('DELETE FROM finfolk.sessions WHERE owner_id=$1', [uid]);
-        await q('DELETE FROM finfolk.posts WHERE owner_id=$1', [uid]);
-        await q('DELETE FROM finfolk.connections WHERE a=$1 OR b=$1', [uid]);
-        await q(
+        await tq('DELETE FROM finfolk.checkins WHERE user_id=$1', [uid]);
+        await tq('DELETE FROM finfolk.sessions WHERE owner_id=$1', [uid]);
+        await tq('DELETE FROM finfolk.posts WHERE owner_id=$1', [uid]);
+        await tq('DELETE FROM finfolk.connections WHERE a=$1 OR b=$1', [uid]);
+        await tq(
           'DELETE FROM finfolk.blocks WHERE owner_id=$1 OR target_id=$1',
           [uid],
         );
-        await q('DELETE FROM finfolk.reports WHERE owner_id=$1', [uid]);
+        await tq('DELETE FROM finfolk.reports WHERE owner_id=$1', [uid]);
+        });
         result = { deleted: true };
         break;
       default:

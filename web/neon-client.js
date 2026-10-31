@@ -63,8 +63,19 @@ export async function createLogbookClient(config) {
       throw e;
     }
   }
+  async function request(path,{method='GET',body,idempotencyKey}={}) {
+    if(!config.apiUrl)throw Error('The account API is not configured yet.');
+    if(!path.startsWith('/v1/'))throw Error('Invalid API path.');
+    const token=await accountToken(auth);if(!token)throw Object.assign(Error('Sign in again.'),{status:401});
+    const headers={Authorization:'Bearer '+token};
+    if(method!=='GET'){headers['Idempotency-Key']=idempotencyKey || crypto.randomUUID();if(method!=='DELETE')headers['Content-Type']='application/json';}
+    const response=await fetch(new URL(path,config.apiUrl),{method,headers,cache:'no-store',...(method!=='GET' && method!=='DELETE'?{body:JSON.stringify(body || {})}:{})});
+    const result=await response.json();if(!response.ok)throw Object.assign(Error(result.error?.message || 'Messaging request failed.'),{status:response.status,code:result.error?.code,requestId:result.requestId});
+    return result.data;
+  }
   const api = {
     auth,
+    request,
     call,
     get user() {
       return user;

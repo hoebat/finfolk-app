@@ -1,3 +1,4 @@
+import { renderMessagingSettings } from './messaging-settings.js';
 import {renderTripManager,renderTripAdmin} from './trips.js';
 import {tripCards} from './trip-report.js';
 import { renderPostManager, renderPostFeed, renderPostAdmin } from './posts.js';
@@ -243,6 +244,7 @@ export function installCommunity({
       };
       root.append(tabs, ...Object.values(panels));
       panels.settings.append(themeSettings());
+      renderMessagingSettings({host:panels.settings,api:a});
       selectTab(accountTab);
       const instagramReady = renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       const profileStart = root.children.length;

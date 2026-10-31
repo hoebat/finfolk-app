@@ -68,6 +68,10 @@ async function call(
   assert.match(r.headers.get('cache-control'), /no-store/);
   return body.data;
 }
+async function messaging(user,method,path,body,status=200,key=randomBytes(16).toString('hex')) {
+  const response=await fetch(new URL(path,api),{method,headers:{Origin:'https://finfolk.com.au',Authorization:'Bearer '+user.token,'Content-Type':'application/json','Idempotency-Key':key},...(body?{body:JSON.stringify(body)}:{})});
+  const result=await response.json();assert.equal(response.status,status,JSON.stringify(result));assert.match(result.requestId,/^[a-f0-9-]{36}$/);assert.match(response.headers.get('cache-control'),/no-store/);return {result,response};
+}
 try {
   const publicFeed=await fetch(new URL('instagram/posts?beachId=bondi',api),{headers:{Origin:'https://finfolk.com.au'}});
   assert.equal(publicFeed.status,200);const feed=await publicFeed.json();assert.ok(Array.isArray(feed.posts));assert.equal(typeof feed.activity.collecting,'boolean');
@@ -87,6 +91,18 @@ try {
     bob = await register('bob');
   await call(alice, 'me');
   await call(bob, 'me');
+  await messaging(alice,'GET','/v1/me/instagram');
+  await messaging(alice,'GET','/v1/admin/messaging/instagram',null,403);
+  await messaging(alice,'POST','/v1/me/instagram/claims',{},403);
+  const replayKey=randomBytes(16).toString('hex');
+  const profile=await messaging(alice,'PUT','/v1/me/instagram/profile',{handle:'temporary_test'},200,replayKey);
+  const replay=await messaging(alice,'PUT','/v1/me/instagram/profile',{handle:'temporary_test'},200,replayKey);
+  assert.deepEqual(profile.result.data,replay.result.data);assert.equal(replay.response.headers.get('Idempotency-Replayed'),'true');
+  await messaging(alice,'PUT','/v1/me/instagram/profile',{handle:'changed_test'},409,replayKey);
+  await messaging(alice,'DELETE','/v1/me/instagram');
+  assert.equal((await messaging(alice,'GET','/v1/me/instagram')).result.data.profileUrl,'');
+  console.log('Messaging REST: real JWT, profile link/unlink, encrypted replay, conflict and member/admin verification boundaries passed.');
+
   const trip=await call(alice,'tripSave',{draft:{title:'Temporary trip smoke test',authorName:'Test diver',beachId:'bondi',start:'2026-10-15',end:'2026-10-23',story:'Temporary private test',links:[],waterDays:{}}});
   const upload=await call(alice,'tripImportBegin',{id:trip.id,count:1});
   await call(alice,'tripImportBatch',{id:trip.id,importId:upload.id,index:0,rows:[{day:'2026-10-15',depthMetres:8,durationSeconds:60,original:{private:'SYNTHETIC'}}]});

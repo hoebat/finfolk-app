@@ -1,0 +1,1676 @@
+openapi: 3.0.3
+info:
+  title: FinFolk Instagram Messaging API
+  version: 1.0.0
+  description: >-
+    Single-brand, follower-gated command bot. provider_accepted is not delivery/read confirmation.
+    Profile links do not verify ownership. Member IDs are never accepted from request bodies. Legacy
+    /api Instagram actions delegate to the same services. Replies are internal event-bound
+    operations; no arbitrary send endpoint exists.
+servers:
+  - url: https://api.finfolk.com.au
+tags:
+  - name: Members
+  - name: Administration
+  - name: Provider
+paths:
+  /v1/me/instagram:
+    get:
+      operationId: instagramState
+      summary: Get the current link and capabilities
+      tags:
+        - Members
+      security:
+        - memberJWT: []
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InstagramState'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+    delete:
+      operationId: disconnectInstagram
+      summary: Remove link and cancel unsent member work
+      tags:
+        - Members
+      security:
+        - memberJWT: []
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Ok'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/me/instagram/profile:
+    put:
+      operationId: saveInstagramProfile
+      summary: Save an unverified profile link
+      tags:
+        - Members
+      security:
+        - memberJWT: []
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Profile'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+  /v1/me/instagram/claims:
+    post:
+      operationId: createInstagramClaim
+      summary: Create or replace a 24-hour claim (verified email required)
+      tags:
+        - Members
+      security:
+        - memberJWT: []
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '201':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ClaimCreated'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empty'
+  /v1/me/instagram/claims/{id}:
+    get:
+      operationId: instagramClaim
+      summary: Read an owner-only claim without its secret
+      tags:
+        - Members
+      security:
+        - memberJWT: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Claim'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/me/instagram/claims/{id}/review-request:
+    post:
+      operationId: requestClaimReview
+      summary: Request review after receiving a signed claim DM
+      tags:
+        - Members
+      security:
+        - memberJWT: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Ok'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empty'
+  /v1/admin/messaging/instagram:
+    get:
+      operationId: messagingReadiness
+      summary: Read sanitized setup readiness and rollout status
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Readiness'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+    put:
+      operationId: configureMessaging
+      summary: Change rollout controls or attest real-account acceptance
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Readiness'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolloutInput'
+  /v1/admin/messaging/instagram/authorization:
+    post:
+      operationId: authorizeMessaging
+      summary: Begin administrator-bound Instagram Login
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Authorization'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empty'
+  /v1/admin/messaging/events:
+    get:
+      operationId: messagingEvents
+      summary: List minimal signed-event and reply metadata
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - in: query
+          name: cursor
+          schema:
+            type: string
+        - in: query
+          name: command
+          schema:
+            type: string
+            enum:
+              - ping
+              - help
+              - claim
+              - status
+              - checkin
+              - points
+              - unknown
+              - prompt
+              - claim_usage
+              - unsupported
+        - in: query
+          name: state
+          schema:
+            type: string
+            enum:
+              - received
+              - queued
+              - processing
+              - completed
+              - ignored
+              - blocked
+              - paused
+              - failed
+        - in: query
+          name: requestId
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Events'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+  /v1/admin/messaging/events/{id}:
+    get:
+      operationId: messagingEvent
+      summary: Inspect receipt, processing and provider acceptance
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Event'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+  /v1/admin/messaging/events/{id}/retry:
+    post:
+      operationId: retryMessagingEvent
+      summary: Retry known-safe failed work (never uncertain delivery)
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '202':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Retry'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empty'
+  /v1/admin/messaging/claim-reviews:
+    get:
+      operationId: messagingClaimReviews
+      summary: List requested manual reviews
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+  /v1/admin/messaging/claim-reviews/{id}/decision:
+    post:
+      operationId: reviewMessagingClaim
+      summary: Approve sender/follow evidence or reject with a reason
+      tags:
+        - Administration
+      security:
+        - memberJWT: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+          description: >-
+            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
+            409. Use a new key after expiry.
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+            Idempotency-Replayed:
+              schema:
+                type: string
+                enum:
+                  - 'true'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Ok'
+                  requestId:
+                    type: string
+                    format: uuid
+                required:
+                  - data
+                  - requestId
+                additionalProperties: false
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      description: >-
+        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
+        returned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewDecision'
+  /v1/integrations/instagram/oauth/callback:
+    get:
+      operationId: instagramOAuthCallback
+      tags:
+        - Provider
+      summary: Consume single-use OAuth state and authorize the FinFolk brand
+      security: []
+      parameters:
+        - in: query
+          name: state
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: code
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: error
+          required: false
+          schema:
+            type: string
+      responses:
+        '303':
+          description: Return to FinFolk Settings; credentials never appear in the redirect
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /instagram/webhook:
+    get:
+      operationId: verifyInstagramWebhook
+      tags:
+        - Provider
+      summary: Validate Meta challenge without depending on Auth or Postgres
+      security: []
+      parameters:
+        - in: query
+          name: hub.mode
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: hub.verify_token
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: hub.challenge
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Exact challenge
+          content:
+            text/plain:
+              schema:
+                type: string
+        '403':
+          description: Verification rejected
+    post:
+      operationId: receiveInstagramWebhook
+      tags:
+        - Provider
+      summary: Verify signature, durably persist minimal receipts, then acknowledge
+      security:
+        - metaSignature: []
+      description: >-
+        Maximum UTF-8 body size 262144 bytes. Valid duplicates and unsupported event types
+        acknowledge 200. Database persistence failure returns 503. No provider calls run in the
+        callback. Existing discovery events retain their independent handlers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - object
+                - entry
+              properties:
+                object:
+                  type: string
+                entry:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+              additionalProperties: true
+      responses:
+        '200':
+          description: Durably accepted or ignored
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Invalid payload
+        '403':
+          description: Invalid signature
+        '413':
+          description: Payload exceeds limit
+        '503':
+          description: Persistence unavailable; provider must retry
+components:
+  responses:
+    Error400:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error401:
+      description: Sign-in required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error403:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error404:
+      description: Resource unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error409:
+      description: State or idempotency conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error413:
+      description: Body too large
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error415:
+      description: JSON content type required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error429:
+      description: Rate limited
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error503:
+      description: Dependency or setup unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    memberJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        Neon Auth JWT, verified server-side; administrators additionally require
+        INSTAGRAM_ADMIN_IDS.
+    metaSignature:
+      type: apiKey
+      in: header
+      name: X-Hub-Signature-256
+      description: sha256=hex HMAC-SHA256 of the exact request body using the configured Meta webhook secret.
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            retryable:
+              type: boolean
+          required:
+            - code
+            - message
+            - retryable
+          additionalProperties: false
+        requestId:
+          type: string
+          format: uuid
+      required:
+        - error
+        - requestId
+      additionalProperties: false
+    Ok:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+      additionalProperties: false
+    ProfileInput:
+      type: object
+      properties:
+        handle:
+          type: string
+          minLength: 1
+          maxLength: 250
+          example: '@chriszfree'
+      required:
+        - handle
+      additionalProperties: false
+    Profile:
+      type: object
+      properties:
+        profileUrl:
+          type: string
+          format: uri
+      required:
+        - profileUrl
+      additionalProperties: false
+    ClaimCreated:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        command:
+          type: string
+          pattern: ^/claim [a-f0-9]{24}$
+        expiresAt:
+          type: string
+          format: date-time
+        state:
+          type: string
+          enum:
+            - waiting
+      required:
+        - id
+        - command
+        - expiresAt
+        - state
+      additionalProperties: false
+    Claim:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        state:
+          type: string
+          enum:
+            - waiting
+            - checking
+            - follow_required
+            - failed
+            - review_requested
+            - claimed
+            - cancelled
+            - expired
+        handle:
+          type: string
+          nullable: true
+        error:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - state
+        - handle
+        - error
+        - expiresAt
+      additionalProperties: false
+    InstagramState:
+      type: object
+      properties:
+        profileUrl:
+          type: string
+        enabled:
+          type: boolean
+        reviewAvailable:
+          type: boolean
+        state:
+          type: string
+          enum:
+            - ready
+            - waiting
+            - checking
+            - follow_required
+            - failed
+            - review_requested
+            - claimed
+            - cancelled
+            - expired
+        handle:
+          type: string
+          nullable: true
+        error:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        verification:
+          type: string
+          enum:
+            - unverified
+            - verified
+            - legacy_verified
+        claimId:
+          type: string
+          format: uuid
+          nullable: true
+        capabilities:
+          type: object
+          properties:
+            profileLink:
+              type: boolean
+            claims:
+              type: boolean
+            messaging:
+              type: boolean
+          required:
+            - profileLink
+            - claims
+            - messaging
+          additionalProperties: false
+      required:
+        - profileUrl
+        - enabled
+        - reviewAvailable
+        - state
+        - handle
+        - error
+        - expiresAt
+        - verification
+        - claimId
+        - capabilities
+      additionalProperties: false
+    Acceptance:
+      type: object
+      properties:
+        pingEventId:
+          type: string
+          format: uuid
+        helpEventId:
+          type: string
+          format: uuid
+        visibleRepliesConfirmed:
+          type: boolean
+          enum:
+            - true
+        productionAccessConfirmed:
+          type: boolean
+        nonFollowerTestConfirmed:
+          type: boolean
+      required:
+        - pingEventId
+        - helpEventId
+        - visibleRepliesConfirmed
+        - productionAccessConfirmed
+        - nonFollowerTestConfirmed
+      additionalProperties: false
+    RolloutInput:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - disabled
+            - pilot
+            - live
+        enabledCommands:
+          type: array
+          items:
+            type: string
+            enum:
+              - ping
+              - help
+              - claim
+              - status
+              - checkin
+              - points
+          uniqueItems: true
+          maxItems: 6
+        pilotSenderIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[0-9]{1,40}$
+          maxItems: 20
+        acceptance:
+          $ref: '#/components/schemas/Acceptance'
+      required:
+        - mode
+        - enabledCommands
+        - pilotSenderIds
+      additionalProperties: false
+    Readiness:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - disabled
+            - pilot
+            - live
+        accountId:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        enabledCommands:
+          type: array
+          items:
+            type: string
+            enum:
+              - ping
+              - help
+              - claim
+              - status
+              - checkin
+              - points
+        pilotSenderIds:
+          type: array
+          items:
+            type: string
+        ready:
+          type: boolean
+        blockers:
+          type: array
+          items:
+            type: string
+        checks:
+          type: object
+          additionalProperties:
+            type: boolean
+        lastWebhookAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastCommandAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastProviderAcceptedAt:
+          type: string
+          format: date-time
+          nullable: true
+        tokenExpiresAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - mode
+        - accountId
+        - username
+        - enabledCommands
+        - pilotSenderIds
+        - ready
+        - blockers
+        - checks
+        - lastWebhookAt
+        - lastCommandAt
+        - lastProviderAcceptedAt
+        - tokenExpiresAt
+      additionalProperties: false
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        requestId:
+          type: string
+          format: uuid
+        command:
+          type: string
+        state:
+          type: string
+          enum:
+            - received
+            - queued
+            - processing
+            - completed
+            - ignored
+            - blocked
+            - paused
+            - failed
+        errorCode:
+          type: string
+          nullable: true
+        senderId:
+          type: string
+        handle:
+          type: string
+          nullable: true
+        receivedAt:
+          type: string
+          format: date-time
+        messageAt:
+          type: string
+          format: date-time
+        followCheckedAt:
+          type: string
+          format: date-time
+          nullable: true
+        attempts:
+          type: integer
+          minimum: 0
+        reply:
+          type: object
+          properties:
+            state:
+              type: string
+              enum:
+                - pending
+                - sending
+                - provider_accepted
+                - failed
+                - uncertain
+                - cancelled
+                - expired
+            errorCode:
+              type: string
+              nullable: true
+            providerMessageId:
+              type: string
+              nullable: true
+          required:
+            - state
+            - errorCode
+            - providerMessageId
+          additionalProperties: false
+          nullable: true
+      required:
+        - id
+        - requestId
+        - command
+        - state
+        - errorCode
+        - senderId
+        - handle
+        - receivedAt
+        - messageAt
+        - followCheckedAt
+        - attempts
+        - reply
+      additionalProperties: false
+    Events:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        nextCursor:
+          type: string
+          nullable: true
+      required:
+        - events
+        - nextCursor
+      additionalProperties: false
+    Retry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        retryScheduled:
+          type: boolean
+      required:
+        - id
+        - retryScheduled
+      additionalProperties: false
+    Authorization:
+      type: object
+      properties:
+        authorizationUrl:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - authorizationUrl
+        - expiresAt
+      additionalProperties: false
+    Review:
+      type: object
+      properties:
+        claim_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+        handle:
+          type: string
+          nullable: true
+        sender_id:
+          type: string
+        error:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+        review_requested_at:
+          type: string
+          format: date-time
+      required:
+        - claim_id
+        - user_id
+        - handle
+        - sender_id
+        - error
+        - expires_at
+        - review_requested_at
+      additionalProperties: false
+    ReviewDecision:
+      type: object
+      properties:
+        decision:
+          type: string
+          enum:
+            - approve
+            - reject
+        handle:
+          type: string
+        senderChecked:
+          type: boolean
+        followChecked:
+          type: boolean
+        reason:
+          type: string
+          maxLength: 1000
+      required:
+        - decision
+      additionalProperties: false
+    Empty:
+      type: object
+      properties: {}
+      additionalProperties: false

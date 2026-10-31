@@ -1,3 +1,6 @@
+import { readLimited } from './messaging-http.mjs';
+import { messagingConfig } from './messaging-config.mjs';
+import { randomUUID } from 'node:crypto';
 import { processCommentCommand, reconcileCommentCommands } from './instagram-commands.mjs';
 import { instagramGraph } from './instagram-discovery.mjs';
 import { collectInstagramDM } from './instagram-dm.mjs';
@@ -12,7 +15,9 @@ export function validSignature(raw, signature, secret) {
   );
 }
 export async function instagramWebhook(request, env, q) {
+  if(!['GET','POST'].includes(request.method))return new Response('',{status:405,headers:{Allow:'GET, POST'}});
   const url = new URL(request.url);
+  const requestId=randomUUID();
   if (request.method === "GET") {
     if (
       env.INSTAGRAM_VERIFY_TOKEN &&
@@ -22,31 +27,33 @@ export async function instagramWebhook(request, env, q) {
       return new Response(url.searchParams.get("hub.challenge") || "");
     return new Response("Verification failed", { status: 403 });
   }
-  if (!env.INSTAGRAM_APP_SECRET || !env.INSTAGRAM_QUEUE)
+  if (!(env.INSTAGRAM_MESSAGING_WEBHOOK_SECRET || env.INSTAGRAM_APP_SECRET) || !env.INSTAGRAM_QUEUE)
     return Response.json({ error: "Integration unavailable" }, { status: 503 });
-  if (Number(request.headers.get("content-length") || 0) > 262144)
-    return new Response("", { status: 413 });
-  const raw = await request.text();
-  if (raw.length > 262144) return new Response("", { status: 413 });
-  if (
-    !validSignature(
-      raw,
-      request.headers.get("x-hub-signature-256"),
-      env.INSTAGRAM_APP_SECRET,
-    )
-  )
-    return new Response("", { status: 403 });
+  let raw;
+  try{raw=await readLimited(request,262144);}catch(error){if(error.status===413)return new Response('',{status:413});throw error;}
+  const signature=request.headers.get('x-hub-signature-256');
+  const discoverySignature=validSignature(raw,signature,env.INSTAGRAM_APP_SECRET);
+  const sameApp=!env.INSTAGRAM_MESSAGING_META_APP_ID || env.INSTAGRAM_MESSAGING_META_APP_ID===env.INSTAGRAM_APP_ID;
+  const messagingSignature=validSignature(raw,signature,env.INSTAGRAM_MESSAGING_WEBHOOK_SECRET || (sameApp?env.INSTAGRAM_APP_SECRET:undefined));
+  if(!discoverySignature && !messagingSignature)return new Response('',{status:403});
   let data;
   try {
-    data = JSON.parse(raw);
+    data = JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(raw));
   } catch {
     return new Response("", { status: 400 });
   }
+  if(!data || typeof data!=='object' || Array.isArray(data))return new Response('',{status:400});
   if (data.object !== "instagram") return new Response("Ignored");
-  for (const entry of data.entry || []) {
-    if (String(entry.id) !== env.INSTAGRAM_ACCOUNT_ID) continue;
-    for (const event of entry.messaging || []) {
-      await collectInstagramDM(event,env,q);
+  if(!Array.isArray(data.entry))return new Response('',{status:400});
+  const messaging=await messagingConfig(q,env);
+  for (const entry of data.entry) {
+    if(!entry || typeof entry!=='object')continue;
+    const isMessaging=messagingSignature && String(entry.id)===(messaging.accountId || env.INSTAGRAM_ACCOUNT_ID);
+    const isDiscovery=discoverySignature && String(entry.id)===env.INSTAGRAM_ACCOUNT_ID;
+    if(!isMessaging && !isDiscovery)continue;
+    for (const event of (isMessaging && Array.isArray(entry.messaging)?entry.messaging:[])) {
+      if(!event || typeof event!=='object')continue;
+      await collectInstagramDM(event,env,q,{requestId});
       const match = String(event.message?.text || "")
           .trim()
           .match(/^FINFOLK ([a-f0-9]{24})$/i),
@@ -71,9 +78,9 @@ export async function instagramWebhook(request, env, q) {
         );
       }
     }
-    for (const change of entry.changes || []) {
+    for (const change of (isDiscovery && Array.isArray(entry.changes)?entry.changes:[])) {
       if (
-        change.field === "mentions" &&
+        change?.field === "mentions" &&
         !change.value?.comment_id &&
         /^\d{1,40}$/.test(String(change.value?.media_id || ""))
       ) {
@@ -86,15 +93,15 @@ export async function instagramWebhook(request, env, q) {
         await env.INSTAGRAM_QUEUE.send({ id });
       }
     }
-    for (const change of entry.changes || [])
+    for (const change of (isDiscovery && Array.isArray(entry.changes)?entry.changes:[]))
       if (
-        ["mentions","comments"].includes(change.field) &&
+        ["mentions","comments"].includes(change?.field) &&
         /^\d{1,40}$/.test(String(change.value?.comment_id || change.value?.id || ""))
       ) {
         const id = String(change.value.comment_id || change.value.id),
           payload = {
             commentId: id,
-            context: change.field === "comments" ? "owned" : "mention",
+            context: change?.field === "comments" ? "owned" : "mention",
             mediaId: String(change.value.media_id || change.value.media?.id || ""),
           };
         // Persist before enqueue; reconciliation re-enqueues stranded rows.
@@ -105,7 +112,7 @@ export async function instagramWebhook(request, env, q) {
         await env.INSTAGRAM_QUEUE.send({ id });
       }
   }
-  return new Response("Accepted");
+  return new Response("Accepted",{headers:{'X-Request-Id':requestId}});
 }
 export async function processInstagramEvent(id, env, q, db) {
   if (

@@ -98,7 +98,7 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
     await q("UPDATE finfolk.instagram_connections SET share_posts=false,media_owner_id=null WHERE user_id=$1",[uid]);
     const code = randomBytes(12).toString("hex");
     await q(
-      "INSERT INTO finfolk.instagram_connections(user_id,handle,challenge_hash,expires_at) VALUES($1,$2,$3,now()+interval '1 day') ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,sender_id=null,status='pending',challenge_hash=excluded.challenge_hash,expires_at=excluded.expires_at,updated_at=now()",
+      "INSERT INTO finfolk.instagram_connections(user_id,handle,challenge_hash,expires_at) VALUES($1,$2,$3,now()+interval '1 day') ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,provider_scope='facebook-login:legacy',sender_id=null,status='pending',challenge_hash=excluded.challenge_hash,expires_at=excluded.expires_at,updated_at=now()",
       [uid, handle, hash(code)],
     );
     await q(
@@ -113,6 +113,8 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
   }
   if (action === "instagramDisconnect") {
     const disconnect = async tq => {
+      await tq("UPDATE finfolk.messaging_outbox SET state='cancelled',error_code='connection_removed' WHERE state='pending' AND event_id IN (SELECT id FROM finfolk.instagram_dm_events WHERE owner_id=$1)",[uid]);
+      await tq("UPDATE finfolk.instagram_dm_events SET processing_state='blocked',error='connection_removed' WHERE owner_id=$1 AND processing_state IN ('received','queued','failed','processing')",[uid]);
       await tq("SELECT user_id FROM finfolk.instagram_claims WHERE user_id=$1 FOR UPDATE",[uid]);
       await tq("SELECT user_id FROM finfolk.members WHERE user_id=$1 FOR UPDATE",[uid]);
       await tq("DELETE FROM finfolk.instagram_comment_identities WHERE user_id=$1",[uid]);
@@ -186,7 +188,7 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
         "Confirm that you checked the code and sender against the actual received Instagram message.",
       );
     const changed = await q(
-      "UPDATE finfolk.instagram_connections SET status='connected',sender_id=$2,challenge_hash=null,updated_at=now() WHERE user_id=$1 AND challenge_hash=$3 RETURNING user_id",
+      "UPDATE finfolk.instagram_connections SET status='connected',provider_scope='facebook-login:legacy',sender_id=$2,challenge_hash=null,updated_at=now() WHERE user_id=$1 AND challenge_hash=$3 RETURNING user_id",
       [v.userId, v.senderId, pending.challenge_hash],
     );
     if (!changed.length)

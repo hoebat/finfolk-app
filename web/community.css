@@ -503,3 +503,8 @@
 .trip-cards { display: grid; gap: 12px; }
 .trip-card { display: grid; gap: 7px; padding: 18px; border: 1px solid var(--account-line, #c8dfd9); border-radius: 18px; background: var(--account-surface, #fffef8); color: var(--account-ink, #173e48); text-decoration: none; }
 @media(max-width: 600px) { .trip-highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); } .trip-page { padding: 14px 12px 100px; } .trip-report { border-radius: 20px; } }
+
+.messaging-settings { overflow-wrap: anywhere; }
+.messaging-settings > button { margin: 8px 8px 8px 0; }
+.messaging-settings details { margin: 16px 0; }
+.messaging-settings .buddy-card { min-width: 0; }
