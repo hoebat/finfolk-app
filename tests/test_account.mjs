@@ -79,6 +79,14 @@ assert.deepEqual(saved.profile.beaches, ['bondi']);
 assert.ok(
   document.getElementById('account-page').textContent.includes('Saved.'),
 );
+[...document.querySelectorAll('#account-profile button')].find(b=>b.textContent==='Remove Instagram link').click();
+await new Promise(r=>setTimeout(r,20));
+assert.ok(calls.some(c=>c.action==='instagramDisconnect'));
+assert.equal(document.querySelector('[name=instagram]').value,'');
+assert.ok(![...document.querySelectorAll('a')].some(a=>a.textContent==='Your Instagram profile ↗'));
+document.querySelector('[name=instagram]').value='@chriszfree';
+form.dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));await new Promise(r=>setTimeout(r,20));
+assert.equal(calls.filter(c=>c.action==='preferences').at(-1).profile.instagram,'https://www.instagram.com/chriszfree/');
 document.getElementById('account-tab-settings').click();
 assert.equal(document.getElementById('account-settings').hidden, false);
 assert.equal(document.getElementById('account-profile').hidden, true);

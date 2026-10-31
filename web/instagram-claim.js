@@ -25,8 +25,8 @@ export async function renderInstagramClaim({host,api,refresh=()=>{},initialState
     if(stage==='claimed'){
       root.append(el('p',`@${state.handle} is claimed and linked to your FinFolk profile.`));
       const profile=el('a','Open @'+state.handle+' on Instagram ↗');profile.href='https://www.instagram.com/'+encodeURIComponent(state.handle)+'/';profile.target='_blank';profile.rel='noopener noreferrer';root.append(profile);
-      const disconnect=el('details');disconnect.append(el('summary','Disconnect or change Instagram account'),el('p','Disconnect first to claim another account. This stops Instagram commands and automatic post sharing for the current connection.'));
-      disconnect.append(button('Disconnect Instagram',async()=>{await api.call('instagramDisconnect');forget();await refresh();}));root.append(disconnect);
+      const disconnect=el('div');disconnect.append(el('p','Remove this link to claim a different Instagram account. This clears your FinFolk profile link and stops commands and automatic sharing for this connection. Your Instagram account and posts are kept.'));
+      disconnect.append(button('Remove Instagram link',async()=>{await api.call('instagramDisconnect');forget();state=await api.call('instagramClaimStatus');draw();message.textContent='Instagram link removed. You can now link another account.';await refresh();}));root.append(disconnect);
     }else{
       const steps=el('ol',undefined,'instagram-claim-steps');
       const follow=el('li');follow.append(el('h3','Follow @finfolk.com.au'),el('p','Open our Instagram profile, tap Follow, then tap Message. Use the Instagram account you want to claim.'));

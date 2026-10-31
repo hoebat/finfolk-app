@@ -1,3 +1,5 @@
+import {renderTripManager,renderTripAdmin} from './trips.js';
+import {tripCards} from './trip-report.js';
 import { renderPostManager, renderPostFeed, renderPostAdmin } from './posts.js';
 import { applySavedTheme, themeSettings } from './theme.js';
 applySavedTheme();
@@ -292,6 +294,24 @@ export function installCommunity({
       instagramHelp.id = 'instagram-profile-help';
       instagram.setAttribute('aria-describedby', instagramHelp.id);
       instagram.parentElement.append(instagramHelp);
+      const removeInstagram = button('Remove Instagram link', async () => {
+        removeInstagram.disabled = true;
+        try {
+          await a.call('instagramDisconnect');
+          instagram.value = '';
+          showInstagram('');
+          removeInstagram.hidden = true;
+          status.textContent = 'Instagram link removed. Add your new Instagram handle, then Save profile. Claim it in the Instagram tab to verify ownership.';
+          await renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
+        } catch (error) {
+          status.textContent = error.message;
+        } finally {
+          removeInstagram.disabled = false;
+        }
+      }, 'secondary');
+      removeInstagram.hidden = !p.instagram;
+      instagram.parentElement.append(removeInstagram);
+
       name.required = true;
       name.maxLength = 80;
       bio.maxLength = 500;
@@ -448,6 +468,7 @@ export function installCommunity({
             },
           });
           showInstagram(instagram.value.trim() ? instagramURL(instagram.value) : '');
+          removeInstagram.hidden = !instagram.value.trim();
           status.textContent = 'Saved.';
         } catch (error) {
           status.textContent = error.message;
@@ -636,6 +657,7 @@ export function installCommunity({
       await renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       if (generation !== epoch) return;
       await renderPostManager({host:panels.posts,api:a,beaches:getBeaches(),refresh:account});
+      await renderTripManager({host:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       const state = await a.call('postStatus');
       if (generation !== epoch) return;
       if (state.admin) {
@@ -648,7 +670,10 @@ export function installCommunity({
         tab.setAttribute('role','tab'); tab.setAttribute('aria-controls',panel.id);
         tabs.append(tab); panels.admin = panel; root.append(panel);
         await renderPostAdmin({host:panel,api:a});
+        await renderTripAdmin({host:panel,api:a});
       }
+      const reportTrip=new URL(location.href).searchParams.get('reportTrip');
+      if(reportTrip){const box=el('section',undefined,'account-card');const reason=field(box,'Describe the trip report issue','trip-report-reason','','text');box.append(button('Send trip report',async()=>{await a.call('tripReport',{id:reportTrip,reason:reason.value});box.replaceChildren(el('p','Report sent. Thank you.'));}));panels.posts.prepend(box);accountTab='posts';}
       selectTab(panels[accountTab] ? accountTab : 'checkin');
       if (generation === epoch) showMemberTour({userId: a.user.uid, shell});
     } catch (error) {
@@ -709,6 +734,7 @@ export function installCommunity({
     try { feedConfig = config || await loadConfig(); } catch {}
     if (generation !== beachEpoch) { feed.remove(); return; }
     await renderPostFeed({host:feed,beach,config:feedConfig,loadAPI:api,signIn:(tab)=>{ if(tab === 'posts') accountTab='posts'; shell.navigate('account'); },isCurrent:()=>generation===beachEpoch});
+    if(generation===beachEpoch&&feedConfig?.apiUrl)tripCards(feed,feedConfig.apiUrl,{beachId:beach.id,isCurrent:()=>generation===beachEpoch}).catch(()=>{});
     if (generation !== beachEpoch) { feed.remove(); return; }
     try {
       const a = await api();

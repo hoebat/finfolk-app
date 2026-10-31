@@ -1,3 +1,4 @@
+import {tripActions,tripAction,publicTrip,publicTrips} from './trips.mjs';
 import { discoveryAction, discoveryActions, publicInstagramFeed } from './instagram-discovery.mjs';
 import { postAction, publicPosts, postsEnabled } from './posts.mjs';
 import { invitationAction } from './invitations.mjs';
@@ -79,6 +80,8 @@ export function createAPI({
     await q("INSERT INTO finfolk.instagram_post_reports(discovery_id,reason) SELECT id,$2 FROM finfolk.instagram_discoveries WHERE id=$1 AND state='published' ON CONFLICT DO NOTHING",[postId,v.reason]);
     return c.json({ok:true});
   });
+  app.get('/trips', async c=>c.json(await publicTrips(q,{beachId:c.req.query('beachId'),ownerId:c.req.query('ownerId')})));
+  app.get('/trips/:id', async c=>c.json(await publicTrip(q,c.req.param('id'))));
   app.all('/instagram/webhook', c => instagramWebhook(c.req.raw, c.env || {}, q));
   app.get('/health', (c) =>
     c.json({ ok: true, service: 'FinFolk account API' }),
@@ -233,6 +236,7 @@ export function createAPI({
     }
     let result;
     if (typeof action === 'string' && action.startsWith('invitation')) return c.json({data:await invitationAction({action,v,uid,q,verified})});
+    if (tripActions.has(action)) return c.json({data:await tripAction({action,v,uid,q,env:c.env||{},verified})});
     if (discoveryActions.has(action)) return c.json({data:await discoveryAction({action,v,uid,env:c.env||{},q})});
     if (typeof action === 'string' && action.startsWith('instagram')) {
       const result = await instagramAction({action,v,uid,env:c.env || {},q,db,verified});
@@ -536,6 +540,7 @@ export function createAPI({
         await q('DELETE FROM finfolk.instagram_dm_events WHERE owner_id=$1',[uid]);
         await q('DELETE FROM finfolk.instagram_dm_limits WHERE sender_id IN (SELECT sender_id FROM finfolk.instagram_connections WHERE user_id=$1)',[uid]);
         await q('DELETE FROM finfolk.instagram_claims WHERE user_id=$1',[uid]);
+        await q('DELETE FROM finfolk.trips WHERE owner_id=$1',[uid]);
         await q("UPDATE finfolk.instagram_discoveries SET state='hidden',owner_id=NULL,author_id=NULL,author=NULL,caption='',updated_at=now() WHERE owner_id=$1",[uid]);
         await q('DELETE FROM finfolk.points_ledger WHERE user_id=$1',[uid]);
         await q('DELETE FROM finfolk.instagram_actions WHERE owner_id=$1',[uid]);

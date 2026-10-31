@@ -12,7 +12,7 @@ The member never types their Instagram handle. Claiming does not permit public r
 
 The page displays Ready to claim, Waiting for your message, Checking your account, Follow required, Account claimed, Code expired, Could not verify or Review requested. A non-follower is asked to follow, then resend the same command. Failed provider checks never imply success. A member can retry or explicitly request manual review after a matching signed message has been received. Reviewers must check the actual sender and follow relationship.
 
-Codes are displayed only to the signed-in member, stored as hashes on the server, and retained in browser session storage scoped to that member so reloads can resume. The displayed command is cleared on successful claim, expiry and sign-out. If another browser generated a replacement, the old displayed command is discarded. Existing verified connections are preserved; disconnect in FinFolk before claiming a different account.
+Codes are displayed only to the signed-in member, stored as hashes on the server, and retained in browser session storage scoped to that member so reloads can resume. The displayed command is cleared on successful claim, expiry and sign-out. If another browser generated a replacement, the old displayed command is discarded. Use **Remove Instagram link** in the Instagram tab or Profile & buddies to clear the profile link, disconnect the verified account and cancel old claim commands. You can then add a different profile link or generate a new claim command when claims are enabled. Removing the link does not delete the Instagram account or its posts.
 
 ## Commands
 

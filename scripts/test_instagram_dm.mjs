@@ -63,7 +63,8 @@ try{
  await call(admin,'instagramClaimReview',{userId:other,decision:'approve',handle:'other.dives',senderChecked:true,followChecked:true});assert.equal((await call(other,'instagramClaimStatus')).state,'claimed');profileError=false;
  const thirdCode=await command(third);await incoming(sender,thirdCode);assert.equal((await call(owner,'instagramClaimStatus')).handle,'owner.dives');assert.notEqual((await call(third,'instagramClaimStatus')).state,'claimed');
  const expire=await command(third);await q("UPDATE finfolk.instagram_claims SET expires_at=now()-interval '1 minute' WHERE user_id=$1",[third]);await incoming(thirdSender,expire);assert.match(replies.at(-1).message.text,/expired/);
- await call(owner,'instagramDisconnect');await incoming(sender,'/status');assert.match(replies.at(-1).message.text,/not claimed/);
+ await call(owner,'instagramDisconnect');assert.equal((await call(owner,'me')).profile.instagram,'');assert.equal((await call(owner,'me')).profile.open,false);assert.equal((await call(owner,'instagramClaimStatus')).state,'ready');await incoming(sender,'/status');assert.match(replies.at(-1).message.text,/not claimed/);
+ await incoming(sender,start);assert.equal((await call(owner,'instagramClaimStatus')).state,'ready','Removed claim code cannot reconnect');
  const newCode=await command(owner);await incoming(sender,newCode);assert.equal((await call(owner,'instagramClaimStatus')).state,'claimed');
  sendError=true;const uncertain=await incoming(sender,'/points');sendError=false;const before=replies.length;await processInstagramDM(uncertain,env,runtime,{fetcher});assert.equal(replies.length,before);assert.equal((await q('SELECT send_state FROM finfolk.instagram_dm_events WHERE id=$1',[uncertain]))[0].send_state,'uncertain');
  const stale=await incoming(sender,'/checkin Bondi Beach','stale-'+base,Date.now()-90000000);assert.equal((await q('SELECT send_state FROM finfolk.instagram_dm_events WHERE id=$1',[stale]))[0].send_state,'skipped');
