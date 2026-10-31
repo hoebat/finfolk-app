@@ -2,9 +2,17 @@
 
 Observed 31 October 2026 UTC.
 
+## Verified pilot result
+
+The Facebook Page route now works end to end, verified on 1 November 2026 AEDT (31 October UTC). Both `pages_manage_metadata` and `pages_messaging` are granted for the configured FinFolk Page. The Page subscription readback identifies this app and `messages`; the linked Instagram subscription also includes `messages`.
+
+A fresh `/ping` from the signed-in `@hoebat.km` account produced a real signed webhook while processing was paused. Its actual scoped sender was then allowlisted through Settings, with only `ping` and `help` enabled. Fresh tests completed with Meta-confirmed reply IDs, and both “Pong” and the welcome/help response were visibly verified in the Instagram conversation. Diagnostic event IDs: ping `66675eb4-1684-440d-b2e6-a8ae763445c5`; help `9b753cfd-81e8-4d56-ba16-a7c3c5d50cc4`.
+
+Settings recorded the signed event IDs and visible-reply confirmation through the normal acceptance API. Authorization, subscription and live-delivery checks pass, with no diagnostic-pilot readiness blockers. Mode remains `pilot`, limited to the single observed sender. Public production access, nonfollower acceptance and personal-command follower lookup remain unverified; no public rollout is claimed. The investigation below records the earlier failures and the steps that resolved them.
+
 ## Recovery
 
-The Facebook Page-based route successfully reads Page `1387107281155901` and its linked `finfolk.com.au` account `17841461601419539`, even though `/me/accounts` returns an empty list. A valid app-bound Page token has been obtained, retained encrypted, and activated through the shared account/subscription finalizer. Account authorization passes. The Instagram-account subscription passes, but the Facebook Page subscription requires an additional permission; overall subscription readiness is false and the connection remains paused.
+The initial Facebook Page-based recovery could read Page `1387107281155901` and its linked `finfolk.com.au` account `17841461601419539`, even though `/me/accounts` returned an empty list. A valid app-bound Page token was obtained and retained encrypted through the shared account/subscription finalizer. Account authorization and the Instagram-account subscription passed; missing Page permissions initially kept overall subscription readiness false and processing paused. Those permission gates are now resolved as recorded above.
 
 The Instagram subscription readback for this Page token omits the app ID and returns only `subscribed_fields`. Verification now binds the token to the correct app using Meta's debugger and to the configured Page via `/me` before accepting exactly one subscription entry containing `messages`.
 
