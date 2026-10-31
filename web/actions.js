@@ -1,3 +1,4 @@
+import { renderInstagramClaim, renderInstagramClaimReview } from './instagram-claim.js';
 import { renderInstagramDiscovery } from './instagram-discovery.js';
 const el = (tag, text, cls) => {
   const n = document.createElement(tag);
@@ -42,70 +43,13 @@ export async function renderActions({
     return n;
   };
   const call = (action, v) => api.call(action, v);
-  root.append(el("h2", "Instagram & actions"), status);
+  root.append(el("h2", "Instagram"), status);
   try {
     const state = await call("instagramStatus"),
       c = state.connection;
-    root.append(
-      el(
-        "p",
-        c?.status === "connected"
-          ? `@${c.handle} · Connected`
-          : "Connect once. Then mention @finfolk.com.au in a public Instagram comment.",
-      ),
-    );
-    if (!state.enabled)
-      root.append(
-        el(
-          "small",
-          "Instagram automation is in preparation. Connections are manually reviewed; incoming actions and replies will activate after provider testing.",
-        ),
-      );
-    if (c?.status !== "connected") {
-      const handle = input(root, "Your Instagram handle", c?.handle);
-      handle.placeholder = "@yourhandle";
-      const connectButton = button(
-        c?.status === "pending"
-          ? "Get a new verification code"
-          : "Connect Instagram",
-        async () => {
-          const data = await call("instagramConnect", { handle: handle.value });
-          const instructions = el("div", undefined, "instagram-verification");
-          instructions.append(
-            el("strong", "1. Open Instagram → @finfolk.com.au → Message"),
-            el("p", "2. Send this exact message from your account:"),
-            el("code", "FINFOLK " + data.code),
-            el(
-              "p",
-              "3. We’ll review your message and confirm the connection. The code expires in 24 hours.",
-            ),
-            button("Copy verification message", async () => {
-              await navigator.clipboard.writeText("FINFOLK " + data.code);
-              status.textContent = "Verification message copied.";
-            }),
-          );
-          const open = el("a", "Open FinFolk on Instagram ↗");
-          open.href = "https://www.instagram.com/finfolk.com.au/";
-          open.target = "_blank";
-          open.rel = "noopener noreferrer";
-          instructions.append(open);
-          root.querySelector(".instagram-verification")?.remove();
-          root.append(instructions);
-        },
-      );
-      if (state.setupReady === false) {
-        connectButton.disabled = true;
-        connectButton.textContent = "Instagram connections opening soon";
-      }
-      root.append(connectButton);
-    }
-    if (c)
-      root.append(
-        button("Disconnect Instagram", async () => {
-          await call("instagramDisconnect");
-          refresh();
-        }),
-      );
+    await renderInstagramClaim({host:root,api,refresh});
+    const extrasMarker=el('div');root.append(extrasMarker);
+    if (!state.enabled) root.append(el('p','Optional Instagram actions and replies are in preparation.'));
     const consent = input(
       root,
       "Show my participation points publicly",
@@ -298,6 +242,7 @@ export async function renderActions({
     }
     await renderInstagramDiscovery({root:discoveryHost||root,api,beaches,admin:state.admin,refresh});
     if (state.admin) {
+      await renderInstagramClaimReview({host:root,api});
       const inbox = el("details");
       inbox.append(el("summary", "Actions admin inbox"));
       root.append(inbox);
@@ -436,6 +381,9 @@ export async function renderActions({
         }
       });
     }
+    const extras=el('details',undefined,'instagram-optional-actions');extras.append(el('summary','Optional actions, points & invitations'));
+    while(extrasMarker.nextSibling)extras.append(extrasMarker.nextSibling);
+    extrasMarker.replaceWith(extras);
   } catch (e) {
     status.textContent = e.message;
   }

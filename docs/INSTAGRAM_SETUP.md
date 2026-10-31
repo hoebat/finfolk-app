@@ -14,6 +14,10 @@ Facebook Login for Business configuration **FinFolk Instagram Actions** (`182378
 
 A Facebook Page **FinFolk** (Page ID `1387107281155901`, public profile `61596205344691`) has been created with category Community, the supplied logo and website `https://finfolk.com.au`. The brand Instagram account `@finfolk.com.au` (Instagram ID `17841461601419539`) is now linked, verified in Facebook Page settings, with messaging Inbox access enabled. Developer-app authorization and production token acceptance remain to be verified.
 
+## Instagram account claiming
+
+The dedicated Instagram tab now supports generated `/claim <CODE>` commands, sender/follow verification and private `/help`, `/status`, `/checkin` and `/points` replies. See [member workflow, commands and activation](INSTAGRAM_COMMANDS.md). Automatic claims and DM replies have separate disabled rollout switches. The older `FINFOLK <code>` requests remain a legacy manual-review path.
+
 ## Current controls
 
 `INSTAGRAM_ENABLED=false` is intentional. No provider requests or public replies are sent until acceptance tests pass. With no `INSTAGRAM_ADMIN_IDS`, connection challenges are also disabled so members do not wait for an unconfigured reviewer. Public profile links remain available separately.

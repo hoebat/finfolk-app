@@ -1,3 +1,4 @@
+import { instagramClaimAction } from './instagram-claims.mjs';
 import { rewardInvitation } from "./invitations.mjs";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { instagramHandle, sessionInput } from "../web/logbook-model.js";
@@ -34,9 +35,10 @@ async function audit(q, id, uid, event) {
     [id, uid, event],
   );
 }
-export async function instagramAction({ action, v, uid, env, q, verified }) {
+export async function instagramAction({ action, v, uid, env, q, db, verified }) {
   const admin = isInstagramAdmin(uid, env),
     enabled = env.INSTAGRAM_ENABLED === "true";
+  if (typeof action === 'string' && action.startsWith('instagramClaim')) return instagramClaimAction({action,v,uid,env,q,db,verified,admin});
   if (action === "instagramStatus") {
     const connection =
       (
@@ -96,10 +98,12 @@ export async function instagramAction({ action, v, uid, env, q, verified }) {
   if (action === "instagramDisconnect") {
     await q("UPDATE finfolk.instagram_discoveries SET state='hidden',updated_at=now() WHERE owner_id=$1 AND automatic=true",[uid]);
     await q("UPDATE finfolk.instagram_connections SET share_posts=false,media_owner_id=null WHERE user_id=$1",[uid]);
-    await q(
-      "UPDATE finfolk.instagram_connections SET status='disconnected',sender_id=null,challenge_hash=null,public_points=false WHERE user_id=$1",
-      [uid],
-    );
+    if (db?.transaction) await db.transaction(async tq=>{
+      await tq("SELECT user_id FROM finfolk.instagram_claims WHERE user_id=$1 FOR UPDATE",[uid]);
+      await tq("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null,updated_at=now() WHERE user_id=$1",[uid]);
+      await tq("UPDATE finfolk.instagram_connections SET status='disconnected',sender_id=null,challenge_hash=null,public_points=false WHERE user_id=$1",[uid]);
+    });
+    else await q("UPDATE finfolk.instagram_connections SET status='disconnected',sender_id=null,challenge_hash=null,public_points=false WHERE user_id=$1",[uid]);
     await q(
       "UPDATE finfolk.instagram_actions SET state='cancelled',updated_at=now() WHERE owner_id=$1 AND state NOT IN ('done','sent','uncertain','sending')",
       [uid],

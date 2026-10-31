@@ -53,7 +53,11 @@ assert.ok(
 );
 assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Your buddies'));
 assert.ok(document.querySelector('[aria-label="Social menu"]')?.textContent.includes('Check in at a beach'));
-assert.ok([...document.querySelectorAll('button')].some(b=>b.textContent==='Instagram & actions'));
+assert.ok([...document.querySelectorAll('button')].some(b=>b.textContent==='Claim Instagram'));
+document.getElementById('account-tab-instagram').click();
+assert.equal(document.getElementById('account-instagram').hidden,false);
+assert.ok(document.getElementById('account-instagram').textContent.includes('Claim your Instagram account'));
+document.getElementById('account-tab-profile').click();
 document.querySelector('[name=instagram]').value = '@alice.dives';
 assert.equal(document.querySelector('[name=open]').checked, false);
 document.querySelector('[name=open]').checked = true;

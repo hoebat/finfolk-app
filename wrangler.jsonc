@@ -22,6 +22,8 @@
     "NEON_AUTH_JWKS_URL": "https://ep-crimson-queen-a7q4vgfn.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth/.well-known/jwks.json",
     "NEON_HYPERDRIVE_CA_ID": "d698b258-d68d-4f71-b814-be9d39248d5e",
     "INSTAGRAM_ENABLED": "false",
+    "INSTAGRAM_DM_ENABLED": "false",
+    "INSTAGRAM_AUTO_CLAIM_ENABLED": "false",
     "COMMUNITY_POSTS_ENABLED": "false",
     "COMMUNITY_PILOT_BEACHES": "",
     "INSTAGRAM_APP_ID": "1667613151655339",

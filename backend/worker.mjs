@@ -1,3 +1,4 @@
+import { processInstagramDM, reconcileInstagramDM } from './instagram-dm.mjs';
 import {
   scheduleInstagramDiscovery,
   collectInstagramSource,
@@ -15,7 +16,9 @@ export default {
     try {
       for (const message of batch.messages) {
         try {
-          if (message.body.kind === "discovery-source")
+          if (message.body.kind === "instagram-dm")
+            await processInstagramDM(String(message.body.id), env, db);
+          else if (message.body.kind === "discovery-source")
             await collectInstagramSource(message.body.key, env, db.query);
           else
             await processInstagramEvent(String(message.body.id), env, db.query);
@@ -32,6 +35,7 @@ export default {
     const db = database(env.HYPERDRIVE.connectionString);
     try {
       await reconcileInstagram(env, db.query);
+      await reconcileInstagramDM(env, db.query);
       await scheduleInstagramDiscovery(env, db.query);
     } finally {
       await db.pool.end();

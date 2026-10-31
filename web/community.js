@@ -38,7 +38,7 @@ export function installCommunity({
     beachEpoch = 0,
     nextRefresh = Infinity,
     observedUser,
-    accountTab = 'checkin';
+    accountTab = new URL(location.href).searchParams.get('tab') === 'instagram' ? 'instagram' : 'checkin';
   async function api() {
     if (!pending)
       pending = (async () => {
@@ -56,7 +56,7 @@ export function installCommunity({
               .forEach((n) => n.remove());
             document.getElementById('regulars-panel')?.remove();
             document.querySelectorAll('.beach-post-feed').forEach(n=>n.remove());
-            accountTab='checkin';
+            accountTab=new URL(location.href).searchParams.get('tab')==='instagram'?'instagram':'checkin';
             if (!user && shell.route.view === 'account') queueMicrotask(() => account());
             epoch++;
             beachEpoch++;
@@ -211,6 +211,7 @@ export function installCommunity({
       const panels = {};
       function selectTab(key) {
         accountTab = key;
+        if (shell.route.view==='account') { const url=new URL(location.href);url.searchParams.set('tab',key);globalThis.history?.replaceState?.(globalThis.history.state,'',url.href); }
         for (const tab of tabs.children) {
           const active = tab.dataset.tab === key;
           tab.setAttribute('aria-selected', String(active));
@@ -218,7 +219,7 @@ export function installCommunity({
         }
         for (const [name, panel] of Object.entries(panels)) panel.hidden = name !== key;
       }
-      for (const [key, label] of [['checkin', 'Check in'], ['posts', 'Your posts'], ['profile', 'Profile & buddies'], ['settings', 'Settings']]) {
+      for (const [key, label] of [['checkin', 'Check in'], ['posts', 'Your posts'], ['instagram','Instagram'], ['profile', 'Profile & buddies'], ['settings', 'Settings']]) {
         const panel = el('div');
         panel.id = 'account-' + key;
         panel.setAttribute('role', 'tabpanel');
@@ -252,10 +253,10 @@ export function installCommunity({
       menu.setAttribute('aria-label', 'Social menu');
       menu.append(el('h2', `Welcome${p.displayName ? ', ' + p.displayName : ''}`), el('p', 'Check in, find your people and keep your diving close.'));
       const links = el('div', undefined, 'social-menu-actions');
-      const jump = id => { selectTab(id === 'social-checkins' ? 'checkin' : 'profile'); document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'}); };
+      const jump = id => { selectTab(id === 'social-checkins' ? 'checkin' : id === 'member-actions' ? 'instagram' : 'profile'); document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'}); };
       links.append(
         button('Check in at a beach', () => selectTab('checkin'), 'social-menu-action'),
-        button('Instagram & actions', () => jump('member-actions'), 'social-menu-action'),
+        button('Claim Instagram', () => jump('member-actions'), 'social-menu-action'),
         button('Your buddies', () => jump('social-buddies'), 'social-menu-action'),
         button('Your check-ins', () => { const section = document.getElementById('social-checkins'); if (section) section.open = true; jump('social-checkins'); }, 'social-menu-action'),
         button('My sessions', () => shell.navigate('logbook'), 'social-menu-action'),
@@ -457,6 +458,7 @@ export function installCommunity({
       root.append(form);
       if (!a.user.emailVerified) {
         const verify = el('section', undefined, 'account-card');
+        verify.id='account-email-verification';
         verify.append(
           el('h2', 'Verify your email'),
           button('Send verification code', async () => {
@@ -631,7 +633,7 @@ export function installCommunity({
       if (generation !== epoch) return;
       root.append(deletion);
       for (const child of [...root.children].slice(profileStart)) panels.profile.append(child);
-      await renderActions({host:panels.profile,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
+      await renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       if (generation !== epoch) return;
       await renderPostManager({host:panels.posts,api:a,beaches:getBeaches(),refresh:account});
       const state = await a.call('postStatus');

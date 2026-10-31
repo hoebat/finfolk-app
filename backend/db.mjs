@@ -30,5 +30,17 @@ export function database(connectionString) {
     const result = await db.execute(sql.join(parts, sql.raw('')));
     return result.rows;
   }
-  return { query, pool };
+  async function transaction(fn) {
+    const connection = await pool.connect();
+    try {
+      await connection.query('BEGIN');
+      const result = await fn(async (text, values = []) => (await connection.query(text, values)).rows);
+      await connection.query('COMMIT');
+      return result;
+    } catch (error) {
+      await connection.query('ROLLBACK');
+      throw error;
+    } finally { connection.release(); }
+  }
+  return { query, transaction, pool };
 }
