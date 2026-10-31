@@ -45,9 +45,7 @@ export function parseCommentCommand(text = "") {
         ? { command, args: { challengeHash: hash(args.toLowerCase()) } }
         : { command: "help", invalid: true };
   const date =
-    command === "checkin"
-      ? args.match(/^(\d{4}-\d{2}-\d{2})(?:\s+|$)/)?.[1]
-      : null;
+    command === "checkin" ? args.match(/^\d{1,4}[-/]\S*(?=\s|$)/)?.[0] : null;
   return {
     command,
     args: { beach: date ? args.slice(date.length).trim() : args, day: date },
