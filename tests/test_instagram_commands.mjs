@@ -19,6 +19,14 @@ assert.deepEqual(parse("/checkin 2026-10-20 Bondi Beach @finfolk.com.au"), {
   command: "checkin",
   args: { beach: "Bondi Beach", day: "2026-10-20" },
 });
+for (const input of ["20/10/2026", "2026-xx-xx", "2026-10-20T12:00"]) {
+  const parsed = parse("/checkin " + input + " Bondi Beach @finfolk.com.au");
+  assert.equal(
+    parsed.args.day,
+    input,
+    "Malformed dates must not silently become today",
+  );
+}
 const base = {
   now: new Date("2026-10-31T03:00:00Z"),
   timezone: "Australia/Sydney",
