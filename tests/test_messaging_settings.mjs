@@ -28,6 +28,7 @@ const calls = [],
     username: null,
     enabledCommands: ["ping", "help"],
     pilotSenderIds: [],
+    health:{status:"attention",issues:["uncertain_replies"],pendingReplies:1,uncertainReplies:2,failedReplies:0,stalledCommands:0},
     blockers: ["token_missing"],
     checks: {},
     lastWebhookAt: null,
@@ -76,6 +77,7 @@ assert.deepEqual(saved.options.body, {
 assert.ok(saved.options.idempotencyKey);
 assert.ok(!JSON.stringify(saved.options).includes("visibleRepliesConfirmed"));
 w.happyDOM.abort();
+assert.match(host.textContent,/Needs attention|Inspect uncertain replies/);
 console.log(
   "MESSAGING_SETTINGS_PASS: admin separation, readiness blockers, explicit acceptance, idempotency and no uncertain resend.",
 );

@@ -1,3 +1,5 @@
+import { completeInstagramClaim } from "../backend/instagram-claims.mjs";
+import { messagingFixture } from "./messaging_fixture.mjs";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
 import { database } from "../backend/db.mjs";
@@ -35,7 +37,18 @@ let sequence = 0,
   posts = 0,
   failSend = false;
 const ids = [];
-const fetcher = async (url, options) => {
+const nativeFetch = globalThis.fetch;
+const fixture = await messagingFixture(db, env, {
+  senderId: sender,
+  handle: "comment.diver",
+});
+globalThis.fetch = async (url, options) =>
+  new URL(url).hostname === "graph.instagram.com"
+    ? fixture.profileResponse(url)
+    : nativeFetch(url, options);
+const fetcher = async (url, options = {}) => {
+  if (new URL(url).hostname === "graph.instagram.com")
+    return fixture.profileResponse(url);
   assert.equal(options.method, "POST");
   posts++;
   if (failSend) throw Error("Ambiguous timeout");
@@ -89,6 +102,10 @@ try {
     "INSERT INTO finfolk.instagram_connections(user_id,handle,sender_id,status) VALUES($1,'comment.diver',$2,'connected')",
     [uid, sender],
   );
+  await q(
+    "UPDATE finfolk.instagram_connections SET provider_scope=$2 WHERE user_id=$1",
+    [uid, fixture.scope],
+  );
   // DM identifiers alone never authorise a public comment.
   const unknown = await run("/checkin Bondi Beach @finfolk.com.au", sender);
   assert.equal(unknown.owner_id, null);
@@ -132,6 +149,15 @@ try {
   assert.equal(visits.length, 2);
   const invalid = await run("/checkin 2000-01-01 Bondi Beach @finfolk.com.au");
   assert.match(invalid.reply, /last 30 days/);
+  fixture.follows = false;
+  await q(
+    "UPDATE finfolk.instagram_commands SET received_at=now()-interval '2 hours',send_started_at=null WHERE actor_id=$1",
+    [actor],
+  );
+  const blocked = await run("/checkin Bondi Beach @finfolk.com.au");
+  assert.equal(blocked.state, "cancelled");
+  assert.equal(blocked.send_state, "skipped");
+  fixture.follows = true;
   // Reset synthetic sender limit so subsequent cases exercise execution.
   await q(
     "UPDATE finfolk.instagram_commands SET received_at=now()-interval '2 hours',send_started_at=CASE WHEN send_started_at IS NULL THEN NULL ELSE now()-interval '2 hours' END WHERE actor_id=$1 OR actor_id=$2",
@@ -267,6 +293,53 @@ try {
     "DELETE FROM finfolk.instagram_commands WHERE id IN (SELECT jsonb_array_elements_text($1::jsonb))",
     [JSON.stringify(limitIds)],
   );
+  // A real same-account re-claim rotates the connection proof and invalidates old cross-provider evidence.
+  const beforeRelink = (
+    await q(
+      "SELECT identity_version FROM finfolk.instagram_connections WHERE user_id=$1",
+      [uid],
+    )
+  )[0].identity_version;
+  const claimHash = randomBytes(32).toString("hex");
+  await q(
+    "INSERT INTO finfolk.instagram_claims(user_id,code_hash,state,expires_at,provider_scope) VALUES($1,$2,'waiting',now()+interval '1 hour',$3)",
+    [uid, claimHash, fixture.scope],
+  );
+  await q(
+    "UPDATE finfolk.instagram_connections SET media_owner_id=$2,share_posts=true WHERE user_id=$1",
+    [uid, actor + "444"],
+  );
+  await db.transaction((tq) =>
+    completeInstagramClaim(tq, {
+      uid,
+      senderId: sender,
+      handle: "comment.diver",
+      actor: uid,
+      codeHash: claimHash,
+      scope: fixture.scope,
+    }),
+  );
+  const relinked = (
+    await q("SELECT * FROM finfolk.instagram_connections WHERE user_id=$1", [
+      uid,
+    ])
+  )[0];
+  assert.notEqual(relinked.identity_version, beforeRelink);
+  assert.equal(relinked.media_owner_id, null);
+  assert.equal(relinked.share_posts, false);
+  await q(
+    "UPDATE finfolk.instagram_commands SET received_at=now()-interval '2 hours',send_started_at=null WHERE actor_id=$1",
+    [actor],
+  );
+  const staleBinding = await run("/me @finfolk.com.au");
+  assert.equal(
+    staleBinding.owner_id,
+    null,
+    "Old comment evidence must not authorise a same-sender relink",
+  );
+  const freshChallenge = await act("instagramCommandVerify");
+  const refreshedBinding = await run(freshChallenge.command);
+  assert.equal(refreshedBinding.owner_id, uid);
   // Removing a connection invalidates the comment mapping, without handle fallback.
   await q(
     "UPDATE finfolk.instagram_connections SET status='disconnected' WHERE user_id=$1",
@@ -371,6 +444,38 @@ try {
           ),
       );
     }
+    const ordinary = make("stats Bondi Beach @finfolk.com.au", sender);
+    discoveryIds.push(ordinary.media.id);
+    globalThis.fetch = async (url, options = {}) => {
+      if (options.method === "POST")
+        throw Error("Ordinary mentions must not send automatically");
+      return Response.json({ mentioned_comment: ordinary });
+    };
+    await q(
+      "INSERT INTO finfolk.instagram_events(id,payload) VALUES($1,$2::jsonb)",
+      [
+        ordinary.id,
+        JSON.stringify({
+          context: "mention",
+          commentId: ordinary.id,
+          mediaId: ordinary.media.id,
+        }),
+      ],
+    );
+    await processInstagramEvent(ordinary.id, webEnv, q, db);
+    const recommended = (
+      await q(
+        "SELECT owner_id,kind,data FROM finfolk.instagram_actions WHERE source_id=$1",
+        [ordinary.id],
+      )
+    )[0];
+    assert.equal(
+      recommended.owner_id,
+      null,
+      "A matching numeric DM sender must not authorise a public comment",
+    );
+    assert.equal(recommended.kind, "reply");
+    assert.equal(recommended.data.reply, "");
     // A verified commenter recommending another creator never makes that creator's post automatic.
     await q(
       "UPDATE finfolk.instagram_connections SET status='connected',share_posts=true,media_owner_id=$2 WHERE user_id=$1",
@@ -411,6 +516,10 @@ try {
   } finally {
     globalThis.fetch = originalFetch;
     await q(
+      "DELETE FROM finfolk.instagram_actions WHERE source_id IN (SELECT jsonb_array_elements_text($1::jsonb))",
+      [JSON.stringify(ids)],
+    );
+    await q(
       "DELETE FROM finfolk.instagram_events WHERE id IN (SELECT jsonb_array_elements_text($1::jsonb))",
       [JSON.stringify(ids)],
     );
@@ -423,6 +532,8 @@ try {
     "Comment integration passed: identity proof, privacy, dates, concurrent deduplication, confirmation ownership, gates, durable limits and uncertain-send reconciliation.",
   );
 } finally {
+  globalThis.fetch = nativeFetch;
+  await fixture.restore();
   await q(
     "DELETE FROM finfolk.instagram_commands WHERE id IN (SELECT jsonb_array_elements_text($1::jsonb))",
     [JSON.stringify(ids)],

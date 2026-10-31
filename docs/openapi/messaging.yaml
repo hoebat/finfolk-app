@@ -1481,6 +1481,31 @@ components:
           type: string
           format: date-time
           nullable: true
+        health:
+          type: object
+          additionalProperties: false
+          required: [status, issues, pendingReplies, uncertainReplies, failedReplies, stalledCommands]
+          properties:
+            status:
+              type: string
+              enum: [paused, healthy, attention]
+            issues:
+              type: array
+              items:
+                type: string
+                enum: [token_refresh_failed, token_expired, subscription_missing, processing_delayed, uncertain_replies, failed_replies]
+            pendingReplies:
+              type: integer
+              minimum: 0
+            uncertainReplies:
+              type: integer
+              minimum: 0
+            failedReplies:
+              type: integer
+              minimum: 0
+            stalledCommands:
+              type: integer
+              minimum: 0
         tokenExpiresAt:
           type: string
           format: date-time

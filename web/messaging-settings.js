@@ -64,6 +64,51 @@ export async function renderMessagingSettings({ host, api }) {
           (state.username ? "@" + state.username : "Not authorized"),
       ),
     );
+    if (state.health) {
+      const health = el("section");
+      health.setAttribute("aria-label", "Messaging health");
+      health.append(
+        el(
+          "h3",
+          state.health.status === "paused"
+            ? "Paused"
+            : state.blockers.length
+              ? "Setup needed"
+              : state.health.status === "attention"
+                ? "Needs attention"
+                : "Processing normally",
+        ),
+      );
+      const labels = {
+        token_refresh_failed:
+          "Reconnect Instagram: automatic token refresh failed.",
+        token_expired: "Reconnect Instagram: authorization has expired.",
+        subscription_missing:
+          "Verify the Instagram account webhook subscription.",
+        processing_delayed: "Some commands have waited more than five minutes.",
+        uncertain_replies:
+          "Inspect uncertain replies in Instagram. Do not resend them automatically.",
+        failed_replies:
+          "Review failed replies and use safe retry where available.",
+      };
+      for (const issue of state.health.issues)
+        health.append(el("p", labels[issue] || issue));
+      health.append(
+        el(
+          "p",
+          `${state.health.pendingReplies} pending · ${state.health.uncertainReplies} uncertain · ${state.health.failedReplies} failed replies`,
+        ),
+      );
+      root.append(health);
+    }
+    if (state.tokenExpiresAt)
+      root.append(
+        el(
+          "p",
+          "Authorization expiry: " +
+            new Date(state.tokenExpiresAt).toLocaleString(),
+        ),
+      );
     const checks = el("ul");
     for (const [label, value] of [
       ["Authorization", state.checks.authorization],

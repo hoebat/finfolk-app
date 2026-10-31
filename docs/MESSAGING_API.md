@@ -1,5 +1,7 @@
 # Instagram messaging API
 
+For the staged operator runbook and cross-provider publication rules, see [Instagram activation](INSTAGRAM_ACTIVATION.md).
+
 The API contract is [OpenAPI 3.0](openapi/messaging.yaml). The command bot serves only `@finfolk.com.au`. API availability, signed-webhook receipt, command completion, provider acceptance and visible Instagram delivery are separate states.
 
 ## Authentication and interfaces
@@ -73,6 +75,8 @@ Only explicit retryable provider rejection or a failed preflight is retried auto
 Events and outbound records expire after 30 days. Account deletion removes attributed records, claims, OAuth state and replay responses. General operational audit records expire after 30 days. Claim challenges expire after 24 hours.
 
 ## Pilot and acceptance
+
+The readiness response also includes optional admin-only health metadata for pending/uncertain/failed replies, stalled commands, authorization expiry and subscription/refresh failures. No traffic alone is not considered an outage.
 
 Settings shows token/setup blockers, brand subscription, follow capability, last signed receipt, last command, last provider-accepted reply and recent event metadata. Token refresh failures appear as a failed check. Lack of recent traffic alone is not proof of an outage.
 

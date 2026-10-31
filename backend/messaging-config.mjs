@@ -1,3 +1,4 @@
+import { messagingHealth } from './messaging-health.mjs';
 import {
   createCipheriv,
   createDecipheriv,
@@ -205,6 +206,7 @@ export async function readiness(q, env) {
     lastCommandAt: c.last_command_at,
     lastProviderAcceptedAt: c.last_reply_at,
     tokenExpiresAt: c.token_expires_at,
+    health: await messagingHealth(q,c),
   };
 }
 export async function idempotent(

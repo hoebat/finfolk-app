@@ -27,7 +27,7 @@ export async function completeInstagramClaim(q,{uid,senderId,handle,actor,codeHa
   const normalized=instagramHandle(handle);
   if(!normalized)fail('The Instagram username could not be verified.');
   await q(`INSERT INTO finfolk.instagram_connections(user_id,handle,sender_id,status,challenge_hash,expires_at,provider_scope)
-    VALUES($1,$2,$3,'connected',null,null,$4) ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,sender_id=excluded.sender_id,provider_scope=excluded.provider_scope,status='connected',challenge_hash=null,expires_at=null,updated_at=now()`,[uid,normalized,senderId,scope]);
+    VALUES($1,$2,$3,'connected',null,null,$4) ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,sender_id=excluded.sender_id,provider_scope=excluded.provider_scope,identity_version=gen_random_uuid(),media_owner_id=null,share_posts=false,status='connected',challenge_hash=null,expires_at=null,updated_at=now()`,[uid,normalized,senderId,scope]);
   await q("UPDATE finfolk.members SET profile=jsonb_set(profile,'{instagram}',to_jsonb($2::text)),updated_at=now() WHERE user_id=$1",[uid,'https://www.instagram.com/'+normalized+'/']);
   const changed=await q("UPDATE finfolk.instagram_claims SET state='claimed',sender_id=$2,handle=$3,error='',follow_checked_at=now(),verified_by=$4,updated_at=now() WHERE user_id=$1 AND code_hash=$5 RETURNING user_id",[uid,senderId,normalized,actor,codeHash]);
   if(!changed.length)fail('This claim was replaced. Generate a new command in FinFolk.',409);

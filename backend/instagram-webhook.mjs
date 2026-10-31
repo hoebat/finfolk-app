@@ -181,14 +181,8 @@ export async function processInstagramEvent(id, env, q, db) {
     const sender = String(comment.from?.id || ""),
       text = String(comment.text || "").slice(0, 5000),
       parsed = parseActionRequest(text);
-    const owner = /^\d{1,40}$/.test(sender)
-      ? (
-          await q(
-            "SELECT user_id FROM finfolk.instagram_connections WHERE sender_id=$1 AND status='connected'",
-            [sender],
-          )
-        )[0]?.user_id
-      : null;
+    // Ordinary mentions remain reviewed recommendations. Only explicit commands
+    // can use the scoped comment-to-member proof; a DM sender ID is not a comment identity.
     const candidates = await q(
       "SELECT id,name FROM finfolk.beaches WHERE length(name)>3 AND position(lower(name) in lower($1))>0 LIMIT 5",
       [text],
@@ -211,44 +205,10 @@ export async function processInstagramEvent(id, env, q, db) {
       reply: "",
       thirdParty: true,
     };
-    if (owner && parsed.kinds.includes("stats") && candidates.length === 1) {
-      const profile = (
-        await q("SELECT profile FROM finfolk.members WHERE user_id=$1", [owner])
-      )[0]?.profile;
-      if (profile?.open) {
-        const counts = (
-          await q(
-            "SELECT (SELECT count(*) FROM finfolk.checkins WHERE user_id=$1 AND beach_id=$2 AND visit_day>=((now() AT TIME ZONE 'Australia/Melbourne')::date-29))::integer AS visits,count(*)::integer AS dives,coalesce(sum((data->>'durationMinutes')::numeric),0) AS minutes,round(avg((data->>'maxDepthMetres')::numeric),1) AS depth FROM finfolk.sessions WHERE owner_id=$1 AND beach_id=$2",
-            [owner, candidates[0].id],
-          )
-        )[0];
-        const parts = [];
-        if (profile.sharing?.visits)
-          parts.push(`${counts.visits} recent visit days`);
-        if (profile.sharing?.dives)
-          parts.push(`${counts.dives} logged sessions`);
-        if (profile.sharing?.time)
-          parts.push(`${counts.minutes} logged minutes`);
-        if (profile.sharing?.depth && counts.depth !== null)
-          parts.push(`${counts.depth}m typical logged maximum depth`);
-        if (parts.length)
-          data.reply = `FinFolk at ${candidates[0].name}: ${parts.join(" · ")}. Self-reported records.`;
-      }
-    }
-    for (const kind of owner ? parsed.kinds : ["reply"])
-      await q(
-        "INSERT INTO finfolk.instagram_actions(source_id,owner_id,sender_id,kind,data) VALUES($1,$2,$3,$4,$5::jsonb) ON CONFLICT(source_id,kind) DO NOTHING",
-        [
-          id,
-          owner || null,
-          sender || null,
-          kind,
-          JSON.stringify({
-            ...data,
-            reply: kind === "stats" ? data.reply : "",
-          }),
-        ],
-      );
+    await q(
+      "INSERT INTO finfolk.instagram_actions(source_id,owner_id,sender_id,kind,data) VALUES($1,NULL,$2,'reply',$3::jsonb) ON CONFLICT(source_id,kind) DO NOTHING",
+      [id,sender || null,JSON.stringify(data)],
+    );
     await q(
       "UPDATE finfolk.instagram_events SET status='done',error=null,updated_at=now() WHERE id=$1",
       [id],

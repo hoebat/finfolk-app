@@ -1,3 +1,7 @@
+import {
+  instagramFollowerProof,
+  proofMatches,
+} from "./instagram-eligibility.mjs";
 import { createHash, randomBytes } from "node:crypto";
 import {
   matchInstagramBeach,
@@ -74,8 +78,8 @@ export function checkinDay({ day, commentAt, now = new Date(), timezone }) {
 async function member(q, actor, ns) {
   return (
     await q(
-      `SELECT c.user_id,c.handle,c.media_owner_id,c.share_posts,m.profile FROM finfolk.instagram_comment_identities i
-    JOIN finfolk.instagram_connections c ON c.user_id=i.user_id AND c.sender_id=i.sender_id AND c.handle=i.handle AND c.status='connected'
+      `SELECT c.user_id,c.handle,c.media_owner_id,c.share_posts,c.sender_id,c.provider_scope,c.identity_version,m.profile FROM finfolk.instagram_comment_identities i
+    JOIN finfolk.instagram_connections c ON c.user_id=i.user_id AND c.sender_id=i.sender_id AND c.handle=i.handle AND c.provider_scope=i.connection_scope AND c.identity_version=i.connection_version AND c.status='connected'
     JOIN finfolk.members m ON m.user_id=c.user_id JOIN neon_auth."user" u ON u.id::text=m.user_id
     WHERE i.actor_id=$1 AND i.namespace=$2 AND NOT m.deleted AND u."emailVerified" AND NOT coalesce(u.banned,false) FOR UPDATE OF m`,
       [actor, ns],
@@ -113,7 +117,7 @@ async function publicStatus(q, url, owner) {
     return "Your post is awaiting review. " + account;
   return "This post has not been published on FinFolk.";
 }
-async function execute(q, row, env, identity, media, now) {
+async function execute(q, row, env, identity, media, now, proof) {
   if (row.command === "help") return { reply: commentHelp };
   if (row.command === "status")
     return { reply: await publicStatus(q, row.source_url, identity?.user_id) };
@@ -146,6 +150,7 @@ async function execute(q, row, env, identity, media, now) {
       env,
       q,
       {
+        followerProof: proof,
         beachId: places.length === 1 ? places[0].id : null,
         forceReview: !author || !identity.share_posts || places.length !== 1,
       },
@@ -223,6 +228,23 @@ export async function processCommentCommand(
     )
       source = "https://www.instagram.com" + u.pathname.replace(/\/?$/, "/");
   } catch {}
+  const personal = !["help", "status"].includes(parsed.command);
+  let proof = null;
+  if (personal) {
+    const candidate = (
+      await db.query(
+        `SELECT i.user_id FROM finfolk.instagram_comment_identities i
+      JOIN finfolk.instagram_connections c ON c.user_id=i.user_id AND c.status='connected'
+      AND c.sender_id=i.sender_id AND c.provider_scope=i.connection_scope AND c.identity_version=i.connection_version
+      WHERE i.namespace=$1 AND (($3::text IS NOT NULL AND i.challenge_hash=$3 AND i.expires_at>now()) OR ($3::text IS NULL AND i.actor_id=$2)) LIMIT 1`,
+        [ns, actor, parsed.args?.challengeHash || null],
+      )
+    )[0];
+    if (candidate)
+      proof = await instagramFollowerProof(candidate.user_id, env, db.query, {
+        fetcher,
+      });
+  }
   await db.transaction(async (q) => {
     // Serialize the whole reservation scope; rolling limits cannot race across queue consumers.
     await q("SELECT pg_advisory_xact_lock(76425385)");
@@ -265,13 +287,13 @@ export async function processCommentCommand(
       ],
     );
     if (limited) return;
-    if (parsed.args?.challengeHash) {
+    if (parsed.args?.challengeHash && proof?.eligible) {
       // Code possession plus provider-fetched handle and existing DM claim, never a handle-only match.
       await q(
         `UPDATE finfolk.instagram_comment_identities i SET actor_id=$1,challenge_hash=null,expires_at=null,updated_at=now()
         FROM finfolk.instagram_connections c,finfolk.members m,neon_auth."user" u
         WHERE i.challenge_hash=$2 AND i.expires_at>now() AND i.namespace=$3 AND c.user_id=i.user_id AND c.status='connected'
-        AND c.sender_id=i.sender_id AND c.handle=i.handle AND lower(i.handle)=lower($4) AND m.user_id=i.user_id AND NOT m.deleted AND u.id::text=m.user_id AND u."emailVerified" AND NOT coalesce(u.banned,false)`,
+        AND c.sender_id=i.sender_id AND c.provider_scope=i.connection_scope AND c.identity_version=i.connection_version AND c.handle=i.handle AND lower(i.handle)=lower($4) AND m.user_id=i.user_id AND NOT m.deleted AND u.id::text=m.user_id AND u."emailVerified" AND NOT coalesce(u.banned,false)`,
         [
           actor,
           parsed.args.challengeHash,
@@ -288,7 +310,14 @@ export async function processCommentCommand(
       row = (
         await q("SELECT * FROM finfolk.instagram_commands WHERE id=$1", [id])
       )[0];
-    const result = await execute(q, row, env, identity, media, now);
+    if (personal && identity && !proofMatches(proof, identity)) {
+      await q(
+        "UPDATE finfolk.instagram_commands SET owner_id=$2,state='cancelled',send_state='skipped',args=args-'challengeHash',result='Confirm your current Instagram connection and follow status privately in FinFolk.',updated_at=now() WHERE id=$1",
+        [id, identity.user_id],
+      );
+      return;
+    }
+    const result = await execute(q, row, env, identity, media, now, proof);
     await q(
       `UPDATE finfolk.instagram_commands SET owner_id=$2,state=$3,reply=$4,result=$4,beach_id=$5,visit_day=$6,updated_at=now() WHERE id=$1`,
       [
@@ -308,6 +337,26 @@ export async function sendCommandReply(id, env, db, fetcher = fetch) {
   if (
     env.INSTAGRAM_COMMAND_REPLIES_ENABLED !== "true" ||
     !env.INSTAGRAM_ACCESS_TOKEN
+  )
+    return;
+  const candidate = (
+    await db.query(
+      "SELECT owner_id,command FROM finfolk.instagram_commands WHERE id=$1 AND send_state='pending'",
+      [id],
+    )
+  )[0];
+  const personal = candidate && !["help", "status"].includes(candidate.command);
+  const proof =
+    personal && candidate.owner_id
+      ? await instagramFollowerProof(candidate.owner_id, env, db.query, {
+          fetcher,
+        })
+      : null;
+  if (
+    personal &&
+    candidate.owner_id &&
+    !proof?.eligible &&
+    proof?.reason === "follow_unverified"
   )
     return;
   const row = await db.transaction(async (q) => {
@@ -332,7 +381,11 @@ export async function sendCommandReply(id, env, db, fetcher = fetch) {
       return null;
     if (pending.owner_id) {
       const identity = await member(q, pending.actor_id, pending.namespace);
-      if (!identity || identity.user_id !== pending.owner_id) {
+      if (
+        !identity ||
+        identity.user_id !== pending.owner_id ||
+        (personal && !proofMatches(proof, identity))
+      ) {
         await q(
           "UPDATE finfolk.instagram_commands SET send_state='skipped',updated_at=now() WHERE id=$1",
           [id],
@@ -420,6 +473,12 @@ export async function commentCommandAction({
   if (action === "instagramCommandVerify") {
     if (typeof verified === "function") verified();
     else if (!verified) fail("Verify your email first.", 403);
+    const proof = await instagramFollowerProof(uid, env, q);
+    if (!proof.eligible)
+      fail(
+        "Verify your Instagram DM connection and follow @finfolk.com.au before verifying comments.",
+        403,
+      );
     const code = randomBytes(12).toString("hex");
     await db.transaction(async (tq) => {
       await tq(
@@ -432,10 +491,19 @@ export async function commentCommandAction({
           [uid],
         )
       )[0];
-      if (!c?.sender_id) fail("Verify your Instagram connection first.");
+      if (!proofMatches(proof, c))
+        fail("Your Instagram connection changed. Verify it again.", 409);
       await tq(
-        `INSERT INTO finfolk.instagram_comment_identities(user_id,namespace,sender_id,handle,challenge_hash,expires_at) VALUES($1,$2,$3,$4,$5,now()+interval '15 minutes') ON CONFLICT(user_id) DO UPDATE SET namespace=excluded.namespace,sender_id=excluded.sender_id,handle=excluded.handle,challenge_hash=excluded.challenge_hash,expires_at=excluded.expires_at,updated_at=now()`,
-        [uid, namespace(env), c.sender_id, c.handle, hash(code)],
+        `INSERT INTO finfolk.instagram_comment_identities(user_id,namespace,sender_id,handle,challenge_hash,expires_at,connection_scope,connection_version) VALUES($1,$2,$3,$4,$5,now()+interval '15 minutes',$6,$7::uuid) ON CONFLICT(user_id) DO UPDATE SET actor_id=null,namespace=excluded.namespace,sender_id=excluded.sender_id,handle=excluded.handle,challenge_hash=excluded.challenge_hash,expires_at=excluded.expires_at,connection_scope=excluded.connection_scope,connection_version=excluded.connection_version,updated_at=now()`,
+        [
+          uid,
+          namespace(env),
+          c.sender_id,
+          c.handle,
+          hash(code),
+          c.provider_scope,
+          c.identity_version,
+        ],
       );
     });
     return { command: "/me " + code + " @finfolk.com.au" };
@@ -445,6 +513,12 @@ export async function commentCommandAction({
     else if (!verified) fail("Verify your email first.", 403);
     if (env.INSTAGRAM_COMMAND_CHECKINS_ENABLED !== "true")
       fail("Comment check-ins are not open.", 403);
+    const proof = await instagramFollowerProof(uid, env, q);
+    if (!proof.eligible)
+      fail(
+        "Confirm your current Instagram connection and follow status first.",
+        403,
+      );
     return db.transaction(async (tq) => {
       const row = (
         await tq(
@@ -455,7 +529,7 @@ export async function commentCommandAction({
       if (!row || row.command !== "checkin" || row.state !== "confirmation")
         fail("This check-in is no longer awaiting confirmation.", 409);
       const identity = await member(tq, row.actor_id, row.namespace);
-      if (identity?.user_id !== uid)
+      if (identity?.user_id !== uid || !proofMatches(proof, identity))
         fail("Reconnect your verified Instagram identity.", 403);
       const beach = (
         await tq("SELECT * FROM finfolk.beaches WHERE id=$1", [

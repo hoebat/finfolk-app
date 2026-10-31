@@ -1,5 +1,6 @@
+import { messagingFixture } from "./messaging_fixture.mjs";
 import assert from "node:assert/strict";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { database } from "../backend/db.mjs";
 import {
   ingestInstagramMedia,
@@ -17,15 +18,24 @@ if (process.env.NEON_BRANCH !== "finfolk-regulars-dev")
 const db = database(process.env.DATABASE_URL),
   q = db.query,
   tag = randomBytes(5).toString("hex"),
-  uid = "discovery_" + tag,
-  other = "discovery_other_" + tag,
-  admin = "discovery_admin_" + tag,
+  uid = randomUUID(),
+  other = randomUUID(),
+  admin = randomUUID(),
   author = String(Date.now()),
   ids = [];
 const env = {
   INSTAGRAM_ADMIN_IDS: admin,
   INSTAGRAM_PUBLICATION_ENABLED: "true",
 };
+const nativeFetch = globalThis.fetch;
+const fixture = await messagingFixture(db, env, {
+  senderId: author + "9",
+  handle: "test_" + tag,
+});
+globalThis.fetch = async (url, options) =>
+  new URL(url).hostname === "graph.instagram.com"
+    ? fixture.profileResponse(url)
+    : nativeFetch(url, options);
 const act = (action, v = {}, user = uid) =>
   discoveryAction({ action, v, uid: user, env, q });
 const media = (id, caption, extra = {}) => ({
@@ -44,20 +54,33 @@ async function ingest(caption, extra = {}, source = "tags") {
   return ingestInstagramMedia(media(id, caption, extra), source, env, q);
 }
 try {
-  for (const user of [uid, other, admin])
+  for (const user of [uid, other, admin]) {
+    await q(
+      `INSERT INTO neon_auth."user"(id,name,email,"emailVerified","createdAt","updatedAt") VALUES($1,'Discovery test',$2,true,now(),now())`,
+      [user, user + "@example.com"],
+    );
     await q(
       "INSERT INTO finfolk.members(user_id,profile) VALUES($1,$2::jsonb)",
       [user, JSON.stringify({ displayName: "Discovery test", open: false })],
     );
+  }
   await q(
     "INSERT INTO finfolk.instagram_connections(user_id,handle,sender_id,status,media_owner_id) VALUES($1,$2,$3,'connected',$4)",
     [uid, "test_" + tag, author + "9", author],
+  );
+  await q(
+    "UPDATE finfolk.instagram_connections SET provider_scope=$2 WHERE user_id=$1",
+    [uid, fixture.scope],
   );
   let row = await ingest("Bondi Beach");
   assert.equal(row.state, "pending");
   await act("instagramSharing", { enabled: true });
   row = await ingest("Bondi Beach");
   assert.equal(row.state, "published");
+  fixture.follows = false;
+  assert.equal((await ingest("Bondi Beach")).state, "pending");
+  fixture.follows = true;
+  row = await ingest("Bondi Beach");
   const repeat = await ingestInstagramMedia(
     media(ids.at(-1), "Bondi Beach"),
     "hashtag:bondibeach",
@@ -120,6 +143,37 @@ try {
     { id: noOwner.id, beachId: "bondi", mode: "approve" },
     admin,
   );
+  // Consent and connection changes during the external follow lookup are checked again by the INSERT.
+  for (const mutation of [
+    "share_posts=false",
+    "identity_version=gen_random_uuid()",
+  ]) {
+    const mid = author + String(++serial);
+    ids.push(mid);
+    const raced = await ingestInstagramMedia(
+      media(mid, "Bondi Beach"),
+      "tags",
+      env,
+      q,
+      {
+        fetcher: async (url) => {
+          await q(
+            "UPDATE finfolk.instagram_connections SET " +
+              mutation +
+              " WHERE user_id=$1",
+            [uid],
+          );
+          return fixture.profileResponse(url);
+        },
+      },
+    );
+    assert.equal(
+      raced.state,
+      "pending",
+      "A changed consent/connection must prevent automatic publication",
+    );
+    await act("instagramSharing", { enabled: true });
+  }
   const closedRow = await ingest("Bondi Beach");
   assert.equal(closedRow.state, "published"); // explicit post consent is independent of private logbook profile
   let feed = await publicInstagramFeed(q, "bondi");
@@ -231,7 +285,9 @@ try {
       "INSERT INTO finfolk.instagram_sources(key,kind,status,lease_until) VALUES($1,'tags','queued',now()+interval '5 minutes')",
       [sourceKey],
     );
-    globalThis.fetch = async () => {
+    globalThis.fetch = async (url) => {
+      if (new URL(url).hostname === "graph.instagram.com")
+        return fixture.profileResponse(url);
       pages++;
       const mediaId = author + String(++serial);
       ids.push(mediaId);
@@ -262,13 +318,15 @@ try {
     assert.equal(pages, 2);
     const captionId = author + String(++serial);
     ids.push(captionId);
-    globalThis.fetch = async () =>
-      Response.json({
-        mentioned_media: media(
-          captionId,
-          "@finfolk.com.au log Bondi Beach depth 8 duration 30",
-        ),
-      });
+    globalThis.fetch = async (url) =>
+      new URL(url).hostname === "graph.instagram.com"
+        ? fixture.profileResponse(url)
+        : Response.json({
+            mentioned_media: media(
+              captionId,
+              "@finfolk.com.au log Bondi Beach depth 8 duration 30",
+            ),
+          });
     await collectMention(
       captionId,
       null,
@@ -327,6 +385,8 @@ try {
     "INSTAGRAM_DISCOVERY_DB_PASS: consent, ownership, duplicates, suppression, ambiguous location, public pagination, admin denial, report endpoint, pause, disconnect and durable retry.",
   );
 } finally {
+  globalThis.fetch = nativeFetch;
+  await fixture.restore();
   await q(
     "DELETE FROM finfolk.instagram_suppressed_sources WHERE author_id=$1",
     [author],
@@ -339,5 +399,7 @@ try {
     "DELETE FROM finfolk.members WHERE user_id IN(SELECT jsonb_array_elements_text($1::jsonb))",
     [JSON.stringify([uid, other, admin])],
   );
+  for (const user of [uid, other, admin])
+    await q('DELETE FROM neon_auth."user" WHERE id=$1', [user]);
   await db.pool.end();
 }
