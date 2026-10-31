@@ -69,6 +69,10 @@ async function call(
   return body.data;
 }
 try {
+  const publicFeed=await fetch(new URL('instagram/posts?beachId=bondi',api),{headers:{Origin:'https://finfolk.com.au'}});
+  assert.equal(publicFeed.status,200);const feed=await publicFeed.json();assert.ok(Array.isArray(feed.posts));assert.equal(typeof feed.activity.collecting,'boolean');
+  const invalidCursor=await fetch(new URL('instagram/posts?beachId=bondi&cursor=invalid',api));assert.equal(invalidCursor.status,400);
+  console.log('Public Instagram feed and invalid-cursor rejection passed.');
   for (const origin of [
     'https://finfolk.com.au',
     'https://www.finfolk.com.au',

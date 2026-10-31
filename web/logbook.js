@@ -1,3 +1,4 @@
+import { getInstagramFeed } from './instagram-discovery.js';
 import { instagramPanel } from "./instagram.js";
 import { socialGallery } from "./media.js";
 import { readResource } from "./activity.js";
@@ -808,9 +809,13 @@ export function installLogbook({
       return !!config?.enabled;
     },
     async publicInstagramPosts(beachId) {
-      await start();
-      if (!config.enabled || !config.instagram?.enabled) return [];
-      return api.instagramPosts({beachId});
+      config ||= await loadJSON("neon-config.json");
+      if (!config.enabled || !config.apiUrl) return [];
+      const discovered=await getInstagramFeed(config.apiUrl,beachId).catch(()=>({posts:[]}));
+      const shared=api?.user?await api.instagramPosts({beachId}).catch(()=>[]):[];
+      const seen=new Set();
+      function page(result,extra=[]){const posts=[...result.posts,...extra].filter(p=>{if(seen.has(p.url))return false;seen.add(p.url);return true;}).map(p=>({...p,reportApi:config.apiUrl}));if(result.cursor)posts.next=async()=>page(await getInstagramFeed(config.apiUrl,beachId,result.cursor));return posts;}
+      return page(discovered,shared);
     },
     async newSession(beach) {
       await start();

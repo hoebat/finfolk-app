@@ -23,7 +23,11 @@
     "NEON_HYPERDRIVE_CA_ID": "d698b258-d68d-4f71-b814-be9d39248d5e",
     "INSTAGRAM_ENABLED": "false",
     "INSTAGRAM_APP_ID": "1667613151655339",
-    "INSTAGRAM_GRAPH_VERSION": "v26.0"
+    "INSTAGRAM_GRAPH_VERSION": "v26.0",
+    "INSTAGRAM_DISCOVERY_ENABLED": "false",
+    "INSTAGRAM_PUBLICATION_ENABLED": "false",
+    "INSTAGRAM_HASHTAGS_ENABLED": "false",
+    "INSTAGRAM_ACCOUNT_ID": "17841461601419539"
   },
   "routes": [
     {
@@ -49,7 +53,7 @@
   },
   "triggers": {
     "crons": [
-      "17 * * * *"
+      "*/15 * * * *"
     ]
   }
 }

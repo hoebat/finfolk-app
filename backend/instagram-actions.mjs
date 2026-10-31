@@ -76,6 +76,8 @@ export async function instagramAction({ action, v, uid, env, q, verified }) {
     verified();
     const handle = instagramHandle(v.handle);
     if (!handle) error("Enter your Instagram handle.");
+    await q("UPDATE finfolk.instagram_discoveries SET state='hidden',updated_at=now() WHERE owner_id=$1 AND automatic=true",[uid]);
+    await q("UPDATE finfolk.instagram_connections SET share_posts=false,media_owner_id=null WHERE user_id=$1",[uid]);
     const code = randomBytes(12).toString("hex");
     await q(
       "INSERT INTO finfolk.instagram_connections(user_id,handle,challenge_hash,expires_at) VALUES($1,$2,$3,now()+interval '1 day') ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,sender_id=null,status='pending',challenge_hash=excluded.challenge_hash,expires_at=excluded.expires_at,updated_at=now()",
@@ -92,6 +94,8 @@ export async function instagramAction({ action, v, uid, env, q, verified }) {
     };
   }
   if (action === "instagramDisconnect") {
+    await q("UPDATE finfolk.instagram_discoveries SET state='hidden',updated_at=now() WHERE owner_id=$1 AND automatic=true",[uid]);
+    await q("UPDATE finfolk.instagram_connections SET share_posts=false,media_owner_id=null WHERE user_id=$1",[uid]);
     await q(
       "UPDATE finfolk.instagram_connections SET status='disconnected',sender_id=null,challenge_hash=null,public_points=false WHERE user_id=$1",
       [uid],
@@ -172,7 +176,7 @@ export async function instagramAction({ action, v, uid, env, q, verified }) {
   }
   if (action === "instagramRetryEvent") {
     if (!admin) error("Administrator access required.", 403);
-    if (!/^\d{1,40}$/.test(v.id || "")) error("Invalid provider event.");
+    if (!/^(?:media:)?\d{1,40}$/.test(v.id || "")) error("Invalid provider event.");
     await q(
       "UPDATE finfolk.instagram_events SET status='queued',attempts=0,error=null WHERE id=$1 AND status='error'",
       [v.id],

@@ -1,3 +1,4 @@
+import { collectMention } from "./instagram-collector.mjs";
 import { createHmac, createHash, timingSafeEqual } from "node:crypto";
 import { parseActionRequest } from "./instagram-actions.mjs";
 export function validSignature(raw, signature, secret) {
@@ -66,6 +67,21 @@ export async function instagramWebhook(request, env, q) {
         );
       }
     }
+    for (const change of entry.changes || []) {
+      if (
+        change.field === "mentions" &&
+        !change.value?.comment_id &&
+        /^\d{1,40}$/.test(String(change.value?.media_id || ""))
+      ) {
+        const mediaId = String(change.value.media_id),
+          id = "media:" + mediaId;
+        await q(
+          "INSERT INTO finfolk.instagram_events(id,payload) VALUES($1,$2::jsonb) ON CONFLICT DO NOTHING",
+          [id, JSON.stringify({ mediaId })],
+        );
+        await env.INSTAGRAM_QUEUE.send({ id });
+      }
+    }
     for (const change of entry.changes || [])
       if (
         change.field === "mentions" &&
@@ -87,7 +103,55 @@ export async function instagramWebhook(request, env, q) {
   return new Response("Accepted");
 }
 export async function processInstagramEvent(id, env, q) {
-  if (env.INSTAGRAM_ENABLED !== "true") return; // Keep pending until pilot activation.
+  if (
+    env.INSTAGRAM_DISCOVERY_ENABLED === "true" &&
+    /^media:\d{1,40}$/.test(id)
+  ) {
+    const event = (
+      await q(
+        "SELECT status,attempts FROM finfolk.instagram_events WHERE id=$1",
+        [id],
+      )
+    )[0];
+    if (!event || event.status === "done" || event.attempts >= 5) return;
+    try {
+      await collectMention(id.slice(6), null, env, q);
+      await q(
+        "UPDATE finfolk.instagram_events SET status='done',updated_at=now() WHERE id=$1",
+        [id],
+      );
+    } catch {
+      await q(
+        "UPDATE finfolk.instagram_events SET status='error',attempts=attempts+1,updated_at=now(),error='Caption retrieval failed' WHERE id=$1",
+        [id],
+      );
+      throw Error("Caption retrieval failed");
+    }
+    return;
+  }
+  if (env.INSTAGRAM_DISCOVERY_ENABLED === "true" && /^\d{1,40}$/.test(id)) {
+    const event = (
+      await q(
+        "SELECT status,attempts FROM finfolk.instagram_events WHERE id=$1",
+        [id],
+      )
+    )[0];
+    if (!event || event.status === "done" || event.attempts >= 5) return;
+    try {
+      await collectMention(null, id, env, q);
+    } catch {
+      await q(
+        "UPDATE finfolk.instagram_events SET status='error',attempts=attempts+1,updated_at=now(),error='Mention discovery failed' WHERE id=$1",
+        [id],
+      );
+      throw Error("Mention discovery failed");
+    }
+  }
+  if (
+    env.INSTAGRAM_ENABLED !== "true" &&
+    env.INSTAGRAM_DISCOVERY_ENABLED !== "true"
+  )
+    return; // Keep pending until pilot activation.
   if (
     !/^\d{1,40}$/.test(id) ||
     !env.INSTAGRAM_ACCESS_TOKEN ||
@@ -210,7 +274,10 @@ export async function reconcileInstagram(env, q) {
   await q(
     "UPDATE finfolk.instagram_events SET status='error',error='Processing interrupted' WHERE status='processing' AND updated_at<now()-interval '20 minutes'",
   );
-  if (env.INSTAGRAM_ENABLED === "true")
+  if (
+    env.INSTAGRAM_ENABLED === "true" ||
+    env.INSTAGRAM_DISCOVERY_ENABLED === "true"
+  )
     for (const row of await q(
       "SELECT id FROM finfolk.instagram_events WHERE status IN ('queued','error') AND attempts<5 ORDER BY created_at LIMIT 50",
     ))
