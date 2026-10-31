@@ -1,6 +1,14 @@
 # Instagram authorization investigation
 
-Observed 31 October 2026 UTC. Messaging remains paused; no live DM acceptance is claimed.
+Observed 31 October 2026 UTC.
+
+## Recovery
+
+The Facebook Page-based route successfully reads Page `1387107281155901` and its linked `finfolk.com.au` account `17841461601419539`, even though `/me/accounts` returns an empty list. A valid app-bound Page token has been obtained, retained encrypted, and activated through the shared account/subscription finalizer. Authorization and subscription checks pass. The connection remains paused until the real sender pilot completes.
+
+The Instagram subscription readback for this Page token omits the app ID and returns only `subscribed_fields`. Verification now binds the token to the correct app using Meta's debugger and to the configured Page via `/me` before accepting exactly one subscription entry containing `messages`.
+
+The evidence below records the unsuccessful Unified Login investigation, not proof that every Meta connection method is broken.
 
 ## Reproduction
 

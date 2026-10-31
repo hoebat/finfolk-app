@@ -544,11 +544,11 @@ paths:
   /v1/admin/messaging/instagram/authorization/diagnostics:
     get:
       operationId: instagramAuthorizationDiagnostics
-      summary: Inspect the saved Unified Login grant without changing authorization
+      summary: Inspect the saved Meta grant without changing authorization
       description: >-
         Verified administrators only. Returns app binding, validity, permission names,
         granular permission target counts and expected-account matches, expiration,
-        and assigned-account lookup metadata. Never returns credentials, token subject
+        and account lookup metadata. Facebook Page mode includes pageBinding instead of assignedAccounts. Never returns credentials, token subject
         IDs, raw provider errors, or unrelated asset IDs. Responses are private/no-store.
       tags: [Administration]
       security:
@@ -586,6 +586,13 @@ paths:
                             targetsReported: {type: boolean}
                             targetCount: {type: integer, nullable: true}
                             includesExpectedAccount: {type: boolean, nullable: true}
+                      provider: {type: string, enum: [instagram-unified, instagram-facebook]}
+                      pageBinding:
+                        type: object
+                        properties:
+                          pageId: {type: string}
+                          expectedAccountFound: {type: boolean}
+                          errorCode: {type: string}
                       assignedAccounts:
                         type: object
                         nullable: true
@@ -1502,7 +1509,7 @@ components:
       properties:
         provider:
           type: string
-          enum: [instagram-login, instagram-unified]
+          enum: [instagram-login, instagram-unified, instagram-facebook]
         mode:
           type: string
           enum:
