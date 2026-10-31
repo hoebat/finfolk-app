@@ -301,8 +301,9 @@ export function installCommunity({
           instagram.value = '';
           showInstagram('');
           removeInstagram.hidden = true;
-          status.textContent = 'Instagram link removed. Add your new Instagram handle, then Save profile. Claim it in the Instagram tab to verify ownership.';
-          await renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
+          await account();
+          const feedback = document.querySelector('#account-profile form [role="status"]');
+          if (feedback) feedback.textContent = 'Instagram link removed. Add your new Instagram handle, then Save profile. Claim it in the Instagram tab to verify ownership.';
         } catch (error) {
           status.textContent = error.message;
         } finally {

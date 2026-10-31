@@ -85,7 +85,7 @@ assert.ok(calls.some(c=>c.action==='instagramDisconnect'));
 assert.equal(document.querySelector('[name=instagram]').value,'');
 assert.ok(![...document.querySelectorAll('a')].some(a=>a.textContent==='Your Instagram profile ↗'));
 document.querySelector('[name=instagram]').value='@chriszfree';
-form.dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));await new Promise(r=>setTimeout(r,20));
+document.querySelector('#account-profile form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));await new Promise(r=>setTimeout(r,20));
 assert.equal(calls.filter(c=>c.action==='preferences').at(-1).profile.instagram,'https://www.instagram.com/chriszfree/');
 document.getElementById('account-tab-settings').click();
 assert.equal(document.getElementById('account-settings').hidden, false);
