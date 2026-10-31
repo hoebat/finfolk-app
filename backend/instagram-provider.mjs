@@ -3,6 +3,7 @@ import {
   seal,
   unseal,
   messagingConfig,
+  oauthSettings,
 } from "./messaging-config.mjs";
 export class InstagramProvider {
   constructor(config, fetcher = fetch) {
@@ -15,7 +16,10 @@ export class InstagramProvider {
       method = "GET",
       body,
       token = this.config.token,
-      host = "https://graph.instagram.com",
+      host = this.config.graphHost ||
+        (this.config.provider === "instagram-unified"
+          ? "https://graph.facebook.com"
+          : "https://graph.instagram.com"),
       versioned = true,
     } = {},
   ) {
@@ -116,7 +120,11 @@ export class InstagramProvider {
     };
   }
   async validate() {
-    const data = await this.request("/me?fields=id,username");
+    const data = await this.request(
+      this.config.provider === "instagram-unified"
+        ? "/" + this.config.accountId + "?fields=id,username"
+        : "/me?fields=id,username",
+    );
     if (
       String(data.id) !== this.config.accountId ||
       data.username?.toLowerCase() !== "finfolk.com.au"
@@ -127,6 +135,34 @@ export class InstagramProvider {
         409,
       );
     return data;
+  }
+  async authorizedAccount() {
+    if (this.config.provider !== "instagram-unified")
+      return this.request("/me?fields=id,username");
+    const business = await this.request("/me?fields=client_business_id");
+    if (!/^\d{1,40}$/.test(String(business.client_business_id || "")))
+      throw messagingError(
+        "wrong_token_type",
+        "Unified Login requires a business integration system-user token.",
+        409,
+      );
+    const accounts = await this.request(
+      "/me/assigned_instagram_accounts?fields=id,username&limit=100",
+    );
+    if (
+      !Array.isArray(accounts.data) ||
+      accounts.data.length !== 1 ||
+      accounts.paging?.next
+    )
+      throw messagingError(
+        "wrong_brand_account",
+        "Share only @finfolk.com.au with this integration.",
+        409,
+      );
+    return {
+      ...accounts.data[0],
+      businessId: String(business.client_business_id),
+    };
   }
   async subscriptions() {
     const data = await this.request(
@@ -162,6 +198,59 @@ export class InstagramProvider {
   }
 }
 export async function exchangeOAuth(code, env, fetcher = fetch) {
+  const settings = oauthSettings(env);
+  if (settings.provider === "instagram-unified") {
+    const url = new URL(
+      "https://graph.facebook.com/" +
+        (env.INSTAGRAM_MESSAGING_GRAPH_VERSION || "v26.0") +
+        "/oauth/access_token",
+    );
+    for (const [key, value] of Object.entries({
+      client_id: settings.appId,
+      client_secret: settings.clientSecret,
+      code,
+      redirect_uri: settings.redirectURI,
+    }))
+      url.searchParams.set(key, value);
+    let response, data;
+    try {
+      response = await fetcher(url, { signal: AbortSignal.timeout(15000) });
+      data = await response.json();
+    } catch {
+      throw messagingError(
+        "oauth_exchange_failed",
+        "Unified Login authorization could not be confirmed.",
+        503,
+      );
+    }
+    if (
+      !response.ok ||
+      typeof data.access_token !== "string" ||
+      !data.access_token
+    )
+      throw messagingError(
+        "oauth_exchange_failed",
+        "Unified Login authorization could not be completed.",
+        503,
+      );
+    if (
+      data.expires_in !== undefined &&
+      (!Number.isFinite(Number(data.expires_in)) || Number(data.expires_in) < 0)
+    )
+      throw messagingError(
+        "oauth_exchange_failed",
+        "The authorization expiry could not be verified.",
+        503,
+      );
+    return {
+      token: data.access_token,
+      expiresAt:
+        Number(data.expires_in) > 0
+          ? new Date(Date.now() + Number(data.expires_in) * 1000).toISOString()
+          : null,
+      tokenKind: "business-integration-system-user",
+    };
+  }
   const redirect =
     env.INSTAGRAM_MESSAGING_REDIRECT_URI ||
     "https://api.finfolk.com.au/v1/integrations/instagram/oauth/callback";
@@ -234,6 +323,8 @@ export async function refreshAuthorization(q, env, fetcher = fetch) {
   } catch {
     return;
   }
+  // Unified Login uses the business token lifecycle, never Instagram user-token refresh.
+  if (c.provider === "instagram-unified") return;
   if (
     !c.token ||
     !c.token_expires_at ||

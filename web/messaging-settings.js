@@ -115,7 +115,14 @@ export async function renderMessagingSettings({ host, api }) {
       ["Account subscription", state.checks.subscription],
       ["Follow lookup", state.checks.followLookup],
       ["Real-account acceptance", state.checks.liveDelivery],
-      ["Token refresh", state.checks.tokenRefresh !== false],
+      [
+        state.provider === "instagram-unified"
+          ? "Business authorization"
+          : "Token refresh",
+        state.provider === "instagram-unified"
+          ? state.checks.authorization
+          : state.checks.tokenRefresh !== false,
+      ],
     ])
       checks.append(
         el("li", label + ": " + (value ? "verified" : "not verified")),

@@ -1432,6 +1432,9 @@ components:
     Readiness:
       type: object
       properties:
+        provider:
+          type: string
+          enum: [instagram-login, instagram-unified]
         mode:
           type: string
           enum:

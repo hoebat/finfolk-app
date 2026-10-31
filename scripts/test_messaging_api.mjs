@@ -81,6 +81,41 @@ let follows = true,
   profileCalls = 0;
 const fetcher = async (input, options = {}) => {
   const url = new URL(input);
+  if (url.hostname === "graph.facebook.com") {
+    const ok = (data) => ({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: async () => data,
+    });
+    if (url.pathname.endsWith("/oauth/access_token"))
+      return ok({ access_token: "fixture-business", expires_in: 0 });
+    if (url.pathname.endsWith("/me/assigned_instagram_accounts"))
+      return ok({ data: [{ id: brand, username: "finfolk.com.au" }] });
+    if (url.searchParams.get("fields") === "client_business_id")
+      return ok({ id: "system-user", client_business_id: "8888" });
+    if (url.pathname.endsWith("/subscribed_apps"))
+      return ok(
+        options.method === "POST"
+          ? { success: true }
+          : { data: [{ id: "778", subscribed_fields: ["messages"] }] },
+      );
+    if (url.pathname.endsWith("/messages")) {
+      replies.push(JSON.parse(options.body));
+      return ok({ message_id: "unified-reply-" + serial++ });
+    }
+    const id = url.pathname.split("/").pop();
+    return ok({
+      id,
+      username:
+        id === brand
+          ? "finfolk.com.au"
+          : id === sender
+            ? "owner.dives"
+            : "other.dives",
+      is_user_follow_business: follows,
+    });
+  }
   assert.ok(
     ["graph.instagram.com", "api.instagram.com"].includes(url.hostname),
     "Messaging must not mix Graph API stacks",
@@ -731,6 +766,84 @@ try {
     enabledCommands: ["ping", "help"],
     pilotSenderIds: [],
   });
+  // New Meta apps require Unified Login: same API lifecycle, a new provider namespace and business token.
+  env.INSTAGRAM_MESSAGING_PROVIDER = "instagram-unified";
+  env.INSTAGRAM_MESSAGING_META_APP_ID = "778";
+  env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID = "5544";
+  let unifiedAuth = await request(
+    admin,
+    "POST",
+    "/v1/admin/messaging/instagram/authorization",
+    {},
+  );
+  const unifiedURL = new URL(unifiedAuth.data.authorizationUrl);
+  assert.equal(unifiedURL.hostname, "www.facebook.com");
+  assert.equal(unifiedURL.searchParams.get("client_id"), "778");
+  assert.equal(unifiedURL.searchParams.get("config_id"), "5544");
+  assert.equal(unifiedURL.searchParams.get("scope"), null);
+  env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID = "5545";
+  let staleAuth = await app.request(
+    "/v1/integrations/instagram/oauth/callback?code=fixture-code&state=" +
+      unifiedURL.searchParams.get("state"),
+    {},
+    env,
+  );
+  assert.equal(
+    staleAuth.status,
+    400,
+    "Changing the login configuration invalidates the old authorization",
+  );
+  env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID = "5544";
+  unifiedAuth = await request(
+    admin,
+    "POST",
+    "/v1/admin/messaging/instagram/authorization",
+    {},
+  );
+  const unifiedState = new URL(
+    unifiedAuth.data.authorizationUrl,
+  ).searchParams.get("state");
+  const unifiedCallback = await app.request(
+    "/v1/integrations/instagram/oauth/callback?code=fixture-code&state=" +
+      unifiedState,
+    {},
+    env,
+  );
+  assert.equal(unifiedCallback.status, 303);
+  const unifiedConfig = await messagingConfig(q, env, { credentials: true });
+  assert.equal(unifiedConfig.provider, "instagram-unified");
+  assert.equal(unifiedConfig.scope, "instagram-unified:778:" + brand);
+  assert.equal(unifiedConfig.token, "fixture-business");
+  assert.equal(unifiedConfig.token_expires_at, null);
+  assert.equal(unifiedConfig.mode, "disabled");
+  follows = true;
+  await incoming(sender, "/ping");
+  await incoming(otherSender, "/help");
+  await rollout(["ping", "help"]);
+  const unifiedBefore = replies.length;
+  const unifiedPing = await incoming(sender, "/ping");
+  assert.equal(unifiedPing.processing_state, "completed");
+  assert.match(replies.at(-1).message.text, /^Pong\. Reference:/);
+  assert.equal((await outbox(unifiedPing.id)).state, "provider_accepted");
+  await incoming(sender, "/ping", { mid: unifiedPing.id.split(":").at(-1) });
+  assert.equal(
+    replies.length,
+    unifiedBefore + 1,
+    "Unified duplicates reply only once",
+  );
+  await incoming(sender, "/help");
+  assert.match(replies.at(-1).message.text, /\/ping/);
+  follows = false;
+  const unifiedDenied = await incoming(sender, "/ping");
+  assert.equal(
+    replies.length,
+    unifiedBefore + 2,
+    "Unified nonfollowers receive no reply",
+  );
+  assert.notEqual(unifiedDenied.processing_state, "completed");
+  console.log(
+    "UNIFIED_MESSAGING_SQL_PASS: actual role, Meta code exchange, business-account discovery, subscription, encrypted scoped credentials and changed-configuration OAuth rejection.",
+  );
   console.log(
     "MESSAGING_SQL_API_PASS: isolated migration, actual Worker role, OpenAPI response validation, OAuth, encrypted idempotency, owner/admin boundaries, durable receipts, follower gates, claims/reviews, commands, queue recovery, outbox uncertainty, rollout cancellation and account-deletion cleanup.",
   );

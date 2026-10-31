@@ -4,11 +4,23 @@ PR #4 supplies the versioned DM API, encrypted credentials, Settings controls an
 
 ## Operator configuration
 
-Use the permissions-restricted, ignored `.env.local` as the canonical operator configuration. Preserve the existing `MESSAGING_ENCRYPTION_KEY`; never regenerate it during deployment. Keep encrypted backups verified. Store static messaging client/signature secrets and the encryption key in Worker secrets and protected GitHub Actions secrets. The rotating Instagram Login credential remains encrypted in Neon and is refreshed by the existing scheduler. The Facebook/Page token belongs to comments/discovery and must not be substituted for the Instagram Login credential.
+Use the permissions-restricted, ignored `.env.local` as the canonical operator configuration. Preserve the existing `MESSAGING_ENCRYPTION_KEY`; never regenerate it during deployment. Keep encrypted backups verified. Store static messaging client/signature secrets and the encryption key in Worker secrets and protected GitHub Actions secrets. The messaging credential remains encrypted in Neon. Legacy Instagram Login user tokens are refreshed by the scheduler; Unified Login business tokens follow the configured business-integration lifetime and require reconnecting when revoked. The Facebook/Page token belongs to comments/discovery and must not be substituted for either messaging credential.
 
-Resolve the owner’s actual verified Neon member ID from their signed-in FinFolk account before configuring `INSTAGRAM_ADMIN_IDS`. Configure Instagram Login client ID/secret separately from the Meta app ID and webhook-signature secret. The callback is `https://api.finfolk.com.au/v1/integrations/instagram/oauth/callback`; the stable webhook is `https://api.finfolk.com.au/instagram/webhook`.
+Resolve the owner’s actual verified Neon member ID from their signed-in FinFolk account before configuring `INSTAGRAM_ADMIN_IDS`. Choose the messaging provider explicitly. New Meta apps require Unified Login; older apps may retain their existing Instagram Login configuration. The callback is `https://api.finfolk.com.au/v1/integrations/instagram/oauth/callback`; the stable webhook is `https://api.finfolk.com.au/instagram/webhook`.
 
 In Settings, authorize only `@finfolk.com.au`. Verify the actual account, app-level webhook configuration and brand subscription. Keep processing paused until these checks succeed. Account recovery, required security verification, Meta app access/review and real-user testing cannot be replaced by database flags or synthetic evidence.
+
+## Unified Login for new Meta apps
+
+Set `INSTAGRAM_MESSAGING_PROVIDER=instagram-unified`. In the Instagram API setup with Unified Login, create a compatible business-integration system-user configuration. Request only `instagram_basic` and `instagram_manage_messages` for this stage; omit ads, publishing and comments permissions. Keep the existing comment/discovery integration separate. Register the exact callback above and save its config ID as `INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID`.
+
+Set `INSTAGRAM_MESSAGING_META_APP_ID` to the Meta App Basic ID, and `INSTAGRAM_MESSAGING_META_APP_SECRET` to its server-side secret. When this ID matches `INSTAGRAM_APP_ID`, the existing `INSTAGRAM_APP_SECRET` is reused. Do not use the Instagram product client credentials for Unified Login. Select only @finfolk.com.au during authorization. The callback verifies a business-scoped system-user identity and exactly one assigned Instagram account before subscribing and storing the encrypted token. A Page or personal user token is rejected.
+
+Unified authorization uses Facebook's dialog and `graph.facebook.com`; legacy Instagram Login continues using its own dialog and `graph.instagram.com`. Provider namespaces remain separate, so existing linked members need a fresh claim when changing providers. Migration `0015_messaging_oauth_flow.sql` binds pending OAuth intents to the provider, app, config and callback; previously started authorizations must restart. Never re-label an existing token or move it between namespaces.
+
+Keep the current provider until the new config and deployment are ready. The successful callback always pauses processing, cancels pending replies and resets follow/delivery acceptance. A business token without a fixed expiry is still revocable; invalid authorization stops processing and requires reconnecting. Do not call the Instagram user-token refresh endpoint for this token. Standard access permits role-based tests only; production access and actual replies must be verified independently before public release.
+
+Official setup: https://developers.facebook.com/documentation/instagram-platform/instagram-api-with-unified-login/get-started
 
 ## Acceptance sequence
 
