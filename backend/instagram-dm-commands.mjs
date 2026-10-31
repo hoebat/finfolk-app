@@ -7,13 +7,12 @@ import { commands } from "./messaging-config.mjs";
 import { windowFor } from "./community-core.mjs";
 const accountURL = "https://finfolk.com.au/?view=account&tab=instagram";
 export const helpText = (enabled = Object.keys(commands)) =>
-  "FinFolk commands:\n" +
+  "Hey! Welcome to FinFolk 🌊\nYour coastal companion for finding beaches, exploring depths and keeping your dive memories together.\n\nAvailable here:\n" +
   Object.entries(commands)
     .filter(([name]) => enabled.includes(name))
     .map(([, c]) => c.syntax + " — " + c.description)
     .join("\n") +
-  "\n\nFollow @finfolk.com.au, then link your account: " +
-  accountURL;
+  "\n\nGet started: https://finfolk.com.au\nExplore the map or sign in to start your logbook.\n\nYou don’t need to follow or connect your account to ask for help.";
 export const commandHelp = helpText();
 export function parseInstagramCommand(text = "") {
   const match = String(text)
