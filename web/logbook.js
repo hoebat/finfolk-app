@@ -1,3 +1,4 @@
+import {tripCards} from './trip-report.js';
 import { getInstagramFeed } from './instagram-discovery.js';
 import { instagramPanel } from "./instagram.js";
 import { socialGallery } from "./media.js";
@@ -379,6 +380,7 @@ export function installLogbook({
       const gallery=socialGallery(posts);
       if(gallery) root.append(gallery);
     }
+    if(config.apiUrl)tripCards(root,config.apiUrl,{ownerId:id,isCurrent:()=>generation===epoch}).catch(()=>{});
     await list(id, true);
   }
   async function share(url) {
