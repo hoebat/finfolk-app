@@ -4,6 +4,7 @@ import {
   modeAllows,
   runtimeEnv,
   digest,
+  requiresFollower,
 } from "./messaging-config.mjs";
 import {
   InstagramProvider,
@@ -194,14 +195,17 @@ export async function processInstagramDM(
         "UPDATE finfolk.instagram_claims SET state='checking',sender_id=coalesce(sender_id,$2),updated_at=now() WHERE code_hash=$1 AND provider_scope=$3 AND expires_at>now() AND state IN ('waiting','failed','follow_required') AND (sender_id IS NULL OR sender_id=$2)",
         [event.challenge_hash, event.sender_id, event.provider_scope],
       );
-    const identity = await new InstagramProvider(config, fetcher).profile(
-      event.sender_id,
-    );
-    await db.query(
-      "UPDATE finfolk.messaging_accounts SET checks=checks || '{\"followLookup\":true}'::jsonb WHERE id='instagram'",
-    );
-    if (!identity.follows)
-      return await markBlocked(db.query, event, "not_following", identity);
+    let identity = null;
+    if (requiresFollower(event.command)) {
+      identity = await new InstagramProvider(config, fetcher).profile(
+        event.sender_id,
+      );
+      await db.query(
+        "UPDATE finfolk.messaging_accounts SET checks=checks || '{\"followLookup\":true}'::jsonb WHERE id='instagram'",
+      );
+      if (!identity.follows)
+        return await markBlocked(db.query, event, "not_following", identity);
+    }
     await db.transaction(async (q) => {
       await q(
         "SELECT id FROM finfolk.messaging_accounts WHERE id='instagram' FOR SHARE",
@@ -223,10 +227,7 @@ export async function processInstagramDM(
           [event.challenge_hash, event.sender_id, event.provider_scope],
         );
       const effective = {
-        ...runtimeEnv(
-          { ...current, checks: { ...current.checks, followLookup: true } },
-          env,
-        ),
+        ...runtimeEnv(current, env),
         MESSAGING_ENABLED_COMMANDS: current.enabled_commands,
       };
       const reply = await commandResult(
@@ -248,8 +249,8 @@ export async function processInstagramDM(
         );
       }
       await q(
-        "UPDATE finfolk.instagram_dm_events SET processing_state='completed',status='done',follow_checked_at=now(),sender_handle=$2,error='',updated_at=now() WHERE id=$1",
-        [id, identity.handle],
+        "UPDATE finfolk.instagram_dm_events SET processing_state='completed',status='done',follow_checked_at=CASE WHEN $3::boolean THEN now() ELSE NULL END,sender_handle=$2,error='',updated_at=now() WHERE id=$1",
+        [id, identity?.handle || null, !!identity],
       );
       await q(
         "UPDATE finfolk.messaging_accounts SET last_command_at=now() WHERE id='instagram'",
@@ -363,7 +364,7 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
       return set("expired", "reply_window_expired");
     if (!canRun(config, event) || event.processing_state !== "completed")
       return set("cancelled", "rollout_changed");
-    if (event.owner_id) {
+    if (event.owner_id && requiresFollower(event.command)) {
       const member = (
         await db.query("SELECT deleted FROM finfolk.members WHERE user_id=$1", [
           event.owner_id,
@@ -387,8 +388,10 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
         new Date(config.token_expires_at) <= new Date())
     )
       return set("failed", "authorization_unavailable");
-    const identity = await provider.profile(event.sender_id);
-    if (!identity.follows) return set("cancelled", "not_following");
+    if (requiresFollower(event.command)) {
+      const identity = await provider.profile(event.sender_id);
+      if (!identity.follows) return set("cancelled", "not_following");
+    }
     // Recheck generation and cancellation after network preflight.
     const current = await messagingConfig(db.query, env);
     const active = (

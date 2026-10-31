@@ -422,8 +422,8 @@ try {
   assert.equal((await outbox(ping.id)).state, "provider_accepted");
   assert.equal(
     profileCalls - beforePing,
-    2,
-    "Follow checked before effects and before sending",
+    0,
+    "Public assistance makes no follower-profile calls",
   );
   const help = await incoming(sender, "/help");
   assert.match(replies.at(-1).message.text, /\/ping/);
@@ -438,8 +438,13 @@ try {
   assert.equal((await event(strangerEvent.id)).error, "rollout_restricted");
   follows = false;
   const unfollowed = await incoming(sender, "/ping");
-  assert.equal((await event(unfollowed.id)).processing_state, "blocked");
-  assert.equal(replies.length, count);
+  assert.equal((await event(unfollowed.id)).processing_state, "completed");
+  assert.equal(replies.length, count + 1);
+  assert.equal(unfollowed.follow_checked_at, null);
+  profileError = true;
+  await incoming(sender, "/help");
+  profileError = false;
+  assert.match(replies.at(-1).message.text, /You don’t need to follow/);
   follows = true;
   const acceptance = {
     pingEventId: ping.event_id,
@@ -450,6 +455,7 @@ try {
   };
   const all = ["ping", "help", "claim", "status", "checkin", "points"];
   await rollout(all, acceptance);
+  await incoming(sender, "/status"); // Personal pilot proves follower lookup before issuing claim codes.
   await request(
     admin,
     "PUT",
@@ -834,13 +840,74 @@ try {
   await incoming(sender, "/help");
   assert.match(replies.at(-1).message.text, /\/ping/);
   follows = false;
-  const unifiedDenied = await incoming(sender, "/ping");
+  const unifiedPublicHelp = await incoming(otherSender, "/help");
   assert.equal(
     replies.length,
-    unifiedBefore + 2,
-    "Unified nonfollowers receive no reply",
+    unifiedBefore + 3,
+    "Unified nonfollowers can receive public help",
   );
-  assert.notEqual(unifiedDenied.processing_state, "completed");
+  assert.equal(unifiedPublicHelp.processing_state, "completed");
+  assert.equal(unifiedPublicHelp.follow_checked_at, null);
+  assert.equal(
+    Buffer.byteLength(replies.at(-1).message.text, "utf8") < 900,
+    true,
+  );
+  await request(
+    admin,
+    "PUT",
+    "/v1/admin/messaging/instagram",
+    {
+      mode: "live",
+      enabledCommands: ["help", "ping"],
+      pilotSenderIds: [],
+      acceptance: {
+        pingEventId: unifiedPing.event_id,
+        helpEventId: unifiedPing.event_id,
+        visibleRepliesConfirmed: true,
+        productionAccessConfirmed: true,
+        nonFollowerTestConfirmed: true,
+        nonFollowerHelpEventId: unifiedPublicHelp.event_id,
+      },
+    },
+    409,
+  );
+  await request(admin, "PUT", "/v1/admin/messaging/instagram", {
+    mode: "live",
+    enabledCommands: ["help", "ping"],
+    pilotSenderIds: [],
+    acceptance: {
+      pingEventId: unifiedPing.event_id,
+      helpEventId: (await incoming(sender, "/help")).event_id,
+      visibleRepliesConfirmed: true,
+      productionAccessConfirmed: true,
+      nonFollowerTestConfirmed: true,
+      nonFollowerHelpEventId: unifiedPublicHelp.event_id,
+    },
+  });
+  const publicReady = (
+    await request(admin, "GET", "/v1/admin/messaging/instagram")
+  ).data;
+  assert.equal(publicReady.ready, true);
+  assert.equal(publicReady.checks.publicHelp, true);
+  assert.notEqual(publicReady.checks.followLookup, true);
+  assert.notEqual(
+    publicReady.checks.nonFollowerTest,
+    true,
+    "Public acceptance cannot attest personal-command rejection",
+  );
+  await request(
+    admin,
+    "PUT",
+    "/v1/admin/messaging/instagram",
+    { mode: "live", enabledCommands: ["help", "points"], pilotSenderIds: [] },
+    409,
+  );
+  profileError = true;
+  const publicFresh = await incoming(stranger, "/help");
+  assert.equal(publicFresh.processing_state, "completed");
+  assert.equal(publicFresh.owner_id, null);
+  profileError = false;
+
   console.log(
     "UNIFIED_MESSAGING_SQL_PASS: actual role, Meta code exchange, business-account discovery, subscription, encrypted scoped credentials and changed-configuration OAuth rejection.",
   );

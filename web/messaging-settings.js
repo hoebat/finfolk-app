@@ -113,7 +113,8 @@ export async function renderMessagingSettings({ host, api }) {
     for (const [label, value] of [
       ["Authorization", state.checks.authorization],
       ["Account subscription", state.checks.subscription],
-      ["Follow lookup", state.checks.followLookup],
+      ["Public help acceptance", state.checks.publicHelp],
+      ["Personal-command follower verification", state.checks.followLookup],
       ["Real-account acceptance", state.checks.liveDelivery],
       [
         state.provider === "instagram-unified"
@@ -205,7 +206,10 @@ export async function renderMessagingSettings({ host, api }) {
       return input;
     };
     const ping = field("/ping event ID"),
-      help = field("/help event ID");
+      help = field("/help event ID"),
+      publicHelp = field(
+        "Separate unregistered nonfollower /help event ID (public help rollout)",
+      );
     const checkbox = (text) => {
       const label = el("label"),
         input = el("input");
@@ -221,7 +225,7 @@ export async function renderMessagingSettings({ host, api }) {
         "I verified the Meta permissions and publishing requirements for public access.",
       ),
       negative = checkbox(
-        "I completed the authorized non-follower acceptance test.",
+        "I verified the nonfollower test in Instagram. For public help, they received help without registration; for personal commands, access was denied.",
       );
     form.append(acceptance);
     let mutationKey, mutationBody;
@@ -240,13 +244,16 @@ export async function renderMessagingSettings({ host, api }) {
           enabledCommands: commandNames.filter((name) => inputs[name].checked),
           pilotSenderIds: pilots.value.split(/\s+/).filter(Boolean),
         };
-        if (ping.value || help.value || visible.checked)
+        if (ping.value || help.value || publicHelp.value || visible.checked)
           body.acceptance = {
             pingEventId: ping.value.trim(),
             helpEventId: help.value.trim(),
             visibleRepliesConfirmed: visible.checked,
             productionAccessConfirmed: production.checked,
             nonFollowerTestConfirmed: negative.checked,
+            ...(publicHelp.value.trim()
+              ? { nonFollowerHelpEventId: publicHelp.value.trim() }
+              : {}),
           };
         const fingerprint = JSON.stringify(body);
         if (fingerprint !== mutationBody) {

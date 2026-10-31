@@ -37,6 +37,11 @@ export const commands = Object.freeze({
     claimed: true,
   },
 });
+// Public assistance never reads member data or needs a follower lookup.
+export const requiresFollower = (command) =>
+  !["help", "ping", "unknown", "prompt"].includes(command);
+export const hasPersonalCommands = (enabled = []) =>
+  enabled.some(requiresFollower);
 const canonical = (value) =>
   Array.isArray(value)
     ? value.map(canonical)
@@ -201,7 +206,8 @@ export function runtimeEnv(config, env) {
     !!config.credential_ciphertext &&
     config.checks?.authorization === true &&
     config.checks?.subscription === true &&
-    config.checks?.followLookup === true &&
+    (!hasPersonalCommands(config.enabled_commands) ||
+      config.checks?.followLookup === true) &&
     (!config.token_expires_at ||
       new Date(config.token_expires_at) > new Date());
   return {
@@ -215,7 +221,7 @@ export function runtimeEnv(config, env) {
     MESSAGING_PROVIDER_SCOPE: config.scope,
   };
 }
-export async function readiness(q, env) {
+export async function readiness(q, env, { enabledCommands } = {}) {
   const c = await messagingConfig(q, env);
   const blockers = [];
   if (!env.MESSAGING_ENCRYPTION_KEY) blockers.push("encryption_key_missing");
@@ -241,7 +247,12 @@ export async function readiness(q, env) {
     ["followLookup", "follow_lookup_unverified"],
     ["liveDelivery", "live_delivery_unverified"],
   ])
-    if (!c.checks?.[key]) blockers.push(code);
+    if (
+      !c.checks?.[key] &&
+      (key !== "followLookup" ||
+        hasPersonalCommands(enabledCommands || c.enabled_commands))
+    )
+      blockers.push(code);
   return {
     provider: c.provider,
     mode: c.mode,

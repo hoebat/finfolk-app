@@ -20,14 +20,24 @@ Unified authorization uses Facebook's dialog and `graph.facebook.com`; legacy In
 
 Keep the current provider until the new config and deployment are ready. The successful callback always pauses processing, cancels pending replies and resets follow/delivery acceptance. A business token without a fixed expiry is still revocable; invalid authorization stops processing and requires reconnecting. Do not call the Instagram user-token refresh endpoint for this token. Standard access permits role-based tests only; production access and actual replies must be verified independently before public release.
 
+The current FinFolk Messaging config is `2606242293176301`, with only basic and messaging permissions and the registered callback above. Its non-secret provider/config/account identifiers are pinned in Worker configuration; static secrets remain outside source control.
+
 Official setup: https://developers.facebook.com/documentation/instagram-platform/instagram-api-with-unified-login/get-started
+
+## Public help release
+
+Public assistance (`help`, `ping`, unknown-command guidance and the welcome prompt) does not require following, registration or a profile lookup. Both processing and sending use this policy. It still requires signed receipts, an authorized brand, subscription, enabled command, matching rollout and the reply window. Do not mark follower verification or timestamps for public assistance. A deleted/unlinked member can still ask for public help.
+
+Start with only `help` and `ping`. The help reply introduces FinFolk, lists enabled commands and links to the site; it never advertises disabled personal actions. Help-only readiness does not require follower verification. For public acceptance, submit `nonFollowerHelpEventId` alongside the diagnostic event IDs and confirmations: it must identify a successful help response to a separate unregistered sender. The operator must actually confirm that this person was not following and saw the reply. This sets public-help acceptance, never personal-command negative-test acceptance. Missing evidence blocks public activation.
+
+Personal commands continue to require current follower proof at processing and sending. In a future personal-command pilot, a signed `/status` receipt can verify the follower lookup before claim codes are issued. Enabling personal commands in live mode must independently satisfy personal follower and negative-test requirements.
 
 ## Acceptance sequence
 
 1. **Paused receipt:** send a fresh message from `@chriszfree`. Inspect the signed receipt and observed scoped sender. Do not infer a sender ID from a handle or reuse a Facebook-scoped ID.
 2. **Diagnostic pilot:** allowlist the observed sender, enable only `ping` and `help`, and send both commands again. Record each event ID, completed processing, Meta message ID, and an actual visible Instagram reply. Target 30 seconds in normal operation. Provider acceptance is not proof of delivered/read status.
 3. **Small member pilot:** the operator selects 3–5 consenting divers from signed receipts. Enable claims, status, check-in and points after diagnostic acceptance. Test verified email, follow, claim, reload/resume, unlink/relink and private replies. Use Bondi first; check-ins are real visits, not fabricated diagnostics.
-4. **Negative test:** use a consenting pilot before they follow; confirm no DM command effects/reply. After following, repeat successfully. Do not unfollow `@chriszfree` merely to manufacture the test.
+4. **Nonfollower tests:** first verify a consenting, unregistered sender receives `/help`. For personal commands, use a consenting pilot before they follow; confirm no personal command effects/reply. After following, repeat successfully. Do not unfollow `@chriszfree` merely to manufacture the test.
 5. **Comments:** independently verify Facebook Login subscriptions, mentioned-comment retrieval, owned-comment retrieval and correct public reply routes on owned test posts. Enable public `help` and post `status` first. Personal comment actions require the separately proven comment identity and a current follower check through the linked Instagram Login connection.
 6. **Discovery before publication:** enable collection for pilot authors and inspect pending content around Bondi before enabling public publication. Automatic publication requires verified media ownership, explicit sharing consent, one clear beach and current follower eligibility. Ambiguous places, unknown authors and third-party suggestions stay reviewed; inaccessible posts use manual URL submission. Content stays on Instagram through links/embeds.
 7. **Public release:** record real production-access and non-follower acceptance in Settings before selecting Public. Widen read-only messaging, personal commands, discovery and publication separately. Do not enable public features merely because a deployment completed.

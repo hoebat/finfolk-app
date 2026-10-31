@@ -1385,6 +1385,10 @@ components:
             - true
         productionAccessConfirmed:
           type: boolean
+        nonFollowerHelpEventId:
+          type: string
+          format: uuid
+          description: Successful help event from a separate unregistered nonfollower, with visible reply confirmed.
         nonFollowerTestConfirmed:
           type: boolean
       required:
