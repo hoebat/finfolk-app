@@ -1,3 +1,6 @@
+import { renderPostManager, renderPostFeed, renderPostAdmin } from './posts.js';
+import { applySavedTheme, themeSettings } from './theme.js';
+applySavedTheme();
 import { renderActions } from './actions.js';
 import { instagramURL } from './logbook-model.js';
 import { showMemberTour } from './member-tour.js';
@@ -34,7 +37,8 @@ export function installCommunity({
     epoch = 0,
     beachEpoch = 0,
     nextRefresh = Infinity,
-    observedUser;
+    observedUser,
+    accountTab = 'checkin';
   async function api() {
     if (!pending)
       pending = (async () => {
@@ -51,6 +55,9 @@ export function installCommunity({
               .querySelectorAll('.buddy-stats')
               .forEach((n) => n.remove());
             document.getElementById('regulars-panel')?.remove();
+            document.querySelectorAll('.beach-post-feed').forEach(n=>n.remove());
+            accountTab='checkin';
+            if (!user && shell.route.view === 'account') queueMicrotask(() => account());
             epoch++;
             beachEpoch++;
           }
@@ -131,7 +138,7 @@ export function installCommunity({
         name.autocomplete = 'nickname';
         email.autocomplete = 'email';
         password.autocomplete = 'current-password';
-        password.minLength = 8;
+
         email.required = password.required = true;
         const submit = el('button', 'Sign in', 'primary');
         submit.type = 'submit';
@@ -162,6 +169,7 @@ export function installCommunity({
             creating = !creating;
             name.parentElement.hidden = !creating;
             password.autocomplete = creating ? 'new-password' : 'current-password';
+            if (creating) password.minLength = 8; else password.removeAttribute('minlength');
             submit.textContent = creating ? 'Create account' : 'Sign in';
             toggle.textContent = creating ? 'Already have an account? Sign in' : 'Create an account';
             status.textContent = '';
@@ -197,6 +205,44 @@ export function installCommunity({
         return;
       }
       root.classList.remove('account-page-guest');
+      const tabs = el('div', undefined, 'account-tabs');
+      tabs.setAttribute('role', 'tablist');
+      tabs.setAttribute('aria-label', 'Your account');
+      const panels = {};
+      function selectTab(key) {
+        accountTab = key;
+        for (const tab of tabs.children) {
+          const active = tab.dataset.tab === key;
+          tab.setAttribute('aria-selected', String(active));
+          tab.tabIndex = active ? 0 : -1;
+        }
+        for (const [name, panel] of Object.entries(panels)) panel.hidden = name !== key;
+      }
+      for (const [key, label] of [['checkin', 'Check in'], ['posts', 'Your posts'], ['profile', 'Profile & buddies'], ['settings', 'Settings']]) {
+        const panel = el('div');
+        panel.id = 'account-' + key;
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', 'account-tab-' + key);
+        const tab = button(label, () => selectTab(key), 'account-tab');
+        tab.id = 'account-tab-' + key;
+        tab.dataset.tab = key;
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-controls', panel.id);
+        tabs.append(tab);
+        panels[key] = panel;
+      }
+      tabs.onkeydown = (e) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+        e.preventDefault();
+        const items = [...tabs.children], current = items.indexOf(document.activeElement);
+        const i = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (current + (e.key === 'ArrowRight' ? 1 : -1) + items.length) % items.length;
+        selectTab(items[i].dataset.tab);
+        items[i].focus();
+      };
+      root.append(tabs, ...Object.values(panels));
+      panels.settings.append(themeSettings());
+      selectTab(accountTab);
+      const profileStart = root.children.length;
       const me = await a.call('me');
       if (generation !== epoch) return;
       const p = me.profile,
@@ -206,9 +252,9 @@ export function installCommunity({
       menu.setAttribute('aria-label', 'Social menu');
       menu.append(el('h2', `Welcome${p.displayName ? ', ' + p.displayName : ''}`), el('p', 'Check in, find your people and keep your diving close.'));
       const links = el('div', undefined, 'social-menu-actions');
-      const jump = id => document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'});
+      const jump = id => { selectTab(id === 'social-checkins' ? 'checkin' : 'profile'); document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'}); };
       links.append(
-        button('Check in at a beach', () => shell.navigate('discover'), 'social-menu-action'),
+        button('Check in at a beach', () => selectTab('checkin'), 'social-menu-action'),
         button('Instagram & actions', () => jump('member-actions'), 'social-menu-action'),
         button('Your buddies', () => jump('social-buddies'), 'social-menu-action'),
         button('Your check-ins', () => { const section = document.getElementById('social-checkins'); if (section) section.open = true; jump('social-checkins'); }, 'social-menu-action'),
@@ -268,7 +314,7 @@ export function installCommunity({
         ),
       );
       const choices = el('fieldset');
-      choices.append(el('legend', 'Beaches you’re interested in (up to 20)'));
+      choices.append(el('legend', 'Beaches you follow (up to 20)'));
       const search = field(
           choices,
           'Find a beach',
@@ -472,10 +518,60 @@ export function installCommunity({
         buddies.append(card);
       }
       if (generation !== epoch) return;
-      const visits = el('details');
+      const checkin = el('section', undefined, 'account-card checkin-card');
+      checkin.append(el('span', 'YOUR COASTAL ROUTINE', 'eyebrow'), el('h2', 'Where did you get in today?'),
+        el('p', 'Choose a beach to record today’s visit. Every day in the water counts.' ));
+      const checkinForm = el('form'),
+        beachSearch = field(checkinForm, 'Find your beach', 'checkin-search', '', 'search'),
+        beachSelect = el('select');
+      beachSearch.placeholder = 'Beach name or region';
+      beachSelect.setAttribute('aria-label', 'Beach to check in at');
+      beachSelect.required = true;
+      function beachOptions() {
+        const previous = beachSelect.value || getSelectedBeach()?.id;
+        beachSelect.replaceChildren();
+        const placeholder = el('option', 'Choose a beach');
+        placeholder.value = '';
+        beachSelect.append(placeholder);
+        for (const beach of getBeaches().filter(b => `${b.name} ${b.area_name || ''} ${b.state || ''}`.toLowerCase().includes(beachSearch.value.trim().toLowerCase())).slice(0, 150)) {
+          const option = el('option', `${beach.name} · ${beach.area_name || beach.state || ''}`);
+          option.value = beach.id;
+          beachSelect.append(option);
+        }
+        if ([...beachSelect.options].some(o => o.value === previous)) beachSelect.value = previous;
+      }
+      beachSearch.oninput = beachOptions;
+      beachOptions();
+      const checkinSubmit = el('button', 'Check in today', 'primary'), checkinStatus = el('p');
+      checkinSubmit.type = 'submit';
+      checkinStatus.setAttribute('role', 'status');
+      checkinForm.append(beachSelect, checkinSubmit, checkinStatus);
+      checkin.append(checkinForm, el('small', 'Self-reported visits, once per beach per day. Your profile and sharing preferences control what other divers see.'));
+      panels.checkin.append(checkin);
+      const visits = el('section', undefined, 'account-card checkin-history');
       visits.id = 'social-checkins';
-      visits.append(el('summary', 'Your check-ins'));
-      for (const row of await a.call('myCheckins')) {
+      visits.append(el('h2', 'Your recent check-ins'));
+      const checkins = await a.call('myCheckins');
+      if (generation !== epoch) return;
+      checkinForm.onsubmit = async (e) => {
+        e.preventDefault();
+        if (!beachSelect.value) return;
+        const beach = getBeaches().find(b => b.id === beachSelect.value);
+        if (!beach) return;
+        checkinSubmit.disabled = true;
+        checkinStatus.textContent = 'Recording your visit…';
+        try {
+          await a.call('checkin', { beachId: beach.id });
+          await account();
+          const confirmation = el('p', `You’re checked in at ${beach.name}. See you in the water!`, 'checkin-success');
+          confirmation.setAttribute('role', 'status');
+          if (generation + 1 === epoch) document.querySelector('.checkin-card')?.prepend(confirmation);
+        } catch (error) {
+          checkinStatus.textContent = error.message;
+        } finally { checkinSubmit.disabled = false; }
+      };
+      if (!checkins.length) visits.append(el('p', 'Your first visit starts here. Pick a beach above to check in.', 'account-intro'));
+      for (const row of checkins) {
         const line = el('p', `${row.name} · ${row.day} `);
         line.append(
           button('Remove', async () => {
@@ -488,8 +584,7 @@ export function installCommunity({
         );
         visits.append(line);
       }
-      if (generation !== epoch) return;
-      root.append(visits);
+      panels.checkin.append(visits);
       const blocks = el('details');
       blocks.append(el('summary', 'Blocked profiles'));
       for (const row of await a.call('blocks')) {
@@ -535,7 +630,24 @@ export function installCommunity({
       );
       if (generation !== epoch) return;
       root.append(deletion);
-      await renderActions({host:root,api:a,beaches:getBeaches(),refresh:account});
+      for (const child of [...root.children].slice(profileStart)) panels.profile.append(child);
+      await renderActions({host:panels.profile,api:a,beaches:getBeaches(),refresh:account});
+      if (generation !== epoch) return;
+      await renderPostManager({host:panels.posts,api:a,beaches:getBeaches(),refresh:account});
+      const state = await a.call('postStatus');
+      if (generation !== epoch) return;
+      if (state.admin) {
+        const panel = el('div');
+        panel.id = 'account-admin';
+        panel.setAttribute('role','tabpanel');
+        panel.setAttribute('aria-labelledby','account-tab-admin');
+        const tab = button('Review', () => selectTab('admin'), 'account-tab');
+        tab.id = 'account-tab-admin'; tab.dataset.tab = 'admin';
+        tab.setAttribute('role','tab'); tab.setAttribute('aria-controls',panel.id);
+        tabs.append(tab); panels.admin = panel; root.append(panel);
+        await renderPostAdmin({host:panel,api:a});
+      }
+      selectTab(panels[accountTab] ? accountTab : 'checkin');
       if (generation === epoch) showMemberTour({userId: a.user.uid, shell});
     } catch (error) {
       if (generation === epoch) {
@@ -575,6 +687,7 @@ export function installCommunity({
   async function beachPanel(beach) {
     const generation = ++beachEpoch;
     document.getElementById('regulars-panel')?.remove();
+    document.querySelectorAll('.beach-post-feed').forEach(n=>n.remove());
     if (!beach) return;
     const host = document.getElementById('beach-summary');
     if (!host) return;
@@ -588,6 +701,13 @@ export function installCommunity({
       ),
     );
     host.append(box);
+    const feed = el('section', undefined, 'regulars-panel beach-post-feed');
+    host.append(feed);
+    let feedConfig;
+    try { feedConfig = config || await loadConfig(); } catch {}
+    if (generation !== beachEpoch) { feed.remove(); return; }
+    await renderPostFeed({host:feed,beach,config:feedConfig,loadAPI:api,signIn:(tab)=>{ if(tab === 'posts') accountTab='posts'; shell.navigate('account'); },isCurrent:()=>generation===beachEpoch});
+    if (generation !== beachEpoch) { feed.remove(); return; }
     try {
       const a = await api();
       if (generation !== beachEpoch) return;
@@ -731,48 +851,6 @@ export function installCommunity({
       const more = button('More divers', page);
       box.append(more);
       await page();
-      const posts = el('section');
-      posts.append(el('h4', 'From Instagram & TikTok'));
-      const url = field(
-        posts,
-        'Post, Reel or TikTok video link',
-        'social-post',
-        '',
-        'url',
-      );
-      posts.append(
-        button('Add post link', async () => {
-          await a.call('post', { beachId: beach.id, url: url.value });
-          await beachPanel(beach);
-        }),
-      );
-      for (const post of await a.call('posts', { beachId: beach.id })) {
-        const row = el('div');
-        row.append(link(`${post.author || 'Diver'} · Open original`, post.url));
-        const load = button('Load preview', async () => {
-          const iframe = el('iframe');
-          iframe.loading = 'lazy';
-          iframe.title = 'Social post';
-          iframe.referrerPolicy = 'no-referrer';
-          iframe.allow = 'fullscreen';
-          iframe.src = post.url.includes('instagram.com')
-            ? post.url.replace(/\/$/, '') + '/embed/'
-            : 'https://www.tiktok.com/player/v1/' +
-              post.url.match(/\/video\/(\d+)/)[1];
-          row.append(iframe);
-          load.remove();
-        });
-        row.append(load);
-        if (post.owner_id === a.user.uid)
-          row.append(
-            button('Remove', async () => {
-              await a.call('removePost', { id: post.id });
-              await beachPanel(beach);
-            }),
-          );
-        posts.append(row);
-      }
-      box.append(posts);
     } catch (error) {
       if (generation === beachEpoch)
         box.append(

@@ -1,3 +1,4 @@
+import { postAction, publicPosts, postsEnabled } from './posts.mjs';
 import { invitationAction } from './invitations.mjs';
 import { instagramAction } from './instagram-actions.mjs';
 import { instagramWebhook } from './instagram-webhook.mjs';
@@ -81,6 +82,20 @@ export function createAPI({
       { error: e.status ? e.message : 'Service unavailable. Please retry.' },
       e.status || 503,
     );
+  });
+  app.get('/community/posts', async c => c.json(await publicPosts({q,env:c.env || {},beachId:c.req.query('beachId'),cursor:c.req.query('cursor') || '',postId:c.req.query('postId') || ''})));
+  app.post('/community/referral', async c => {
+    if (!postsEnabled(c.env || {})) return c.json({ok:true});
+    const raw = await c.req.text();
+    if (raw.length > 256) fail(413,'Request is too large.');
+    let input;
+    try { input = JSON.parse(raw); } catch { fail(400,'Invalid request.'); }
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input?.postId || '')) fail(400,'Invalid post.');
+    await q(`INSERT INTO finfolk.community_referrals(platform,clicks)
+      SELECT p.platform,1 FROM finfolk.posts p JOIN finfolk.members m ON m.user_id=p.owner_id
+      WHERE p.id=$1::uuid AND p.status='approved' AND p.public_consent AND NOT m.deleted
+      ON CONFLICT(day,platform) DO UPDATE SET clicks=finfolk.community_referrals.clicks+1`,[input.postId]);
+    return c.json({ok:true});
   });
   app.post('/api', async (c) => {
     const auth = c.req.header('Authorization') || '';
@@ -207,6 +222,8 @@ export function createAPI({
       const result = await instagramAction({action,v,uid,env:c.env || {},q,verified});
       return c.json({data:result});
     }
+    if (['postStatus','followedPosts','post','posts','myPosts','removePost','reportPost','reviewPosts','reviewPost','resolvePostReport','communityMetrics'].includes(action))
+      return c.json({data:await postAction({action,v,uid,env:c.env || {},q,verified,beach})});
     switch (action) {
       case 'profile': {
         const target = await member(v.target);
@@ -496,37 +513,6 @@ export function createAPI({
           [id(v.id), uid, JSON.stringify(v.visibility)],
         );
         result = { ok: true };
-        break;
-      }
-      case 'post': {
-        verified();
-        const b = await beach(v.beachId);
-        let url;
-        try {
-          url = socialPost(v.url);
-        } catch (e) {
-          fail(400, e.message);
-        }
-        await q(
-          'INSERT INTO finfolk.posts(owner_id,beach_id,url) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',
-          [uid, b.id, url],
-        );
-        result = { ok: true };
-        break;
-      }
-      case 'removePost':
-        await q('DELETE FROM finfolk.posts WHERE id::text=$1 AND owner_id=$2', [
-          id(v.id),
-          uid,
-        ]);
-        result = { ok: true };
-        break;
-      case 'posts': {
-        const b = await beach(v.beachId);
-        result = await q(
-          "SELECT p.id,p.owner_id,p.url,p.created_at,m.profile->>'displayName' AS author FROM finfolk.posts p JOIN finfolk.members m ON m.user_id=p.owner_id WHERE p.beach_id=$1 AND m.deleted=false AND (m.profile->>'open'='true' OR m.user_id=$2) AND NOT EXISTS(SELECT 1 FROM finfolk.blocks b WHERE (b.owner_id=$2 AND b.target_id=m.user_id) OR (b.owner_id=m.user_id AND b.target_id=$2)) ORDER BY p.created_at DESC LIMIT 30",
-          [b.id, uid],
-        );
         break;
       }
       case 'deleteAccount':

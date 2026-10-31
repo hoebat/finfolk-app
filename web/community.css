@@ -328,3 +328,131 @@
 .actions-panel summary { cursor: pointer; font-weight: 700; color: #086c79; }
 .actions-panel a { color: #007f8e; overflow-wrap: anywhere; }
 .instagram-verification { padding: 16px; background: #f1f8f4; border-radius: 16px; margin: 14px 0; }
+
+/* Account arrival, check-ins and personal appearance. */
+:root {
+  --account-bg: #eef8f3;
+  --account-surface: #fffef8;
+  --account-ink: #173e48;
+  --account-muted: #52767a;
+  --account-line: #c8dfd9;
+  --account-accent: #007f8d;
+}
+:root[data-theme='sand'] {
+  --account-bg: #f4eddb;
+  --account-surface: #fffbf1;
+  --account-ink: #374333;
+  --account-muted: #66715d;
+  --account-line: #d6d5bc;
+  --account-accent: #536c3d;
+  --finfolk-cream: #faf2df;
+  --finfolk-ink: #374333;
+  --teal: #536c3d;
+  --accent: #536c3d;
+  --line: #d6d5bc;
+  --muted: #66715d;
+  --glass: #fffbf1ed;
+}
+:root[data-theme='night'] {
+  color-scheme: dark;
+  --account-bg: #102630;
+  --account-surface: #193743;
+  --account-ink: #e6f4ef;
+  --account-muted: #b0ccc9;
+  --account-line: #42606a;
+  --account-accent: #82e0d6;
+  --finfolk-cream: #132e3a;
+  --finfolk-ink: #e6f4ef;
+  --teal: #82e0d6;
+  --accent: #82e0d6;
+  --line: #42606a;
+  --muted: #b0ccc9;
+  --glass: #193743ed;
+}
+.account-page { background: var(--account-bg); color: var(--account-ink); }
+.account-page > h1 { letter-spacing: -.04em; }
+.account-page .account-intro, .account-page small { color: var(--account-muted); }
+.account-card { background: var(--account-surface); border-color: var(--account-line); }
+.account-page .account-card h2 { margin-top: 0; font-size: 24px; letter-spacing: -.025em; color: inherit; }
+.account-page p { line-height: 1.65; }
+.account-page .primary { background: var(--account-accent); color: var(--account-surface); }
+.account-page .secondary, .account-page .text-button { color: var(--account-accent); }
+.account-page .secondary { background: var(--account-surface); border: 1px solid var(--account-line); }
+.account-page input:not([type='checkbox']):not([type='radio']), .account-page select, .account-page textarea {
+  background: var(--account-bg); color: var(--account-ink); border-color: var(--account-line);
+}
+.account-page :focus-visible { outline: 3px solid var(--account-accent); outline-offset: 3px; }
+.account-page [hidden] { display: none !important; }
+.account-welcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(290px, 420px); gap: clamp(24px, 5vw, 80px); max-width: 1050px; align-items: center; margin-top: 28px; }
+.checkin-intro { padding: 20px 0; }
+.checkin-intro .eyebrow, .checkin-card .eyebrow { color: var(--account-accent); font-size: 11px; letter-spacing: .14em; font-weight: 700; }
+.checkin-intro h2 { font: 500 clamp(32px, 3.5vw, 50px)/1.12 Georgia, serif; white-space: pre-line; margin: 16px 0; letter-spacing: -.035em; color: inherit; }
+.checkin-intro > p { max-width: 420px; color: var(--account-muted); }
+.checkin-steps { list-style: none; counter-reset: steps; padding: 0; margin: 26px 0 12px; }
+.checkin-steps li { counter-increment: steps; position: relative; padding: 0 0 22px 46px; }
+.checkin-steps li::before { content: counter(steps); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--account-line); display: grid; place-items: center; color: var(--account-accent); font-size: 12px; }
+.checkin-steps strong, .checkin-steps span { display: block; font-size: 14px; line-height: 1.6; }
+.checkin-steps span { color: var(--account-muted); font-size: 13px; }
+.account-auth { padding: 30px; margin: 0; }
+.account-auth form > .primary { width: 100%; margin: 14px 0 8px; padding: 13px; }
+.account-auth label { font-size: 13px; font-weight: 600; }
+.auth-status:empty { display: none; }
+.account-auth > small { border-top: 1px solid var(--account-line); padding-top: 18px; margin-top: 18px; }
+.account-tabs { display: flex; gap: 4px; max-width: 760px; border-bottom: 1px solid var(--account-line); margin-top: 24px; }
+.account-tabs .account-tab { margin: 0; padding: 14px 17px; border-radius: 10px 10px 0 0; background: transparent; color: var(--account-muted); border-bottom: 3px solid transparent; }
+.account-tabs .account-tab[aria-selected='true'] { color: var(--account-accent); border-bottom-color: var(--account-accent); background: var(--account-surface); }
+.checkin-card { padding: 28px; }
+.checkin-card h2 { margin: 12px 0; }
+.checkin-card form { margin: 24px 0 12px; }
+.checkin-card form .primary { margin-top: 18px; padding: 13px 22px; }
+.checkin-success { border: 1px solid var(--account-accent); padding: 12px 16px; border-radius: 12px; color: var(--account-accent); }
+.checkin-history > p { border-top: 1px solid var(--account-line); padding-top: 12px; }
+.account-card .theme-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+.account-card .theme-choice { position: relative; margin: 0; padding: 12px; border: 2px solid var(--account-line); border-radius: 14px; cursor: pointer; }
+.account-card .theme-choice:has(:checked) { border-color: var(--account-accent); }
+.theme-choice input { accent-color: var(--account-accent); position: absolute; right: 12px; top: 12px; }
+.theme-swatch { display: block; height: 64px; border-radius: 8px; margin: 20px 0 12px; }
+.theme-choice strong { display: block; font-size: 14px; }
+.theme-choice small { font-size: 11px; }
+:root[data-theme='sand'] body, :root[data-theme='night'] body { background: var(--account-bg); color: var(--account-ink); }
+:root[data-theme] .app-rail, :root[data-theme] .discover-page, :root[data-theme] .logbook-page, :root[data-theme] .data-panel { background: var(--account-bg); color: var(--account-ink); }
+:root[data-theme] .account-entry, :root[data-theme] .discovery, :root[data-theme] .beach-card, :root[data-theme] .state-card, :root[data-theme] .buddy-card, :root[data-theme] .regulars-panel { background: var(--account-surface); color: var(--account-ink); border-color: var(--account-line); }
+:root[data-theme='night'] :is(.discover-page, .logbook-page, .data-panel) :is(h1,h2,h3,h4,label,summary,p,.beach-open,.text-button) { color: var(--account-ink); }
+:root[data-theme='night'] :is(.discover-page,.logbook-page,.data-panel) :is(input,select,textarea,.stay-card,.layer-note-card,.data-source-card,.map-tools-card) { background: var(--account-surface); color: var(--account-ink); border-color: var(--account-line); }
+@media (max-width: 1000px) { .account-welcome { grid-template-columns: 1fr; max-width: 620px; gap: 12px; } .checkin-intro { padding: 0; } }
+@media (max-width: 600px) { .account-auth, .checkin-card { padding: 22px; } .account-tabs .account-tab { padding: 13px 10px; font-size: 12px; } .account-card .theme-choices { grid-template-columns: 1fr; } .theme-swatch { height: 42px; margin-top: 8px; } }
+:root:is([data-theme='sand'],[data-theme='night']) .app-rail.sidebar { background: var(--account-bg); border-color: var(--account-line); }
+:root:is([data-theme='sand'],[data-theme='night']) { --finfolk-teal: var(--account-accent); }
+:root[data-theme='night'] .primary { color: #102630; }
+:root[data-theme='night'] .primary:hover:not(:disabled) { background: #a4eee4; }
+:root[data-theme='night'] :is(.primary-nav,.discover-tabs,.data-tabs) { background: var(--account-bg); }
+:root[data-theme='night'] :is(.primary-nav,.discover-tabs,.data-tabs) button { color: var(--account-muted); }
+:root[data-theme='night'] :is(.primary-nav button.active,.discover-tabs button[aria-selected='true'],.data-tabs button[aria-selected='true']) { background: var(--account-surface); color: var(--account-accent); }
+:root[data-theme='night'] :is(#map-search,.map-search-results,.map-toolbar .layers-callout,.data-panel .layer-list,.stay-card,.logbook-page .account-card) { background: var(--account-surface); color: var(--account-ink); border-color: var(--account-line); }
+:root[data-theme='night'] :is(.data-panel .layer-list .toggle b,.data-panel .layer-list .toggle small,.data-panel small,.data-panel a,.discover-page small,.discover-page a,.regulars-panel small,.regulars-panel a,.account-entry) { color: var(--account-muted); }
+@media (max-width: 900px) { .account-page > h1, .account-page > .account-intro { padding-right: 48px; } .account-page input, .account-page select, .account-page textarea { font-size: 16px; } }
+
+.account-tabs { overflow-x: auto; scrollbar-width: thin; }
+.account-tabs .account-tab { flex-shrink: 0; }
+.beach-social-card { display: grid; gap: 12px; border: 1px solid var(--account-line); border-radius: 16px; padding: 18px; margin: 16px 0; background: var(--account-surface); color: var(--account-ink); }
+.beach-social-card > a { color: var(--account-accent); overflow-wrap: anywhere; line-height: 1.6; }
+.beach-social-card iframe { width: 100%; min-height: 440px; border: 0; border-radius: 12px; }
+.beach-social-card summary { cursor: pointer; font-size: 13px; }
+.beach-social-card label { font-size: 13px; }
+.beach-social-card button { justify-self: start; }
+.beach-social-card [role='status']:empty { display: none; }
+.beach-social-card.shared-post { outline: 3px solid var(--account-accent); outline-offset: 3px; }
+.post-manager form { margin: 22px 0; }
+.post-manager input[type='checkbox'], .post-review input[type='checkbox'] { accent-color: var(--account-accent); }
+.post-manager form > .primary { margin-top: 16px; }
+.post-review textarea { min-height: 80px; }
+.account-page-guest { background: var(--account-bg); }
+
+.account-page h1 { color: var(--account-ink); }
+.account-card .theme-choice input[type='radio'] { width: auto; margin: 0; padding: 0; display: inline-block; background: initial; border: initial; }
+:root[data-theme='night'] .system-toggle { color: var(--account-ink); border-color: var(--account-line); background: var(--account-surface); }
+:root[data-theme='night'] #account-page > h1 { color: #e6f4ef; }
+:root[data-theme='night'] #system-toggle { color: var(--account-ink); background: var(--account-surface); }
+:root[data-theme='night'] .social-menu { background: var(--account-surface); border-color: var(--account-line); }
+:root[data-theme='night'] .social-menu :is(h2,p,a), :root[data-theme='night'] .signin-card :is(h2,p,label,a) { color: var(--account-ink); }
+:root[data-theme='night'] .account-page .social-menu-action { color: var(--account-accent); background: var(--account-bg); }
