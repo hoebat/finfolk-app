@@ -72,7 +72,7 @@ export function seal(value, env, aad) {
     "v1",
     iv.toString("base64url"),
     Buffer.concat([
-      cipher.update(JSON.stringify(value)),
+      cipher.update(Buffer.from(JSON.stringify(value), "utf8")),
       cipher.final(),
     ]).toString("base64url"),
     cipher.getAuthTag().toString("base64url"),

@@ -87,7 +87,7 @@ Rollback: select Paused. This cancels pending replies and blocks queued work. Ke
 
 ## Verification
 
-- `npm run test:messaging`: validate OpenAPI, encryption/AAD, provider contracts/error classification, command registry, body limits and admin UI separation.
+- `npm run test:messaging`: validate OpenAPI, encryption/AAD, provider contracts/error classification, command registry, body limits and admin UI separation. The actual workerd runtime test verifies encrypted replay, Unicode, scope binding and database-free webhook verification.
 - `npm run test:messaging:integration`: migrate only the isolated `finfolk-community-pilot-test` endpoint; exercise the actual Worker database role with mocked Meta transport; validate real HTTP responses against OpenAPI; cover OAuth, replay/ownership, follower gates, claims/reviews, queue recovery, replies, uncertainty, rollout and deletion cleanup.
 - `npm test`, Python tests, static build and Wrangler deployment dry-run retain existing account, trip, discovery and comment-command coverage.
 - Real Meta acceptance remains a separate gate; mocked responses and dashboard tests never count as live delivery success.

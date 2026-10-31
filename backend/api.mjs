@@ -104,7 +104,7 @@ export function createAPI({
     return c.json(result.body, result.status);
   });
   app.onError((e, c) => {
-    if(c.req.path.startsWith('/v1/'))return c.json(messagingProblem(e,c.get('requestId') || randomUUID()),e.status || 503);
+    if(c.req.path.startsWith('/v1/')){if(!e.status)console.error(JSON.stringify({service:'messaging-api',requestId:c.get('requestId'),code:e.code || e.name}));return c.json(messagingProblem(e,c.get('requestId') || randomUUID()),e.status || 503);}
     if (!e.status) console.error('Account operation failed', e.code || e.name);
     return c.json(
       { error: e.status ? e.message : 'Service unavailable. Please retry.' },
