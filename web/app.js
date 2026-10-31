@@ -1,3 +1,4 @@
+import {installTripPage} from './trip-report.js';
 // Keep an invite through OAuth redirects without putting it in the identity provider callback.
 try { const invite = new URL(location.href).searchParams.get('invite'); if (/^[A-Za-z0-9_-]{24}$/.test(invite || '')) sessionStorage.setItem('finfolk:invite', invite); } catch {}
 import {installOfflineUI} from './offline-ui.js';
@@ -26,6 +27,7 @@ const shell=installAppShell({onLayout:()=>map.resize(),onMapActivity:active=>map
 let mapSearch;
 const logbook=installLogbook({shell,getBeaches:()=>beachCatalog.beaches,getSelectedBeach:()=>findBeach(beachCatalog,selectedBeachId)});
 installOfflineUI(data.downloads,{region:()=>region,onOpen:id=>openSurvey(id)});
+installTripPage({shell,loadJSON:path=>data.json(path)});
 const community=installCommunity({shell,getBeaches:()=>beachCatalog.beaches,getSelectedBeach:()=>findBeach(beachCatalog,selectedBeachId)});
 $('log-session').onclick=()=>logbook.newSession(findBeach(beachCatalog,selectedBeachId)).catch(e=>notice(e.message));
 function revealMap(){map.resize();}

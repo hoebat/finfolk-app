@@ -87,6 +87,18 @@ try {
     bob = await register('bob');
   await call(alice, 'me');
   await call(bob, 'me');
+  const trip=await call(alice,'tripSave',{draft:{title:'Temporary trip smoke test',authorName:'Test diver',beachId:'bondi',start:'2026-10-15',end:'2026-10-23',story:'Temporary private test',links:[],waterDays:{}}});
+  const upload=await call(alice,'tripImportBegin',{id:trip.id,count:1});
+  await call(alice,'tripImportBatch',{id:trip.id,importId:upload.id,index:0,rows:[{day:'2026-10-15',depthMetres:8,durationSeconds:60,original:{private:'SYNTHETIC'}}]});
+  await call(alice,'tripImportConfirm',{id:trip.id,importId:upload.id,revision:trip.revision});
+  const privateTrip=await call(alice,'tripGet',{id:trip.id});assert.equal(privateTrip.preview.summary.total.dives,1);
+  await call(bob,'tripGet',{id:trip.id},404);await call(alice,'tripReviewInbox',{},403);
+  await call(alice,'tripPublish',{id:trip.id,revision:privateTrip.revision,publicConsent:true,ownPosts:true},403);
+  const hiddenTrip=await fetch(new URL('trips/'+trip.id,api));assert.equal(hiddenTrip.status,404);
+  const tripFeed=await fetch(new URL('trips?beachId=bondi',api));assert.equal(tripFeed.status,200);assert.ok(!(await tripFeed.json()).trips.some(t=>t.id===trip.id));
+  await call(alice,'tripDelete',{id:trip.id});
+  console.log('Trip reports: private CSV-record import, owner-only reads, public exclusion, email verification and admin denial passed.');
+
   const instagram = await call(alice, 'instagramStatus');
   assert.equal(instagram.admin, false);
   assert.equal(typeof instagram.enabled, 'boolean');

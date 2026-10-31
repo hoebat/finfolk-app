@@ -463,3 +463,30 @@
 :root[data-theme='night'] .social-menu { background: var(--account-surface); border-color: var(--account-line); }
 :root[data-theme='night'] .social-menu :is(h2,p,a), :root[data-theme='night'] .signin-card :is(h2,p,label,a) { color: var(--account-ink); }
 :root[data-theme='night'] .account-page .social-menu-action { color: var(--account-accent); background: var(--account-bg); }
+/* Trip reports keep raw dive records private and summary charts readable. */
+.trip-page { position: absolute; inset: 0; height: 100%; overflow: auto; padding: 24px max(18px, calc((100vw - 1080px) / 2)) 100px; background: var(--account-bg, #eef8f3); color: var(--account-ink, #173e48); }
+.trip-report { max-width: 1000px; margin: 20px auto; padding: clamp(18px, 4vw, 44px); border: 1px solid var(--account-line, #c8dfd9); border-radius: 26px; background: var(--account-surface, #fffef8); color: var(--account-ink, #173e48); }
+.trip-report h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.1; margin: 10px 0 18px; }
+.trip-kicker { color: var(--account-accent, #007f8d); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.trip-highlights { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 28px 0; }
+.trip-highlights > div { display: flex; flex-direction: column; gap: 7px; padding: 18px; border-radius: 18px; background: var(--account-bg, #eef8f3); }
+.trip-highlights strong { font-size: clamp(20px, 3vw, 30px); overflow-wrap: anywhere; }
+.trip-highlights span, .trip-note { font-size: 13px; color: var(--account-muted, #52767a); }
+.trip-story { white-space: pre-wrap; line-height: 1.7; }
+.trip-chart { margin: 28px 0; }
+.trip-bars { display: flex; align-items: end; gap: 12px; padding: 20px 0; overflow-x: auto; }
+.trip-bar-item { flex: 1 0 55px; display: grid; grid-template-rows: 25px 150px 25px; align-items: end; text-align: center; font-size: 12px; }
+.trip-bar { height: var(--trip-height); min-height: 2px; background: var(--account-accent, #007f8d); border-radius: 7px 7px 0 0; margin: 0 8px; }
+.trip-table-wrap { overflow-x: auto; margin: 24px 0; }
+.trip-report table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.trip-report td, .trip-report th { padding: 12px 10px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--account-line, #c8dfd9); }
+.trip-report caption { text-align: left; font-size: 18px; font-weight: 700; padding-bottom: 12px; }
+.trip-editor { display: grid; gap: 14px; margin: 20px 0; }
+.trip-editor label { display: grid; gap: 6px; margin: 10px 0; }
+.trip-editor input, .trip-editor select, .trip-editor textarea { max-width: 100%; min-height: 44px; padding: 10px; border: 1px solid var(--account-line, #c8dfd9); border-radius: 12px; font: inherit; background: var(--account-surface, #fffef8); color: inherit; }
+.trip-editor input[type=checkbox] { min-height: 20px; width: 20px; }
+.trip-editor textarea { min-height: 110px; }
+.trip-editor pre { overflow: auto; max-height: 240px; font-size: 12px; }
+.trip-cards { display: grid; gap: 12px; }
+.trip-card { display: grid; gap: 7px; padding: 18px; border: 1px solid var(--account-line, #c8dfd9); border-radius: 18px; background: var(--account-surface, #fffef8); color: var(--account-ink, #173e48); text-decoration: none; }
+@media(max-width: 600px) { .trip-highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); } .trip-page { padding: 14px 12px 100px; } .trip-report { border-radius: 20px; } }
