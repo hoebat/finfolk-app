@@ -12,6 +12,8 @@ import {
   seal,
   idempotent,
   encryptionKey,
+  oauthSettings,
+  oauthFlowKey,
 } from "./messaging-config.mjs";
 import { InstagramProvider, exchangeOAuth } from "./instagram-provider.mjs";
 const fail = (code, message, status = 400) => {
@@ -658,32 +660,40 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
     mutation(c, async (input, ctx) => {
       only(input, []);
       encryptionKey(ctx.env);
+      const settings = oauthSettings(ctx.env);
       if (
-        !/^\d{1,40}$/.test(ctx.env.INSTAGRAM_MESSAGING_APP_ID || "") ||
-        !ctx.env.INSTAGRAM_MESSAGING_CLIENT_SECRET
+        !/^\d{1,40}$/.test(settings.appId) ||
+        !settings.clientSecret ||
+        (settings.provider === "instagram-unified" &&
+          !/^\d{1,40}$/.test(settings.loginConfigId))
       )
         fail(
           "oauth_not_configured",
-          "Configure the Instagram Login client credentials first.",
+          "Configure the selected messaging authorization credentials and login configuration first.",
           503,
         );
       const state = randomBytes(32).toString("base64url");
       await ctx.db.query(
-        "INSERT INTO finfolk.messaging_oauth_states(state_hash,user_id,expires_at) VALUES($1,$2,now()+interval '10 minutes')",
-        [digest(state), ctx.uid],
+        "INSERT INTO finfolk.messaging_oauth_states(state_hash,user_id,expires_at,flow_key) VALUES($1,$2,now()+interval '10 minutes',$3)",
+        [digest(state), ctx.uid, oauthFlowKey(ctx.env)],
       );
-      const url = new URL("https://www.instagram.com/oauth/authorize");
-      url.searchParams.set("client_id", ctx.env.INSTAGRAM_MESSAGING_APP_ID);
-      url.searchParams.set(
-        "redirect_uri",
-        ctx.env.INSTAGRAM_MESSAGING_REDIRECT_URI ||
-          "https://api.finfolk.com.au/v1/integrations/instagram/oauth/callback",
+      const url = new URL(
+        settings.provider === "instagram-unified"
+          ? "https://www.facebook.com/dialog/oauth"
+          : "https://www.instagram.com/oauth/authorize",
       );
+      url.searchParams.set("client_id", settings.appId);
+      url.searchParams.set("redirect_uri", settings.redirectURI);
       url.searchParams.set("response_type", "code");
-      url.searchParams.set(
-        "scope",
-        "instagram_business_basic,instagram_business_manage_messages",
-      );
+      if (settings.provider === "instagram-unified") {
+        url.searchParams.set("config_id", settings.loginConfigId);
+        url.searchParams.set("display", "popup");
+        url.searchParams.set("prompt", "login");
+      } else
+        url.searchParams.set(
+          "scope",
+          "instagram_business_basic,instagram_business_manage_messages",
+        );
       url.searchParams.set("state", state);
       return {
         data: {
@@ -701,11 +711,15 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
       fail("invalid_oauth_state", "Authorization state is invalid or expired.");
     const intent = (
       await db.query(
-        "UPDATE finfolk.messaging_oauth_states SET consumed_at=now() WHERE state_hash=$1 AND consumed_at IS NULL AND expires_at>now() RETURNING user_id",
+        "UPDATE finfolk.messaging_oauth_states SET consumed_at=now() WHERE state_hash=$1 AND consumed_at IS NULL AND expires_at>now() RETURNING user_id,flow_key",
         [digest(state)],
       )
     )[0];
-    if (!intent || !isInstagramAdmin(intent.user_id, env))
+    if (
+      !intent ||
+      intent.flow_key !== oauthFlowKey(env) ||
+      !isInstagramAdmin(intent.user_id, env)
+    )
       fail("invalid_oauth_state", "Authorization state is invalid or expired.");
     const active = (
       await db.query(
@@ -727,7 +741,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
       { ...config, token: token.token },
       fetcher,
     );
-    const account = await provider.request("/me?fields=id,username");
+    const account = await provider.authorizedAccount();
     if (
       !/^\d{1,40}$/.test(String(account.id)) ||
       account.username?.toLowerCase() !== "finfolk.com.au" ||
@@ -750,9 +764,16 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
           String(account.id),
           account.username,
           seal(
-            { accessToken: token.token, issuedAt: new Date().toISOString() },
+            {
+              accessToken: token.token,
+              issuedAt: new Date().toISOString(),
+              provider: config.provider,
+              tokenKind: token.tokenKind || "instagram-user",
+              businessId: account.businessId || null,
+              configId: config.loginConfigId || null,
+            },
             env,
-            "instagram-login:" + config.appId + ":" + account.id,
+            config.provider + ":" + config.appId + ":" + account.id,
           ),
           token.expiresAt,
           JSON.stringify({
@@ -761,7 +782,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
             followLookup: false,
             liveDelivery: false,
           }),
-          "instagram-login:" + config.appId + ":" + account.id,
+          config.provider + ":" + config.appId + ":" + account.id,
         ],
       );
       await q(

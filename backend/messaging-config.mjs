@@ -1,4 +1,4 @@
-import { messagingHealth } from './messaging-health.mjs';
+import { messagingHealth } from "./messaging-health.mjs";
 import {
   createCipheriv,
   createDecipheriv,
@@ -104,6 +104,49 @@ export function unseal(value, env, aad) {
     );
   }
 }
+export function oauthSettings(env) {
+  const provider = env.INSTAGRAM_MESSAGING_PROVIDER || "instagram-login";
+  if (!["instagram-login", "instagram-unified"].includes(provider))
+    throw messagingError(
+      "provider_not_supported",
+      "Unsupported messaging authorization type.",
+      503,
+    );
+  const metaAppId =
+    env.INSTAGRAM_MESSAGING_META_APP_ID || env.INSTAGRAM_APP_ID || "";
+  const appId =
+    provider === "instagram-unified"
+      ? metaAppId
+      : env.INSTAGRAM_MESSAGING_APP_ID || "";
+  const clientSecret =
+    provider === "instagram-unified"
+      ? env.INSTAGRAM_MESSAGING_META_APP_SECRET ||
+        (metaAppId === env.INSTAGRAM_APP_ID ? env.INSTAGRAM_APP_SECRET : "")
+      : env.INSTAGRAM_MESSAGING_CLIENT_SECRET;
+  return {
+    provider,
+    appId,
+    metaAppId: metaAppId || appId,
+    clientSecret,
+    loginConfigId:
+      provider === "instagram-unified"
+        ? env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID || ""
+        : "",
+    graphHost:
+      provider === "instagram-unified"
+        ? "https://graph.facebook.com"
+        : "https://graph.instagram.com",
+    redirectURI:
+      env.INSTAGRAM_MESSAGING_REDIRECT_URI ||
+      "https://api.finfolk.com.au/v1/integrations/instagram/oauth/callback",
+  };
+}
+export function oauthFlowKey(env) {
+  const c = oauthSettings(env);
+  return digest(
+    JSON.stringify([c.provider, c.appId, c.loginConfigId, c.redirectURI]),
+  );
+}
 export async function messagingConfig(q, env, { credentials = false } = {}) {
   const account = (
     await q("SELECT * FROM finfolk.messaging_accounts WHERE id='instagram'")
@@ -119,15 +162,17 @@ export async function messagingConfig(q, env, { credentials = false } = {}) {
     env.INSTAGRAM_MESSAGING_ACCOUNT_ID ||
     env.INSTAGRAM_ACCOUNT_ID ||
     "";
-  const appId = env.INSTAGRAM_MESSAGING_APP_ID || "";
+  const settings = oauthSettings(env);
+  const appId = settings.appId;
   const config = {
     ...account,
+    ...settings,
     accountId,
     appId,
     metaAppId:
       env.INSTAGRAM_MESSAGING_META_APP_ID || env.INSTAGRAM_APP_ID || appId,
     graphVersion: env.INSTAGRAM_MESSAGING_GRAPH_VERSION || "v26.0",
-    scope: "instagram-login:" + appId + ":" + accountId,
+    scope: settings.provider + ":" + appId + ":" + accountId,
   };
   if (account.provider_scope && account.provider_scope !== config.scope)
     config.checks = {
@@ -174,7 +219,11 @@ export async function readiness(q, env) {
   const c = await messagingConfig(q, env);
   const blockers = [];
   if (!env.MESSAGING_ENCRYPTION_KEY) blockers.push("encryption_key_missing");
-  if (!c.appId || !env.INSTAGRAM_MESSAGING_CLIENT_SECRET)
+  if (
+    !c.appId ||
+    !c.clientSecret ||
+    (c.provider === "instagram-unified" && !/^\d{1,40}$/.test(c.loginConfigId))
+  )
     blockers.push("oauth_not_configured");
   if (!c.credential_ciphertext) blockers.push("token_missing");
   else
@@ -194,6 +243,7 @@ export async function readiness(q, env) {
   ])
     if (!c.checks?.[key]) blockers.push(code);
   return {
+    provider: c.provider,
     mode: c.mode,
     accountId: c.accountId || null,
     username: c.username || null,
@@ -206,7 +256,7 @@ export async function readiness(q, env) {
     lastCommandAt: c.last_command_at,
     lastProviderAcceptedAt: c.last_reply_at,
     tokenExpiresAt: c.token_expires_at,
-    health: await messagingHealth(q,c),
+    health: await messagingHealth(q, c),
   };
 }
 export async function idempotent(
