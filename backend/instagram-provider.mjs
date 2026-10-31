@@ -8,7 +8,8 @@ import {
 export class InstagramProvider {
   constructor(config, fetcher = fetch) {
     this.config = config;
-    this.fetcher = fetcher;
+    // Workers requires native fetch to be called without a provider-instance receiver.
+    this.fetcher = (input, init) => fetcher(input, init);
   }
   async request(
     path,
