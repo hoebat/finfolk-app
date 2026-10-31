@@ -1,3 +1,7 @@
+import {
+  stageMessagingAuthorization,
+  completeMessagingAuthorization,
+} from "./messaging-authorization.mjs";
 import { readLimited } from "./messaging-http.mjs";
 import { randomBytes, randomUUID } from "node:crypto";
 import { preferences } from "./community-core.mjs";
@@ -16,7 +20,7 @@ import {
   oauthFlowKey,
   hasPersonalCommands,
 } from "./messaging-config.mjs";
-import { InstagramProvider, exchangeOAuth } from "./instagram-provider.mjs";
+import { exchangeOAuth } from "./instagram-provider.mjs";
 const fail = (code, message, status = 400) => {
   throw messagingError(code, message, status);
 };
@@ -772,64 +776,22 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
       );
     if (c.req.query("error") || !code || code.length > 4096)
       fail("oauth_declined", "Instagram authorization was not granted.");
-    const token = await exchangeOAuth(code, env, fetcher),
-      config = await messagingConfig(db.query, env);
-    const provider = new InstagramProvider(
-      { ...config, token: token.token },
-      fetcher,
+    const token = await exchangeOAuth(code, env, fetcher);
+    const expectedCredential = await stageMessagingAuthorization(
+      db,
+      env,
+      token,
+      intent.user_id,
+      c.get("requestId"),
     );
-    const account = await provider.authorizedAccount();
-    if (
-      !/^\d{1,40}$/.test(String(account.id)) ||
-      account.username?.toLowerCase() !== "finfolk.com.au" ||
-      (env.INSTAGRAM_MESSAGING_ACCOUNT_ID &&
-        String(account.id) !== env.INSTAGRAM_MESSAGING_ACCOUNT_ID)
-    )
-      fail("wrong_brand_account", "Authorize @finfolk.com.au only.", 409);
-    provider.config.accountId = String(account.id);
-    await provider.subscribe();
-    if (!(await provider.subscriptions()))
-      fail(
-        "subscription_missing",
-        "The Instagram account subscription was not confirmed.",
-        503,
-      );
-    await db.transaction(async (q) => {
-      await q(
-        "UPDATE finfolk.messaging_accounts SET account_id=$1,username=$2,credential_ciphertext=$3,token_expires_at=$4,mode='disabled',generation=generation+1,checks=$5::jsonb,provider_scope=$6,updated_at=now() WHERE id='instagram'",
-        [
-          String(account.id),
-          account.username,
-          seal(
-            {
-              accessToken: token.token,
-              issuedAt: new Date().toISOString(),
-              provider: config.provider,
-              tokenKind: token.tokenKind || "instagram-user",
-              businessId: account.businessId || null,
-              configId: config.loginConfigId || null,
-            },
-            env,
-            config.provider + ":" + config.appId + ":" + account.id,
-          ),
-          token.expiresAt,
-          JSON.stringify({
-            authorization: true,
-            subscription: true,
-            followLookup: false,
-            liveDelivery: false,
-          }),
-          config.provider + ":" + config.appId + ":" + account.id,
-        ],
-      );
-      await q(
-        "UPDATE finfolk.messaging_outbox SET state='cancelled',error_code='authorization_changed' WHERE state='pending'",
-      );
-      await q(
-        "INSERT INTO finfolk.messaging_audit(actor,event,correlation_id) VALUES($1,$2,$3)",
-        [intent.user_id, "instagram_authorized", c.get("requestId")],
-      );
-    });
+    await completeMessagingAuthorization(
+      db,
+      env,
+      token,
+      intent.user_id,
+      c.get("requestId"),
+      { fetcher, expectedCredential },
+    );
     c.header("Referrer-Policy", "no-referrer");
     return c.redirect(
       "https://finfolk.com.au/?view=account&tab=settings&messaging=connected",
