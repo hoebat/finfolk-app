@@ -120,7 +120,7 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
       await tq("DELETE FROM finfolk.instagram_comment_identities WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.instagram_commands SET state='cancelled',send_state=CASE WHEN send_state='pending' THEN 'skipped' ELSE send_state END WHERE owner_id=$1 AND (state='confirmation' OR send_state='pending')",[uid]);
       await tq("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null,updated_at=now() WHERE user_id=$1",[uid]);
-      await tq("UPDATE finfolk.instagram_connections SET status='disconnected',sender_id=null,challenge_hash=null,expires_at=null,public_points=false,share_posts=false,media_owner_id=null,updated_at=now() WHERE user_id=$1",[uid]);
+      await tq("UPDATE finfolk.instagram_connections SET status='disconnected',identity_version=gen_random_uuid(),sender_id=null,challenge_hash=null,expires_at=null,public_points=false,share_posts=false,media_owner_id=null,updated_at=now() WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.members SET profile=jsonb_set(profile,'{instagram}','\"\"'::jsonb),updated_at=now() WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.instagram_discoveries SET state='hidden',updated_at=now() WHERE owner_id=$1 AND automatic=true",[uid]);
       await tq("UPDATE finfolk.instagram_actions SET state='cancelled',updated_at=now() WHERE owner_id=$1 AND state NOT IN ('done','sent','uncertain','sending')",[uid]);

@@ -19,5 +19,5 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
-      - run: node tests/test_regulars.mjs && node tests/test_offline.mjs && node tests/test_account.mjs && node tests/test_posts.mjs && node tests/test_trips.mjs && node tests/test_trips_ui.mjs && node tests/test_instagram_dm.mjs && node tests/test_instagram_claim_ui.mjs && node tests/test_instagram_commands.mjs && node tests/test_instagram_commands_ui.mjs && node tests/test_messaging_api.mjs && node tests/test_messaging_settings.mjs && node tests/test_messaging_worker.mjs
+      - run: node tests/test_regulars.mjs && node tests/test_offline.mjs && node tests/test_account.mjs && node tests/test_posts.mjs && node tests/test_trips.mjs && node tests/test_trips_ui.mjs && node tests/test_instagram_dm.mjs && node tests/test_instagram_claim_ui.mjs && node tests/test_instagram_commands.mjs && node tests/test_instagram_commands_ui.mjs && node tests/test_messaging_api.mjs && node tests/test_messaging_settings.mjs && node tests/test_messaging_worker.mjs && node tests/test_instagram_eligibility.mjs && node tests/test_messaging_health.mjs
       - run: npx wrangler deploy --dry-run --outdir .cache/worker

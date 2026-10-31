@@ -1,3 +1,7 @@
+import {
+  instagramFollowerProof,
+  proofMatches,
+} from "./instagram-eligibility.mjs";
 import places from "./instagram-places.json" with { type: "json" };
 import { isInstagramAdmin } from "./instagram-actions.mjs";
 import { socialPostURL } from "../web/media.js";
@@ -79,7 +83,13 @@ export function normalizeInstagramMedia(media, source) {
     source: String(source).slice(0, 120),
   };
 }
-export async function ingestInstagramMedia(media, source, env, q, options = {}) {
+export async function ingestInstagramMedia(
+  media,
+  source,
+  env,
+  q,
+  options = {},
+) {
   const item = normalizeInstagramMedia(media, source);
   if (!item) return null;
   const suppressed = item.authorId
@@ -91,25 +101,44 @@ export async function ingestInstagramMedia(media, source, env, q, options = {}) 
       ).length
     : false;
   if (suppressed) return null;
-  const requested = options.beachId && places.find(p => p.id === options.beachId);
-  const candidates = requested ? [{id:requested.id,name:requested.name}] : matchInstagramBeach(item.caption);
+  const requested =
+    options.beachId && places.find((p) => p.id === options.beachId);
+  const candidates = requested
+    ? [{ id: requested.id, name: requested.name }]
+    : matchInstagramBeach(item.caption);
   const member = item.authorId
     ? (
         await q(
-          "SELECT c.user_id,c.share_posts FROM finfolk.instagram_connections c JOIN finfolk.members m ON m.user_id=c.user_id WHERE c.media_owner_id=$1 AND c.status='connected' AND m.deleted=false",
+          "SELECT c.user_id,c.share_posts,c.sender_id,c.provider_scope,c.identity_version FROM finfolk.instagram_connections c JOIN finfolk.members m ON m.user_id=c.user_id WHERE c.media_owner_id=$1 AND c.status='connected' AND m.deleted=false",
           [item.authorId],
         )
       )[0]
     : null;
-  const auto =
+  const eligibleForAuto =
     !options.forceReview &&
     env.INSTAGRAM_PUBLICATION_ENABLED === "true" &&
     member?.share_posts &&
     candidates.length === 1;
+  const proof = eligibleForAuto
+    ? options.followerProof ||
+      (await instagramFollowerProof(member.user_id, env, q, {
+        fetcher: options.fetcher || fetch,
+      }))
+    : null;
+  const auto = !!eligibleForAuto && proofMatches(proof, member);
   const rows = await q(
-    `INSERT INTO finfolk.instagram_discoveries(media_id,url,author_id,author,owner_id,caption,posted_at,candidates,beach_id,state,automatic,sources,checked_at)
- VALUES($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,$11,$12::jsonb,now())
- ON CONFLICT DO NOTHING RETURNING id,state`,
+    `WITH eligibility AS (
+      SELECT $10::boolean AND EXISTS(
+        SELECT 1 FROM finfolk.instagram_connections c JOIN finfolk.members m ON m.user_id=c.user_id
+        JOIN neon_auth."user" u ON u.id::text=m.user_id WHERE c.user_id=$5 AND c.status='connected' AND c.share_posts
+        AND c.provider_scope=$12 AND c.sender_id=$13 AND c.identity_version=$14::uuid
+        AND NOT m.deleted AND u."emailVerified" AND NOT coalesce(u.banned,false)
+      ) AS automatic
+    )
+    INSERT INTO finfolk.instagram_discoveries(media_id,url,author_id,author,owner_id,caption,posted_at,candidates,beach_id,state,automatic,sources,checked_at)
+    SELECT $1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,CASE WHEN automatic THEN 'published' ELSE 'pending' END,automatic,$11::jsonb,now() FROM eligibility
+    WHERE NOT EXISTS(SELECT 1 FROM finfolk.instagram_suppressed_sources WHERE author_id=$3)
+    ON CONFLICT DO NOTHING RETURNING id,state`,
     [
       item.mediaId,
       item.url,
@@ -120,9 +149,11 @@ export async function ingestInstagramMedia(media, source, env, q, options = {}) 
       item.postedAt,
       JSON.stringify(candidates),
       candidates.length === 1 ? candidates[0].id : null,
-      auto ? "published" : "pending",
-      !!auto,
+      auto,
       JSON.stringify([item.source]),
+      proof?.scope || null,
+      proof?.senderId || null,
+      proof?.version || null,
     ],
   );
   if (rows[0]) return rows[0];
@@ -283,11 +314,16 @@ export async function discoveryAction({ action, v, uid, env, q }) {
       fail("Check the verified member and actual Instagram post first.");
     const c = (
       await q(
-        "SELECT handle FROM finfolk.instagram_connections WHERE user_id=$1 AND status='connected'",
+        "SELECT * FROM finfolk.instagram_connections WHERE user_id=$1 AND status='connected'",
         [v.userId],
       )
     )[0];
     if (!c) fail("Verified connection not found.");
+    const proof = await instagramFollowerProof(v.userId, env, q);
+    if (!proofMatches(proof, c))
+      fail(
+        "Confirm the member’s current verified Instagram connection and follow status first.",
+      );
     const media = await instagramGraph(String(v.mediaId), env, {
       fields: "id,owner,username,permalink",
     });
@@ -298,10 +334,18 @@ export async function discoveryAction({ action, v, uid, env, q }) {
       fail(
         "Meta did not provide matching media-owner evidence. Posts will remain reviewed.",
       );
-    await q(
-      "UPDATE finfolk.instagram_connections SET media_owner_id=$2 WHERE user_id=$1 AND status='connected'",
-      [v.userId, String(media.owner.id)],
+    const bound = await q(
+      "UPDATE finfolk.instagram_connections SET media_owner_id=$2 WHERE user_id=$1 AND status='connected' AND provider_scope=$3 AND sender_id=$4 AND identity_version=$5::uuid RETURNING user_id",
+      [
+        v.userId,
+        String(media.owner.id),
+        proof.scope,
+        proof.senderId,
+        proof.version,
+      ],
     );
+    if (!bound.length)
+      fail("The member connection changed. Verify ownership again.", 409);
     await q(
       "UPDATE finfolk.instagram_discoveries SET owner_id=$1 WHERE author_id=$2 AND owner_id IS NULL AND state='pending'",
       [v.userId, String(media.owner.id)],
@@ -375,23 +419,50 @@ export async function discoveryAction({ action, v, uid, env, q }) {
           fail("Choose a beach from the directory.");
         if (!admin && !["pending", "published"].includes(row.state))
           fail("Only pending or published posts can be placed.");
+        let proof = null;
         if (!admin) {
           const c = (
             await q(
-              "SELECT share_posts FROM finfolk.instagram_connections WHERE user_id=$1 AND status='connected'",
+              "SELECT * FROM finfolk.instagram_connections WHERE user_id=$1 AND status='connected'",
               [uid],
             )
           )[0];
           if (!c?.share_posts) fail("Enable public sharing first.");
+          proof = await instagramFollowerProof(uid, env, q);
+          if (
+            !proofMatches(proof, c) ||
+            !row.author_id ||
+            c.media_owner_id !== row.author_id
+          )
+            fail(
+              "Verify your current Instagram connection, follow status and post ownership before publishing.",
+            );
           if (env.INSTAGRAM_PUBLICATION_ENABLED !== "true")
             fail("Publication is paused.", 503);
         }
         if (env.INSTAGRAM_PUBLICATION_ENABLED !== "true")
           fail("Publication is paused.", 503);
-        await q(
-          "UPDATE finfolk.instagram_discoveries SET beach_id=$2,state='published',automatic=$3,updated_at=now() WHERE id=$1",
-          [row.id, v.beachId, !admin],
+        const changed = await q(
+          `UPDATE finfolk.instagram_discoveries SET beach_id=$2,state='published',automatic=$3,updated_at=now() WHERE id=$1
+          AND ($4::boolean OR EXISTS(SELECT 1 FROM finfolk.instagram_connections c JOIN finfolk.members m ON m.user_id=c.user_id JOIN neon_auth."user" u ON u.id::text=m.user_id
+            WHERE c.user_id=$5 AND c.status='connected' AND c.share_posts AND c.media_owner_id=instagram_discoveries.author_id
+            AND c.provider_scope=$6 AND c.sender_id=$7 AND c.identity_version=$8::uuid AND NOT m.deleted AND u."emailVerified" AND NOT coalesce(u.banned,false))) RETURNING id`,
+          [
+            row.id,
+            v.beachId,
+            !admin,
+            admin,
+            uid,
+            proof?.scope || null,
+            proof?.senderId || null,
+            proof?.version || null,
+          ],
         );
+        if (!changed.length)
+          fail(
+            "Your sharing permission or connection changed. Verify it again.",
+            409,
+          );
       }
     }
     await audit(q, row.id, uid, action);

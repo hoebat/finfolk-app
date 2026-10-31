@@ -11,7 +11,7 @@ Comments must mention `@finfolk.com.au`. Either mention-first or command-first w
 
 ## Member experience
 
-Account → Instagram comment commands contains examples, one-time verification and private pending check-ins. First connect and verify Instagram. Then generate a one-time `/me CODE @finfolk.com.au` command and post it from that account within 15 minutes. FinFolk binds the provider-fetched comment actor to the existing verified member using code possession **and** the provider-fetched account handle. Handles alone and DM sender-ID equality never authorize comments. Codes are stored as hashes and removed from persisted command arguments after use. Disconnect removes the binding and cancels pending work.
+Account → Instagram comment commands contains examples, one-time verification and private pending check-ins. First connect and verify Instagram through the Instagram Login DM service. Personal actions additionally require current follower eligibility and the active messaging pilot/public rollout. Then generate a one-time `/me CODE @finfolk.com.au` command and post it from that account within 15 minutes. FinFolk binds the provider-fetched comment actor to the existing verified member using code possession **and** the provider-fetched account handle. Handles alone and DM sender-ID equality never authorize comments. Codes are stored as hashes and removed from persisted command arguments after use. Disconnect removes the binding and cancels pending work.
 
 A check-in without one clear supported beach, or an undated request processed on another local calendar day, requires private location/date confirmation. Public replies never disclose beach, date, visit counts or live presence. Existing `(member, beach, local day)` uniqueness prevents repeated visits being counted twice. Visit records remain manageable in normal account controls.
 
@@ -56,3 +56,5 @@ npx wrangler deploy --dry-run
 ```
 
 The integration script refuses any branch other than `finfolk-regulars-dev`, creates synthetic members, uses mocked provider responses with real Postgres transactions, and cleans up. It covers namespace isolation, code binding, public privacy, rolling dates, duplicate concurrent delivery, private confirmation ownership, command interception, both reply routes, third-party publication review, durable limits and uncertain-send reconciliation. It does not certify live Meta access.
+
+Connection proofs are also bound to the current DM provider scope and connection generation. Fresh claims/relinks invalidate old comment and media-owner evidence; sharing consent must be enabled again. See [activation runbook](INSTAGRAM_ACTIVATION.md).
