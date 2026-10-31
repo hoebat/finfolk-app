@@ -235,9 +235,22 @@ export class InstagramProvider {
     );
     if (this.config.provider === "instagram-facebook") {
       await this.validatePageToken();
+      const page = await this.request(
+        "/" +
+          this.config.pageId +
+          "/subscribed_apps?fields=id,subscribed_fields",
+      );
+      const pageSubscribed =
+        Array.isArray(page.data) &&
+        page.data.some(
+          (app) =>
+            String(app.id) === this.config.appId &&
+            app.subscribed_fields?.includes("messages"),
+        );
       // Facebook Page-token responses can omit the app ID and expose only this
       // token's subscription. Bind the token to this app/Page before accepting it.
       return (
+        pageSubscribed &&
         Array.isArray(data.data) &&
         data.data.length === 1 &&
         (data.data[0].id === undefined ||
@@ -255,6 +268,13 @@ export class InstagramProvider {
     );
   }
   async subscribe() {
+    if (this.config.provider === "instagram-facebook") {
+      await this.validatePageToken();
+      await this.request("/" + this.config.pageId + "/subscribed_apps", {
+        method: "POST",
+        body: { subscribed_fields: ["messages"] },
+      });
+    }
     return this.request("/" + this.config.accountId + "/subscribed_apps", {
       method: "POST",
       body: { subscribed_fields: ["messages"] },

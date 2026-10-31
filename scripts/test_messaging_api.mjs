@@ -141,7 +141,11 @@ const fetcher = async (input, options = {}) => {
           : {
               data: [
                 {
-                  ...(env.INSTAGRAM_MESSAGING_PROVIDER === "instagram-facebook"
+                  ...(env.INSTAGRAM_MESSAGING_PROVIDER ===
+                    "instagram-facebook" &&
+                  !url.pathname.includes(
+                    "/" + env.INSTAGRAM_MESSAGING_PAGE_ID + "/",
+                  )
                     ? {}
                     : { id: "778" }),
                   subscribed_fields: ["messages"],
@@ -1098,7 +1102,7 @@ try {
   const pageURL = new URL(pageAuth.data.authorizationUrl);
   assert.equal(
     pageURL.searchParams.get("scope"),
-    "instagram_basic,instagram_manage_messages,pages_show_list,pages_read_engagement",
+    "instagram_basic,instagram_manage_messages,pages_show_list,pages_read_engagement,pages_manage_metadata",
   );
   assert.equal(pageURL.searchParams.get("config_id"), null);
   const pageCallback = await app.request(
