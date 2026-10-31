@@ -8,6 +8,7 @@ import { instagramAction } from './instagram-actions.mjs';
 import { instagramWebhook } from './instagram-webhook.mjs';
 import { createShopCheckout } from './shop.mjs';
 import { Hono } from 'hono';
+import { publicPage } from './public-pages.mjs';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import {
   preferences,
@@ -57,6 +58,8 @@ export function createAPI({
 }) {
   const app = new Hono();
   const q = db.query;
+  app.get('/privacy', c => publicPage(c.req.path));
+  app.get('/data-deletion', c => publicPage(c.req.path));
   app.use('*', async (c, next) => {
     if(c.req.path.startsWith('/v1/')){const requestId=randomUUID();c.set('requestId',requestId);c.header('X-Request-Id',requestId);}
     const origin = c.req.header('Origin');

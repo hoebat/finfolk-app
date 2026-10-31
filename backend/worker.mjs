@@ -11,6 +11,7 @@ import {
 } from "./instagram-webhook.mjs";
 import { createAPI, managedVerifier } from "./api.mjs";
 import { database } from "./db.mjs";
+import { publicPage } from './public-pages.mjs';
 const verifiers = new Map();
 export default {
   async queue(batch, env) {
@@ -47,6 +48,10 @@ export default {
     }
   },
   async fetch(request, env, ctx) {
+    if (request.method === 'GET' || request.method === 'HEAD') {
+      const page = publicPage(new URL(request.url).pathname);
+      if (page) return request.method === 'HEAD' ? new Response(null, page) : page;
+    }
     if(new URL(request.url).pathname==='/instagram/webhook' && request.method==='GET'){
       const {instagramWebhook}=await import('./instagram-webhook.mjs');return instagramWebhook(request,env,()=>{});
     }

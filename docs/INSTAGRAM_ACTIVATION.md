@@ -78,3 +78,9 @@ Before saving or verifying a subscription, check that Meta's debugger binds the 
 Activation still finishes paused. Enable only `ping` and `help` for a real sender observed in signed webhook receipts, verify visible replies, and retain the usual public/personal-command acceptance gates. No other platform credentials or message routing settings are changed automatically.
 
 Facebook Page mode also subscribes the configured Facebook Page to `messages` and verifies that the app appears in the Page subscription readback. Instagram-account subscription alone is insufficient. Missing `pages_manage_metadata` must keep the overall subscription check false. This permission lets the app manage Page settings/webhooks and requires explicit approval for the FinFolk Page.
+
+## Meta app publication
+
+The Meta Page webhook dashboard explicitly warns that unpublished apps receive only dashboard test events, not production events from admins, developers or testers. App-role access and a valid token do not establish real webhook delivery. Publishing the Meta app is separate from switching FinFolk command processing to public mode; keep the latter paused until signed receipts and pilot replies are verified.
+
+The public, database-independent privacy policy is `https://api.finfolk.com.au/privacy`; deletion instructions are `https://api.finfolk.com.au/data-deletion`. Configure those URLs in Meta App settings → Basic, then complete the Publish requirements. The deletion instructions describe the existing account-deletion flow and distinguish FinFolk data from Meta's retained messages. Do not claim the app is published until the dashboard confirms its published status.
