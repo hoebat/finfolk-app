@@ -154,12 +154,25 @@ export class InstagramProvider {
       !Array.isArray(accounts.data) ||
       accounts.data.length !== 1 ||
       accounts.paging?.next
-    )
+    ) {
+      const count = Array.isArray(accounts.data) ? accounts.data.length : 0;
+      console.info(
+        JSON.stringify({
+          service: "instagram-authorization",
+          stage: "assigned_account_validation",
+          accountCount: count,
+          hasNext: !!accounts.paging?.next,
+        }),
+      );
       throw messagingError(
         "wrong_brand_account",
-        "Share only @finfolk.com.au with this integration.",
+        "Share only @finfolk.com.au with this integration. Meta returned " +
+          count +
+          " assigned accounts" +
+          (accounts.paging?.next ? " and another page." : "."),
         409,
       );
+    }
     return {
       ...accounts.data[0],
       businessId: String(business.client_business_id),

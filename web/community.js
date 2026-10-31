@@ -33,6 +33,7 @@ export function installCommunity({
   loadClient = () => import('./neon-client.js'),
 } = {}) {
   const root = document.getElementById('account-page');
+  const requestedAccountTab = () => { const tab = new URL(location.href).searchParams.get('tab'); return ['checkin', 'posts', 'instagram', 'profile', 'settings'].includes(tab) ? tab : 'checkin'; };
   let config,
     client,
     pending,
@@ -40,7 +41,7 @@ export function installCommunity({
     beachEpoch = 0,
     nextRefresh = Infinity,
     observedUser,
-    accountTab = new URL(location.href).searchParams.get('tab') === 'instagram' ? 'instagram' : 'checkin';
+    accountTab = requestedAccountTab();
   async function api() {
     if (!pending)
       pending = (async () => {
@@ -58,7 +59,7 @@ export function installCommunity({
               .forEach((n) => n.remove());
             document.getElementById('regulars-panel')?.remove();
             document.querySelectorAll('.beach-post-feed').forEach(n=>n.remove());
-            accountTab=new URL(location.href).searchParams.get('tab')==='instagram'?'instagram':'checkin';
+            accountTab=requestedAccountTab();
             if (!user && shell.route.view === 'account') queueMicrotask(() => account());
             epoch++;
             beachEpoch++;

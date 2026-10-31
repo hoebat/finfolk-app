@@ -129,6 +129,7 @@ export async function renderMessagingSettings({ host, api }) {
         el("li", label + ": " + (value ? "verified" : "not verified")),
       );
     root.append(checks);
+    if (state.checks.pendingVerification) root.append(el('p', 'Meta approval received. The Instagram account and webhook subscription still need verification.'));
     if (state.blockers.length)
       root.append(el("p", "Setup needed: " + state.blockers.join(", ")));
     for (const [label, value] of [

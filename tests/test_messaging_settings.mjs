@@ -76,6 +76,10 @@ assert.deepEqual(saved.options.body, {
 });
 assert.ok(saved.options.idempotencyKey);
 assert.ok(!JSON.stringify(saved.options).includes("visibleRepliesConfirmed"));
+const pendingHost = document.createElement('div');
+await renderMessagingSettings({host: pendingHost,api:{request:async path=>path.includes('events?')?{events:[]}:{...state,checks:{pendingVerification:true},blockers:['authorization_unverified']}}});
+assert.ok(pendingHost.textContent.includes('Meta approval received'));
+assert.ok(pendingHost.textContent.includes('still need verification'));
 w.happyDOM.abort();
 assert.match(host.textContent,/Needs attention|Inspect uncertain replies/);
 console.log(

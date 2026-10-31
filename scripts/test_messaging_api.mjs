@@ -14,6 +14,7 @@ import {
   sendOutbox,
 } from "../backend/messaging-engine.mjs";
 import { messagingConfig, digest } from "../backend/messaging-config.mjs";
+import { completeMessagingAuthorization } from "../backend/messaging-authorization.mjs";
 const project = "odd-voice-85400108",
   branch = "finfolk-community-pilot-test";
 const connection = (role) =>
@@ -73,6 +74,8 @@ const env = {
     },
   },
 };
+let assignedMissing = false,
+  businessExchanges = 0;
 let follows = true,
   profileError = false,
   sendFailure = null,
@@ -88,10 +91,16 @@ const fetcher = async (input, options = {}) => {
       headers: new Headers(),
       json: async () => data,
     });
-    if (url.pathname.endsWith("/oauth/access_token"))
+    if (url.pathname.endsWith("/oauth/access_token")) {
+      businessExchanges++;
       return ok({ access_token: "fixture-business", expires_in: 0 });
+    }
     if (url.pathname.endsWith("/me/assigned_instagram_accounts"))
-      return ok({ data: [{ id: brand, username: "finfolk.com.au" }] });
+      return ok({
+        data: assignedMissing
+          ? []
+          : [{ id: brand, username: "finfolk.com.au" }],
+      });
     if (url.searchParams.get("fields") === "client_business_id")
       return ok({ id: "system-user", client_business_id: "8888" });
     if (url.pathname.endsWith("/subscribed_apps"))
@@ -800,6 +809,101 @@ try {
     "Changing the login configuration invalidates the old authorization",
   );
   env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID = "5544";
+  await q(
+    "UPDATE finfolk.messaging_accounts SET account_id=null,username=null,credential_ciphertext=null,token_expires_at=null,provider_scope=null,checks='{}',mode='disabled' WHERE id='instagram'",
+  );
+  assignedMissing = true;
+  const pendingAuth = await request(
+    admin,
+    "POST",
+    "/v1/admin/messaging/instagram/authorization",
+    {},
+  );
+  const pendingCallback = await app.request(
+    "/v1/integrations/instagram/oauth/callback?code=fixture-code&state=" +
+      new URL(pendingAuth.data.authorizationUrl).searchParams.get("state"),
+    {},
+    env,
+  );
+  assert.equal(pendingCallback.status, 409);
+  const pendingConfig = await messagingConfig(q, env, { credentials: true });
+  assert.equal(pendingConfig.token, "fixture-business");
+  assert.equal(pendingConfig.checks.pendingVerification, true);
+  assert.equal(pendingConfig.checks.authorization, false);
+  assert.equal(pendingConfig.mode, "disabled");
+  assert.ok(!pendingConfig.credential_ciphertext.includes("fixture-business"));
+  const exchangeCount = businessExchanges;
+  await assert.rejects(
+    () =>
+      completeMessagingAuthorization(
+        runtime,
+        env,
+        {
+          token: pendingConfig.token,
+          expiresAt: null,
+          tokenKind: "business-integration-system-user",
+        },
+        admin,
+        randomUUID(),
+        { fetcher, expectedCredential: pendingConfig.credential_ciphertext },
+      ),
+    /Meta returned 0/,
+  );
+  assignedMissing = false;
+  await assert.rejects(
+    () =>
+      completeMessagingAuthorization(
+        runtime,
+        { ...env, INSTAGRAM_MESSAGING_ACCOUNT_ID: "1234" },
+        { token: pendingConfig.token, expiresAt: null },
+        admin,
+        randomUUID(),
+        { fetcher, expectedCredential: pendingConfig.credential_ciphertext },
+      ),
+    (error) => error.code === "wrong_brand_account",
+  );
+  await completeMessagingAuthorization(
+    runtime,
+    env,
+    {
+      token: pendingConfig.token,
+      expiresAt: null,
+      tokenKind: "business-integration-system-user",
+    },
+    admin,
+    randomUUID(),
+    { fetcher, expectedCredential: pendingConfig.credential_ciphertext },
+  );
+  assert.equal(
+    businessExchanges,
+    exchangeCount,
+    "Verification recovery reuses the approved encrypted grant without another OAuth exchange",
+  );
+  const recovered = await messagingConfig(q, env);
+  assert.equal(recovered.checks.authorization, true);
+  assert.equal(recovered.checks.subscription, true);
+  assert.equal(recovered.checks.pendingVerification, undefined);
+  assert.equal(recovered.mode, "disabled");
+  assignedMissing = true;
+  const reconnect = await request(
+    admin,
+    "POST",
+    "/v1/admin/messaging/instagram/authorization",
+    {},
+  );
+  const failedReconnect = await app.request(
+    "/v1/integrations/instagram/oauth/callback?code=fixture-code&state=" +
+      new URL(reconnect.data.authorizationUrl).searchParams.get("state"),
+    {},
+    env,
+  );
+  assert.equal(failedReconnect.status, 409);
+  assert.equal(
+    (await messagingConfig(q, env)).credential_ciphertext,
+    recovered.credential_ciphertext,
+    "Failed reconnect preserves the verified credential",
+  );
+  assignedMissing = false;
   unifiedAuth = await request(
     admin,
     "POST",
