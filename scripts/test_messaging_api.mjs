@@ -91,6 +91,12 @@ const fetcher = async (input, options = {}) => {
       headers: new Headers(),
       json: async () => data,
     });
+    if (url.pathname.endsWith("/debug_token")) {
+      assert.equal(options.headers.Authorization, "Bearer 778|fixture-signature");
+      return ok({data:{app_id:"778",type:"SYSTEM_USER",is_valid:true,
+        scopes:["instagram_basic","instagram_manage_messages"],
+        granular_scopes:[{scope:"instagram_basic",target_ids:[brand]}]}});
+    }
     if (url.pathname.endsWith("/oauth/access_token")) {
       businessExchanges++;
       return ok({ access_token: "fixture-business", expires_in: 0 });
@@ -357,6 +363,7 @@ try {
   }
   await request(null, "GET", "/v1/me/instagram", null, 401);
   await request(owner, "GET", "/v1/admin/messaging/instagram", null, 403);
+  await request(owner, "GET", "/v1/admin/messaging/instagram/authorization/diagnostics", null, 403);
   const missingKey = await request(
     owner,
     "PUT",
@@ -795,6 +802,7 @@ try {
   assert.equal(unifiedURL.hostname, "www.facebook.com");
   assert.equal(unifiedURL.searchParams.get("client_id"), "778");
   assert.equal(unifiedURL.searchParams.get("config_id"), "5544");
+  assert.equal(unifiedURL.searchParams.get("override_default_response_type"), "true");
   assert.equal(unifiedURL.searchParams.get("scope"), null);
   env.INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID = "5545";
   let staleAuth = await app.request(
@@ -828,6 +836,15 @@ try {
   assert.equal(pendingCallback.status, 409);
   const pendingConfig = await messagingConfig(q, env, { credentials: true });
   assert.equal(pendingConfig.token, "fixture-business");
+  const grantDiagnostic = await request(admin, "GET", "/v1/admin/messaging/instagram/authorization/diagnostics");
+  assert.equal(grantDiagnostic.data.appMatches, true);
+  assert.equal(grantDiagnostic.data.granularScopes[0].includesExpectedAccount, true);
+  assert.equal(grantDiagnostic.data.assignedAccounts.count, 0);
+  assert.equal(grantDiagnostic.response.headers.get("Cache-Control"), "private, no-store");
+  assert.ok(!JSON.stringify(grantDiagnostic.data).includes("fixture-business"));
+  assert.ok(!JSON.stringify(grantDiagnostic.data).includes("fixture-signature"));
+  assert.equal((await messagingConfig(q, env)).checks.pendingVerification, true);
+
   assert.equal(pendingConfig.checks.pendingVerification, true);
   assert.equal(pendingConfig.checks.authorization, false);
   assert.equal(pendingConfig.mode, "disabled");
