@@ -116,7 +116,7 @@ export async function postAction({action,v,uid,env,q,verified,beach}) {
     return {
       weeks: await q(`SELECT date_trunc('week',visit_day)::date AS week,count(*)::int AS checkins,count(DISTINCT user_id)::int AS participants FROM finfolk.checkins WHERE visit_day>=current_date-28 GROUP BY 1 ORDER BY 1`),
       repeatParticipants: (await q(`SELECT count(*)::int AS count FROM (SELECT user_id FROM finfolk.checkins WHERE visit_day>=current_date-28 GROUP BY user_id HAVING count(DISTINCT date_trunc('week',visit_day))>1) r`))[0]?.count || 0,
-      membership: (await q(`SELECT count(*)::int AS members,count(*) FILTER(WHERE u."createdAt">=now()-interval '28 days')::int AS joined FROM finfolk.members m JOIN neon_auth."user" u ON u.id::text=m.user_id WHERE NOT m.deleted`))[0],
+      membership: (await q(`SELECT count(*)::int AS members,count(*) FILTER(WHERE joined_at>=now()-interval '28 days')::int AS joined FROM finfolk.members WHERE NOT deleted`))[0],
       referrals: await q(`SELECT day,platform,clicks FROM finfolk.community_referrals WHERE day>=current_date-28 ORDER BY day DESC`),
     };
   }

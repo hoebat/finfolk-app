@@ -447,3 +447,12 @@
 .post-manager form > .primary { margin-top: 16px; }
 .post-review textarea { min-height: 80px; }
 .account-page-guest { background: var(--account-bg); }
+
+.account-page h1 { color: var(--account-ink); }
+.account-card .theme-choice input[type='radio'] { width: auto; margin: 0; padding: 0; display: inline-block; background: initial; border: initial; }
+:root[data-theme='night'] .system-toggle { color: var(--account-ink); border-color: var(--account-line); background: var(--account-surface); }
+:root[data-theme='night'] #account-page > h1 { color: #e6f4ef; }
+:root[data-theme='night'] #system-toggle { color: var(--account-ink); background: var(--account-surface); }
+:root[data-theme='night'] .social-menu { background: var(--account-surface); border-color: var(--account-line); }
+:root[data-theme='night'] .social-menu :is(h2,p,a), :root[data-theme='night'] .signin-card :is(h2,p,label,a) { color: var(--account-ink); }
+:root[data-theme='night'] .account-page .social-menu-action { color: var(--account-accent); background: var(--account-bg); }

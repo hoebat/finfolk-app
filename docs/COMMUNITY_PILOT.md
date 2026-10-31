@@ -27,7 +27,7 @@ Original-post links work without loading an embed. Previews load only on request
 
 1. Start from current `origin/main`; preserve existing Instagram actions and invitation tracking.
 2. Run `npm test`, `python3 -m unittest discover -s tests -q`, `npm run build`, and `npx wrangler deploy --dry-run`.
-3. Test migration 0006 and real SQL/API behaviour on the isolated `finfolk-community-pilot-test` branch using `npm run test:posts:integration`. The script checks its dedicated endpoint, migrates the branch and removes its generated users. It never verifies real production members. The branch expires on 7 November 2026.
+3. Test migrations 0006–0007 and real SQL/API behaviour on the isolated `finfolk-community-pilot-test` branch using `npm run test:posts:integration`. The script checks its dedicated endpoint, migrates the branch and removes its generated users. It never verifies real production members. The branch expires on 7 November 2026.
 4. Apply committed migrations with the existing direct-connection migration runner, then deploy the API with `COMMUNITY_POSTS_ENABLED=false`. Do not change prior migration files.
 5. Publish the frontend through the repository's GitHub Pages workflow. Validate account, submission and review views at desktop and narrow mobile sizes; validate real Instagram and TikTok original links, previews and unavailable-post fallbacks.
 6. Confirm control of `@finfolk.com.au` on both platforms. Select 3–5 Sydney beach IDs, nominate the reviewer account and configure its existing Auth user ID in `INSTAGRAM_ADMIN_IDS`.
@@ -40,3 +40,9 @@ To pause, set `COMMUNITY_POSTS_ENABLED=false`; submissions and public/personalis
 Review aggregate weekly check-ins, participants returning across multiple weeks, new memberships, existing invitation joins and outbound platform clicks. The admin activity panel reports counts without visit histories or external visitor identifiers. Ask participants whether they found local people and posts worth engaging with.
 
 This release includes followed-beach discovery, shareable post links and reuse of invitation tools. Improve onboarding and ranking based on pilot feedback before expanding beyond Sydney. Later integrations must demonstrate supported provider access, attribution and consent before automating tag discovery; retain manual submission and review. Outings, clubs, commerce and in-app messaging are separate product decisions, not launch requirements.
+
+## Browser acceptance progress
+
+Desktop and a 390 × 844 viewport were inspected in Dia using local test data. Tab navigation, submission/consent layout, Night Swim contrast and saved-theme reload were checked. Visual QA fixed account-header/System contrast and radio placement. Real-account sign-in, reviewer actions and real external embeds remain launch checks. Local OAuth callbacks must use an explicitly permitted development origin; production trusted origins remain unchanged.
+
+The account client uses the installed Neon SDK's session JWT before requesting `/token`, preserving OAuth verifier sessions in browsers that restrict cross-site cookies. Missing tokens return the account to sign-in. Regression checks cover session JWTs, opaque-token rejection, fallback and expiry.

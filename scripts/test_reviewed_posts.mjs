@@ -12,7 +12,10 @@ execFileSync(process.execPath,['scripts/migrate_neon.mjs'],{env:{...process.env,
 const db=database(url),q=db.query;
 const admin=randomUUID(), owner=randomUUID(), viewer=randomUUID(), unverified=randomUUID(),ids=[admin,owner,viewer,unverified];
 const env={COMMUNITY_POSTS_ENABLED:'true',INSTAGRAM_ADMIN_IDS:admin};
-const app=createAPI({db,verify:async token=>{if(!ids.includes(token))throw Error('Invalid test token');return {sub:token};}});
+const runtimeURL=execFileSync('neon',['connection-string',branch,'--project-id',project,'--role-name','finfolk_api'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
+if(new URL(runtimeURL).hostname!==host)throw Error('Unexpected runtime database endpoint.');
+const runtimeDB=database(runtimeURL);
+const app=createAPI({db:runtimeDB,verify:async token=>{if(!ids.includes(token))throw Error('Invalid test token');return {sub:token};}});
 async function call(uid,action,data={},expected=200){
  const response=await app.request('http://localhost/api',{method:'POST',headers:{'Content-Type':'application/json',...(uid?{Authorization:'Bearer '+uid}:{})},body:JSON.stringify({action,...data})},env);
  const value=await response.json();assert.equal(response.status,expected,JSON.stringify(value));return value.data;
@@ -70,5 +73,6 @@ try {
  console.log('Reviewed posts integration passed: migrated isolated branch, verified submissions, consent, moderation, admin access, public/Closed separation, blocking, reports, withdrawal races, microsecond pagination, metrics and account deletion.');
 }finally{
  for(const uid of ids){await q('DELETE FROM finfolk.members WHERE user_id=$1',[uid]);await q('DELETE FROM neon_auth."user" WHERE id::text=$1',[uid]);}
+ await runtimeDB.pool.end();
  await db.pool.end();
 }

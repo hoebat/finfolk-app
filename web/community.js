@@ -57,6 +57,7 @@ export function installCommunity({
             document.getElementById('regulars-panel')?.remove();
             document.querySelectorAll('.beach-post-feed').forEach(n=>n.remove());
             accountTab='checkin';
+            if (!user && shell.route.view === 'account') queueMicrotask(() => account());
             epoch++;
             beachEpoch++;
           }
