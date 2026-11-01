@@ -2,6 +2,14 @@ const account = 'https://finfolk.com.au/?view=account';
 const contact = 'https://www.instagram.com/finfolk.com.au/';
 
 const pages = {
+  '/v1/integrations/tiktok/oauth/callback': {
+    title: 'TikTok integration setup',
+    status: 503,
+    body: `<p>FinFolk's TikTok integration is being prepared for TikTok's developer and Business Messaging access reviews.</p>
+      <p>Account authorization is not enabled yet. No TikTok authorization code has been accepted or exchanged.</p>
+      <p>Once setup is approved and available, start authorization from your signed-in FinFolk settings. Do not send passwords, access tokens or authorization codes by message.</p>
+      <p><a href="${account}&amp;tab=settings">Return to FinFolk settings</a> · <a href="https://www.tiktok.com/@finfolk.com.au">FinFolk on TikTok</a></p>`,
+  },
   '/privacy': {
     title: 'Privacy policy',
     body: `
@@ -55,9 +63,10 @@ export function publicPage(pathname) {
 <h1>${page.title}</h1><p class="date">Last updated 1 November 2026</p>${page.body}
 <footer><a href="/privacy">Privacy policy</a> · <a href="/data-deletion">Data deletion</a> · <a href="${account}">Your FinFolk</a></footer>
 </main></body></html>`, {
+    status: page.status || 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
+      'Cache-Control': page.status ? 'private, no-store' : 'public, max-age=3600',
       'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'no-referrer',

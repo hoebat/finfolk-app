@@ -26,13 +26,16 @@ await writeFile(config, JSON.stringify({ name: 'messaging-runtime-test', main: r
 const worker = spawn(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'dev', '--config', config, '--local', '--port', String(port)], { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, WRANGLER_SEND_METRICS: 'false' } });
 let output = '';worker.stdout.on('data', data => { output += data; });worker.stderr.on('data', data => { output += data; });
 try {
-  let response;
+  let ready;
   const deadline = Date.now() + 30000;
   while (Date.now() < deadline) {
     if (worker.exitCode !== null) throw Error('Worker runtime failed to start: ' + output);
-    try { response = await fetch('http://127.0.0.1:' + port, {signal: AbortSignal.timeout(1000)}); break; } catch { await new Promise(done => setTimeout(done, 100)); }
+    try { ready = await fetch('http://127.0.0.1:' + port + '/health', {signal: AbortSignal.timeout(1000)}); break; } catch { await new Promise(done => setTimeout(done, 100)); }
   }
-  assert.ok(response, 'Worker runtime did not start within 30 seconds');
+  assert.ok(ready, 'Worker runtime did not start within 30 seconds');
+  assert.equal(ready.status, 200);
+  assert.equal(providerRequests, 0, 'Startup probes must not call the provider');
+  const response = await fetch('http://127.0.0.1:' + port, {signal: AbortSignal.timeout(15000)});
   assert.equal(response.status, 200, await response.clone().text());
   assert.deepEqual(await response.json(), { providerAccount: { id: '123', username: 'finfolk.com.au' }, result: { command: '/claim fixture', unicode: '波 🌊' }, rejectsWrongScope: true, challenge: 'challenge-123' });
   assert.equal(providerRequests, 1, 'The provider must issue one real HTTP request with its default fetch function');
