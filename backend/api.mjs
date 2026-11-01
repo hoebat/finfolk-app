@@ -60,6 +60,7 @@ export function createAPI({
   const q = db.query;
   app.get('/privacy', c => publicPage(c.req.path));
   app.get('/data-deletion', c => publicPage(c.req.path));
+  app.get('/v1/integrations/tiktok/oauth/callback', c => publicPage(c.req.path));
   app.use('*', async (c, next) => {
     if(c.req.path.startsWith('/v1/')){const requestId=randomUUID();c.set('requestId',requestId);c.header('X-Request-Id',requestId);}
     const origin = c.req.header('Origin');

@@ -3,6 +3,7 @@ import { seal, unseal } from '../../backend/messaging-config.mjs';
 import { instagramWebhook } from '../../backend/instagram-webhook.mjs';
 export default {
   async fetch(_request, bindings) {
+    if (new URL(_request.url).pathname === '/health') return Response.json({ready: true});
     const env = { MESSAGING_ENCRYPTION_KEY: Buffer.alloc(32, 1).toString('base64') };
     const original = { command: '/claim fixture', unicode: '波 🌊' };
     const encrypted = seal(original, env, 'fixture-member:key');
