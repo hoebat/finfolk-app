@@ -97,3 +97,16 @@ Rollback: select Paused. This cancels pending replies and blocks queued work. Ke
 - `npm run test:messaging:integration`: migrate only the isolated `finfolk-community-pilot-test` endpoint; exercise the actual Worker database role with mocked Meta transport; validate real HTTP responses against OpenAPI; cover OAuth, replay/ownership, follower gates, connection/legacy retirement, queue recovery, replies, uncertainty, rollout and deletion cleanup.
 - `npm test`, Python tests, static build and Wrangler deployment dry-run retain existing account, trip, discovery and comment-command coverage.
 - Real Meta acceptance remains a separate gate; mocked responses and dashboard tests never count as live delivery success.
+
+
+## Seen, typing and timeout feedback
+
+`INSTAGRAM_DM_FEEDBACK_ENABLED=true` enables best-effort sender actions for messages admitted by the existing rollout. The first processing attempt marks the message seen, typing starts while FinFolk works, and typing stops after the reply attempt. A delayed outbox delivery starts typing again. Unsupported actions or action failures do not prevent the actual reply. The Worker config enables this for the existing pilot when deployed; no audience/command rollout setting is changed.
+
+The processing budget is 12 seconds, with follower lookups bounded to 8 seconds and sender actions to 1 second each. SQL cancellation rolls back the command before a generic retry notice is queued. Interrupted-worker recovery also queues that notice rather than running an abandoned command again, including an interrupted final attempt. A queue receipt older than one minute receives the notice instead of executing a stale command. A final follower preflight timeout can replace an unsent result with the fixed notice, invalidating any undelivered connection code. The notice contains no member data and can be sent when the follower lookup itself is unavailable. It does not count as command acceptance evidence.
+
+A timed-out message POST may already have reached Instagram. Those deliveries retain the existing uncertain state and are never followed by an automatic second message. If Meta is unavailable or rate-limits delivery, the durable outbox retains safe retry behavior; receipt of a timeout notice cannot be guaranteed while the provider itself is unavailable.
+
+The Page-token path uses `mark_seen`, `typing_on`, `typing_off` on the existing messaging endpoint. Instagram Login uses the enum names in [Meta's generated SDK](https://github.com/facebook/facebook-python-business-sdk/blob/main/facebook_business/adobjects/iguserforigonlyapi.py). Actual seen/typing display on the production Page-token connection still needs a live pilot check after deployment. No artificial typing delay is added.
+
+Run `npm run test:messaging-feedback` for restricted-role SQL tests covering normal feedback, provider timeouts, rollback/deadline fencing, duplicate events, interrupted work, missing follow evidence, delayed replies and uncertain sends. Tracked in [#29](https://github.com/hoebat/finfolk-app/issues/29).

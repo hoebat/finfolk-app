@@ -7,7 +7,9 @@ import {
   requiresFollower,
   seal,
   unseal,
+  messagingError,
 } from "./messaging-config.mjs";
+import { instagramFeedback, processingTimeoutReply } from './messaging-feedback.mjs';
 import {
   InstagramProvider,
   refreshAuthorization,
@@ -168,11 +170,36 @@ async function blockWithFollowReply(db, env, event, identity) {
     );
   });
 }
-export async function processInstagramDM(
+async function completeTimeout(db, env, event) {
+  return db.transaction(async q => {
+    await q("SELECT id FROM finfolk.messaging_accounts WHERE id='instagram' FOR SHARE");
+    const current = await messagingConfig(q, env);
+    const locked = (await q("SELECT id FROM finfolk.instagram_dm_events WHERE id=$1 AND lease=$2 AND processing_state='processing' FOR UPDATE", [event.id,event.lease]))[0];
+    if (!locked) return false;
+    if (!canRun(current,event) || expired(event)) {
+      await markBlocked(q,event,'rollout_restricted');
+      return false;
+    }
+    // A committed result or uncertain delivery always wins over a fallback.
+    if ((await q('SELECT 1 FROM finfolk.messaging_outbox WHERE event_id=$1',[event.id])).length) return false;
+    await q(`INSERT INTO finfolk.messaging_outbox(event_id,body,correlation_id,deadline)
+      VALUES($1,$2,$3,$4) ON CONFLICT(event_id) DO NOTHING`, [event.id,processingTimeoutReply,event.correlation_id,new Date(Date.parse(event.message_at)+86400000)]);
+    await q("UPDATE finfolk.instagram_dm_events SET processing_state='completed',status='done',error='processing_timeout',updated_at=now() WHERE id=$1 AND lease=$2",[event.id,event.lease]);
+    return true;
+  });
+}
+export async function processInstagramDM(id, env, db, options = {}) {
+  const fetcher = options.fetcher || fetch;
+  const feedback = instagramFeedback(env,db,fetcher,(config,event) =>
+    event.provider_scope===config.scope && event.recipient_id===config.accountId && canRun(config,event) && !expired(event));
+  try { return await runInstagramDM(id,env,db,{...options,fetcher,feedback}); }
+  finally { await feedback.stop(); }
+}
+async function runInstagramDM(
   id,
   env,
   db,
-  { fetcher = fetch } = {},
+  { fetcher = fetch, feedback, processingTimeoutMs = 12000 } = {},
 ) {
   const lease = randomUUID();
   const event = (
@@ -183,9 +210,15 @@ export async function processInstagramDM(
     )
   )[0];
   if (!event) {
-    await sendOutboxForEvent(id, env, db, { fetcher });
+    await sendOutboxForEvent(id, env, db, { fetcher, feedback });
     return;
   }
+  const deadline = Date.now() + Math.max(20, Math.min(processingTimeoutMs, 12000));
+  const remaining = () => {
+    const ms = deadline-Date.now();
+    if (ms<=0) throw messagingError('processing_timeout','Message processing timed out.',503,true);
+    return ms;
+  };
   try {
     const config = await messagingConfig(db.query, env, { credentials: true });
     if (
@@ -220,6 +253,12 @@ export async function processInstagramDM(
     )[0];
     if (rate.count > 30)
       return await markBlocked(db.query, event, "sender_rate_limit");
+    await feedback.start(event);
+    if (event.error === 'processing_interrupted' || Date.now()-Date.parse(event.created_at)>60000) {
+      await completeTimeout(db,env,event);
+      await sendOutboxForEvent(id,env,db,{fetcher,feedback});
+      return;
+    }
     if (event.challenge_hash)
       await db.query(
         "UPDATE finfolk.instagram_claims SET state='checking',sender_id=coalesce(sender_id,$2),updated_at=now() WHERE code_hash=$1 AND provider_scope=$3 AND expires_at>now() AND state IN ('waiting','failed','follow_required') AND (sender_id IS NULL OR sender_id=$2)",
@@ -229,17 +268,20 @@ export async function processInstagramDM(
     if (requiresFollower(event.command)) {
       identity = await new InstagramProvider(config, fetcher).profile(
         event.sender_id,
+        { timeoutMs: Math.min(8000,remaining()) },
       );
       await db.query(
         "UPDATE finfolk.messaging_accounts SET checks=checks || '{\"followLookup\":true}'::jsonb WHERE id='instagram'",
       );
       if (!identity.follows) {
         await blockWithFollowReply(db, env, event, identity);
-        await sendOutboxForEvent(id, env, db, { fetcher });
+        await sendOutboxForEvent(id, env, db, { fetcher, feedback });
         return;
       }
     }
+    // Cancel slow SQL and roll the command back before queuing any fallback.
     await db.transaction(async (q) => {
+      await q("SELECT set_config('statement_timeout',$1,true)",[String(remaining())]);
       await q(
         "SELECT id FROM finfolk.messaging_accounts WHERE id='instagram' FOR SHARE",
       );
@@ -269,6 +311,7 @@ export async function processInstagramDM(
         effective,
         identity,
       );
+      remaining();
       if (reply) {
         await q(
           `INSERT INTO finfolk.messaging_outbox(event_id,body,correlation_id,deadline,reply_kind,body_ciphertext,connect_code_id)
@@ -294,6 +337,12 @@ export async function processInstagramDM(
     });
     log("completed", event);
   } catch (error) {
+    if (['provider_request_timeout','processing_timeout','57014'].includes(error.code) ||
+        (event.attempts>=5 && (!error.status || error.status>=500) && !['token_invalid','token_missing'].includes(error.code))) {
+      await completeTimeout(db,env,event);
+      await sendOutboxForEvent(id,env,db,{fetcher,feedback});
+      return;
+    }
     if (error.status && error.status < 500 && !error.retryable) {
       // Domain validation errors become an explanatory reply only for the follower
       // already checked above. Provider/follow failures never reach this branch.
@@ -357,21 +406,24 @@ export async function processInstagramDM(
       return;
     }
   }
-  await sendOutboxForEvent(id, env, db, { fetcher });
+  await sendOutboxForEvent(id, env, db, { fetcher, feedback });
 }
 export async function sendOutboxForEvent(
   eventId,
   env,
   db,
-  { fetcher = fetch } = {},
+  { fetcher = fetch, feedback } = {},
 ) {
   const rows = await db.query(
     "SELECT id FROM finfolk.messaging_outbox WHERE event_id=$1 AND state='pending' AND next_attempt_at<=now()",
     [eventId],
   );
-  for (const row of rows) await sendOutbox(row.id, env, db, { fetcher });
+  for (const row of rows) await sendOutbox(row.id, env, db, { fetcher, feedback });
 }
-export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
+export async function sendOutbox(id, env, db, { fetcher = fetch, feedback } = {}) {
+  const ownsFeedback = !feedback;
+  feedback ||= instagramFeedback(env,db,fetcher,(config,event) => event.provider_scope===config.scope &&
+    event.recipient_id===config.accountId && canRun(config,event) && !expired(event));
   const lease = randomUUID();
   // Reservation excludes every concurrent sender, even during provider preflight.
   const row = (
@@ -403,6 +455,10 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
       event.error === "not_following" &&
       requiresFollower(event.command) &&
       row.body === followRequiredReply;
+    // This exact public notice contains no member data or feature result. It
+    // remains deliverable when the follower lookup itself was what timed out.
+    const timeoutGuidance = event.processing_state === 'completed' && event.error === 'processing_timeout' &&
+      row.reply_kind === 'text' && row.body === processingTimeoutReply;
     if (new Date(row.deadline) <= new Date())
       return set("expired", "reply_window_expired");
     if (
@@ -434,11 +490,12 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
         new Date(config.token_expires_at) <= new Date())
     )
       return set("failed", "authorization_unavailable");
-    if (requiresFollower(event.command) && !followGuidance) {
+    if (requiresFollower(event.command) && !followGuidance && !timeoutGuidance) {
       const identity = await provider.profile(event.sender_id);
       if (!identity.follows) return set("cancelled", "not_following");
     }
-    // Recheck generation and cancellation after network preflight.
+    await feedback.responding(event);
+    // Recheck generation and cancellation after network preflight and UI feedback.
     const current = await messagingConfig(db.query, env);
     const active = (
       await db.query(
@@ -471,6 +528,25 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
       error.code && /^[a-z_]+$/.test(error.code)
         ? error.code
         : "provider_failed";
+    if (!beganSend && code === 'provider_request_timeout') {
+      // Only a confirmed pre-send failure may replace a prepared result with a
+      // public retry notice. A timed-out message POST is always uncertain.
+      const changed = await db.transaction(async q => {
+        await q("SELECT id FROM finfolk.messaging_accounts WHERE id='instagram' FOR SHARE");
+        const current = await messagingConfig(q,env);
+        const event = (await q('SELECT * FROM finfolk.instagram_dm_events WHERE id=$1 FOR UPDATE',[row.event_id]))[0];
+        if (!event || !canRun(current,event) || expired(event) || event.processing_state!=='completed') return false;
+        const update = await q(`UPDATE finfolk.messaging_outbox SET body=$3,body_ciphertext=null,reply_kind='text',connect_code_id=null,
+          state='pending',attempts=0,error_code='processing_timeout',next_attempt_at=now(),updated_at=now()
+          WHERE id=$1 AND lease=$2 AND state='sending' RETURNING id`,[id,lease,processingTimeoutReply]);
+        if (!update.length) return false;
+        if (row.connect_code_id) await q('UPDATE finfolk.instagram_connect_codes SET invalidated=true WHERE id=$1',[row.connect_code_id]);
+        await q("UPDATE finfolk.instagram_dm_events SET error='processing_timeout' WHERE id=$1",[event.id]);
+        return true;
+      });
+      if (changed) await sendOutbox(id,env,db,{fetcher,feedback});
+      return;
+    }
     if (code === "token_invalid")
       await db.query(
         "UPDATE finfolk.messaging_accounts SET checks=checks || '{\"authorization\":false}'::jsonb WHERE id='instagram'",
@@ -498,11 +574,11 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
           : "failed",
         code,
       );
-  }
+  } finally { if (ownsFeedback) await feedback.stop(); }
 }
 export async function reconcileInstagramDM(env, q) {
   await q(
-    "UPDATE finfolk.instagram_dm_events SET processing_state='failed',status='error',error='processing_interrupted',updated_at=now() WHERE processing_state='processing' AND updated_at<now()-interval '2 minutes'",
+    "UPDATE finfolk.instagram_dm_events SET processing_state='failed',status='error',error='processing_interrupted',attempts=least(attempts,4),updated_at=now() WHERE processing_state='processing' AND updated_at<now()-interval '2 minutes'",
   );
   await q(
     "UPDATE finfolk.messaging_outbox SET state='uncertain',error_code='delivery_interrupted',updated_at=now() WHERE state='sending' AND updated_at<now()-interval '2 minutes'",

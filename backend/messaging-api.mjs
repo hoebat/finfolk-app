@@ -393,7 +393,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
           );
         const evidence = await ctx.db.query(
           `SELECT e.command,e.sender_id FROM finfolk.instagram_dm_events e JOIN finfolk.messaging_outbox o ON o.event_id=e.id
-    WHERE e.event_id IN ($1::uuid,$2::uuid) AND e.provider_scope=$3 AND e.processing_state='completed' AND o.state='provider_accepted' AND e.created_at>now()-interval '24 hours'`,
+    WHERE e.event_id IN ($1::uuid,$2::uuid) AND e.provider_scope=$3 AND e.processing_state='completed' AND coalesce(e.error,'')='' AND o.state='provider_accepted' AND e.created_at>now()-interval '24 hours'`,
           [
             input.acceptance.pingEventId,
             input.acceptance.helpEventId,
@@ -423,7 +423,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
           const publicEvidence = await ctx.db.query(
             `SELECT 1 FROM finfolk.instagram_dm_events e JOIN finfolk.messaging_outbox o ON o.event_id=e.id
              WHERE e.event_id=$1::uuid AND e.provider_scope=$2 AND e.command='help' AND e.owner_id IS NULL
-             AND e.sender_id<>$3 AND e.processing_state='completed' AND o.state='provider_accepted'
+             AND e.sender_id<>$3 AND e.processing_state='completed' AND coalesce(e.error,'')='' AND o.state='provider_accepted'
              AND e.created_at>now()-interval '24 hours'`,
             [
               input.acceptance.nonFollowerHelpEventId,

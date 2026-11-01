@@ -24,6 +24,7 @@ export class InstagramProvider {
           ? "https://graph.facebook.com"
           : "https://graph.instagram.com"),
       versioned = true,
+      timeoutMs = 15000,
     } = {},
   ) {
     if (!token)
@@ -45,11 +46,11 @@ export class InstagramProvider {
           ...(body ? { "Content-Type": "application/json" } : {}),
         },
         ...(body ? { body: JSON.stringify(body) } : {}),
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(timeoutMs),
       });
-    } catch {
+    } catch (error) {
       throw messagingError(
-        "provider_transport_uncertain",
+        ['TimeoutError', 'AbortError'].includes(error?.name) ? "provider_request_timeout" : "provider_transport_uncertain",
         "Instagram did not confirm the request.",
         503,
         true,
@@ -119,9 +120,10 @@ export class InstagramProvider {
     }
     return data;
   }
-  async profile(sender) {
+  async profile(sender, { timeoutMs = 15000 } = {}) {
     const data = await this.request(
       "/" + sender + "?fields=id,username,is_user_follow_business",
+      { timeoutMs },
     );
     if (
       String(data.id) !== sender ||
@@ -310,6 +312,16 @@ export class InstagramProvider {
         503,
       );
     return data.message_id;
+  }
+  async senderAction(sender, action) {
+    if (!/^\d{1,40}$/.test(sender) || !['mark_seen', 'typing_on', 'typing_off'].includes(action))
+      throw messagingError('sender_action_invalid', 'Invalid Instagram sender action.');
+    const data = await this.request('/' + this.config.accountId + '/messages', {
+      method: 'POST', timeoutMs: 1000,
+      body: { recipient: { id: sender }, sender_action: this.config.provider === 'instagram-login' ? action.toUpperCase() : action },
+    });
+    if (String(data.recipient_id) !== sender && data.success !== true)
+      throw messagingError('sender_action_unconfirmed', 'Instagram did not confirm the sender action.', 503);
   }
 }
 export async function exchangeOAuth(code, env, fetcher = fetch) {
