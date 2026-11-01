@@ -1,5 +1,7 @@
 # FinFolk
 
+This repository serves the **legacy frontend at [old.finfolk.com.au](https://old.finfolk.com.au)**. Production [finfolk.com.au](https://finfolk.com.au) is deployed from [hoebat/finfolk-next](https://github.com/hoebat/finfolk-next) through Cloudflare Workers. See [hosting ownership](docs/PRODUCTION_OWNERSHIP.md).
+
 A coastal atlas and social companion for Australian divers. Beaches, depth charts and nearby stays run on GitHub Pages. IndexedDB saves map regions on-device; Neon Auth and Postgres power opt-in profiles, recent Regulars and buddy connections. Photos and videos stay on Instagram or TikTok.
 
 **Discover** offers Suggested places and an All beaches index, sorted by state/territory → coastal region → beach. **Map** has independent beach/region search and an on-demand Place / Layers sidebar. Existing beach links such as `?site=edithvale`, `?site=maroubra` and `?site=hyams-beach` remain supported. Legacy `view=areas` links open All beaches; `view=guides` links open Suggested. Official activity and fisheries links remain in each beach’s sourced details.

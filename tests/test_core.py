@@ -145,7 +145,7 @@ class StaticBuildTests(FixtureCase):
         self.ingest()
         site = self.root / "site"
         report = build(self.store, site, max_zoom=5)
-        self.assertFalse((site / "CNAME").exists(), "Legacy builds must not claim the production hostname")
+        self.assertEqual((site / "CNAME").read_text().strip(), "old.finfolk.com.au", "Legacy builds must only claim the legacy hostname")
         catalog = json.loads((site / "data/catalog.json").read_text())
         region = catalog["regions"][1]
         grid = region["rasters"][0]["grid"]
