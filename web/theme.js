@@ -13,7 +13,7 @@ export function themeSettings() {
   const section = document.createElement('section');
   section.className = 'account-card theme-settings';
   const heading = document.createElement('h2');
-  heading.textContent = 'Make FinFolk feel like you';
+  heading.textContent = 'Appearance';
   const description = document.createElement('p');
   description.textContent = 'Choose your colours. Your theme is saved on this device.';
   const choices = document.createElement('fieldset');

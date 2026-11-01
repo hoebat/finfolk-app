@@ -435,7 +435,7 @@
 :root[data-theme='night'] :is(.primary-nav,.discover-tabs,.data-tabs) { background: var(--account-bg); }
 :root[data-theme='night'] :is(.primary-nav,.discover-tabs,.data-tabs) button { color: var(--account-muted); }
 :root[data-theme='night'] :is(.primary-nav button.active,.discover-tabs button[aria-selected='true'],.data-tabs button[aria-selected='true']) { background: var(--account-surface); color: var(--account-accent); }
-:root[data-theme='night'] :is(#map-search,.map-search-results,.map-toolbar .layers-callout,.data-panel .layer-list,.stay-card,.logbook-page .account-card) { background: var(--account-surface); color: var(--account-ink); border-color: var(--account-line); }
+:root[data-theme='night'] :is(#map-search,.map-search-results,.map-toolbar .map-tools-callout,.data-panel .layer-list,.stay-card,.logbook-page .account-card) { background: var(--account-surface); color: var(--account-ink); border-color: var(--account-line); }
 :root[data-theme='night'] :is(.data-panel .layer-list .toggle b,.data-panel .layer-list .toggle small,.data-panel small,.data-panel a,.discover-page small,.discover-page a,.regulars-panel small,.regulars-panel a,.account-entry) { color: var(--account-muted); }
 @media (max-width: 900px) { .account-page > h1, .account-page > .account-intro { padding-right: 48px; } .account-page input, .account-page select, .account-page textarea { font-size: 16px; } }
 

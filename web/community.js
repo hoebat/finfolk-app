@@ -2,8 +2,6 @@ import { renderMessagingSettings } from './messaging-settings.js';
 import {renderTripManager,renderTripAdmin} from './trips.js';
 import {tripCards} from './trip-report.js';
 import { renderPostManager, renderPostFeed, renderPostAdmin } from './posts.js';
-import { applySavedTheme, themeSettings } from './theme.js';
-applySavedTheme();
 import { renderActions } from './actions.js';
 import { showMemberTour } from './member-tour.js';
 import { readResource } from './activity.js';
@@ -244,7 +242,7 @@ export function installCommunity({
         items[i].focus();
       };
       root.append(tabs, ...Object.values(panels));
-      panels.settings.append(themeSettings());
+      const globalSettings=el('section',undefined,'account-card');globalSettings.append(el('h2','App preferences'),el('p','Map display, appearance and device storage are in global Settings.'),button('Open Settings',()=>shell.navigate('settings',{focus:true}),'secondary'));panels.settings.append(globalSettings);
       renderMessagingSettings({host:panels.settings,api:a});
       selectTab(accountTab);
       const instagramReady = renderActions({host:panels.instagram,discoveryHost:panels.posts,api:a,beaches:getBeaches(),refresh:account});
