@@ -29,6 +29,7 @@ export function installOfflineUI(
     size = el('p'),
     limit = el('select');
   section.className = 'storage-controls';
+  status.setAttribute('role','status');
   section.append(el('h3', 'Storage on this device'), size, status);
   for (const mb of [100, 250, 1024]) {
     const o = el(
@@ -41,8 +42,8 @@ export function installOfflineUI(
   limit.setAttribute('aria-label', 'Recent dataset cache limit');
   limit.value = 250 * 1024 ** 2;
   limit.onchange = async () => {
-    await downloads.store.meta('limit', Number(limit.value));
-    await draw();
+    try { await downloads.store.meta('limit', Number(limit.value)); await draw(); }
+    catch { status.textContent='Cache preference could not be saved. Storage is unavailable.'; }
   };
   section.append(
     limit,
@@ -68,7 +69,7 @@ export function installOfflineUI(
     }),
     list,
   );
-  document.getElementById('system-panel')?.append(section);
+  document.getElementById('settings-storage')?.append(section);
   const save = button('Save region offline', async () => {
     const r = region();
     if (!r) return;
@@ -79,6 +80,7 @@ export function installOfflineUI(
     await draw();
   });
   document.querySelector('.data-source-card .source-actions')?.append(save);
+  save.className='secondary';
   const callout = el('section');
   callout.id = 'download-callout';
   callout.setAttribute('aria-label', 'Dataset downloads');

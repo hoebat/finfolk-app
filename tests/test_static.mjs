@@ -24,7 +24,7 @@ build(store,root/'site',max_zoom=5)
   execFileSync(process.env.PYTHON||'python3',['-c',code,temp],{cwd:new URL('..',import.meta.url),stdio:'pipe'});
   const report=JSON.parse(await readFile(join(temp,'site/build-report.json'),'utf8'));
   const worker=await readFile(join(temp,'site/sw.js'),'utf8');
-  for(const asset of ['beach-thumbnail.js','state-outlines.js']) {
+  for(const asset of ['beach-thumbnail.js','state-outlines.js','preferences.js','settings.js']) {
     assert.ok(report.assets[asset],`${asset} has a fingerprinted build asset`);
     assert.ok(worker.includes('./'+report.assets[asset]),`${asset} is included in the offline shell`);
   }

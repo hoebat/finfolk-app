@@ -1,3 +1,5 @@
+import {createPreferences} from './preferences.js';
+import {installSettings} from './settings.js';
 import {installTripPage} from './trip-report.js';
 // Keep an invite through OAuth redirects without putting it in the identity provider callback.
 try { const invite = new URL(location.href).searchParams.get('invite'); if (/^[A-Za-z0-9_-]{24}$/.test(invite || '')) sessionStorage.setItem('finfolk:invite', invite); } catch {}
@@ -18,15 +20,17 @@ import {nearestContour,edithvaleMeasurement,beachMeasurement} from './measure.js
 import {beachesForRegion,findBeach} from './beaches.js';
 import {installDiscovery,capabilities} from './discovery.js';
 const $=id=>document.getElementById(id), map=new DepthMap($('map'));
-try{map.layers.measurement=globalThis.localStorage?.getItem('shore-depth:measurement-visible')!=='false';}catch{}
+const preferences=createPreferences();
+Object.assign(map.layers,Object.fromEntries(Object.entries(preferences.get()).filter(([key])=>key!=='interval')));
 installSystemPanel();
 const data=new StaticData();map.dataBase=data.base;
 let catalog,region,profile=null,drawing=false,measuring=false,vertices=[],viewTimer,inspectionRequest=0,profileRequest=0,viewRequest=0,loadRequest=0;
 let beachCatalog={beaches:[]},selectedBeachId='',contoursReady=false,discovery,selectionRequest=0,activeAreaId='';
-const shell=installAppShell({onLayout:()=>map.resize(),onMapActivity:active=>map.setActive(active),onOpen:()=>map.cancelGesture()});
+const shell=installAppShell({onLayout:()=>map.resize(),onMapActivity:active=>{map.setActive(active);if(active&&region)updateDerived();},onOpen:()=>map.cancelGesture()});
+const settings=installSettings({preferences,shell});
 let mapSearch;
 const logbook=installLogbook({shell,getBeaches:()=>beachCatalog.beaches,getSelectedBeach:()=>findBeach(beachCatalog,selectedBeachId)});
-installOfflineUI(data.downloads,{region:()=>region,onOpen:id=>openSurvey(id)});
+installOfflineUI(data.downloads,{region:()=>region,onOpen:id=>{shell.navigate('maps',{params:{site:null}});return openSurvey(id);}});
 installTripPage({shell,loadJSON:path=>data.json(path)});
 const community=installCommunity({shell,getBeaches:()=>beachCatalog.beaches,getSelectedBeach:()=>findBeach(beachCatalog,selectedBeachId)});
 $('log-session').onclick=()=>logbook.newSession(findBeach(beachCatalog,selectedBeachId)).catch(e=>notice(e.message));
@@ -38,9 +42,7 @@ function link(text,url){const a=elem('a',text);a.href=url;a.target='_blank';a.re
 function download(blob,name){const url=URL.createObjectURL(blob),a=elem('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function resetProfile(){profileRequest++;profile=null;vertices=[];drawing=false;map.pointPicking=measuring;map.line=[];$('profile-tool').classList.remove('active');$('profile-tool').textContent='⌁ Draw depth profile';$('drawing-help').hidden=true;$('export-csv').disabled=true;$('profile-stats').textContent='Draw a line to explore the change in depth';drawProfile();}
 function stopMeasuring(){if(measuring)notice('');measuring=false;map.pointPicking=drawing;$('measure-start').classList.remove('active');$('measure-start').textContent='Pick a beach start point';}
-function updateMeasurementVisibility(){
-  const visible=map.layers.measurement;$('measurement-visibility').hidden=!map.measurement;$('measurement-visibility').setAttribute('aria-pressed',String(visible));$('measurement-visibility').title=visible?'Hide distance graphic':'Show distance graphic';$('measurement-hide-icon').hidden=!visible;$('measurement-show-icon').hidden=visible;
-}
+function updateMeasurementVisibility(){ $('measurement-layer').checked=map.layers.measurement; }
 function clearMeasurement(){stopMeasuring();map.measurement=null;$('measure-result').textContent='Choose a start point to measure the straight-line distance to a published contour.';$('measure-reference').textContent='Contour reference depth only. The straight line does not assess an open-water route, tides or current conditions.';$('measure-clear').hidden=true;updateMeasurementVisibility();}
 function showMeasurement(result,label='Selected start point'){
   stopMeasuring();map.measurement={...result,start_label:label};map.marker=null;$('inspection').hidden=true;inspectionRequest++;
@@ -59,10 +61,10 @@ function hasPublishedData(r){return r.status!=='empty'&&(r.rasters.length>0||r.c
 function updateBeachPicker(){discovery?.render();}
 function updateCapabilities(){
   const c=capabilities(region,map.contours);
-  for(const [id,available] of [['depth-layer',c.raster||!!map.surface],['coverage-layer',c.raster],['contour-layer',c.raster||c.contours],['pin-layer',!!map.sourcePins.length],['interval',c.fine]])$(id).closest('label').hidden=!available;
+  settings.updateAvailability({...c,surface:!!map.surface,context:!!map.contextContours.length,pins:!!map.sourcePins.length});
   $('raster-legend').hidden=!c.raster;$('contour-legend').hidden=!c.contours||!map.layers.contours||!!(map.surfaceImage&&map.layers.depth);$('basemap-attribution').hidden=!(map.layers.basemap||(map.surface&&map.layers.depth));
-  $('context-layer-control').hidden=!map.contextContours.length;$('context-legend').hidden=!map.layers.context||!map.contextContours.length;if(map.contextSource?.metadata_url)$('context-source').href=map.contextSource.metadata_url;
-  const surface=map.surface,show=!!surface&&map.layers.depth;$('surface-legend').hidden=!show;if(show){$('surface-source').href=surface.service+'/'+surface.layer;$('surface-source').title=surface.note;$('surface-status').textContent=map.zoom<surface.minZoom?'Zoom in for seabed shading':map.surfaceState==='error'?(map.surfaceImage?'Update failed · previous shading retained':'Shading unavailable · contours retained'):map.surfaceState==='loading'?'Loading seabed shading…':'Lighter = shallower · display only';$('surface-retry').hidden=map.surfaceState!=='error';}$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!c.measure;$('fetch').hidden=!c.contours;
+  $('context-legend').hidden=!map.layers.context||!map.contextContours.length;if(map.contextSource?.metadata_url)$('context-source').href=map.contextSource.metadata_url;
+  const surface=map.surface,show=!!surface&&map.layers.depth;$('surface-legend').hidden=!show;if(show){$('surface-source').href=surface.service+'/'+surface.layer;$('surface-source').title=surface.note;$('surface-status').textContent=map.zoom<surface.minZoom?'Zoom in for seabed shading':map.surfaceState==='error'?(map.surfaceImage?'Update failed · previous shading retained':'Shading unavailable · contours retained'):map.surfaceState==='loading'?'Loading seabed shading…':'Lighter = shallower · display only';$('surface-retry').hidden=map.surfaceState!=='error';}$('profile-panel').hidden=!c.raster;$('profile-tool').hidden=!c.raster;$('measure-panel').hidden=!selectedBeachId||!c.measure;$('fetch').hidden=!c.contours;
 }
 function setAreaContext(data={}){map.coastline=data.coastline||[];map.contextContours=data.context_contours||[];map.contextSource=data.context_source||null;if(region?.status==='empty'){const available=map.contextContours.length>0;$('data-status').textContent=available?'No local survey · broad-scale context visible':'No depth data published yet';$('source-summary').textContent=available?'This map shows generalised 250 m model contours for regional context. No local numeric depth survey is published here.':'Government sources are configured. Survey data will appear after it is acquired and included in a site build.';}map.draw();updateCapabilities();}
 async function chooseBeach(id,{writeURL=true,depth=Number($('measure-depth').value)||10}={}){
@@ -75,7 +77,7 @@ async function chooseBeach(id,{writeURL=true,depth=Number($('measure-depth').val
     try{if([...$('measure-depth').options].some(o=>Number(o.value)===depth))$('measure-depth').value=depth;const result=beachMeasurement(map.contours,beach,depth);if(result.distance_m>3000)throw Error('No matching mapped contour within 3 km of this beach reference.');showMeasurement(result,result.start_label);}
     catch(e){$('measure-result').textContent=`${beach.name}: automatic distance is unavailable.`;$('measure-reference').textContent='The selected beach location is shown on the map. Pick your exact entry point to measure against the available published contours.';notice(e.message);}
   }else{map.marker=null;map.center=region.center;map.zoom=region.zoom;map.draw();map.onview?.();$('place-title').textContent=region.name;document.title=`${region.name} · FinFolk`;}
-  updateBeachPicker();if(writeURL){const url=new URL(location.href);if(beach){url.searchParams.set('site',beach.id);}else url.searchParams.delete('site');history.replaceState(null,'',url);}mapSearch?.setSelection(beach);return beach;
+  updateCapabilities();updateBeachPicker();if(writeURL){const url=new URL(location.href);if(beach){url.searchParams.set('site',beach.id);}else url.searchParams.delete('site');history.replaceState(null,'',url);}mapSearch?.setSelection(beach);return beach;
 }
 async function load(selected,retainView=false,view={}){
   const generation=++loadRequest;viewRequest++;const previous=region?.id,nextCatalog=await data.catalog(selected||previous);if(generation!==loadRequest)return;catalog=nextCatalog;region=catalog.regions.find(r=>r.id===(selected||previous))||catalog.regions[0];
@@ -90,14 +92,18 @@ async function load(selected,retainView=false,view={}){
   $('fetch').disabled=!region.contours;
   $('empty-state').hidden=region.status!=='empty';$('profile-tool').disabled=region.status!=='raster';
   $('map-attribution').textContent=`${region.map_attribution||region.state+' government data'}`;
-  const canFine=region.rasters.length&&region.rasters.every(r=>r.resolution_m<=5&&r.quality==='measured');$('interval').options[1].disabled=!canFine;if(!canFine)$('interval').value='5';
   $('measure-start').disabled=true;$('edithvale').disabled=true;$('edithvale').hidden=true;updateCapabilities();
   const requestedRegion=region.id;const collection=await data.contours(requestedRegion);if(generation!==loadRequest||region.id!==requestedRegion)return;map.contours=collection.features;map.setDataPins(dataLocations(region,collection.features));map.derived=[];
   const depths=[...new Set(collection.features.map(f=>f.properties.depth_m).filter(d=>Number.isFinite(d)&&d>0&&d<=200))].sort((a,b)=>a-b),selectedDepth=Number($('measure-depth').value);$('measure-depth').replaceChildren(...depths.map(depth=>{const option=elem('option',`${number(depth)} m`);option.value=depth;return option;}));if(depths.includes(selectedDepth))$('measure-depth').value=selectedDepth;else if(depths.includes(10))$('measure-depth').value='10';
   $('measure-start').disabled=!depths.length;$('measure-depth').disabled=!depths.length;$('edithvale').disabled=!depths.length;contoursReady=true;updateBeachPicker();updateCapabilities();map.draw();updateDerived();
 }
-for(const [id,key] of [['depth-layer','depth'],['contour-layer','contours'],['pin-layer','pins'],['coverage-layer','coverage'],['basemap-layer','basemap']])$(id).onchange=()=>{map.layers[key]=$(id).checked;if(key==='depth'&&!map.layers.depth)map.cancelSurface();if(key==='contours'&&!map.layers.contours)map.contourRenderer?.clear();map.draw();if(!region)return;$('map-attribution').textContent=`${region.map_attribution||region.state+' government data'}`;if(key==='contours')updateDerived();updateCapabilities();};
-$('context-layer').onchange=()=>{map.layers.context=$('context-layer').checked;map.draw();updateCapabilities();};
+preferences.subscribe(values=>{
+  const prior={...map.layers};
+  Object.assign(map.layers,Object.fromEntries(Object.entries(values).filter(([key])=>key!=='interval')));
+  if(prior.depth&&!values.depth)map.cancelSurface();
+  if(prior.contours&&!values.contours)map.contourRenderer?.clear();
+  updateMeasurementVisibility();updateCapabilities();map.draw();updateDerived();
+});
 $('zoom-in').onclick=()=>map.zoomBy(1);$('zoom-out').onclick=()=>map.zoomBy(-1);$('home').onclick=()=>{if(!region)return;map.center=region.center;map.zoom=region.zoom;map.draw();updateDerived();};
 $('refresh').onclick=()=>{if(region)load(region.id,true).catch(e=>notice(e.message));};
 map.onerror=message=>notice(message);
@@ -108,10 +114,10 @@ async function updateDerived(){
   const request=++viewRequest;if(!map.active||!region?.rasters.length||!map.layers.contours){map.derived=[];return;}
   // Whole-bay source contours are efficient at overview scale. Derived lines are for site-scale inspection.
   if(map.zoom<12&&map.contours.length){map.derived=[];map.draw();return;}
-  try{const collection=await data.derivedContours(region.id,map.bounds(),Number($('interval').value));if(request!==viewRequest)return;map.derived=collection.features;map.draw();}
+  try{const collection=await data.derivedContours(region.id,map.bounds(),(preferences.get().interval===2&&capabilities(region,map.contours).fine?2:5));if(request!==viewRequest)return;map.derived=collection.features;map.draw();}
   catch(e){if(request===viewRequest)notice(e.message);}
 }
-$('interval').onchange=updateDerived;
+
 map.onclick=async(point,contour,pin)=>{
   if(!region)return;
   if(measuring){measureFrom(point);return;}
@@ -153,10 +159,10 @@ document.addEventListener('keydown',e=>{if(e.defaultPrevented||document.querySel
 $('measure-start').onclick=()=>{if(measuring){stopMeasuring();return;}resetProfile();measuring=true;map.pointPicking=true;$('measure-start').classList.add('active');$('measure-start').textContent='Click your start point · Esc to cancel';notice('Click the beach entry point on the map. The measurement goes to the closest matching published contour.');shell.closePanel();};
 $('measure-depth').onchange=()=>{if(map.measurement?.beach_id&&findBeach(beachCatalog,map.measurement.beach_id))chooseBeach(map.measurement.beach_id,{depth:Number($('measure-depth').value)}).catch(e=>notice(e.message));else if(map.measurement)measureFrom(map.measurement.start,map.measurement.start_label);};
 $('measure-clear').onclick=()=>{clearMeasurement();map.draw();};
-$('measurement-visibility').onclick=()=>{map.layers.measurement=!map.layers.measurement;try{globalThis.localStorage?.setItem('shore-depth:measurement-visible',String(map.layers.measurement));}catch{}updateMeasurementVisibility();if(map.layers.measurement&&map.measurement)map.fitPoints([map.measurement.start,map.measurement.target],90);else map.draw();};
+
 $('edithvale').onclick=()=>{if(findBeach(beachCatalog,'edithvale'))chooseBeach('edithvale').catch(e=>notice(e.message));else measureEdithvale();};
 
-$('finish-profile').onclick=async()=>{if(vertices.length<2)return;drawing=false;map.pointPicking=measuring;$('drawing-help').hidden=true;$('profile-tool').classList.remove('active');$('profile-tool').textContent='⌁ Draw depth profile';const request=++profileRequest,points=vertices.slice(),selectedRegion=region.id;$('profile-stats').textContent='Sampling native raster cells…';try{const result=await data.profile(selectedRegion,points);if(request!==profileRequest)return;profile={...result,points,region:selectedRegion};$('export-csv').disabled=false;const valid=result.samples.filter(s=>s.status==='depth').length;$('profile-stats').textContent=`${number(result.length_m/1000,2)} km · ${number(result.spacing_m)} m sampling · ${number(valid/result.samples.length*100,0)}% below-datum coverage · ${result.datum}`;drawProfile();shell.openPanel('place');}catch(e){if(request===profileRequest){$('profile-stats').textContent='Profile unavailable';notice(e.message);}}};
+$('finish-profile').onclick=async()=>{if(vertices.length<2)return;drawing=false;map.pointPicking=measuring;$('drawing-help').hidden=true;$('profile-tool').classList.remove('active');$('profile-tool').textContent='⌁ Draw depth profile';const request=++profileRequest,points=vertices.slice(),selectedRegion=region.id;$('profile-stats').textContent='Sampling native raster cells…';try{const result=await data.profile(selectedRegion,points);if(request!==profileRequest)return;profile={...result,points,region:selectedRegion};$('export-csv').disabled=false;const valid=result.samples.filter(s=>s.status==='depth').length;$('profile-stats').textContent=`${number(result.length_m/1000,2)} km · ${number(result.spacing_m)} m sampling · ${number(valid/result.samples.length*100,0)}% below-datum coverage · ${result.datum}`;drawProfile();shell.openPanel('tools');}catch(e){if(request===profileRequest){$('profile-stats').textContent='Profile unavailable';notice(e.message);}}};
 const chart=$('profile-chart'),ctx=chart.getContext('2d');
 new ResizeObserver(drawProfile).observe(chart);
 function drawProfile(){
