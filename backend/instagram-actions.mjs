@@ -1,9 +1,6 @@
 import { commentCommandAction } from './instagram-commands.mjs';
 import { instagramClaimAction } from './instagram-claims.mjs';
-import { rewardInvitation } from "./invitations.mjs";
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { instagramHandle, sessionInput } from "../web/logbook-model.js";
-const hash = (value) => createHash("sha256").update(value).digest("hex");
 const error = (message, status = 400) => {
   throw Object.assign(Error(message), { status });
 };
@@ -37,6 +34,7 @@ async function audit(q, id, uid, event) {
   );
 }
 export async function instagramAction({ action, v, uid, env, q, db, verified }) {
+  if(['instagramConnect','instagramVerify'].includes(action))throw Object.assign(Error('Use /connect in Instagram, then enter the code on FinFolk.'),{status:410,code:'claim_retired'});
   const admin = isInstagramAdmin(uid, env),
     enabled = env.INSTAGRAM_ENABLED === "true";
   if (typeof action === 'string' && action.startsWith('instagramCommand')) return commentCommandAction({action,v,uid,env,q,db,verified,admin});
@@ -85,38 +83,13 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
       setupReady: !!env.INSTAGRAM_ADMIN_IDS,
     };
   }
-  if (action === "instagramConnect") {
-    if (!env.INSTAGRAM_ADMIN_IDS)
-      error(
-        "Instagram connections are opening soon. The reviewer is not configured yet.",
-        503,
-      );
-    verified();
-    const handle = instagramHandle(v.handle);
-    if (!handle) error("Enter your Instagram handle.");
-    await q("UPDATE finfolk.instagram_discoveries SET state='hidden',updated_at=now() WHERE owner_id=$1 AND automatic=true",[uid]);
-    await q("UPDATE finfolk.instagram_connections SET share_posts=false,media_owner_id=null WHERE user_id=$1",[uid]);
-    const code = randomBytes(12).toString("hex");
-    await q(
-      "INSERT INTO finfolk.instagram_connections(user_id,handle,challenge_hash,expires_at) VALUES($1,$2,$3,now()+interval '1 day') ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,provider_scope='facebook-login:legacy',sender_id=null,status='pending',challenge_hash=excluded.challenge_hash,expires_at=excluded.expires_at,updated_at=now()",
-      [uid, handle, hash(code)],
-    );
-    await q(
-      "UPDATE finfolk.instagram_actions SET state='cancelled',updated_at=now() WHERE owner_id=$1 AND state NOT IN ('done','sent','uncertain','sending')",
-      [uid],
-    );
-    return {
-      code,
-      message: `Send FINFOLK ${code} to @finfolk.com.au on Instagram. Verification is reviewed before connection.`,
-      enabled,
-    };
-  }
   if (action === "instagramDisconnect") {
     const disconnect = async tq => {
       await tq("UPDATE finfolk.messaging_outbox SET state='cancelled',error_code='connection_removed' WHERE state='pending' AND event_id IN (SELECT id FROM finfolk.instagram_dm_events WHERE owner_id=$1)",[uid]);
       await tq("UPDATE finfolk.instagram_dm_events SET processing_state='blocked',error='connection_removed' WHERE owner_id=$1 AND processing_state IN ('received','queued','failed','processing')",[uid]);
       await tq("SELECT user_id FROM finfolk.instagram_claims WHERE user_id=$1 FOR UPDATE",[uid]);
       await tq("SELECT user_id FROM finfolk.members WHERE user_id=$1 FOR UPDATE",[uid]);
+      await tq("UPDATE finfolk.instagram_connect_codes SET invalidated=true WHERE consumed_by=$1 OR (provider_scope,sender_id) IN (SELECT provider_scope,sender_id FROM finfolk.instagram_connections WHERE user_id=$1)",[uid]);
       await tq("DELETE FROM finfolk.instagram_comment_identities WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.instagram_commands SET state='cancelled',send_state=CASE WHEN send_state='pending' THEN 'skipped' ELSE send_state END WHERE owner_id=$1 AND (state='confirmation' OR send_state='pending')",[uid]);
       await tq("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null,updated_at=now() WHERE user_id=$1",[uid]);
@@ -154,48 +127,6 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
         "SELECT id,status,error,created_at FROM finfolk.instagram_events WHERE status<>'done' ORDER BY created_at DESC LIMIT 100",
       ),
     };
-  }
-  if (action === "instagramVerify") {
-    if (!admin) error("Administrator access required.", 403);
-    if (!/^\d{1,40}$/.test(v.senderId || ""))
-      error("Use the sender ID verified through Meta, not a username.");
-    const pending = (
-      await q(
-        "SELECT * FROM finfolk.instagram_connections WHERE user_id=$1 AND status='pending' AND expires_at>now()",
-        [v.userId],
-      )
-    )[0];
-    if (!pending || !pending.challenge_hash)
-      error("Verification code expired or incorrect.");
-    const received =
-      (
-        await q(
-          "SELECT 1 FROM finfolk.instagram_events WHERE id LIKE 'dm:%' AND payload->>'challengeHash'=$1 AND payload->>'senderId'=$2 LIMIT 1",
-          [pending.challenge_hash, v.senderId],
-        )
-      ).length > 0;
-    if (
-      !received &&
-      (typeof v.code !== "string" ||
-        !timingSafeEqual(
-          Buffer.from(hash(v.code)),
-          Buffer.from(pending.challenge_hash),
-        ))
-    )
-      error("Verification code expired or incorrect.");
-    if (v.confirmed !== true)
-      error(
-        "Confirm that you checked the code and sender against the actual received Instagram message.",
-      );
-    const changed = await q(
-      "UPDATE finfolk.instagram_connections SET status='connected',provider_scope='facebook-login:legacy',sender_id=$2,challenge_hash=null,updated_at=now() WHERE user_id=$1 AND challenge_hash=$3 RETURNING user_id",
-      [v.userId, v.senderId, pending.challenge_hash],
-    );
-    if (!changed.length)
-      error("The connection request changed. Reload before verifying.", 409);
-    await audit(q, null, uid, "verified_connection:" + v.userId);
-    await rewardInvitation(q, v.userId, v.senderId);
-    return { ok: true };
   }
   if (action === "instagramRetryEvent") {
     if (!admin) error("Administrator access required.", 403);

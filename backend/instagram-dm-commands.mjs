@@ -1,20 +1,16 @@
-import {
-  hashClaim,
-  claimsEnabled,
-  completeInstagramClaim,
-} from "./instagram-claims.mjs";
+import { issueConnectCode } from './instagram-connect.mjs';
 import { commands } from "./messaging-config.mjs";
 import { windowFor } from "./community-core.mjs";
 const accountURL = "https://finfolk.com.au/?view=account&tab=instagram";
 export const followRequiredReply =
-  "Please follow @finfolk.com.au to use this feature.\nhttps://www.instagram.com/finfolk.com.au/\n\nOnce you’re following, send the same command again. You can use /help without following or claiming an account.";
+  "Please follow @finfolk.com.au to use this feature.\nhttps://www.instagram.com/finfolk.com.au/\n\nOnce you’re following, send the same command again. You can use /help without following or connecting an account.";
 export const helpText = (enabled = Object.keys(commands)) =>
   "Hey! Welcome to FinFolk 🌊\nYour coastal companion for finding beaches, exploring depths and keeping your dive memories together.\n\nAvailable here:\n" +
   Object.entries(commands)
     .filter(([name]) => enabled.includes(name))
     .map(([, c]) => c.syntax + " — " + c.description)
     .join("\n") +
-  "\n\nGet started: https://finfolk.com.au\nExplore the map or sign in to start your logbook.\n\nYou don’t need to follow or connect your account to ask for help. Please follow @finfolk.com.au to claim your account and use member features, comments and posts.";
+  "\n\nGet started: https://finfolk.com.au\nExplore the map or sign in to start your logbook.\n\nYou don’t need to follow or connect your account to ask for help. Please follow @finfolk.com.au to connect your account and use member features, comments and posts.";
 export const commandHelp = helpText();
 export function parseInstagramCommand(text = "") {
   const match = String(text)
@@ -27,10 +23,7 @@ export function parseInstagramCommand(text = "") {
     };
   const command = match[1].toLowerCase(),
     args = (match[2] || "").trim();
-  if (command === "claim")
-    return /^[a-f0-9]{24}$/i.test(args)
-      ? { command, args: "", challengeHash: hashClaim(args) }
-      : { command: "claim_usage", args: "" };
+  if (command === "claim") return { command: "claim_retired", args: "" };
   if (!Object.keys(commands).includes(command))
     return { command: "unknown", args: "" };
   if (command !== "checkin" && args) return { command: "unknown", args: "" };
@@ -56,7 +49,7 @@ export async function commandResult(q, event, env, identity, identityError) {
       [event.rate_limit_key],
     );
     return sent.length
-      ? "Hi! Send /help to see FinFolk commands. Everyone can message us. Please follow @finfolk.com.au to claim your account and use member features."
+      ? "Hi! Send /help to see FinFolk commands. Everyone can message us. Please follow @finfolk.com.au to connect your account and use member features."
       : null;
   }
   if (["help", "unknown"].includes(event.command))
@@ -64,70 +57,8 @@ export async function commandResult(q, event, env, identity, identityError) {
       ? helpText(env.MESSAGING_ENABLED_COMMANDS)
       : "I don’t recognise that command.\n\n" +
           helpText(env.MESSAGING_ENABLED_COMMANDS);
-  if (event.command === "claim_usage")
-    return (
-      "Use /claim followed by your one-time code. Copy the complete command from " +
-      accountURL
-    );
-  if (event.command === "claim") {
-    if (!claimsEnabled(env))
-      return "Automatic Instagram claims are not open yet. Check " + accountURL;
-    const c = (
-      await q(
-        "SELECT * FROM finfolk.instagram_claims WHERE code_hash=$1 AND provider_scope=$2 FOR UPDATE",
-        [event.challenge_hash, env.MESSAGING_PROVIDER_SCOPE],
-      )
-    )[0];
-    if (!c || c.state === "cancelled")
-      return (
-        "That claim code is invalid or has been replaced. Get a new command at " +
-        accountURL
-      );
-    if (c.state === "claimed") {
-      const owner = await claimedMember(
-        q,
-        event.sender_id,
-        env.MESSAGING_PROVIDER_SCOPE,
-      );
-      return owner?.user_id === c.user_id
-        ? `@${owner.handle} is already claimed. Send /help for commands.`
-        : "That code has already been used. Get your own command at " +
-            accountURL;
-    }
-    if (new Date(c.expires_at).getTime() <= Date.now())
-      return (
-        "That claim code has expired. Generate a new command at " + accountURL
-      );
-    // Pin the first sender. Another Instagram account cannot hijack a retry/review.
-    if (c.sender_id && c.sender_id !== event.sender_id)
-      return (
-        "This code was sent from another Instagram account. Generate a new command for this account at " +
-        accountURL
-      );
-    if (identityError) {
-      await q(
-        "UPDATE finfolk.instagram_claims SET state='failed',sender_id=$2,error=$3,updated_at=now() WHERE user_id=$1",
-        [c.user_id, event.sender_id, identityError],
-      );
-      return identityError + " " + accountURL;
-    }
-    if (!identity?.follows) {
-      await q(
-        "UPDATE finfolk.instagram_claims SET state='follow_required',sender_id=$2,handle=$3,error='Follow @finfolk.com.au, then resend the same claim command.',updated_at=now() WHERE user_id=$1",
-        [c.user_id, event.sender_id, identity?.handle || null],
-      );
-      return "Follow @finfolk.com.au, then resend the same /claim command. Your code is still valid.";
-    }
-    const handle = await completeInstagramClaim(q, {
-      uid: c.user_id,
-      senderId: event.sender_id,
-      handle: identity.handle,
-      actor: "instagram-dm",
-      codeHash: c.code_hash,
-      scope: env.MESSAGING_PROVIDER_SCOPE,
-    });
-    return `Your Instagram account @${handle} is now claimed on FinFolk.\nSend /help for commands or return to ${accountURL}`;
-  }
+  if (event.command === "claim_retired") return "/claim has been retired. Follow @finfolk.com.au and send /connect to receive a code, then enter it on FinFolk: " + accountURL;
+  if (event.command === "connect") return issueConnectCode(q, event, env, identity);
   const owner = await claimedMember(
     q,
     event.sender_id,
@@ -135,11 +66,11 @@ export async function commandResult(q, event, env, identity, identityError) {
   );
   if (!owner)
     return (
-      "This Instagram account is not claimed yet. Follow @finfolk.com.au, then copy and send your /claim command from " +
+      "This Instagram account is not connected yet. Follow @finfolk.com.au, send /connect, then enter the code at " +
       accountURL
     );
   if (event.command === "status")
-    return `@${owner.handle} is claimed on FinFolk. Your connection is active. Send /help for commands.`;
+    return `@${owner.handle} is connected to FinFolk. Your connection is active. Send /help for commands.`;
   if (event.command === "points") {
     const row = (
       await q(

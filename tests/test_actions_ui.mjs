@@ -27,17 +27,16 @@ await renderActions({
           setupReady: true,
         };
       if (action === "instagramActions") return [];
-      if (action === "instagramClaimStatus") return {enabled:true,state:"ready"};
+      if (action === "instagramClaimStatus") return {enabled:false,capabilities:{connect:true},state:"ready"};
       if (action === "instagramClaimStart") return {command:"/claim " + "a".repeat(24),expiresAt:new Date(Date.now()+86400000).toISOString()};
     },
   },
 });
 assert.match(host.textContent, /Follow @finfolk.com.au/);
 assert.match(host.textContent, /in preparation/);
-[...host.querySelectorAll("button")].find(b=>b.textContent==="Start linking").click();
-await new Promise(r=>setTimeout(r,10));
-assert.ok(calls.find(c=>c.action==="instagramClaimStart"));
-assert.equal(host.querySelector('[readonly]').value,'/claim '+ 'a'.repeat(24));
+assert.ok([...host.querySelectorAll('button')].some(b=>b.textContent==='Connect Instagram'));
+assert.ok(!host.textContent.includes('/claim'));
+assert.ok(!calls.some(c=>c.action==='instagramClaimStart'));
 assert.equal(host.querySelector("input[type=checkbox]").checked, false);
 assert.equal(host.textContent.includes("Actions admin inbox"), false);
 w.happyDOM.abort();

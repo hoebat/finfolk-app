@@ -20,7 +20,7 @@ A Facebook Page **FinFolk** (Page ID `1387107281155901`, public profile `6159620
 
 ## Instagram account claiming
 
-The dedicated Instagram tab now supports generated `/claim <CODE>` commands, sender/follow verification and private `/help`, `/status`, `/checkin` and `/points` replies. See [member workflow, commands and activation](INSTAGRAM_COMMANDS.md). Automatic claims and DM replies have separate disabled rollout switches. The older `FINFOLK <code>` requests remain a legacy manual-review path.
+Connect through Instagram: follow @finfolk.com.au, send `/connect`, then enter the private eight-character code in the signed-in Instagram tab. See [member workflow, commands and activation](INSTAGRAM_COMMANDS.md). `/claim` and the older manual `FINFOLK <code>` approval path are retired; existing verified connections remain valid.
 
 ## Current controls
 

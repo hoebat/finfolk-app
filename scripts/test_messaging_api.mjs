@@ -13,7 +13,7 @@ import {
   reconcileInstagramDM,
   sendOutbox,
 } from "../backend/messaging-engine.mjs";
-import { messagingConfig, digest } from "../backend/messaging-config.mjs";
+import { messagingConfig, digest, unseal, idempotent } from "../backend/messaging-config.mjs";
 import { completeMessagingAuthorization } from "../backend/messaging-authorization.mjs";
 import { followRequiredReply } from "../backend/instagram-dm-commands.mjs";
 const project = "odd-voice-85400108",
@@ -514,7 +514,7 @@ try {
     productionAccessConfirmed: false,
     nonFollowerTestConfirmed: false,
   };
-  const all = ["ping", "help", "claim", "status", "checkin", "points"];
+  const all = ["ping", "help", "connect", "status", "checkin", "points"];
   await rollout(all, acceptance);
   await incoming(sender, "/status"); // Personal pilot proves follower lookup before issuing claim codes.
   await request(
@@ -524,88 +524,29 @@ try {
     { mode: "live", enabledCommands: all, pilotSenderIds: [] },
     409,
   );
-  await request(unverified, "POST", "/v1/me/instagram/claims", {}, 403);
-  const claimKey = randomUUID(),
-    concurrent = await Promise.all([
-      request(owner, "POST", "/v1/me/instagram/claims", {}, 201, claimKey),
-      request(owner, "POST", "/v1/me/instagram/claims", {}, 201, claimKey),
-    ]),
-    created = concurrent[0];
-  assert.deepEqual(concurrent[0].data, concurrent[1].data);
-  assert.equal(
-    concurrent.filter(
-      (result) =>
-        result.response.headers.get("Idempotency-Replayed") === "true",
-    ).length,
-    1,
-  );
-  const repeated = await request(
-    owner,
-    "POST",
-    "/v1/me/instagram/claims",
-    {},
-    201,
-    claimKey,
-  );
-  assert.deepEqual(repeated.data, created.data);
-  assert.equal(repeated.response.headers.get("Idempotency-Replayed"), "true");
-  await request(
-    owner,
-    "POST",
-    "/v1/me/instagram/claims",
-    { unexpected: true },
-    409,
-    claimKey,
-  );
-  await request(
-    other,
-    "GET",
-    "/v1/me/instagram/claims/" + created.data.id,
-    null,
-    404,
-  );
-  const secret = (
-    await q(
-      "SELECT response_ciphertext FROM finfolk.messaging_idempotency WHERE user_id=$1 AND key_hash=$2",
-      [owner, digest(claimKey)],
-    )
-  )[0];
-  assert.ok(!secret.response_ciphertext.includes(created.data.command));
-  follows = false;
-  const followClaim = await incoming(sender, created.data.command);
-  assert.equal(
-    (await request(owner, "GET", "/v1/me/instagram/claims/" + created.data.id))
-      .data.state,
-    "follow_required",
-  );
-  assert.equal((await event(followClaim.id)).processing_state, "blocked");
-  assert.equal((await event(followClaim.id)).error, "not_following");
-  assert.equal((await outbox(followClaim.id)).state, "provider_accepted");
-  assert.equal(replies.at(-1).message.text, followRequiredReply);
-  assert.ok(!replies.at(-1).message.text.includes(created.data.command));
-  const followReplyCount = replies.length;
-  await incoming(sender, created.data.command, { mid: followClaim.id.split(':').at(-1) });
-  assert.equal(replies.length, followReplyCount, "Duplicate nonfollower claim sends only one instruction");
-  follows = true;
-  await q(
-    "INSERT INTO finfolk.invitation_joins(invitee_id,inviter_id) VALUES($1,$2)",
-    [owner, admin],
-  );
-  await incoming(sender, created.data.command);
-  assert.equal(
-    (await request(owner, "GET", "/v1/me/instagram")).data.verification,
-    "verified",
-  );
-  assert.equal((await legacy(owner, "me")).profile.open, false);
-  await request(
-    owner,
-    "PUT",
-    "/v1/me/instagram/profile",
-    { handle: "@someone.else" },
-    409,
-  );
+  await request(unverified, "POST", "/v1/me/instagram/connect", {code:'ABCDEFGH'}, 403);
+  const legacyKey=randomUUID();
+  await idempotent({db:runtime,uid:owner,key:legacyKey,method:'POST',path:'/v1/me/instagram/claims',body:{},env},async()=>({data:{command:'/claim '+ 'a'.repeat(24)},status:201}));
+  const retired=await request(owner,'POST','/v1/me/instagram/claims',{},410,legacyKey);
+  assert.equal(retired.error.code,'claim_retired','Old cached responses cannot reactivate claim creation');
+  const oldClaim=await incoming(sender,'/claim '+ 'a'.repeat(24));
+  assert.match(replies.at(-1).message.text,/retired.*\/connect/);
+  assert.equal((await event(oldClaim.id)).challenge_hash,null);
+  follows=false;
+  const followClaim=await incoming(sender,'/connect');
+  assert.equal((await event(followClaim.id)).error,'not_following');
+  assert.equal((await outbox(followClaim.id)).body,followRequiredReply);
+  follows=true;
+  await q("INSERT INTO finfolk.invitation_joins(invitee_id,inviter_id) VALUES($1,$2)",[owner,admin]);
+  const codeFrom=async e=>unseal((await outbox(e.id)).body_ciphertext,env,'connect:'+e.id).body.match(/code: ([A-Z0-9]{4}) ([A-Z0-9]{4})/).slice(1).join('');
+  const issued=await incoming(sender,'/connect'),code=await codeFrom(issued),connectKey=randomUUID();
+  const connected=await Promise.all([request(owner,'POST','/v1/me/instagram/connect',{code},200,connectKey),request(owner,'POST','/v1/me/instagram/connect',{code},200,connectKey)]);
+  assert.deepEqual(connected[0].data,connected[1].data);
+  assert.equal((await request(owner,'GET','/v1/me/instagram')).data.verification,'verified');
+  assert.equal((await legacy(owner,'me')).profile.open,false);
+  await request(owner,'PUT','/v1/me/instagram/profile',{handle:'@someone.else'},409);
   await incoming(sender, "/status");
-  assert.match(replies.at(-1).message.text, /chriszfree.*claimed/);
+  assert.match(replies.at(-1).message.text, /chriszfree.*connected/);
   await incoming(sender, "/points");
   assert.match(replies.at(-1).message.text, /total/);
   follows = false;
@@ -636,53 +577,17 @@ try {
   await incoming(sender, "/checkin Bondi Beach");
   assert.match(replies.at(-1).message.text, /already checked in/);
   assert.equal((await legacy(owner, "myCheckins")).length, 1);
-  const otherClaim = (
-    await request(other, "POST", "/v1/me/instagram/claims", {}, 201)
-  ).data;
-  profileError = true;
-  const failed = await incoming(otherSender, otherClaim.command);
-  profileError = false;
-  assert.equal((await event(failed.id)).processing_state, "failed");
-  assert.equal(
-    (await request(other, "GET", "/v1/me/instagram/claims/" + otherClaim.id))
-      .data.state,
-    "failed",
-  );
-  await request(
-    other,
-    "POST",
-    "/v1/me/instagram/claims/" + otherClaim.id + "/review-request",
-    {},
-  );
-  const review = (
-    await request(admin, "GET", "/v1/admin/messaging/claim-reviews")
-  ).data.find((row) => row.user_id === other);
-  assert.ok(review);
-  await request(
-    owner,
-    "POST",
-    "/v1/admin/messaging/claim-reviews/" + otherClaim.id + "/decision",
-    { decision: "approve" },
-    403,
-  );
-  await request(
-    admin,
-    "POST",
-    "/v1/admin/messaging/claim-reviews/" + otherClaim.id + "/decision",
-    { decision: "approve", handle: "other.diver", senderChecked: true },
-    400,
-  );
-  await request(
-    admin,
-    "POST",
-    "/v1/admin/messaging/claim-reviews/" + otherClaim.id + "/decision",
-    {
-      decision: "approve",
-      handle: "other.diver",
-      senderChecked: true,
-      followChecked: true,
-    },
-  );
+  profileError=true;
+  const failed=await incoming(otherSender,'/connect');
+  profileError=false;
+  assert.equal((await event(failed.id)).processing_state,'failed');
+  await request(admin,'POST','/v1/admin/messaging/events/'+failed.event_id+'/retry',{},202);
+  await reconcileInstagramDM(env, runtime.query);
+  await drain();
+  const otherCode=await codeFrom(failed);
+  await request(other,'POST','/v1/me/instagram/connect',{code:otherCode});
+  await request(admin,'POST','/v1/admin/messaging/claim-reviews/'+randomUUID()+'/decision',{decision:'approve'},410);
+  await request(owner,'POST','/v1/me/instagram/claims/'+randomUUID()+'/review-request',{},410);
   sendFailure = "timeout";
   const uncertain = await incoming(sender, "/points");
   sendFailure = null;
@@ -813,17 +718,12 @@ try {
     "",
   );
   const oldCount = replies.length;
-  await incoming(sender, created.data.command);
-  assert.match(replies.at(-1).message.text, /invalid|replaced/);
-  assert.equal(replies.length, oldCount + 1);
-  const fresh = (
-    await request(owner, "POST", "/v1/me/instagram/claims", {}, 201)
-  ).data;
-  await incoming(sender, fresh.command);
-  assert.equal(
-    (await request(owner, "GET", "/v1/me/instagram")).data.verification,
-    "verified",
-  );
+  await incoming(sender,'/claim '+ 'a'.repeat(24));
+  assert.match(replies.at(-1).message.text,/retired.*\/connect/);
+  assert.equal(replies.length,oldCount+1);
+  const fresh=await incoming(sender,'/connect');
+  await request(owner,'POST','/v1/me/instagram/connect',{code:await codeFrom(fresh)});
+  assert.equal((await request(owner,'GET','/v1/me/instagram')).data.verification,'verified');
   assert.equal(
     (
       await q(

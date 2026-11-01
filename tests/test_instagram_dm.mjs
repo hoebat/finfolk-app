@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { parseInstagramCommand,instagramSender } from '../backend/instagram-dm.mjs';
 import { claimsEnabled } from '../backend/instagram-claims.mjs';
 assert.deepEqual(parseInstagramCommand(' /HeLp '),{command:'help',args:''});
-assert.equal(parseInstagramCommand('/claim '+'a'.repeat(24)).challengeHash.length,64);
-assert.equal(parseInstagramCommand('/claim bad').command,'claim_usage');
+assert.deepEqual(parseInstagramCommand('/claim '+'a'.repeat(24)),{command:'claim_retired',args:''});
+assert.equal(parseInstagramCommand('/claim bad').command,'claim_retired');
 assert.equal(parseInstagramCommand('/checkin Bondi Beach').args,'Bondi Beach');
 assert.equal(parseInstagramCommand('please /points').command,'prompt');
 assert.equal(parseInstagramCommand('/points extra').command,'unknown');
@@ -18,10 +18,10 @@ await assert.rejects(()=>instagramSender('100',env,async()=>({ok:true,json:async
 
 const {helpText} = await import('../backend/instagram-dm-commands.mjs');
 const {requiresFollower,hasPersonalCommands} = await import('../backend/messaging-config.mjs');
-for (const command of ['help','ping','unknown','prompt']) assert.equal(requiresFollower(command),false);
-for (const command of ['claim','claim_usage','status','checkin','points']) assert.equal(requiresFollower(command),true);
+for (const command of ['help','ping','unknown','prompt','claim_retired']) assert.equal(requiresFollower(command),false);
+for (const command of ['connect','status','checkin','points']) assert.equal(requiresFollower(command),true);
 assert.equal(hasPersonalCommands(['help','ping']),false);
-assert.equal(hasPersonalCommands(['help','claim']),true);
+assert.equal(hasPersonalCommands(['help','connect']),true);
 const basicHelp=helpText(['help','ping']);
 assert.match(basicHelp,/Hey! Welcome to FinFolk/);
 assert.match(basicHelp,/https:\/\/finfolk\.com\.au/);
