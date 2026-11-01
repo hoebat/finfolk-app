@@ -1,5 +1,6 @@
 import { socialPost } from './community-core.mjs';
 import { isInstagramAdmin } from './instagram-actions.mjs';
+import { instagramPublicationProof, instagramPublicationSQL } from './instagram-publication.mjs';
 const fail = (message, status = 400) => { throw Object.assign(Error(message), { status }); };
 const uuid = value => {
   if (typeof value !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) fail('Invalid post identifier.');
@@ -40,7 +41,7 @@ export async function publicPosts({ q, env, beachId, cursor = '', viewer = '', p
   const posts = rows.slice(0,20), last = posts.at(-1);
   return { enabled: true, posts: posts.map(({cursor_at,...post}) => post), cursor: rows.length > 20 ? `${last.cursor_at}~${last.id}` : null };
 }
-export async function postAction({action,v,uid,env,q,verified,beach}) {
+export async function postAction({action,v,uid,env,q,verified,beach,fetcher=fetch}) {
   const admin = isInstagramAdmin(uid,env);
   if (action === 'postStatus') return { enabled: postsEnabled(env), admin, tag: 'finfolk.com.au', pilotBeaches: (env.COMMUNITY_PILOT_BEACHES || '').split(',').map(s=>s.trim()).filter(Boolean) };
   if (action === 'posts') return publicPosts({q,env,beachId:v.beachId,cursor:v.cursor || '',viewer:uid,postId:v.postId || ''});
@@ -61,12 +62,16 @@ export async function postAction({action,v,uid,env,q,verified,beach}) {
     const pilot=(env.COMMUNITY_PILOT_BEACHES || '').split(',').map(s=>s.trim()).filter(Boolean);
     if (pilot.length && !pilot.includes(v.beachId)) fail('Post submissions are currently limited to the Sydney pilot beaches.');
     const b = await beach(v.beachId), p = postInput(v);
+    const proof = p.platform === 'instagram'
+      ? await instagramPublicationProof(uid,env,q,{handle:p.handle,fetcher}) : null;
     const rows = await q(`INSERT INTO finfolk.posts(owner_id,beach_id,url,platform,creator_handle,public_consent)
-      VALUES($1,$2,$3,$4,$5,true) ON CONFLICT(owner_id,beach_id,url) DO UPDATE
+      SELECT $1,$2,$3,$4,$5,true WHERE $4!='instagram' OR
+      ($1=($6::jsonb)->>'userId' AND lower($5)=($6::jsonb)->>'handle' AND ${instagramPublicationSQL(6)})
+      ON CONFLICT(owner_id,beach_id,url) DO UPDATE
       SET status='pending',public_consent=true,creator_handle=excluded.creator_handle,platform=excluded.platform,
       rejection_reason='',reviewed_by=null,reviewed_at=null,updated_at=now()
-      WHERE finfolk.posts.status IN ('rejected','removed') OR NOT finfolk.posts.public_consent RETURNING id,status`,[uid,b.id,p.url,p.platform,p.handle]);
-    if (!rows.length) fail('This post is already submitted at this beach.',409);
+      WHERE finfolk.posts.status IN ('rejected','removed') OR NOT finfolk.posts.public_consent RETURNING id,status`,[uid,b.id,p.url,p.platform,p.handle,JSON.stringify(proof)]);
+    if (!rows.length) fail('This post is already submitted, or your Instagram connection changed. Refresh and try again.',409);
     return rows[0];
   }
   if (action === 'removePost') {
@@ -102,10 +107,19 @@ export async function postAction({action,v,uid,env,q,verified,beach}) {
     if (action === 'reviewPost') {
       if (!['approved','rejected','removed'].includes(v.decision)) fail('Invalid review decision.');
       if (v.decision === 'approved' && (v.ownershipChecked !== true || v.tagChecked !== true || v.beachChecked !== true)) fail('Check attribution, the FinFolk tag and the beach before approval.');
+      let candidate = null, proof = null;
+      if (v.decision === 'approved') {
+        if (!postsEnabled(env)) fail('Post publication is paused.',503);
+        candidate = (await q("SELECT owner_id,platform,creator_handle FROM finfolk.posts WHERE id=$1::uuid AND public_consent AND status='pending'",[uuid(v.id)]))[0];
+        if (!candidate) fail('Post changed or was withdrawn. Refresh the queue.',409);
+        if (candidate.platform === 'instagram') proof = await instagramPublicationProof(candidate.owner_id,env,q,{handle:candidate.creator_handle,fetcher});
+      }
       const reason = v.decision === 'approved' ? '' : text(v.reason,'Review reason');
       const rows = await q(`WITH changed AS (UPDATE finfolk.posts SET status=$3,rejection_reason=$4,reviewed_by=$2,reviewed_at=now(),updated_at=now()
-        WHERE id=$1::uuid AND public_consent AND status IN ('pending','approved') AND ($3!='approved' OR status='pending') RETURNING id)
-        INSERT INTO finfolk.post_reviews(post_id,actor,decision,reason) SELECT id,$2,$3,$4 FROM changed RETURNING post_id`,[uuid(v.id),uid,v.decision,reason]);
+        WHERE id=$1::uuid AND public_consent AND status IN ('pending','approved') AND ($3!='approved' OR
+          (status='pending' AND owner_id=$5 AND platform=$6 AND creator_handle=$7 AND
+            (platform!='instagram' OR (owner_id=($8::jsonb)->>'userId' AND lower(creator_handle)=($8::jsonb)->>'handle' AND ${instagramPublicationSQL(8)})))) RETURNING id)
+        INSERT INTO finfolk.post_reviews(post_id,actor,decision,reason) SELECT id,$2,$3,$4 FROM changed RETURNING post_id`,[uuid(v.id),uid,v.decision,reason,candidate?.owner_id || null,candidate?.platform || null,candidate?.creator_handle || null,JSON.stringify(proof)]);
       if (!rows.length) fail('Post changed or was withdrawn. Refresh the queue.',409);
       return {ok:true};
     }

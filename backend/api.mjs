@@ -251,13 +251,13 @@ export function createAPI({
     let result;
     if (typeof action === 'string' && action.startsWith('invitation')) return c.json({data:await invitationAction({action,v,uid,q,verified})});
     if (tripActions.has(action)) return c.json({data:await tripAction({action,v,uid,q,env:c.env||{},verified})});
-    if (discoveryActions.has(action)) return c.json({data:await discoveryAction({action,v,uid,env:c.env||{},q})});
+    if (discoveryActions.has(action)) return c.json({data:await discoveryAction({action,v,uid,env:c.env||{},q,fetcher:messagingFetch})});
     if (typeof action === 'string' && action.startsWith('instagram')) {
       const result = isMessagingMemberAction(action) ? await messagingMemberAction({action,v,uid,env:c.env || {},db,verified}) : await instagramAction({action,v,uid,env:c.env || {},q,db,verified});
       return c.json({data:result});
     }
     if (['postStatus','followedPosts','post','posts','myPosts','removePost','reportPost','reviewPosts','reviewPost','resolvePostReport','communityMetrics'].includes(action))
-      return c.json({data:await postAction({action,v,uid,env:c.env || {},q,verified,beach})});
+      return c.json({data:await postAction({action,v,uid,env:c.env || {},q,verified,beach,fetcher:messagingFetch})});
     switch (action) {
       case 'profile': {
         const target = await member(v.target);

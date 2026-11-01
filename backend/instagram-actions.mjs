@@ -95,7 +95,8 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
       await tq("UPDATE finfolk.instagram_claims SET state='cancelled',code_hash=null,updated_at=now() WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.instagram_connections SET status='disconnected',identity_version=gen_random_uuid(),sender_id=null,challenge_hash=null,expires_at=null,public_points=false,share_posts=false,media_owner_id=null,updated_at=now() WHERE user_id=$1",[uid]);
       await tq("UPDATE finfolk.members SET profile=jsonb_set(profile,'{instagram}','\"\"'::jsonb),updated_at=now() WHERE user_id=$1",[uid]);
-      await tq("UPDATE finfolk.instagram_discoveries SET state='hidden',updated_at=now() WHERE owner_id=$1 AND automatic=true",[uid]);
+      await tq("UPDATE finfolk.instagram_discoveries SET state='hidden',updated_at=now() WHERE owner_id=$1 AND state IN ('pending','published')",[uid]);
+      await tq("UPDATE finfolk.posts SET status='removed',public_consent=false,updated_at=now() WHERE owner_id=$1 AND platform='instagram' AND status IN ('pending','approved')",[uid]);
       await tq("UPDATE finfolk.instagram_actions SET state='cancelled',updated_at=now() WHERE owner_id=$1 AND state NOT IN ('done','sent','uncertain','sending')",[uid]);
     };
     if (db?.transaction) await db.transaction(disconnect);

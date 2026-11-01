@@ -1,5 +1,9 @@
 # Instagram connections, Actions and invitations
 
+Instagram backend work is tracked in [the rollout roadmap](https://github.com/hoebat/finfolk-app/issues/27). Instagram post submission and publication require a current connected follower, including administrator approval. Manual submissions use explicit per-post consent and human ownership review; discovered media also requires independent media-owner binding and sharing consent. These checks are revalidated against the connection generation when the effect commits. Disconnecting withdraws pending/published Instagram submissions and discoveries; TikTok submissions remain independent.
+
+Run `npm run test:instagram-publication` for isolated SQL coverage of these paths, including consent and connection changes during Meta verification.
+
 The active implementation uses Neon Postgres, Neon Auth and the `finfolk-community` Cloudflare Worker. Legacy Firebase Instagram functions are not used. The brand account is `@finfolk.com.au`.
 
 ## Versioned messaging API

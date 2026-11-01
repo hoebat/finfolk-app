@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { database } from '../backend/db.mjs';
 import { createAPI } from '../backend/api.mjs';
+import { seal } from '../backend/messaging-config.mjs';
 const branch='finfolk-community-pilot-test', project='odd-voice-85400108';
 const url=execFileSync('neon',['connection-string',branch,'--project-id',project],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
 const host=new URL(url).hostname;
@@ -11,11 +12,15 @@ if(!host.startsWith('ep-little-thunder-a7s1soji')) throw Error('Unexpected datab
 execFileSync(process.execPath,['scripts/migrate_neon.mjs'],{env:{...process.env,DATABASE_URL_UNPOOLED:url},stdio:['ignore','pipe','pipe']});
 const db=database(url),q=db.query;
 const admin=randomUUID(), owner=randomUUID(), viewer=randomUUID(), unverified=randomUUID(),ids=[admin,owner,viewer,unverified];
-const env={COMMUNITY_POSTS_ENABLED:'true',INSTAGRAM_ADMIN_IDS:admin};
+const sender=String(Date.now())+'1',scope='instagram-login:797979:898989';
+const env={COMMUNITY_POSTS_ENABLED:'true',INSTAGRAM_ADMIN_IDS:admin,
+ MESSAGING_ENCRYPTION_KEY:Buffer.alloc(32,6).toString('base64'),INSTAGRAM_MESSAGING_APP_ID:'797979',INSTAGRAM_MESSAGING_ACCOUNT_ID:'898989'};
+const originalMessaging=(await q("SELECT * FROM finfolk.messaging_accounts WHERE id='instagram'"))[0];
 const runtimeURL=execFileSync('neon',['connection-string',branch,'--project-id',project,'--role-name','finfolk_api'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
 if(new URL(runtimeURL).hostname!==host)throw Error('Unexpected runtime database endpoint.');
 const runtimeDB=database(runtimeURL);
-const app=createAPI({db:runtimeDB,verify:async token=>{if(!ids.includes(token))throw Error('Invalid test token');return {sub:token};}});
+const app=createAPI({db:runtimeDB,verify:async token=>{if(!ids.includes(token))throw Error('Invalid test token');return {sub:token};},
+ messagingFetch:async()=>Response.json({id:sender,username:'test.diver',is_user_follow_business:true})});
 async function call(uid,action,data={},expected=200){
  const response=await app.request('http://localhost/api',{method:'POST',headers:{'Content-Type':'application/json',...(uid?{Authorization:'Bearer '+uid}:{})},body:JSON.stringify({action,...data})},env);
  const value=await response.json();assert.equal(response.status,expected,JSON.stringify(value));return value.data;
@@ -25,6 +30,9 @@ const submission={beachId:'bondi',url:'https://www.instagram.com/p/FinfolkPilotT
 try {
  for(const uid of ids)await q(`INSERT INTO neon_auth."user"(id,name,email,"emailVerified","createdAt","updatedAt") VALUES($1,'Pilot test',$2,$3,now(),now())`,[uid,uid+'@example.com',uid!==unverified]);
  for(const uid of ids)await call(uid,'me');
+ await q(`UPDATE finfolk.messaging_accounts SET account_id='898989',mode='pilot',provider_scope=$1,pilot_sender_ids=$2::jsonb,
+   credential_ciphertext=$3,checks='{"authorization":true,"subscription":true,"liveDelivery":true}',token_expires_at=now()+interval '1 day' WHERE id='instagram'`,[scope,JSON.stringify([sender]),seal({accessToken:'fixture'},env,scope)]);
+ await q("INSERT INTO finfolk.instagram_connections(user_id,handle,sender_id,status,provider_scope) VALUES($1,'test.diver',$2,'connected',$3)",[owner,sender,scope]);
  await call(null,'reviewPosts',{},401);
  await call(viewer,'reviewPosts',{},403);
  await call(unverified,'post',submission,403);
@@ -73,6 +81,8 @@ try {
  console.log('Reviewed posts integration passed: migrated isolated branch, verified submissions, consent, moderation, admin access, public/Closed separation, blocking, reports, withdrawal races, microsecond pagination, metrics and account deletion.');
 }finally{
  for(const uid of ids){await q('DELETE FROM finfolk.members WHERE user_id=$1',[uid]);await q('DELETE FROM neon_auth."user" WHERE id::text=$1',[uid]);}
+ await q(`UPDATE finfolk.messaging_accounts SET account_id=$1,mode=$2,provider_scope=$3,pilot_sender_ids=$4::jsonb,credential_ciphertext=$5,checks=$6::jsonb,token_expires_at=$7 WHERE id='instagram'`,
+  [originalMessaging.account_id,originalMessaging.mode,originalMessaging.provider_scope,JSON.stringify(originalMessaging.pilot_sender_ids),originalMessaging.credential_ciphertext,JSON.stringify(originalMessaging.checks),originalMessaging.token_expires_at]);
  await runtimeDB.pool.end();
  await db.pool.end();
 }

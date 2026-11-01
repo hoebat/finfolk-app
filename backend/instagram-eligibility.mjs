@@ -9,7 +9,7 @@ export async function instagramFollowerProof(
 ) {
   const connection = (
     await q(
-      `SELECT c.user_id,c.sender_id,c.provider_scope,c.identity_version,c.handle FROM finfolk.instagram_connections c
+      `SELECT c.user_id,c.sender_id,c.provider_scope,c.identity_version,c.handle,c.media_owner_id,c.share_posts FROM finfolk.instagram_connections c
     JOIN finfolk.members m ON m.user_id=c.user_id JOIN neon_auth."user" u ON u.id::text=m.user_id
     WHERE c.user_id=$1 AND c.status='connected' AND NOT m.deleted AND u."emailVerified" AND NOT coalesce(u.banned,false)`,
       [uid],
@@ -43,6 +43,9 @@ export async function instagramFollowerProof(
       senderId: connection.sender_id,
       scope: connection.provider_scope,
       version: connection.identity_version,
+      handle: connection.handle.toLowerCase(),
+      mediaOwnerId: connection.media_owner_id,
+      sharePosts: connection.share_posts,
       checkedAt: Date.now(),
     };
   } catch {

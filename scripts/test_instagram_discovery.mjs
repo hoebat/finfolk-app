@@ -138,11 +138,11 @@ try {
     act("instagramDiscoveryInbox", {}, other),
     /Administrator/,
   );
-  await act(
+  await assert.rejects(act(
     "instagramReviewPost",
     { id: noOwner.id, beachId: "bondi", mode: "approve" },
     admin,
-  );
+  ), /Connect and verify/);
   // Consent and connection changes during the external follow lookup are checked again by the INSERT.
   for (const mutation of [
     "share_posts=false",
@@ -181,13 +181,12 @@ try {
   assert.ok(feed.posts.some((p) => p.id === closedRow.id));
   assert.ok(!JSON.stringify(feed).includes("caption"));
   await act("instagramSharing", { enabled: false });
-  assert.ok(
-    (await publicInstagramFeed(q, "bondi")).posts.some((p) => p.id === row.id),
-  );
+  assert.equal((await publicInstagramFeed(q, "bondi")).posts.length, 0);
   assert.equal((await ingest("Bondi Beach")).state, "pending");
   await assert.rejects(publicInstagramFeed(q, "bondi", "broken"), /cursor/);
+  await act("instagramSharing", { enabled: true });
   for (let i = 0; i < 22; i++) {
-    const p = await ingest("Bondi Beach", { owner: undefined });
+    const p = await ingest("Bondi Beach");
     await act(
       "instagramReviewPost",
       { id: p.id, beachId: "bondi", mode: "approve" },
