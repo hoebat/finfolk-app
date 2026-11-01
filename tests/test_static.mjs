@@ -22,6 +22,14 @@ import_rasters(store,'bondi',[source],metadata(resolution_m=20))
 build(store,root/'site',max_zoom=5)
 `;
   execFileSync(process.env.PYTHON||'python3',['-c',code,temp],{cwd:new URL('..',import.meta.url),stdio:'pipe'});
+  const report=JSON.parse(await readFile(join(temp,'site/build-report.json'),'utf8'));
+  const worker=await readFile(join(temp,'site/sw.js'),'utf8');
+  for(const asset of ['beach-thumbnail.js','state-outlines.js']) {
+    assert.ok(report.assets[asset],`${asset} has a fingerprinted build asset`);
+    assert.ok(worker.includes('./'+report.assets[asset]),`${asset} is included in the offline shell`);
+  }
+  const thumbnailModule=await readFile(join(temp,'site',report.assets['beach-thumbnail.js']),'utf8');
+  assert.ok(thumbnailModule.includes('./'+report.assets['state-outlines.js']),'Thumbnail imports use the fingerprinted outline asset');
   let requests=0;const urls=[];
   const base=new URL('https://example.test/shore-depth-explorer/');
   const fetcher=async function(url){

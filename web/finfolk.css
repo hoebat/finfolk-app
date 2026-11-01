@@ -12,6 +12,34 @@
   color: var(--finfolk-ink);
   background: var(--finfolk-cream);
 }
+/* Shared state silhouettes, with each beach dot projected from its coordinates. */
+.beach-thumbnail {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  flex: none;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f3f5e9;
+  color: #3a7076;
+}
+.beach-thumbnail-land { fill: #b4d5cf; stroke: #6eaaa5; stroke-width: 1; stroke-linejoin: round; }
+.beach-thumbnail-dot { fill: #ff435d; stroke: #fffdf0; stroke-width: 2.5; }
+.beach-thumbnail-label { fill: currentColor; font: 600 10px system-ui, sans-serif; letter-spacing: 1px; }
+.beach-thumbnail--compact { width: 48px; height: 48px; aspect-ratio: 1; border-radius: 8px; }
+.beach-card .beach-open { display: flex; flex-direction: column; align-items: stretch; gap: 10px; width: 100%; }
+.beach-open-name { overflow-wrap: anywhere; }
+.area-beaches .beach-directory-open { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; white-space: normal; }
+.beach-directory-open > span { min-width: 0; overflow-wrap: anywhere; }
+.beach-heading { display: flex; align-items: center; gap: 12px; }
+.beach-heading > .beach-thumbnail { width: 72px; height: 72px; }
+.beach-heading > div { min-width: 0; }
+.beach-heading h2 { overflow-wrap: anywhere; }
+.beach-heading p { margin: 0; font-size: 11px; line-height: 1.5; color: var(--account-muted, #58767c); }
+:root[data-theme='night'] .beach-thumbnail { background: #183b43; color: #b8dcd8; }
+:root[data-theme='night'] .beach-thumbnail-land { fill: #3c6a6c; stroke: #79aaa7; }
+:root[data-theme='night'] .beach-thumbnail-dot { stroke: #183b43; }
 body {
   color: var(--finfolk-ink);
   background: var(--finfolk-cream);
