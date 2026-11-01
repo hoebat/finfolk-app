@@ -487,7 +487,9 @@ paths:
       description: >-
         Verified administrators only. Returns app binding, validity, permission names,
         granular permission target counts and expected-account matches, expiration,
-        and account lookup metadata. Facebook Page mode includes pageBinding instead of assignedAccounts. Never returns credentials, token subject
+        and account lookup metadata. Facebook Page mode includes pageBinding and separate contentCapabilities
+        for media, comments and mentions. Capability authorization and webhook subscriptions do not establish live acceptance;
+        liveVerified remains false until an independent content acceptance workflow exists. Never returns credentials, token subject
         IDs, raw provider errors, or unrelated asset IDs. Responses are private/no-store.
       tags: [Administration]
       security:
@@ -532,6 +534,22 @@ paths:
                           pageId: {type: string}
                           expectedAccountFound: {type: boolean}
                           errorCode: {type: string}
+                      contentSubscriptionError: {type: string}
+                      contentCapabilities:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          required: [authorized, requiredPermissions, missingPermissions, webhookSubscribed, liveVerified]
+                          properties:
+                            authorized: {type: boolean}
+                            requiredPermissions:
+                              type: array
+                              items: {type: string}
+                            missingPermissions:
+                              type: array
+                              items: {type: string}
+                            webhookSubscribed: {type: boolean, nullable: true}
+                            liveVerified: {type: boolean}
                       assignedAccounts:
                         type: object
                         nullable: true

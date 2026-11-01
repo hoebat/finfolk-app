@@ -3,6 +3,8 @@ import {
   proofMatches,
 } from "./instagram-eligibility.mjs";
 import { instagramPublicationProof, instagramPublicationSQL } from "./instagram-publication.mjs";
+import { instagramGraph } from "./instagram-content.mjs";
+export { instagramGraph } from "./instagram-content.mjs";
 import places from "./instagram-places.json" with { type: "json" };
 import { isInstagramAdmin } from "./instagram-actions.mjs";
 import { socialPostURL } from "../web/media.js";
@@ -158,40 +160,6 @@ export async function ingestInstagramMedia(
   );
   return existing[0];
 }
-export async function instagramGraph(path, env, params = {}, fetcher = fetch) {
-  if (
-    !env.INSTAGRAM_ACCESS_TOKEN ||
-    !/^v\d+\.0$/.test(env.INSTAGRAM_GRAPH_VERSION || "")
-  )
-    fail("Instagram connection is not configured.", 503);
-  if (!/^[A-Za-z0-9_/-]+$/.test(path)) fail("Invalid provider path.");
-  const u = new URL(
-    `https://graph.facebook.com/${env.INSTAGRAM_GRAPH_VERSION}/${path}`,
-  );
-  for (const [k, v] of Object.entries(params))
-    if (v !== null && v !== undefined) u.searchParams.set(k, String(v));
-  const response = await fetcher(u, {
-    headers: { Authorization: `Bearer ${env.INSTAGRAM_ACCESS_TOKEN}` },
-    signal: AbortSignal.timeout(15000),
-  });
-  let body;
-  try {
-    body = await response.json();
-  } catch {
-    fail("Instagram returned an invalid response.", 503);
-  }
-  if (!response.ok || body.error) {
-    const error = Object.assign(Error("Instagram source could not be read."), {
-      status: 503,
-      providerCode: Number(body.error?.code) || 0,
-      providerSubcode: Number(body.error?.error_subcode) || 0,
-      transient: body.error?.is_transient === true,
-      retryAfter: Number(response.headers.get("retry-after")) || 0,
-    });
-    throw error;
-  }
-  return body;
-}
 export async function publicInstagramFeed(q, beachId, cursor) {
   if (!key(beachId)) fail("Choose a valid beach.");
   let after = "9999-01-01T00:00:00.000Z",
@@ -321,7 +289,7 @@ export async function discoveryAction({ action, v, uid, env, q, fetcher = fetch 
       );
     const media = await instagramGraph(String(v.mediaId), env, {
       fields: "id,owner,username,permalink",
-    });
+    }, fetcher, q);
     if (
       !numeric(media.owner?.id) ||
       String(media.username || "").toLowerCase() !== c.handle.toLowerCase()

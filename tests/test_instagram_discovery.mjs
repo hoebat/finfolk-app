@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { contentFixture } from "./fixtures/instagram-content.mjs";
 import {
   matchInstagramBeach,
   normalizeInstagramMedia,
@@ -36,25 +37,18 @@ assert.equal(m.url, "https://www.instagram.com/p/ABC/");
 assert.equal(m.authorId, "88");
 assert.equal(m.postedAt, null);
 let request;
-await instagramGraph(
-  "123/tags",
-  { INSTAGRAM_ACCESS_TOKEN: "test-secret", INSTAGRAM_GRAPH_VERSION: "v26.0" },
-  { after: "cursor" },
-  async (u, init) => {
-    request = { u, init };
-    return Response.json({ data: [] });
-  },
-);
+const fixture = contentFixture();
+const provider = async (u, init) => fixture.authorizationResponse(u, init) || (() => {
+  request = { u, init };
+  return Response.json({ data: [] });
+})();
+await instagramGraph("333/tags", fixture.env, { after: "cursor" }, provider, fixture.q);
 assert.equal(request.u.searchParams.has("access_token"), false);
-assert.equal(request.init.headers.Authorization, "Bearer test-secret");
+assert.equal(request.init.headers.Authorization, "Bearer fixture-page-token");
 await assert.rejects(
-  instagramGraph(
-    "123/tags",
-    { INSTAGRAM_ACCESS_TOKEN: "test", INSTAGRAM_GRAPH_VERSION: "v26.0" },
-    {},
-    async () => Response.json({ error: { code: 190 } }, { status: 400 }),
-  ),
-  (e) => e.providerCode === 190 && !e.message.includes("test"),
+  instagramGraph("333/tags", fixture.env, {},
+    async (u, init) => fixture.authorizationResponse(u, init) || Response.json({ error: { code: 190, message: 'fixture-page-token' } }, { status: 400 }), fixture.q),
+  e => e.providerCode === 190 && !e.message.includes("fixture-page-token"),
 );
 console.log(
   "INSTAGRAM_DISCOVERY_UNIT_PASS: exact beach matching, ambiguity, canonical URLs, dates, provider errors and bearer-only credentials.",
@@ -64,9 +58,10 @@ const savedFetch=globalThis.fetch;
 try{
  for(const [code,subcode,hidden]of [[100,33,true],[190,0,false],[4,0,false]]){
   const queries=[];
-  const q=async(sql,params=[])=>{queries.push({sql,params});if(sql.includes("status='running'"))return[{key:'recheck',kind:'recheck',failures:0}];if(sql.startsWith('SELECT id,media_id'))return[{id:'test-row',media_id:'22'}];return[];};
-  globalThis.fetch=async()=>Response.json({error:{code,error_subcode:subcode}},{status:400});
-  await collectInstagramSource('recheck',{INSTAGRAM_DISCOVERY_ENABLED:'true',INSTAGRAM_ACCESS_TOKEN:'fixture',INSTAGRAM_GRAPH_VERSION:'v26.0'},q);
+  const fixture=contentFixture();
+  const q=async(sql,params=[])=>{queries.push({sql,params});if(sql.includes("messaging_accounts"))return fixture.q(sql,params);if(sql.includes("status='running'"))return[{key:'recheck',kind:'recheck',failures:0}];if(sql.startsWith('SELECT id,media_id'))return[{id:'test-row',media_id:'22'}];return[];};
+  globalThis.fetch=async(url,options)=>fixture.authorizationResponse(url,options) || Response.json({error:{code,error_subcode:subcode}},{status:400});
+  await collectInstagramSource('recheck',{...fixture.env,INSTAGRAM_DISCOVERY_ENABLED:'true'},q);
   assert.equal(queries.some(x=>x.sql.includes("state='unavailable'")),hidden);
   if(code===190)assert.ok(queries.some(x=>x.params.includes('access_required')));
   if(code===4)assert.ok(queries.some(x=>x.params.includes('rate_limited')));

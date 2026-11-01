@@ -1,7 +1,7 @@
 // Isolated-database fixture only. Provider calls remain mocked; no production tokens.
 import { randomBytes } from "node:crypto";
 import { seal } from "../backend/messaging-config.mjs";
-export async function messagingFixture(db, env, { senderId, handle }) {
+export async function messagingFixture(db, env, { senderId, handle, content = false }) {
   if (process.env.NEON_BRANCH !== "finfolk-regulars-dev")
     throw Error("Isolated test branch required.");
   const original = (
@@ -12,7 +12,17 @@ export async function messagingFixture(db, env, { senderId, handle }) {
   env.MESSAGING_ENCRYPTION_KEY = randomBytes(32).toString("base64");
   env.INSTAGRAM_MESSAGING_APP_ID = "797979";
   env.INSTAGRAM_MESSAGING_ACCOUNT_ID = "898989";
-  const scope = "instagram-login:797979:898989";
+  if (content) {
+    env.INSTAGRAM_MESSAGING_PROVIDER = 'instagram-facebook';
+    env.INSTAGRAM_MESSAGING_APP_ID = env.INSTAGRAM_MESSAGING_META_APP_ID = env.INSTAGRAM_APP_ID || '797979';
+    env.INSTAGRAM_MESSAGING_META_APP_SECRET = 'fixture-meta-secret';
+    env.INSTAGRAM_MESSAGING_PAGE_ID = '676767';
+    env.INSTAGRAM_MESSAGING_ACCOUNT_ID = env.INSTAGRAM_ACCOUNT_ID || '898989';
+    env.INSTAGRAM_ACCOUNT_ID = env.INSTAGRAM_MESSAGING_ACCOUNT_ID;
+    env.INSTAGRAM_APP_ID = env.INSTAGRAM_MESSAGING_APP_ID;
+    env.INSTAGRAM_MESSAGING_GRAPH_VERSION = 'v26.0';
+  }
+  const scope = `${env.INSTAGRAM_MESSAGING_PROVIDER || 'instagram-login'}:${env.INSTAGRAM_MESSAGING_APP_ID}:${env.INSTAGRAM_MESSAGING_ACCOUNT_ID}`;
   await db.query(
     `UPDATE finfolk.messaging_accounts SET account_id=$1,provider_scope=$2,credential_ciphertext=$3,mode='pilot',pilot_sender_ids=$4::jsonb,checks=$5::jsonb,token_expires_at=now()+interval '1 day' WHERE id='instagram'`,
     [
@@ -31,6 +41,21 @@ export async function messagingFixture(db, env, { senderId, handle }) {
   const fixture = {
     scope,
     follows: true,
+    contentResponse(url) {
+      if (!content) return null;
+      const path = new URL(url).pathname;
+      if (path.endsWith('/debug_token')) return Response.json({ data: {
+        is_valid: true, app_id: env.INSTAGRAM_MESSAGING_APP_ID, type: 'PAGE',
+        scopes: ['instagram_basic','pages_read_engagement','instagram_manage_comments'],
+      } });
+      if (path.endsWith('/me')) return Response.json({ id: env.INSTAGRAM_MESSAGING_PAGE_ID });
+      if (path.endsWith('/' + env.INSTAGRAM_MESSAGING_PAGE_ID)) return Response.json({
+        id: env.INSTAGRAM_MESSAGING_PAGE_ID,
+        instagram_business_account: { id: env.INSTAGRAM_MESSAGING_ACCOUNT_ID, username: 'finfolk.com.au' },
+      });
+      if (path.endsWith('/' + senderId)) return fixture.profileResponse(url);
+      return null;
+    },
     profileResponse(url) {
       return Response.json({
         id: new URL(url).pathname.split("/").pop(),

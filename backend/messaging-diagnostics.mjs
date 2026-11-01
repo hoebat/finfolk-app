@@ -1,5 +1,6 @@
 import { messagingConfig, messagingError } from "./messaging-config.mjs";
 import { InstagramProvider } from "./instagram-provider.mjs";
+import { instagramContentCapabilities } from "./instagram-content.mjs";
 
 // Deliberately project provider responses onto safe metadata. Never return raw errors,
 // tokens, token subject IDs, secrets, or unrelated business asset IDs.
@@ -88,6 +89,7 @@ export async function authorizationDiagnostics(db, env, fetcher = fetch) {
     provider: config.provider,
   };
   if (config.provider === "instagram-facebook") {
+    let subscribedFields = [];
     output.pageBinding = { pageId: config.pageId, expectedAccountFound: false };
     if (output.valid && output.appMatches) {
       try {
@@ -101,6 +103,20 @@ export async function authorizationDiagnostics(db, env, fetcher = fetch) {
         output.pageBinding.errorCode = "page_binding_failed";
       }
     }
+    if (output.pageBinding.expectedAccountFound) {
+      try {
+        const subscription = await new InstagramProvider(config, fetcher).request('/' + config.accountId + '/subscribed_apps');
+        subscribedFields = (Array.isArray(subscription.data) ? subscription.data : [])
+          .filter(a => String(a.id) === config.appId || (a.id === undefined && subscription.data.length === 1))
+          .flatMap(a => Array.isArray(a.subscribed_fields) ? a.subscribed_fields : []);
+      } catch { output.contentSubscriptionError = 'subscription_lookup_failed'; }
+    }
+    output.contentCapabilities = instagramContentCapabilities({
+      authorized: output.valid && output.appMatches && output.tokenType === 'PAGE' && output.pageBinding.expectedAccountFound &&
+        (!output.expiresAt || new Date(output.expiresAt) > new Date()) &&
+        (!d.data_access_expires_at || d.data_access_expires_at * 1000 > Date.now()),
+      grantedScopes, subscribedFields,
+    });
     return output;
   }
   if (output.valid && output.appMatches) {

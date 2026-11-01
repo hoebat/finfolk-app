@@ -2,7 +2,7 @@ import { readLimited } from './messaging-http.mjs';
 import { messagingConfig } from './messaging-config.mjs';
 import { randomUUID } from 'node:crypto';
 import { processCommentCommand, reconcileCommentCommands } from './instagram-commands.mjs';
-import { instagramGraph } from './instagram-discovery.mjs';
+import { instagramContentClient } from './instagram-content.mjs';
 import { collectInstagramDM } from './instagram-dm.mjs';
 import { collectMention } from "./instagram-collector.mjs";
 import { createHmac, createHash, timingSafeEqual } from "node:crypto";
@@ -148,9 +148,7 @@ export async function processInstagramEvent(id, env, q, db) {
   )
     return; // Keep pending until pilot activation.
   if (
-    !/^\d{1,40}$/.test(id) ||
-    !env.INSTAGRAM_ACCESS_TOKEN ||
-    !/^v\d+\.0$/.test(env.INSTAGRAM_GRAPH_VERSION || "")
+    !/^\d{1,40}$/.test(id)
   )
     throw Error("Provider configuration unavailable");
   const row = (
@@ -163,11 +161,12 @@ export async function processInstagramEvent(id, env, q, db) {
   try {
     const context = row.payload?.context === 'owned' ? 'owned' : 'mention';
     const fields = 'id,text,from{id,username},timestamp,media{id,permalink,caption,username,timestamp,owner}';
-    const output = await instagramGraph(context === 'owned' ? id : env.INSTAGRAM_ACCOUNT_ID, env,
+    const client = await instagramContentClient(env, q, { capability: context === 'owned' ? 'comments' : 'mentions' });
+    const output = await client.request(context === 'owned' ? id : client.accountId,
       {fields: context === 'owned' ? fields : `mentioned_comment.comment_id(${id}){${fields}}`});
     const comment = context === 'owned' ? output : output.mentioned_comment;
     if (!comment || String(comment.id) !== id) throw Error('Comment unavailable');
-    if (context === 'owned' && String(comment.media?.owner?.id) !== env.INSTAGRAM_ACCOUNT_ID)
+    if (context === 'owned' && String(comment.media?.owner?.id) !== client.accountId)
       throw Error('Comment media is not owned by FinFolk');
     if (await processCommentCommand(comment, context, env, db)) {
       await q("UPDATE finfolk.instagram_events SET status='done',error=null,updated_at=now() WHERE id=$1",[id]);

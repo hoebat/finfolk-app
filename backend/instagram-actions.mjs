@@ -1,6 +1,7 @@
 import { commentCommandAction } from './instagram-commands.mjs';
 import { instagramClaimAction } from './instagram-claims.mjs';
 import { instagramHandle, sessionInput } from "../web/logbook-model.js";
+import { instagramContentClient } from "./instagram-content.mjs";
 const error = (message, status = 400) => {
   throw Object.assign(Error(message), { status });
 };
@@ -33,7 +34,7 @@ async function audit(q, id, uid, event) {
     [id, uid, event],
   );
 }
-export async function instagramAction({ action, v, uid, env, q, db, verified }) {
+export async function instagramAction({ action, v, uid, env, q, db, verified, fetcher = fetch }) {
   if(['instagramConnect','instagramVerify'].includes(action))throw Object.assign(Error('Use /connect in Instagram, then enter the code on FinFolk.'),{status:410,code:'claim_retired'});
   const admin = isInstagramAdmin(uid, env),
     enabled = env.INSTAGRAM_ENABLED === "true";
@@ -281,35 +282,20 @@ export async function instagramAction({ action, v, uid, env, q, db, verified }) 
       if (row.kind === "stats" && !row.member_confirmed)
         error("Member consent is required for the exact stats reply.");
       if (!row.data.reply) error("Prepare a reply first.");
-      if (
-        !env.INSTAGRAM_ACCESS_TOKEN ||
-        !/^\d+$/.test(env.INSTAGRAM_ACCOUNT_ID || "") ||
-        !/^v\d+\.0$/.test(env.INSTAGRAM_GRAPH_VERSION || "")
-      )
-        error("Instagram provider is not configured.", 503);
+      const client = await instagramContentClient(env, q, { capability: 'mentions', fetcher });
       const claimed = await q(
         "UPDATE finfolk.instagram_actions SET state='sending',updated_at=now() WHERE id=$1 AND state='review' AND data=$2::jsonb AND ($3::boolean=false OR member_confirmed=true) RETURNING id",
         [row.id, JSON.stringify(row.data), row.kind === "stats"],
       );
       if (!claimed.length) error("Action already claimed.", 409);
       try {
-        const result = await fetch(
-          `https://graph.facebook.com/${env.INSTAGRAM_GRAPH_VERSION}/${env.INSTAGRAM_ACCOUNT_ID}/mentions`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${env.INSTAGRAM_ACCESS_TOKEN}`,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
+        const output = await client.request(client.accountId + '/mentions', {}, {
+            method: "POST", body: new URLSearchParams({
               comment_id: row.source_id,
               message: row.data.reply,
             }),
-            signal: AbortSignal.timeout(15000),
-          },
-        );
-        const output = await result.json();
-        if (!result.ok || output.error || !output.id)
+        });
+        if (!output.id)
           throw Error("Provider outcome requires review");
         await q(
           "UPDATE finfolk.instagram_actions SET state='sent',data=jsonb_set(data,'{replyId}',$2::jsonb),updated_at=now() WHERE id=$1",

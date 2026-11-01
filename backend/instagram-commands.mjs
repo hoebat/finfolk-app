@@ -8,6 +8,7 @@ import {
   ingestInstagramMedia,
 } from "./instagram-discovery.mjs";
 import { windowFor } from "./community-core.mjs";
+import { instagramContentClient } from "./instagram-content.mjs";
 const account = "https://finfolk.com.au/?view=account";
 const hash = (s) => createHash("sha256").update(s).digest("hex");
 const numeric = (s) => /^\d{1,40}$/.test(String(s || ""));
@@ -335,8 +336,7 @@ export async function processCommentCommand(
 }
 export async function sendCommandReply(id, env, db, fetcher = fetch) {
   if (
-    env.INSTAGRAM_COMMAND_REPLIES_ENABLED !== "true" ||
-    !env.INSTAGRAM_ACCESS_TOKEN
+    env.INSTAGRAM_COMMAND_REPLIES_ENABLED !== "true"
   )
     return;
   const candidate = (
@@ -345,6 +345,10 @@ export async function sendCommandReply(id, env, db, fetcher = fetch) {
       [id],
     )
   )[0];
+  if (!candidate) return;
+  // Resolve authorization before claiming a send. Missing permissions or a
+  // provider outage must leave pending replies recoverable, not uncertain.
+  const client = await instagramContentClient(env, db.query, { capability: "comments", fetcher });
   const personal = candidate && !["help", "status"].includes(candidate.command);
   const proof =
     personal && candidate.owner_id
@@ -361,6 +365,7 @@ export async function sendCommandReply(id, env, db, fetcher = fetch) {
     return;
   const row = await db.transaction(async (q) => {
     await q("SELECT pg_advisory_xact_lock(76425385)");
+    if (!(await client.current(q))) return null;
     const pending = (
       await q(
         "SELECT * FROM finfolk.instagram_commands WHERE id=$1 AND send_state='pending' AND reply IS NOT NULL FOR UPDATE",
@@ -368,6 +373,10 @@ export async function sendCommandReply(id, env, db, fetcher = fetch) {
       )
     )[0];
     if (!pending) return null;
+    if (pending.namespace !== 'facebook-comments:' + client.appId + ':' + client.accountId) {
+      await q("UPDATE finfolk.instagram_commands SET send_state='skipped',updated_at=now() WHERE id=$1", [id]);
+      return null;
+    }
     const limits = (
       await q(
         `SELECT count(*)::int AS brand,
@@ -406,28 +415,14 @@ export async function sendCommandReply(id, env, db, fetcher = fetch) {
   if (!row) return;
   let replyId = null;
   try {
-    if (
-      !/^v\d+\.0$/.test(env.INSTAGRAM_GRAPH_VERSION || "") ||
-      !numeric(env.INSTAGRAM_ACCOUNT_ID)
-    )
-      throw Error("Invalid configuration");
     const path =
       row.context === "owned"
         ? row.id + "/replies"
-        : env.INSTAGRAM_ACCOUNT_ID + "/mentions";
+        : client.accountId + "/mentions";
     const body = new URLSearchParams({ message: row.reply });
     if (row.context === "mention") body.set("comment_id", row.id);
-    const response = await fetcher(
-      `https://graph.facebook.com/${env.INSTAGRAM_GRAPH_VERSION}/${path}`,
-      {
-        method: "POST",
-        headers: { Authorization: "Bearer " + env.INSTAGRAM_ACCESS_TOKEN },
-        body,
-        signal: AbortSignal.timeout(15000),
-      },
-    );
-    const output = await response.json();
-    if (response.ok && numeric(output.id)) replyId = String(output.id);
+    const output = await client.request(path, {}, { method: "POST", body });
+    if (numeric(output.id)) replyId = String(output.id);
   } catch {}
   // Any non-confirmed POST is ambiguous. Admin reconciles; automatic retries never resend.
   await db.query(

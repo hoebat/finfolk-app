@@ -1,6 +1,6 @@
+import { instagramContentClient } from "./instagram-content.mjs";
 import { parseActionRequest } from "./instagram-actions.mjs";
 import {
-  instagramGraph,
   ingestInstagramMedia,
 } from "./instagram-discovery.mjs";
 export async function collectMention(mediaId, commentId, env, q) {
@@ -8,7 +8,8 @@ export async function collectMention(mediaId, commentId, env, q) {
   const fields = commentId
     ? `mentioned_comment.comment_id(${commentId}){id,text,media{id,permalink,caption,username,timestamp,owner}}`
     : `mentioned_media.media_id(${mediaId}){id,permalink,caption,username,timestamp,owner}`;
-  const result = await instagramGraph(env.INSTAGRAM_ACCOUNT_ID, env, {
+  const client = await instagramContentClient(env, q, { capability: "mentions" });
+  const result = await client.request(client.accountId, {
     fields,
   });
   const media = commentId
@@ -90,13 +91,14 @@ export async function collectInstagramSource(sourceKey, env, q) {
       [s.key, checkpoint, hours],
     );
   try {
+    const client = await instagramContentClient(env, q);
     if (s.kind === "recheck") {
       const rows = await q(
         "SELECT id,media_id FROM finfolk.instagram_discoveries WHERE state='published' AND media_id IS NOT NULL AND (checked_at IS NULL OR checked_at<now()-interval '1 day') ORDER BY checked_at NULLS FIRST LIMIT 20",
       );
       for (const row of rows) {
         try {
-          await instagramGraph(row.media_id, env, { fields: "id,permalink" });
+          await client.request(row.media_id, { fields: "id,permalink" });
           await q(
             "UPDATE finfolk.instagram_discoveries SET checked_at=now() WHERE id=$1",
             [row.id],
@@ -113,7 +115,7 @@ export async function collectInstagramSource(sourceKey, env, q) {
       await finish(null, rows.length === 20 ? 1 : 24);
       return;
     }
-    let path = env.INSTAGRAM_ACCOUNT_ID + "/tags";
+    let path = client.accountId + "/tags";
     if (s.kind === "hashtag") {
       if (env.INSTAGRAM_HASHTAGS_ENABLED !== "true") {
         await finish(null, 2);
@@ -121,9 +123,8 @@ export async function collectInstagramSource(sourceKey, env, q) {
       }
       let hashtagId = s.data.hashtagId;
       // Keep a conservative 20-tag budget, including tags queried outside this app.
-      const used = await instagramGraph(
-        env.INSTAGRAM_ACCOUNT_ID + "/recently_searched_hashtags",
-        env,
+      const used = await client.request(
+        client.accountId + "/recently_searched_hashtags",
         { fields: "id", limit: 100 },
       );
       if (
@@ -137,8 +138,8 @@ export async function collectInstagramSource(sourceKey, env, q) {
         return;
       }
       if (!hashtagId) {
-        const found = await instagramGraph("ig_hashtag_search", env, {
-          user_id: env.INSTAGRAM_ACCOUNT_ID,
+        const found = await client.request("ig_hashtag_search", {
+          user_id: client.accountId,
           q: s.data.tag,
         });
         hashtagId = found.data?.[0]?.id;
@@ -162,7 +163,7 @@ export async function collectInstagramSource(sourceKey, env, q) {
         after: cursor,
       };
       if (s.kind === "hashtag") params.user_id = env.INSTAGRAM_ACCOUNT_ID;
-      const result = await instagramGraph(path, env, params);
+      const result = await client.request(path, params);
       for (const item of result.data || [])
         await ingestInstagramMedia(item, s.key, env, q);
       const next = result.paging?.next && result.paging?.cursors?.after;
@@ -176,7 +177,7 @@ export async function collectInstagramSource(sourceKey, env, q) {
     }
     await finish(cursor, s.kind === "hashtag" ? 2 : 1);
   } catch (e) {
-    const denied = [10, 190, 200].includes(e.providerCode),
+    const denied = [10, 190, 200].includes(e.providerCode) || ["content_permission_missing", "content_authorization_required", "content_account_mismatch", "content_provider_unsupported", "token_expired", "wrong_token_type", "wrong_brand_account", "content_configuration_required"].includes(e.code),
       rate = [4, 17, 32, 613].includes(e.providerCode);
     const delay = denied
       ? 86400

@@ -39,14 +39,17 @@ let sequence = 0,
 const ids = [];
 const nativeFetch = globalThis.fetch;
 const fixture = await messagingFixture(db, env, {
+  content: true,
   senderId: sender,
   handle: "comment.diver",
 });
 globalThis.fetch = async (url, options) =>
-  new URL(url).hostname === "graph.instagram.com"
+  fixture.contentResponse(url) || (new URL(url).hostname === "graph.instagram.com"
     ? fixture.profileResponse(url)
-    : nativeFetch(url, options);
+    : nativeFetch(url, options));
 const fetcher = async (url, options = {}) => {
+  const managed = fixture.contentResponse(url);
+  if (managed) return managed;
   if (new URL(url).hostname === "graph.instagram.com")
     return fixture.profileResponse(url);
   assert.equal(options.method, "POST");
@@ -373,6 +376,8 @@ try {
       const comment = make("/help @finfolk.com.au", actor + "4");
       comment.media.owner = { id: context === "owned" ? brand : "111" };
       globalThis.fetch = async (url, options = {}) => {
+        const managed = fixture.contentResponse(url);
+        if (managed) return managed;
         if (options.method === "POST") {
           paths.push(new URL(url).pathname);
           return { ok: true, json: async () => ({ id: "998877" }) };
@@ -447,6 +452,8 @@ try {
     const ordinary = make("stats Bondi Beach @finfolk.com.au", sender);
     discoveryIds.push(ordinary.media.id);
     globalThis.fetch = async (url, options = {}) => {
+        const managed = fixture.contentResponse(url);
+        if (managed) return managed;
       if (options.method === "POST")
         throw Error("Ordinary mentions must not send automatically");
       return Response.json({ mentioned_comment: ordinary });

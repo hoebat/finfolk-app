@@ -29,13 +29,14 @@ const env = {
 };
 const nativeFetch = globalThis.fetch;
 const fixture = await messagingFixture(db, env, {
+  content: true,
   senderId: author + "9",
   handle: "test_" + tag,
 });
 globalThis.fetch = async (url, options) =>
-  new URL(url).hostname === "graph.instagram.com"
+  fixture.contentResponse(url) || (new URL(url).hostname === "graph.instagram.com"
     ? fixture.profileResponse(url)
-    : nativeFetch(url, options);
+    : nativeFetch(url, options));
 const act = (action, v = {}, user = uid) =>
   discoveryAction({ action, v, uid: user, env, q });
 const media = (id, caption, extra = {}) => ({
@@ -285,6 +286,8 @@ try {
       [sourceKey],
     );
     globalThis.fetch = async (url) => {
+      const managed = fixture.contentResponse(url);
+      if (managed) return managed;
       if (new URL(url).hostname === "graph.instagram.com")
         return fixture.profileResponse(url);
       pages++;
@@ -302,7 +305,7 @@ try {
         INSTAGRAM_DISCOVERY_ENABLED: "true",
         INSTAGRAM_ACCESS_TOKEN: "fixture",
         INSTAGRAM_GRAPH_VERSION: "v26.0",
-        INSTAGRAM_ACCOUNT_ID: "123",
+        INSTAGRAM_ACCOUNT_ID: env.INSTAGRAM_ACCOUNT_ID,
       },
       q,
     );
@@ -318,14 +321,14 @@ try {
     const captionId = author + String(++serial);
     ids.push(captionId);
     globalThis.fetch = async (url) =>
-      new URL(url).hostname === "graph.instagram.com"
+      fixture.contentResponse(url) || (new URL(url).hostname === "graph.instagram.com"
         ? fixture.profileResponse(url)
         : Response.json({
             mentioned_media: media(
               captionId,
               "@finfolk.com.au log Bondi Beach depth 8 duration 30",
             ),
-          });
+          }));
     await collectMention(
       captionId,
       null,
@@ -334,7 +337,7 @@ try {
         INSTAGRAM_DISCOVERY_ENABLED: "true",
         INSTAGRAM_ACCESS_TOKEN: "fixture",
         INSTAGRAM_GRAPH_VERSION: "v26.0",
-        INSTAGRAM_ACCOUNT_ID: "123",
+        INSTAGRAM_ACCOUNT_ID: env.INSTAGRAM_ACCOUNT_ID,
       },
       q,
     );
@@ -353,7 +356,7 @@ try {
         INSTAGRAM_DISCOVERY_ENABLED: "true",
         INSTAGRAM_ACCESS_TOKEN: "fixture",
         INSTAGRAM_GRAPH_VERSION: "v26.0",
-        INSTAGRAM_ACCOUNT_ID: "123",
+        INSTAGRAM_ACCOUNT_ID: env.INSTAGRAM_ACCOUNT_ID,
       },
       q,
     );

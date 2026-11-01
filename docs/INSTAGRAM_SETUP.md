@@ -8,9 +8,11 @@ The active implementation uses Neon Postgres, Neon Auth and the `finfolk-communi
 
 ## Versioned messaging API
 
-The DM transport now has a versioned REST contract, Instagram Login authorization, durable receipt/outbox processing and admin diagnostics. See [Messaging API and activation](MESSAGING_API.md). Facebook Login discovery/comment credentials remain independent. Historical setup notes below do not prove the new messaging connection is authorized.
+The DM transport has a versioned REST contract, durable receipt/outbox processing and admin diagnostics. Production uses managed Facebook Page authorization. Comments, mentions, media collection, ownership lookups and reviewed replies now resolve that same encrypted grant; `INSTAGRAM_ACCESS_TOKEN` is not a fallback. This content adapter currently supports the `instagram-facebook` provider. See [Messaging API and activation](MESSAGING_API.md).
 
-## Meta setup status
+The authorization diagnostics endpoint reports `contentCapabilities` separately for media, comments and mentions, including missing permissions and actual webhook subscription readback. Authorization and subscription evidence do not establish live acceptance: `liveVerified` stays false until a dedicated content acceptance workflow is implemented. No content flags are enabled by this change. The conservative permission requirements follow [Meta's Instagram API collection](https://www.postman.com/meta/instagram/documentation/6yqw8pt/instagram-api). Run `npm run test:instagram-content` for mocked Meta and restricted-role SQL coverage.
+
+## Historical Meta setup notes (superseded by managed authorization)
 
 Meta app **FinFolk**, ID `1667613151655339`, has been created with the Instagram use case. Its domain is `finfolk.com.au`. The Instagram callback `https://api.finfolk.com.au/instagram/webhook` is verified, and `mentions` and `messages` are subscribed on **v26.0**. Both dashboard test deliveries passed. These demonstrate webhook transport, not live account association or draft creation.
 
@@ -28,7 +30,7 @@ Connect through Instagram: follow @finfolk.com.au, send `/connect`, then enter t
 
 ## Current controls
 
-`INSTAGRAM_ENABLED=false` is intentional. No provider requests or public replies are sent until acceptance tests pass. With no `INSTAGRAM_ADMIN_IDS`, connection challenges are also disabled so members do not wait for an unconfigured reviewer. Public profile links remain available separately.
+`INSTAGRAM_ENABLED=false` is intentional. Legacy comment Actions remain paused until acceptance tests pass. DM rollout is controlled separately by the managed messaging settings. With no `INSTAGRAM_ADMIN_IDS`, connection challenges are also disabled so members do not wait for an unconfigured reviewer. Public profile links remain available separately.
 
 Members connect by entering a handle and sending a 24-hour challenge code to the brand through Instagram. Only the challenge hash is stored. A configured administrator checks the actual received message, sender and provider sender ID, then verifies the connection. There is no follower-list check or claim of verified mutual follows. Signed messaging webhooks match the challenge hash and provide the actual sender ID to the review inbox. Administrators still check the declared handle against the actual received message before approval. Fully automatic verification is not enabled; manual review is the initial fallback.
 
@@ -40,7 +42,7 @@ The social menu exposes Instagram & actions, private draft confirmations, public
 2. Queues `finfolk-instagram-actions` and `finfolk-instagram-dead-letter` are declared in `wrangler.jsonc`. The hourly trigger reconciles interrupted work and cleans up expired challenges and 30-day event payloads/comment text.
 3. Set the following using Cloudflare Worker secrets, never browser config or Git commits:
    - `INSTAGRAM_ADMIN_IDS`: comma-separated Neon user IDs, resolved from the intended administrator's FinFolk sign-in.
-   - `INSTAGRAM_APP_SECRET`, `INSTAGRAM_VERIFY_TOKEN`, `INSTAGRAM_ACCESS_TOKEN`.
+   - `INSTAGRAM_APP_SECRET`, `INSTAGRAM_VERIFY_TOKEN` and the managed messaging encryption/Meta app secrets. Authorize the Page through the managed connection; no separate raw content token is required.
 4. Set public provider configuration as Worker environment variables: `INSTAGRAM_ACCOUNT_ID`, `INSTAGRAM_GRAPH_VERSION`. Pin the Graph version tested for this Meta app.
 5. Configure the professional brand account and its linked Facebook Page in a Meta app using Instagram API with Facebook Login. Obtain applicable advanced access/app review before enabling public use. Subscribe the brand account to comment `mentions` and the messaging events approved for the app; setting a callback alone does not subscribe the account.
 6. Configure `https://api.finfolk.com.au/instagram/webhook` as the callback. GET verifies the token; POST verifies `X-Hub-Signature-256` before storing events and enqueueing IDs.
