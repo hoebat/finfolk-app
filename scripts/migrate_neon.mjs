@@ -8,6 +8,9 @@ if (!url)
   );
 if (new URL(url).hostname.includes('-pooler'))
   throw Error('Use the direct connection for migrations.');
+const migrationNames = (await readdir(new URL('../backend/migrations/', import.meta.url))).filter(n => n.endsWith('.sql')).sort();
+const through = process.env.MIGRATIONS_THROUGH;
+if (through && !migrationNames.includes(through)) throw Error('Unknown migration boundary.');
 const client = new pg.Client({ connectionString: url });
 await client.connect();
 try {
@@ -16,11 +19,8 @@ try {
   await client.query(
     'CREATE TABLE IF NOT EXISTS public.finfolk_migrations(name text PRIMARY KEY,hash text NOT NULL,applied_at timestamptz DEFAULT now())',
   );
-  for (const name of (
-    await readdir(new URL('../backend/migrations/', import.meta.url))
-  )
-    .filter((n) => n.endsWith('.sql'))
-    .sort()) {
+  for (const name of migrationNames) {
+    if (through && name > through) break;
     const body = await readFile(
         new URL('../backend/migrations/' + name, import.meta.url),
         'utf8',

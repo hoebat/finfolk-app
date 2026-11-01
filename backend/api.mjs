@@ -562,6 +562,7 @@ export function createAPI({
         await tq("UPDATE finfolk.instagram_discoveries SET state='hidden',owner_id=NULL,author_id=NULL,author=NULL,caption='',updated_at=now() WHERE owner_id=$1",[uid]);
         await tq('DELETE FROM finfolk.points_ledger WHERE user_id=$1',[uid]);
         await tq('DELETE FROM finfolk.instagram_actions WHERE owner_id=$1',[uid]);
+        await tq('DELETE FROM finfolk.instagram_connect_codes WHERE consumed_by=$1 OR (provider_scope,sender_id) IN (SELECT provider_scope,sender_id FROM finfolk.instagram_connections WHERE user_id=$1)',[uid]);
         await tq('DELETE FROM finfolk.instagram_connections WHERE user_id=$1',[uid]);
         await tq('DELETE FROM finfolk.invitation_joins WHERE invitee_id=$1 OR inviter_id=$1',[uid]);
         await tq('DELETE FROM finfolk.invitations WHERE inviter_id=$1',[uid]);

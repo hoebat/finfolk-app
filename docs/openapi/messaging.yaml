@@ -132,6 +132,77 @@ paths:
           $ref: '#/components/responses/Error429'
         '503':
           $ref: '#/components/responses/Error503'
+  /v1/me/instagram/connect:
+    post:
+      operationId: connectInstagramWithDMCode
+      summary: Connect the signed-in member using a follower's DM-issued code
+      tags: [Members]
+      security:
+        - memberJWT: []
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              additionalProperties: false
+              properties:
+                code:
+                  type: string
+                  maxLength: 32
+                  description: Eight characters received by DM; spaces, hyphens and lowercase are accepted.
+      responses:
+        '200':
+          description: Connected, or a successful retry by the same member
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, requestId]
+                additionalProperties: false
+                properties:
+                  data:
+                    type: object
+                    required: [state, handle, profileUrl]
+                    additionalProperties: false
+                    properties:
+                      state:
+                        type: string
+                        enum: [claimed]
+                      handle:
+                        type: string
+                      profileUrl:
+                        type: string
+                        format: uri
+                  requestId:
+                    type: string
+                    format: uuid
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
   /v1/me/instagram/profile:
     put:
       operationId: saveInstagramProfile
@@ -205,75 +276,12 @@ paths:
               $ref: '#/components/schemas/ProfileInput'
   /v1/me/instagram/claims:
     post:
-      operationId: createInstagramClaim
-      summary: Create or replace a 24-hour claim (verified email required)
-      tags:
-        - Members
-      security:
-        - memberJWT: []
-      parameters:
-        - in: header
-          name: Idempotency-Key
-          required: true
-          schema:
-            type: string
-            minLength: 8
-            maxLength: 128
-            pattern: ^[A-Za-z0-9_-]+$
-          description: >-
-            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
-            409. Use a new key after expiry.
+      deprecated: true
+      summary: Retired; use the Instagram connect workflow
       responses:
-        '201':
-          description: Success
-          headers:
-            X-Request-Id:
-              schema:
-                type: string
-                format: uuid
-            Idempotency-Replayed:
-              schema:
-                type: string
-                enum:
-                  - 'true'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/ClaimCreated'
-                  requestId:
-                    type: string
-                    format: uuid
-                required:
-                  - data
-                  - requestId
-                additionalProperties: false
-        '400':
-          $ref: '#/components/responses/Error400'
-        '401':
-          $ref: '#/components/responses/Error401'
-        '403':
-          $ref: '#/components/responses/Error403'
-        '404':
-          $ref: '#/components/responses/Error404'
-        '409':
-          $ref: '#/components/responses/Error409'
-        '413':
-          $ref: '#/components/responses/Error413'
-        '415':
-          $ref: '#/components/responses/Error415'
-        '429':
-          $ref: '#/components/responses/Error429'
-        '503':
-          $ref: '#/components/responses/Error503'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Empty'
+        '410':
+          $ref: '#/components/responses/Error410'
+
   /v1/me/instagram/claims/{id}:
     get:
       operationId: instagramClaim
@@ -336,81 +344,12 @@ paths:
           $ref: '#/components/responses/Error503'
   /v1/me/instagram/claims/{id}/review-request:
     post:
-      operationId: requestClaimReview
-      summary: Request review after receiving a signed claim DM
-      tags:
-        - Members
-      security:
-        - memberJWT: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - in: header
-          name: Idempotency-Key
-          required: true
-          schema:
-            type: string
-            minLength: 8
-            maxLength: 128
-            pattern: ^[A-Za-z0-9_-]+$
-          description: >-
-            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
-            409. Use a new key after expiry.
+      deprecated: true
+      summary: Retired; use the Instagram connect workflow
       responses:
-        '200':
-          description: Success
-          headers:
-            X-Request-Id:
-              schema:
-                type: string
-                format: uuid
-            Idempotency-Replayed:
-              schema:
-                type: string
-                enum:
-                  - 'true'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Ok'
-                  requestId:
-                    type: string
-                    format: uuid
-                required:
-                  - data
-                  - requestId
-                additionalProperties: false
-        '400':
-          $ref: '#/components/responses/Error400'
-        '401':
-          $ref: '#/components/responses/Error401'
-        '403':
-          $ref: '#/components/responses/Error403'
-        '404':
-          $ref: '#/components/responses/Error404'
-        '409':
-          $ref: '#/components/responses/Error409'
-        '413':
-          $ref: '#/components/responses/Error413'
-        '415':
-          $ref: '#/components/responses/Error415'
-        '429':
-          $ref: '#/components/responses/Error429'
-        '503':
-          $ref: '#/components/responses/Error503'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Empty'
+        '410':
+          $ref: '#/components/responses/Error410'
+
   /v1/admin/messaging/instagram:
     get:
       operationId: messagingReadiness
@@ -714,12 +653,14 @@ paths:
               - ping
               - help
               - claim
+              - connect
               - status
               - checkin
               - points
               - unknown
               - prompt
               - claim_usage
+              - claim_retired
               - unsupported
         - in: query
           name: state
@@ -991,84 +932,12 @@ paths:
         returned.
   /v1/admin/messaging/claim-reviews/{id}/decision:
     post:
-      operationId: reviewMessagingClaim
-      summary: Approve sender/follow evidence or reject with a reason
-      tags:
-        - Administration
-      security:
-        - memberJWT: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - in: header
-          name: Idempotency-Key
-          required: true
-          schema:
-            type: string
-            minLength: 8
-            maxLength: 128
-            pattern: ^[A-Za-z0-9_-]+$
-          description: >-
-            Same actor/key/input replays the encrypted response for 24 hours; changed input returns
-            409. Use a new key after expiry.
+      deprecated: true
+      summary: Retired; use the Instagram connect workflow
       responses:
-        '200':
-          description: Success
-          headers:
-            X-Request-Id:
-              schema:
-                type: string
-                format: uuid
-            Idempotency-Replayed:
-              schema:
-                type: string
-                enum:
-                  - 'true'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Ok'
-                  requestId:
-                    type: string
-                    format: uuid
-                required:
-                  - data
-                  - requestId
-                additionalProperties: false
-        '400':
-          $ref: '#/components/responses/Error400'
-        '401':
-          $ref: '#/components/responses/Error401'
-        '403':
-          $ref: '#/components/responses/Error403'
-        '404':
-          $ref: '#/components/responses/Error404'
-        '409':
-          $ref: '#/components/responses/Error409'
-        '413':
-          $ref: '#/components/responses/Error413'
-        '415':
-          $ref: '#/components/responses/Error415'
-        '429':
-          $ref: '#/components/responses/Error429'
-        '503':
-          $ref: '#/components/responses/Error503'
-      description: >-
-        Requires a verified member in INSTAGRAM_ADMIN_IDS. No access tokens or raw conversations are
-        returned.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReviewDecision'
+        '410':
+          $ref: '#/components/responses/Error410'
+
   /v1/integrations/instagram/oauth/callback:
     get:
       operationId: instagramOAuthCallback
@@ -1226,6 +1095,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     Error409:
+      description: State or idempotency conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error410:
       description: State or idempotency conflict
       content:
         application/json:
@@ -1422,6 +1297,8 @@ components:
               type: boolean
             claims:
               type: boolean
+            connect:
+              type: boolean
             messaging:
               type: boolean
           required:
@@ -1485,7 +1362,7 @@ components:
             enum:
               - ping
               - help
-              - claim
+              - connect
               - status
               - checkin
               - points
@@ -1529,7 +1406,7 @@ components:
             enum:
               - ping
               - help
-              - claim
+              - connect
               - status
               - checkin
               - points
