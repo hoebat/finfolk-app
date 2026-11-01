@@ -1,4 +1,4 @@
-name: Test, build and deploy GitHub Pages
+name: Test and archive legacy survey sources
 
 on:
   push:
@@ -81,27 +81,6 @@ jobs:
           path: .cache/source-archive
           include-hidden-files: true
           retention-days: 1
-      - name: Upload Pages artifact with materialized LFS data
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: _site
-
-  deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Deploy static artifact
-        id: deployment
-        uses: actions/deploy-pages@v4
 
   archive:
     if: github.ref == 'refs/heads/main' && needs.build.outputs.archive_changed == 'true' && github.event_name != 'pull_request'
