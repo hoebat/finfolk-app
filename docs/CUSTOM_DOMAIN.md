@@ -1,37 +1,27 @@
-# finfolk.com.au
+# Legacy custom domain: old.finfolk.com.au
 
-`finfolk.com.au` is the intended canonical domain. The root `CNAME` is included in the generated site for portability. **GitHub Pages ignores CNAME files for custom Actions deployments**, so the repository Pages setting and DNS records must also be configured. Adding the file does not change the current live URL.
+This repository serves the legacy frontend at https://old.finfolk.com.au. Production https://finfolk.com.au and https://www.finfolk.com.au are owned by the Cloudflare Workers deployment in [hoebat/finfolk-next](https://github.com/hoebat/finfolk-next). The retired `next.finfolk.com.au` hostname stays removed. See [production ownership](PRODUCTION_OWNERSHIP.md).
 
-## Activate the domain
+In [this repository’s Pages settings](https://github.com/hoebat/finfolk-app/settings/pages), keep the source as **GitHub Actions** and the custom domain as **old.finfolk.com.au**. The root `CNAME`, static-build assertion and Pages workflow guard must use that same legacy hostname. Actions deployments also require the repository Pages setting; the CNAME alone does not configure it.
 
-When ready to switch, open [finfolk-app Pages settings](https://github.com/hoebat/finfolk-app/settings/pages). Under **Custom domain**, enter `finfolk.com.au` and save. At the domain's DNS provider, configure:
+Cloudflare DNS for the `finfolk.com.au` zone:
 
-| Type | Name | Value |
-| --- | --- | --- |
-| A | @ | 185.199.108.153 |
-| A | @ | 185.199.109.153 |
-| A | @ | 185.199.110.153 |
-| A | @ | 185.199.111.153 |
-| CNAME | www | hoebat.github.io |
+| Type | Name | Target | Proxy |
+| --- | --- | --- | --- |
+| CNAME | old | hoebat.github.io | DNS only |
 
-Use the four A records for the root domain, or an ALIAS/ANAME pointing to `hoebat.github.io` if the provider supports it. Do not point a DNS record at the repository path `/finfolk-app/`. Preserve mail-related MX/TXT records. Remove conflicting website A/AAAA/CNAME records only after checking the provider's existing configuration.
+Do not change the managed Worker records for the root, www or api, or the mail MX/TXT records. Do not point DNS at the repository path `/finfolk-app/`.
 
-Optional IPv6 records at `@`: `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`.
+After GitHub validates DNS and issues the certificate, enable **Enforce HTTPS**. The existing legacy frontend configuration uses the Next managed Neon Better Auth realm and `https://api.finfolk.com.au/`. Keep `https://old.finfolk.com.au` in that auth service’s trusted origins and API CORS allowlist; do not reactivate Firebase or the retired legacy backend.
 
-Wait for GitHub's DNS check and certificate provisioning, then enable **Enforce HTTPS**. DNS propagation may take up to 24 hours. With both root and www configured, GitHub redirects www to the canonical root domain. Domain ownership verification is available under the GitHub account's Pages settings using its generated TXT record.
-
-## Firebase accounts and photos
-
-When Firebase is activated, add `finfolk.com.au` and `www.finfolk.com.au` to Firebase Authentication's authorized domains. `storage.cors.json` already includes both HTTPS origins; apply it to the project's bucket as described in [Firebase setup](FIREBASE_SETUP.md). The existing `hoebat.github.io` origin remains available for the Pages address.
-
-## Verify
+Verify:
 
 ```sh
-dig +short finfolk.com.au A
-dig +short www.finfolk.com.au CNAME
-curl -I https://finfolk.com.au/
+dig +short old.finfolk.com.au CNAME
+curl -I https://old.finfolk.com.au/
+curl https://old.finfolk.com.au/neon-config.json
 ```
 
-Check beach links, public session links and Firebase Google/email sign-in at the custom domain after cutover. All frontend assets use relative URLs, so the same artifact supports the project URL and the domain root.
+Check beach links, account sign-in and API preflight handling on the legacy hostname. Confirm the main site still serves its substrate-backed Worker configuration and that www redirects to the main site.
 
-Reference: [GitHub's custom domain documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+Reference: [GitHub custom domains](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
