@@ -43,12 +43,7 @@
     "INSTAGRAM_MESSAGING_LOGIN_CONFIG_ID": "2606242293176301",
     "INSTAGRAM_MESSAGING_ACCOUNT_ID": "17841461601419539"
   },
-  "routes": [
-    {
-      "pattern": "api.finfolk.com.au",
-      "custom_domain": true
-    }
-  ],
+  "routes": [],
   "queues": {
     "producers": [
       {
