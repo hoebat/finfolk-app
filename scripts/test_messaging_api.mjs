@@ -15,6 +15,7 @@ import {
 } from "../backend/messaging-engine.mjs";
 import { messagingConfig, digest } from "../backend/messaging-config.mjs";
 import { completeMessagingAuthorization } from "../backend/messaging-authorization.mjs";
+import { followRequiredReply } from "../backend/instagram-dm-commands.mjs";
 const project = "odd-voice-85400108",
   branch = "finfolk-community-pilot-test";
 const connection = (role) =>
@@ -577,7 +578,14 @@ try {
       .data.state,
     "follow_required",
   );
-  assert.equal(await outbox(followClaim.id), undefined);
+  assert.equal((await event(followClaim.id)).processing_state, "blocked");
+  assert.equal((await event(followClaim.id)).error, "not_following");
+  assert.equal((await outbox(followClaim.id)).state, "provider_accepted");
+  assert.equal(replies.at(-1).message.text, followRequiredReply);
+  assert.ok(!replies.at(-1).message.text.includes(created.data.command));
+  const followReplyCount = replies.length;
+  await incoming(sender, created.data.command, { mid: followClaim.id.split(':').at(-1) });
+  assert.equal(replies.length, followReplyCount, "Duplicate nonfollower claim sends only one instruction");
   follows = true;
   await q(
     "INSERT INTO finfolk.invitation_joins(invitee_id,inviter_id) VALUES($1,$2)",
@@ -602,8 +610,26 @@ try {
   assert.match(replies.at(-1).message.text, /total/);
   follows = false;
   const pointCount = replies.length;
-  await incoming(sender, "/points");
-  assert.equal(replies.length, pointCount);
+  const nonfollowerPoints = await incoming(sender, "/points");
+  assert.equal(replies.length, pointCount + 1);
+  assert.equal(replies.at(-1).message.text, followRequiredReply);
+  assert.equal((await event(nonfollowerPoints.id)).error, "not_following");
+  assert.ok(!replies.at(-1).message.text.includes('total'));
+  const checkinsBefore = (await legacy(owner, 'myCheckins')).length;
+  const deniedCheckin = await incoming(sender, '/checkin Bondi Beach');
+  assert.equal((await event(deniedCheckin.id)).processing_state, 'blocked');
+  assert.equal((await legacy(owner, 'myCheckins')).length, checkinsBefore);
+  assert.equal(replies.at(-1).message.text, followRequiredReply);
+  sendFailure = 'rate';
+  const heldGuidance = await incoming(sender, '/status');
+  sendFailure = null;
+  assert.equal((await outbox(heldGuidance.id)).state, 'pending');
+  await q("UPDATE finfolk.messaging_accounts SET backoff_until=null WHERE id='instagram'");
+  await q("UPDATE finfolk.messaging_outbox SET body='Private member result',next_attempt_at=now()-interval '1 second' WHERE event_id=$1", [heldGuidance.id]);
+  const beforeTampered = replies.length;
+  await sendOutbox((await outbox(heldGuidance.id)).id, env, runtime, { fetcher });
+  assert.equal((await outbox(heldGuidance.id)).state, 'cancelled');
+  assert.equal(replies.length, beforeTampered, 'The nonfollower reply exception cannot send arbitrary/private content');
   follows = true;
   await incoming(sender, "/checkin Bondi Beach");
   assert.match(replies.at(-1).message.text, /Checked in/);

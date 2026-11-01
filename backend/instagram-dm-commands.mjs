@@ -6,13 +6,15 @@ import {
 import { commands } from "./messaging-config.mjs";
 import { windowFor } from "./community-core.mjs";
 const accountURL = "https://finfolk.com.au/?view=account&tab=instagram";
+export const followRequiredReply =
+  "Please follow @finfolk.com.au to use this feature.\nhttps://www.instagram.com/finfolk.com.au/\n\nOnce you’re following, send the same command again. You can use /help without following or claiming an account.";
 export const helpText = (enabled = Object.keys(commands)) =>
   "Hey! Welcome to FinFolk 🌊\nYour coastal companion for finding beaches, exploring depths and keeping your dive memories together.\n\nAvailable here:\n" +
   Object.entries(commands)
     .filter(([name]) => enabled.includes(name))
     .map(([, c]) => c.syntax + " — " + c.description)
     .join("\n") +
-  "\n\nGet started: https://finfolk.com.au\nExplore the map or sign in to start your logbook.\n\nYou don’t need to follow or connect your account to ask for help.";
+  "\n\nGet started: https://finfolk.com.au\nExplore the map or sign in to start your logbook.\n\nYou don’t need to follow or connect your account to ask for help. Please follow @finfolk.com.au to claim your account and use member features, comments and posts.";
 export const commandHelp = helpText();
 export function parseInstagramCommand(text = "") {
   const match = String(text)
@@ -53,7 +55,9 @@ export async function commandResult(q, event, env, identity, identityError) {
       "UPDATE finfolk.instagram_dm_limits SET prompted_at=now() WHERE sender_id=$1 AND (prompted_at IS NULL OR prompted_at<now()-interval '24 hours') RETURNING sender_id",
       [event.rate_limit_key],
     );
-    return sent.length ? "Hi! Send /help to see FinFolk commands." : null;
+    return sent.length
+      ? "Hi! Send /help to see FinFolk commands. Everyone can message us. Please follow @finfolk.com.au to claim your account and use member features."
+      : null;
   }
   if (["help", "unknown"].includes(event.command))
     return event.command === "help"
