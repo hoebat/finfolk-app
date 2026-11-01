@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { randomBytes, createHmac } from "node:crypto";
+import { randomBytes, createHmac, createHash } from "node:crypto";
 import { database } from "../backend/db.mjs";
 import {
   instagramAction,
@@ -22,7 +22,7 @@ const db = database(process.env.DATABASE_URL),
   source = String(Date.now()) + String(Math.floor(Math.random() * 10000));
 const env = { INSTAGRAM_ADMIN_IDS: admin };
 const act = (action, v = {}, uid = owner) =>
-  instagramAction({ action, v, uid, env, q, verified: () => {} });
+  instagramAction({ action, v, uid, env, q, db, verified: () => {} });
 const ids = [];
 try {
   for (const uid of [owner, other, admin])
@@ -37,29 +37,10 @@ try {
     ["reply", "stats", "dive", "points"],
   );
   assert.equal(parseActionRequest("log depth 8 duration 30").depth, 8);
-  const connect = await act("instagramConnect", { handle: "@test_" + tag });
-  assert.ok(connect.code);
-  await assert.rejects(
-    act(
-      "instagramVerify",
-      { userId: owner, code: connect.code, senderId: source, confirmed: true },
-      other,
-    ),
-    /Administrator/,
-  );
-  await assert.rejects(
-    act(
-      "instagramVerify",
-      { userId: owner, code: "wrong", senderId: source, confirmed: true },
-      admin,
-    ),
-    /incorrect/,
-  );
-  await act(
-    "instagramVerify",
-    { userId: owner, code: connect.code, senderId: source, confirmed: true },
-    admin,
-  );
+  for (const action of ['instagramConnect','instagramVerify'])
+    await assert.rejects(act(action,{handle:'test_'+tag,userId:owner,senderId:source},admin), error=>error.status===410 && error.code==='claim_retired');
+  // Existing connections remain usable; fixture setup is not an approval path.
+  await q("INSERT INTO finfolk.instagram_connections(user_id,handle,sender_id,status) VALUES($1,$2,$3,'connected')",[owner,'test_'+tag,source]);
   assert.equal((await act("instagramStatus")).connection.status, "connected");
   const invite = await invitationAction({
     action: "invitationStatus",
@@ -204,11 +185,8 @@ try {
     1,
   );
   assert.equal(queued, 2);
-  const otherCode = await act(
-    "instagramConnect",
-    { handle: "inviter_" + tag },
-    other,
-  );
+  const otherCode={code:randomBytes(12).toString('hex')};
+  await q("INSERT INTO finfolk.instagram_connections(user_id,handle,status,challenge_hash,expires_at) VALUES($1,$2,'pending',$3,now()+interval '1 day')",[other,'inviter_'+tag,createHash('sha256').update(otherCode.code).digest('hex')]);
   const dmRaw = JSON.stringify({
     object: "instagram",
     entry: [
@@ -245,15 +223,8 @@ try {
     ).message_sender_id,
     source + "9",
   );
-  await act(
-    "instagramVerify",
-    { userId: other, senderId: source + "9", confirmed: true },
-    admin,
-  );
-  assert.equal(
-    (await act("instagramStatus", {}, other)).connection.status,
-    "connected",
-  );
+  await assert.rejects(act('instagramVerify',{userId:other,senderId:source+'9',confirmed:true},admin),error=>error.status===410 && error.code==='claim_retired');
+  assert.equal((await act('instagramStatus',{},other)).connection.status,'pending','Legacy signed messages cannot approve a connection');
   await processInstagramEvent(source, {}, q);
   assert.equal(
     (
