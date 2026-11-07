@@ -1,0 +1,20 @@
+{
+  "tool": "ChatGPT native image generation",
+  "purpose": "Illustrative social post stills for local fictional profiles",
+  "images": [
+    {
+      "id": "shore-session",
+      "prompt": "Use case: photorealistic-natural. Asset type: an illustrative sample Instagram Reel poster for a fictional freediving profile in FinFolk. Premium editorial underwater photography, landscape 4:3. Two adult recreational freedivers in plain navy full wetsuits, diving masks and long bifins, calmly exploring an Australian temperate rocky reef together in clear blue-green water, one foreground diver gliding horizontally and a second buddy visible nearby. Natural rays of sunlight and patches of seagrass, realistic restrained colours and beautiful spatial composition, authentic freediving body positions, faces concealed naturally by masks and distance. No text, captions, interface, logos, watermarks, spears, scuba tanks, fish handling or glamour modelling. Underwater activity photograph, not a portrait. This is fictional illustrative sample content.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-1a6c77a7-0a96-4208-80da-6b0fb9785940.png",
+      "master": "assets/people/shore-session-post-v1.png",
+      "asset": "assets/people/shore-session-post-v1.webp"
+    },
+    {
+      "id": "pool-training",
+      "prompt": "Use case: photorealistic-natural. Asset type: an illustrative sample TikTok video poster for a fictional freediving profile in FinFolk. Premium editorial underwater sports photography, landscape 4:3. Two adult freedivers practising controlled shallow horizontal fin technique together in a clear outdoor lap pool, one foreground swimmer in a plain navy full wetsuit with a low-volume dive mask and long bifins, a second buddy nearby supervising at shallow depth. Both fully visible with realistic anatomy, calm unposed training moment, soft sunlight patterns across pale blue pool tiles, stylish restrained cobalt and ivory colours, no text, interface, captions, logos, watermarks, scuba tanks, diving from heights or spearfishing. Faces not recognisable. Activity photograph, not a portrait. This is fictional illustrative sample content.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-d7932bb7-7c90-4e6a-b3ac-a2b0a9ebfb8c.png",
+      "master": "assets/people/pool-training-post-v1.png",
+      "asset": "assets/people/pool-training-post-v1.webp"
+    }
+  ]
+}

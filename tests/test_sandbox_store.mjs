@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {change,role} from '../design-board/management-model.mjs';
+import {resolveRoute,routeFromURL} from '../design-board/sandbox-routes.mjs';
+import {initialSandbox,createSandboxStore} from '../design-board/sandbox-store.mjs';
+const persisted=[],s=createSandboxStore(initialSandbox(),{persist:async v=>persisted.push(v)});
+assert.equal(s.state.completed,false);assert.equal(s.actor.balance,120);s.profileSave({...s.actor.profile,my:{...s.actor.profile.my,displayName:'Taylor'}});s.write('finfolk:atelier:onboarding:v1',JSON.stringify({completed:true}));assert.equal(s.state.completed,true);
+const note=s.notes().add('shelly',{text:'An example place note shared across the sandbox.',category:'access'});const original=s.state.actors.member.balance;
+const claim=s.redeem('coffee','same-request');s.redeem('coffee','same-request');assert.equal(s.actor.balance,original-30);assert.equal(s.shop(false).claims.length,1);
+assert.throws(()=>s.complete(claim.id,true),/operator/);assert.throws(()=>s.write('finfolk:atelier:finnies:v1',JSON.stringify({...s.shop(false),items:[]})),/operator/);
+const m=s.management();m.pages[0].name='Forged';assert.throws(()=>s.write('finfolk:management:v1',JSON.stringify(m)),/access/);
+const session=s.saveSession(null,{date:'2026-11-06',locationName:'Shelly Beach',beachId:'shelly',notes:'Private',durationMinutes:25});
+s.switchRole('owner');assert.equal(s.notes().rows('shelly').find(n=>n.id===note.id).own,false);assert.throws(()=>s.notes().remove(note.id),/Only your/);assert.equal(s.shop(false).claims.length,0);await assert.rejects(()=>s.sessionClient().get(session),/access/);
+const page=s.management();page.events.push({id:'event-one',pageId:'saltwater',title:'Sample gathering',published:true,visibility:'public',attendees:[s.actor.id],date:'2026-11-07'});s.write('finfolk:management:v1',JSON.stringify(page));assert.equal(s.management().events.length,1);
+s.switchRole('member');assert.equal(s.actor.profile.my.displayName,'Taylor');const no=s.management();no.events[0].title='No';assert.throws(()=>s.write('finfolk:management:v1',JSON.stringify(no)),/organiser/);
+s.switchRole('operator');s.complete(claim.id,true);s.complete(claim.id,true);assert.equal(s.state.actors.member.balance,120);assert.equal(s.shop(true).items.find(i=>i.id==='coffee').stock,8);assert.throws(()=>s.complete(claim.id,false),/completed/);
+s.switchRole('member');const imported=s.importWatch('garmin');assert.equal(s.importWatch('garmin'),imported);assert.equal(s.actor.sessions.filter(x=>x.id===imported).length,1);await s.flush();assert.ok(persisted.length);assert.equal(persisted.at(-1).actors.member.profile.my.displayName,'Taylor');s.reset();assert.equal(s.state.completed,false);assert.equal(s.state.shop.claims.length,0);
+const invited=createSandboxStore(),inv=invited.management();change(inv,'accept',{id:'sample-invite',email:'alex@example.test',verified:true},invited.actor.id);invited.write('finfolk:management:v1',JSON.stringify(inv));assert.equal(role(invited.management().pages.find(p=>p.id==='maya'),invited.actor.id),'admin');invited.switchRole('admin');const team=invited.management();team.pages.find(p=>p.id==='saltwater').admins=[];assert.throws(()=>invited.write('finfolk:management:v1',JSON.stringify(team)),/owner/);assert.equal(resolveRoute('#%').id,'map-explore');assert.equal(routeFromURL('http://['),null);
+console.log('SANDBOX_STORE_PASS: shared identity, persistence, member ownership, organiser permissions, notes, sessions, idempotent redemption/import and operator refund.');

@@ -4,18 +4,18 @@ export function showWelcome() {
   let step = 0;
   const steps = [
     [
-      'Find your spot',
-      'Explore beaches, depth maps and regions you can save for later.',
+      'Pick your spot.',
+      'Search freediving locations by state and region. View maps, access information and available depth data.',
       '⌁',
     ],
     [
-      'Become a regular',
-      'Check in when you visit. Three visit days in the last 30 days make you a regular. You choose what to share.',
+      'Post your logs.',
+      'Record your freediving and training sessions. Sessions start private. Choose which logs to publish.',
       '◉',
     ],
     [
-      'Find your people',
-      'Meet divers with shared spots and interests. Keep sharing on Instagram or TikTok.',
+      'Discover your FinFolk.',
+      'Check in at your locations and meet other freedivers. 10 separate visit days within the last 30 days make you a Regular at that location. You choose what to share.',
       '↗',
     ],
   ];
@@ -40,7 +40,7 @@ export function showWelcome() {
     progress.textContent = `${step + 1} / 3`;
     const next = document.createElement('button');
     next.className = 'primary';
-    next.textContent = step === 2 ? 'Explore the map' : 'Next';
+    next.textContent = step === 2 ? 'Done' : 'Next';
     next.onclick = () => {
       if (step === 2) close();
       else {

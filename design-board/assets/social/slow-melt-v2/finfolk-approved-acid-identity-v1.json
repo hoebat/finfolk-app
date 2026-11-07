@@ -1,0 +1,22 @@
+{
+  "identity": "slow-melt-f",
+  "selectedAvatar": "finfolk-social-octopus-acid-yellow-v1.png",
+  "selection": "User chose the bordered acid-yellow octopus f for Instagram and TikTok.",
+  "wordmark": {
+    "file": "finfolk-wordmark-octopus-acid-yellow-v1.png",
+    "text": "finfolk",
+    "method": "Built-in image_gen generation using the chosen avatar and Slow melt wordmark references",
+    "prompt": "Use case: logo-brand. Asset: one finished full-width Finfolk WORDMARK matching the approved social avatar. Wide landscape 3:1 canvas, ideally 3072x1024.\nINPUT IMAGE 1 is the APPROVED COLOUR, PATTERN and FINISH REFERENCE: the bordered single f avatar with acid yellow ground, electric cobalt and hot pink octopus print, acid yellow sucker ovals/rings, thin midnight navy edge. Match this precise palette and octopus aesthetic.\nINPUT IMAGE 2 is the TYPOGRAPHIC REFERENCE ONLY: use ONLY the big full lowercase finfolk wordmark at the TOP of this study board as the letterform guide. Ignore its ff monogram and sample row. Preserve that molten 1970s Slow melt typography: bulbous drooping f hooks, organic pinch-waisted stems, rounded flowing n, bean-shaped o counter, tall rounded l, soft flowing k lobes, clearly separate floating i dot. The f in the approved avatar is the central brand signature.\nCreate ONE beautiful complete wordmark spelling EXACTLY \"finfolk\" in lowercase, seven letters f i n f o l k, all on ONE HORIZONTAL LINE. Every letter must read clearly, including the l between o and k. Optical spacing and a common baseline. Make the full wordmark large, centered with comfortable 8% side margins and 12% vertical margins; all letter edges fully visible, no clipping.\nFill the letters with a coherent medium-scale octopus print matching input 1: vivid hot pink #ff148d tentacles curling into bold spirals, clear acid yellow #edff35 suckers and ring markings, on electric cobalt #1641ff fields. Compose the tentacles tastefully across the individual letter interiors. Keep generous flat coloured regions so the seven-letter word remains legible. Motif must stay strictly CLIPPED INSIDE all letter shapes and the i dot. Use a thin midnight navy #172440 contour around EACH letter, matching the approved avatar's border. Counters in o and other open negative spaces show the background. Completely flat uniform acid yellow #edff35 background across the entire wide canvas.\nOnly the word finfolk. No separate icon, no monogram, no ff, no second row, no slogan, no labels, no presentation board, no mockup, no extra animals outside lettering. Crisp professional flat print graphic; no gradients, shadows, glow, lighting, paper grain or 3D. Do not use a stock font or add a rectangular border."
+  },
+  "platforms": {
+    "Instagram @finfolk.com.au": {
+      "asset": "finfolk-social-octopus-acid-yellow-v1.png",
+      "uploadStatus": "awaiting_accessible_Dia_window"
+    },
+    "TikTok @finfolk.com.au": {
+      "asset": "finfolk-social-octopus-acid-yellow-v1.png",
+      "uploadStatus": "awaiting_accessible_Dia_window"
+    }
+  },
+  "browser": "Dia"
+}

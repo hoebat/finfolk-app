@@ -1,0 +1,211 @@
+{
+  "version": 1,
+  "palettes": {
+    "acid-light": {
+      "id": "acid-light",
+      "name": "Acid light",
+      "colours": {
+        "paper": "#edff35",
+        "ink": "#1641ff",
+        "accent": "#ff148d"
+      }
+    },
+    "acid-dark": {
+      "id": "acid-dark",
+      "name": "Acid dark",
+      "colours": {
+        "paper": "#1641ff",
+        "ink": "#edff35",
+        "accent": "#ff148d"
+      }
+    },
+    "muted-light": {
+      "id": "muted-light",
+      "name": "Muted light",
+      "colours": {
+        "paper": "#f2e8d6",
+        "ink": "#172440",
+        "accent": "#bc8190"
+      }
+    },
+    "muted-dark": {
+      "id": "muted-dark",
+      "name": "Muted dark",
+      "colours": {
+        "paper": "#172440",
+        "ink": "#f2e8d6",
+        "accent": "#edb2c7"
+      }
+    }
+  },
+  "artworks": [
+    {
+      "id": "ningaloo-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-ningaloo-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-ningaloo-acid-v1/master.zip"
+    },
+    {
+      "id": "great-barrier-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-great-barrier-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-great-barrier-acid-v1/master.zip"
+    },
+    {
+      "id": "julian-rocks-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-julian-rocks-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-julian-rocks-acid-v1/master.zip"
+    },
+    {
+      "id": "port-phillip-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-port-phillip-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-port-phillip-acid-v1/master.zip"
+    },
+    {
+      "id": "bicheno-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-bicheno-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-bicheno-acid-v1/master.zip"
+    },
+    {
+      "id": "point-lowly-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-point-lowly-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-point-lowly-acid-v1/master.zip"
+    },
+    {
+      "id": "coral-reef-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-coral-reef-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-coral-reef-acid-v1/master.zip"
+    },
+    {
+      "id": "shipwreck-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-shipwreck-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-shipwreck-acid-v1/master.zip"
+    },
+    {
+      "id": "sunken-city-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-sunken-city-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-sunken-city-acid-v1/master.zip"
+    },
+    {
+      "id": "cave-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-cave-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-cave-acid-v1/master.zip"
+    },
+    {
+      "id": "tropical-lagoon-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-tropical-lagoon-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-tropical-lagoon-acid-v1/master.zip"
+    },
+    {
+      "id": "arctic-ice-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-arctic-ice-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-arctic-ice-acid-v1/master.zip"
+    },
+    {
+      "id": "ascent-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-ascent-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-ascent-acid-v1/master.zip"
+    },
+    {
+      "id": "reef-glide-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-reef-glide-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-reef-glide-acid-v1/master.zip"
+    },
+    {
+      "id": "jelly-drift-acid",
+      "type": "scenes",
+      "master": "design-board/assets/ink-masters/scenes/finfolk-underwater-jelly-drift-acid-v1/master.json",
+      "bundle": "design-board/assets/ink-masters/scenes/finfolk-underwater-jelly-drift-acid-v1/master.zip"
+    },
+    {
+      "id": "bluebottle",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-bluebottle/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-bluebottle/master.zip"
+    },
+    {
+      "id": "boxjelly",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-boxjelly/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-boxjelly/master.zip"
+    },
+    {
+      "id": "octopus",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-octopus/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-octopus/master.zip"
+    },
+    {
+      "id": "stonefish",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-stonefish/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-stonefish/master.zip"
+    },
+    {
+      "id": "lionfish",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-lionfish/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-lionfish/master.zip"
+    },
+    {
+      "id": "conesnail",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-conesnail/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-conesnail/master.zip"
+    },
+    {
+      "id": "seasnake",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-seasnake/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-seasnake/master.zip"
+    },
+    {
+      "id": "stingray",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-stingray/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-stingray/master.zip"
+    },
+    {
+      "id": "moray",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-moray/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-moray/master.zip"
+    },
+    {
+      "id": "bluedragon",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-bluedragon/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-bluedragon/master.zip"
+    },
+    {
+      "id": "irukandji",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-irukandji/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-irukandji/master.zip"
+    },
+    {
+      "id": "toadfish",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-toadfish/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-toadfish/master.zip"
+    },
+    {
+      "id": "seaurchin",
+      "type": "motifs",
+      "master": "design-board/assets/ink-masters/motifs/animal-seaurchin/master.json",
+      "bundle": "design-board/assets/ink-masters/motifs/animal-seaurchin/master.zip"
+    }
+  ]
+}

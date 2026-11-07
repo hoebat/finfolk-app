@@ -1,0 +1,18 @@
+{
+  "identity": "slow-melt-f",
+  "motif": "blue-ringed octopus",
+  "method": "Built-in image_gen image edits",
+  "change": "Remove the continuous border around the letter; preserve the octopus pattern and yellow/navy backgrounds.",
+  "outputs": [
+    {
+      "file": "finfolk-social-octopus-acid-yellow-v2.png",
+      "source": "finfolk-social-octopus-acid-yellow-v1.png",
+      "prompt": "Use case: precise-object-edit. Edit the supplied square Finfolk octopus-print lowercase f profile logo. The user wants the border REMOVED. Remove the continuous outline/keyline/stroke that traces the complete exterior silhouette and inner open counter of the f. There must be absolutely no uniform outline, no border, no rim, no halo, no glow, and no replacement outline in any colour. Extend the adjacent interior print colours naturally to the exact edge of the f where that outline was, so the hot pink octopus tentacles and cobalt fields meet the background directly. This is a precise border-removal edit only. Preserve the exact f contour, position, size, square canvas, margins, octopus tentacle spirals, acid-yellow oval suckers and ring motifs inside the f, electric cobalt #1641ff and hot pink #ff148d fill colours. Preserve all yellow octopus markings INSIDE the letter; only remove the continuous silhouette border. Do not remove yellow sucker ovals or rings. Do not add objects, text, another letter, shadows, gradients or texture. One finished square avatar, same composition as the reference. In this yellow-background version, REMOVE the dark midnight-navy outline around the f completely. Keep the existing acid-yellow background (#edff35), including the negative space in the open counter. The unoutlined patterned f must sit directly on yellow."
+    },
+    {
+      "file": "finfolk-social-octopus-acid-navy-v2.png",
+      "source": "finfolk-social-octopus-acid-navy-v1.png",
+      "prompt": "Use case: precise-object-edit. Edit the supplied square Finfolk octopus-print lowercase f profile logo. The user wants the border REMOVED. Remove the continuous outline/keyline/stroke that traces the complete exterior silhouette and inner open counter of the f. There must be absolutely no uniform outline, no border, no rim, no halo, no glow, and no replacement outline in any colour. Extend the adjacent interior print colours naturally to the exact edge of the f where that outline was, so the hot pink octopus tentacles and cobalt fields meet the background directly. This is a precise border-removal edit only. Preserve the exact f contour, position, size, square canvas, margins, octopus tentacle spirals, acid-yellow oval suckers and ring motifs inside the f, electric cobalt #1641ff and hot pink #ff148d fill colours. Preserve all yellow octopus markings INSIDE the letter; only remove the continuous silhouette border. Do not remove yellow sucker ovals or rings. Do not add objects, text, another letter, shadows, gradients or texture. One finished square avatar, same composition as the reference. In this navy-background version, REMOVE the bright acid-yellow outline around the f completely. Keep the existing midnight-navy background (#172440), including the negative space in the open counter. The unoutlined patterned f must sit directly on navy."
+    }
+  ]
+}

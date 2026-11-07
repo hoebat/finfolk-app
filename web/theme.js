@@ -1,13 +1,17 @@
+import {applyAnimalAppearance} from './animal-theme.js';
+import {VISUAL_PALETTES,visualPalette,applyPaletteVariables} from './visual-language.js';
+import {installHabitatScenes} from './habitat.js';
 const storageKey = 'finfolk-theme';
-const themes = [
-  ['coastal', 'Coastal', 'Fresh aqua & cream', '#009db2', '#fffdf0'],
-  ['sand', 'Sand', 'Warm shores & olive', '#657b50', '#faf2df'],
-  ['night', 'Night swim', 'Deep blue & sea glass', '#72d9d0', '#132e3a'],
-];
+const savedThemeChanged=event=>{if(event.key===storageKey||event.key===null){applySavedTheme();applyAnimalAppearance();}};
+const themes=VISUAL_PALETTES.map(p=>[p.id,p.name,p.description,p.palette.accent,p.palette.paper]);
 export function applySavedTheme() {
+  globalThis.window?.addEventListener('storage',savedThemeChanged);
   let saved;
   try { saved = localStorage.getItem(storageKey); } catch {}
-  document.documentElement.dataset.theme = themes.some(([id]) => id === saved) ? saved : 'coastal';
+  document.documentElement.dataset.theme = visualPalette(saved).id;
+  if(saved)applyPaletteVariables(visualPalette(saved));
+  installHabitatScenes();
+  document.dispatchEvent(new document.defaultView.Event('finfolk:appearance'));
 }
 export function themeSettings() {
   const section = document.createElement('section');
@@ -15,7 +19,7 @@ export function themeSettings() {
   const heading = document.createElement('h2');
   heading.textContent = 'Appearance';
   const description = document.createElement('p');
-  description.textContent = 'Choose your colours. Your theme is saved on this device.';
+  description.textContent = 'Choose a colour theme. Your animal pattern is set separately.';
   const choices = document.createElement('fieldset');
   choices.className = 'theme-choices';
   const legend = document.createElement('legend');
@@ -43,6 +47,8 @@ export function themeSettings() {
     input.onchange = () => {
       if (!input.checked) return;
       document.documentElement.dataset.theme = id;
+      applyPaletteVariables(visualPalette(id));
+      document.dispatchEvent(new document.defaultView.Event('finfolk:appearance'));
       try {
         localStorage.setItem(storageKey, id);
         status.textContent = `${name} theme saved.`;

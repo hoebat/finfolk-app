@@ -1,0 +1,32 @@
+{
+  "generator": "ChatGPT native image generation (built-in image_gen)",
+  "referenceCollection": "Original Finfolk muted animal prints",
+  "visualReference": "https://budgysmuggler.com.au/pages/shop-by-print",
+  "prompt": "Edit target: the supplied Finfolk animal textile tile. Change ONLY its colour palette to a playful, high-energy swimwear print. Preserve the exact animal species, intricate engraved lines, quirky silhouettes, positions, scale and overall composition. Original Finfolk artwork; no brand marks or text. Replace muted navy, ivory and rose with a confident electric palette of saturated cobalt blue #2248FF, hot pink #FF4F9B, acid chartreuse #DCFF38 and pale lemon #FFF6AE. Strong cobalt ink contours, hot-pink creatures against chartreuse/lemon negative spaces, small cobalt markings. Keep shapes crisp and clearly legible at thumbnail size, with graphic flat colour and the existing fine ink texture. A cheeky, exuberant summer-print version of the same couture collection. No gradients, no new objects, no logos, no lettering, no frames. Output the single finished square print tile, full bleed.",
+  "assets": [
+    {
+      "id": "lionfish",
+      "file": "../web/animal-lionfish-hyper-v1.webp"
+    },
+    {
+      "id": "conesnail",
+      "file": "../web/animal-conesnail-hyper-v1.webp"
+    },
+    {
+      "id": "octopus",
+      "file": "../web/animal-octopus-hyper-v1.webp"
+    },
+    {
+      "id": "bluebottle",
+      "file": "../web/animal-bluebottle-hyper-v1.webp"
+    },
+    {
+      "id": "boxjelly",
+      "file": "../web/animal-boxjelly-hyper-v1.webp"
+    },
+    {
+      "id": "stonefish",
+      "file": "../web/animal-stonefish-hyper-v1.webp"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {applySavedAnimal,animalSettings} from './animal-theme.js';
 import {applySavedTheme, themeSettings} from './theme.js';
 
 export const MAP_CONTROLS = {depth:'depth-layer', contours:'contour-layer', context:'context-layer',
@@ -5,7 +6,8 @@ export const MAP_CONTROLS = {depth:'depth-layer', contours:'contour-layer', cont
 
 export function installSettings({preferences, shell}) {
   applySavedTheme();
-  document.getElementById('settings-appearance').append(themeSettings());
+  applySavedAnimal();
+  document.getElementById('settings-appearance').append(themeSettings(),animalSettings());
   const storageLink = document.createElement('button');
   storageLink.type='button'; storageLink.className='secondary'; storageLink.textContent='Open storage settings';
   storageLink.onclick=()=>shell.navigate('settings',{focus:true});

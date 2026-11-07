@@ -77,7 +77,7 @@ export async function renderTripManager({ host, api, beaches, refresh }) {
     el("h2", "Trip reports"),
     el(
       "p",
-      "Keep every dive private. Share your days, story and Instagram posts.",
+      "Share a trip summary and Instagram links. Individual dives remain private.",
     ),
     status,
   );
@@ -137,7 +137,7 @@ export async function renderTripManager({ host, api, beaches, refresh }) {
       ),
       start = field(form, "First day", "date", d.start),
       end = field(form, "Last day", "date", d.end),
-      story = field(form, "Your story (optional)", "textarea", d.story),
+      story = field(form, "Trip notes (optional)", "textarea", d.story),
       links = field(
         form,
         "Instagram post links (one per line)",
@@ -494,7 +494,7 @@ export async function renderTripManager({ host, api, beaches, refresh }) {
           );
           const consent = field(
               publication,
-              "Publish this story, public name, date range and daily/trip summaries. Keep individual dives and original CSV columns private.",
+              "Publish these trip notes, public name, date range and daily/trip summaries. Individual dives and original CSV columns remain private.",
               "checkbox",
             ),
             own = field(

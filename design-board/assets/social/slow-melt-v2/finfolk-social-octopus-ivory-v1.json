@@ -1,0 +1,15 @@
+{
+  "identity": "slow-melt-f",
+  "motif": "blue-ringed octopus",
+  "method": "Built-in image_gen image edit with two local references",
+  "referenceImages": [
+    "finfolk-social-ivory-v2.png",
+    "../../../../web/animal-octopus-v1.webp"
+  ],
+  "brief": "Keep the existing single-f outer silhouette and warm ivory background; compose the navy, ivory and dusty-rose octopus motif inside the lettering, with generous flowing tentacles, curled ends, oval suckers and ring accents. Keep the pattern inside the f and retain a dark outer edge for avatar legibility.",
+  "file": "finfolk-social-octopus-ivory-v1.png",
+  "width": 1254,
+  "height": 1254,
+  "format": "png",
+  "generatedSource": "/Users/chris/.codex/generated_images/01a196c1-ba2f-72c2-a62c-83fd35d91436/exec-c2884345-263d-44df-a577-b3488fd06a5e.png"
+}

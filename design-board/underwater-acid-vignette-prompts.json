@@ -1,0 +1,33 @@
+{
+  "tool": "Built-in image_gen",
+  "purpose": "Acid recolour of the approved Ascent scene and two new illustrated underwater vignettes",
+  "palette": {
+    "yellow": "#edff35",
+    "cobalt": "#1641ff",
+    "pink": "#ff148d"
+  },
+  "references": [
+    "assets/scenes/finfolk-underwater-ascent-stylised-v2.png",
+    "../web/animal-octopus-hyper-v1.webp"
+  ],
+  "jobs": [
+    {
+      "id": "ascent-acid",
+      "name": "Ascent · acid",
+      "asset": "assets/scenes/finfolk-underwater-ascent-acid-v1.png",
+      "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET, the approved FinFolk underwater ascent illustration. Image 2 is a PALETTE REFERENCE ONLY. Recolour image 1 into the acid palette of image 2. Change only the ink colours: preserve the same full-frame composition, detailed rock arch at left, kelp, fish, single ascending freediver, its anatomy/pose/scale, all the engraved lines, the reef and the shafts of light. Keep the immersive coherent underwater scene exactly as drawn. Map the original deep navy to electric cobalt, original warm ivory to acid yellow, original dusty rose to hot pink. Keep the diver an uninterrupted cobalt silhouette with the same fine edge details. No new objects, no rearrangement, no style simplification. Do not copy the repeating octopuses from image 2. Use only ACID YELLOW #edff35, ELECTRIC COBALT #1641ff and HOT PINK #ff148d as three vivid screenprinting inks, with minor overlaps/halftones of those same inks. Luminous acid-yellow open water and highlights, saturated cobalt shadows and main diver silhouette, hot-pink reef/plant accents. Full vivid acid palette from reference 2, no beige, cream, dusty rose or dull navy. Fine engraved linework, bold flat areas and delicate ink texture, excellent contrast, polished illustration. No text, logos, watermark or frame. Landscape 4:3, fully opaque full-bleed image."
+    },
+    {
+      "id": "reef-glide-acid",
+      "name": "Reef glide · acid",
+      "asset": "assets/scenes/finfolk-underwater-reef-glide-acid-v1.png",
+      "prompt": "Use case: illustration-story. Create a NEW complete underwater vignette in the exact sophisticated engraved 1960s/70s woodcut/screenprint style and drawing quality of image 1. Image 1 is STYLE REFERENCE ONLY; create a distinct scene with a different camera viewpoint and diver pose. Image 2 is PALETTE REFERENCE ONLY.\nScene: an immersive camera view from inside a rugged coastal reef passage looking outward into sunlit open water. Continuous craggy rock overhangs arch across the upper left, a rolling rocky seabed with coralline growth and ribbon kelp recedes into the distance below. One adult freediver in plain wetsuit and low-volume mask glides horizontally from left toward the opening at right, arms relaxed along the torso, exactly two long freediving fins trailing behind. The diver occupies about one quarter of frame width in the middle distance, with natural anatomy, correct body perspective, no scuba tanks or bubbles. A small sea turtle swims farther ahead and lower in the water, naturally scaled; small fish inhabit the reef at varied depths. Strong foreground rock and kelp, clear open water around the diver, shafts of light across the passage, beautiful underwater spatial depth and physical continuity. Every plant grows from the reef, every element belongs in the environment. Draw the environment with intricate fine engraving and sculptural contours, light caustics and current lines organically follow the rock and water. The camera is within a believable underwater world, not looking at a flat arrangement of symbols. No collage, isolated cutouts, graphic-design layout, tiled pattern or repeated animals. Use only ACID YELLOW #edff35, ELECTRIC COBALT #1641ff and HOT PINK #ff148d as three vivid screenprinting inks, with minor overlaps/halftones of those same inks. Luminous acid-yellow open water and highlights, saturated cobalt shadows and main diver silhouette, hot-pink reef/plant accents. Full vivid acid palette from reference 2, no beige, cream, dusty rose or dull navy. Fine engraved linework, bold flat areas and delicate ink texture, excellent contrast, polished illustration. No text, logos, watermark or frame. Landscape 4:3, fully opaque full-bleed image."
+    },
+    {
+      "id": "jelly-drift-acid",
+      "name": "Jelly drift · acid",
+      "asset": "assets/scenes/finfolk-underwater-jelly-drift-acid-v1.png",
+      "prompt": "Use case: illustration-story. Create a NEW complete underwater vignette in the exact sophisticated engraved 1960s/70s woodcut/screenprint style and drawing quality of image 1. Image 1 is STYLE REFERENCE ONLY; create a distinct open-water scene. Image 2 is PALETTE REFERENCE ONLY.\nScene: a quiet underwater seagrass lagoon opening into deep water, viewed from slightly below the surface. Graceful rounded moon jellyfish drift with a gentle current at convincingly different depths: two closer translucent domed bells with delicate short frilled oral arms, several smaller distant jellies diminishing in scale. Anatomically plausible moon jellies, not monsters or long stinging tendrils. One adult freediver in a simple dark wetsuit and low-volume mask hovers calmly on the left at middle distance, angled slightly upward with arms relaxed along the body and two long fins below, observing from a respectful natural distance. Diver about one third of frame height, no scuba tanks or bubbles. A continuous low craggy reef and swaying seagrass meadow frame the lower edge and recede into the distance, distant fish, a visible rippled water surface above. Luminous shafts of sunlight, clear open water, graceful natural movement and atmospheric perspective. Use delicate engraved lines to express the jellies' translucent bells, surrounding currents, seagrass and light; stronger cobalt foreground and quieter distant forms. Beautiful original complete underwater illustration with the same level of detail as image 1, with greater open water and a calmer visual rhythm. All subjects share the same environment, perspective and lighting. No collage, isolated icons, graphic-design layout, tiled pattern or repeated wallpaper. Use only ACID YELLOW #edff35, ELECTRIC COBALT #1641ff and HOT PINK #ff148d as three vivid screenprinting inks, with minor overlaps/halftones of those same inks. Luminous acid-yellow open water and highlights, saturated cobalt shadows and main diver silhouette, hot-pink reef/plant accents. Full vivid acid palette from reference 2, no beige, cream, dusty rose or dull navy. Fine engraved linework, bold flat areas and delicate ink texture, excellent contrast, polished illustration. No text, logos, watermark or frame. Landscape 4:3, fully opaque full-bleed image."
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "id": "ningaloo-acid",
+  "type": "scenes",
+  "name": "Ningaloo Reef · WA",
+  "width": 1448,
+  "height": 1086,
+  "source": "design-board/assets/scenes/finfolk-underwater-ningaloo-acid-v1.png",
+  "sourceSHA256": "0270fe6788dcb2256b62d066044490881abd0d379fecaf18081604dcd473b0b7",
+  "algorithm": "srgb-three-ink-projection-v1",
+  "sourceInks": {
+    "paper": "#edff35",
+    "ink": "#1641ff",
+    "accent": "#ff148d"
+  },
+  "masks": {
+    "paper": "paper-mask.png",
+    "ink": "ink-mask.png",
+    "accent": "accent-mask.png"
+  },
+  "maskEncoding": "8-bit grayscale coverage; the three masks sum to 255 at every pixel. Multiply each mask by its palette RGB ink and add the results.",
+  "palettes": {
+    "acid-light": {
+      "paper": "#edff35",
+      "ink": "#1641ff",
+      "accent": "#ff148d",
+      "preview": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-light.webp",
+      "png": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-light.png"
+    },
+    "acid-dark": {
+      "paper": "#1641ff",
+      "ink": "#edff35",
+      "accent": "#ff148d",
+      "preview": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-dark.webp",
+      "png": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-dark.png"
+    },
+    "muted-light": {
+      "paper": "#f2e8d6",
+      "ink": "#172440",
+      "accent": "#bc8190",
+      "preview": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-light.webp",
+      "png": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-light.png"
+    },
+    "muted-dark": {
+      "paper": "#172440",
+      "ink": "#f2e8d6",
+      "accent": "#edb2c7",
+      "preview": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-dark.webp",
+      "png": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-dark.png"
+    }
+  }
+}

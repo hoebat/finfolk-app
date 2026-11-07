@@ -3,6 +3,8 @@ import {readFile} from 'node:fs/promises';
 import {Window} from 'happy-dom';
 import {beachThumbnail, thumbnailGeometry} from '../web/beach-thumbnail.js';
 import {STATE_OUTLINES} from '../web/state-outlines.js';
+import {STATE_MOTIFS,stateMotif} from '../web/state-motifs.js';
+import {decorateStateSection,refreshAnimalDecorations} from '../web/animal-decoration.js';
 import {installDiscovery} from '../web/discovery.js';
 
 const bondi = {id: 'bondi', name: 'Bondi Beach', state_id: 'NSW', state: 'New South Wales', point: [151.278267, -33.891157]};
@@ -55,6 +57,21 @@ try {
   const missing = beachThumbnail({...bondi, point: null});
   assert.equal(missing.querySelector('circle'), null);
   assert.ok(missing.getAttribute('aria-label').includes('Location unavailable'));
+  const root=document.documentElement;root.style.setProperty('--finfolk-collection-animal','octopus');root.style.setProperty('--finfolk-print-placement','states');
+  const patterned=beachThumbnail(bondi);document.body.append(patterned);
+  assert.ok(patterned.querySelector('pattern image').getAttribute('href').endsWith('animal-bluebottle-muted-light-v1.webp'));
+  assert.equal(patterned.querySelector('path').getAttribute('d'),normal.path,'Artwork preserves the geographic outline');
+  assert.equal(Number(patterned.querySelector('circle').getAttribute('cx')),normal.dot[0],'Artwork preserves the projected location');
+  root.dataset.animal='lionfish';refreshAnimalDecorations();assert.ok(patterned.querySelector('pattern image').getAttribute('href').endsWith('animal-bluebottle-muted-light-v1.webp'),'The state print is independent of the personal animal');
+  for(const motif of STATE_MOTIFS){const sample=beachThumbnail({...bondi,state_id:motif.state,point:null});assert.equal(sample.dataset.stateMotif,motif.animal);assert.equal(sample.querySelector('circle'),null);}
+  assert.equal(stateMotif('ACT'),null);assert.equal(stateMotif('EXT'),null);assert.equal(stateMotif('JBT').state,'NSW');assert.equal(new Set(STATE_MOTIFS.map(m=>m.animal)).size,7);
+  const neutral=beachThumbnail({...bondi,state_id:'ACT',point:null});assert.equal(neutral.querySelector('pattern'),null);
+  root.dataset.theme='cobalt';refreshAnimalDecorations();assert.ok(patterned.querySelector('pattern image').getAttribute('href').endsWith('animal-bluebottle-acid-dark-v1.webp'));
+  root.dataset.theme='navy-light';refreshAnimalDecorations();assert.ok(patterned.querySelector('pattern image').getAttribute('href').endsWith('animal-bluebottle-muted-light-v1.webp'));
+  root.style.setProperty('--finfolk-print-placement','sections');const section=document.createElement('details');section.className='state-card';section.dataset.stateId='VIC';document.body.append(section);decorateStateSection(section);assert.equal(section.dataset.stateMotif,'octopus');assert.ok(section.style.getPropertyValue('--state-motif-print').includes('animal-octopus-muted-light-v1.webp'));root.dataset.animal='none';refreshAnimalDecorations();assert.equal(section.style.getPropertyValue('--state-motif-print'),'');section.remove();root.style.setProperty('--finfolk-print-placement','states');delete root.dataset.theme;
+  root.style.setProperty('--finfolk-collection-animal','none');delete root.dataset.animal;refreshAnimalDecorations();assert.equal(patterned.querySelector('pattern'),null,'The Atelier quiet choice removes regional prints too');root.style.setProperty('--finfolk-collection-animal','octopus');
+  root.dataset.animal='none';refreshAnimalDecorations();assert.equal(patterned.querySelector('pattern'),null);assert.equal(patterned.dataset.animalPrint,undefined);
+  patterned.remove();delete root.dataset.animal;root.style.removeProperty('--finfolk-collection-animal');root.style.removeProperty('--finfolk-print-placement');
 
   const beach = {...bondi, area_id: 'nsw', area_name: 'Sydney', has_access_facts: true, facts: []};
   const catalog = {beaches: [beach], states: [{id: 'NSW', name: 'New South Wales'}],

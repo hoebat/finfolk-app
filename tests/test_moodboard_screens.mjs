@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {Window} from 'happy-dom';
+import {makePreviewClient,previewResponse,SAMPLE_USER_ID} from '../design-board/preview-data.mjs';
+import {SCREENS,screenURL,TRIP_ID} from '../design-board/screens.mjs';
+import {installCommunity} from '../web/community.js';
+import {installLogbook} from '../web/logbook.js';
+import {installTripPage} from '../web/trip-report.js';
+import {prepareScreen} from '../design-board/preview-screens.js';
+const window=new Window({url:'http://127.0.0.1:8770/preview/?view=account&tab=profile&atelier-screen=profile',settings:{disableCSSFileLoading:true,disableJavaScriptFileLoading:true}});
+window.document.write(await readFile(new URL('../web/index.html',import.meta.url),'utf8'));
+for(const key of ['window','document','location','history','localStorage','navigator','MutationObserver','Event'])Object.defineProperty(globalThis,key,{value:key==='window'?window:window[key],configurable:true});
+localStorage.setItem('finfolk:member-tour:3:'+SAMPLE_USER_ID,'1');
+window.HTMLDialogElement.prototype.showModal=function(){this.open=true;};
+window.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new window.Event('close'));};
+const api=makePreviewClient(),config={enabled:true,authUrl:'http://127.0.0.1:8770/preview-api/auth',apiUrl:'http://127.0.0.1:8770/preview-api/',instagram:{enabled:false}};
+const beaches=[{id:'bondi',name:'Bondi Beach',area_name:'Eastern Beaches',point:[151.27,-33.89]},{id:'greenfield',name:'Greenfield Beach',area_name:'Jervis Bay',point:[150.87,-35.07]}];
+const listeners=[];let route={view:'account'};
+const shell={get route(){return route;},subscribe(fn){listeners.push(fn);},navigate(view,{params={}}={}){route={view};const url=new URL(location.href);url.searchParams.set('view',view);for(const [key,value] of Object.entries(params))value===null?url.searchParams.delete(key):url.searchParams.set(key,value);history.replaceState(null,'',url);for(const fn of listeners)fn(route);}};
+const fetchOriginal=globalThis.fetch;globalThis.fetch=async value=>{const url=new URL(value);assert.equal(url.origin,location.origin,'Preview requests remain local');const body=previewResponse(url.pathname);assert.ok(body,'Only known local fixtures are fetched');return Response.json(body);};
+const wait=async predicate=>{for(let n=0;n<100;n++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,5));}throw Error('Screen did not render: '+document.body.textContent.slice(-1800));};
+const click=(selector,text)=>{const button=[...document.querySelectorAll(selector)].find(node=>node.textContent===text);assert.ok(button,text);button.click();};
+try{
+ assert.equal(new Set(SCREENS.map(s=>s.id)).size,SCREENS.length);
+ for(const screen of SCREENS)assert.ok(screenURL(screen.id).includes('atelier-screen='+screen.id));
+ installCommunity({shell,getBeaches:()=>beaches,loadConfig:async()=>config,loadClient:async()=>({createLogbookClient:async()=>api})});
+ await wait(()=>document.querySelector('.trip-manager')||document.querySelector('#account-posts h3'));
+ assert.equal(document.getElementById('account-profile').hidden,false);
+ assert.ok(document.querySelector('[name=displayName]').value==='Alex');
+ assert.equal(document.querySelectorAll('#social-buddies .buddy-card').length,2);
+ document.getElementById('account-tab-checkin').click();assert.equal(document.getElementById('account-checkin').hidden,false);
+ assert.ok(document.querySelector('.checkin-card'));assert.ok(document.querySelector('#social-checkins').textContent.includes('Bondi Beach'));
+ document.getElementById('account-tab-posts').click();assert.ok(document.querySelector('.post-manager'));assert.ok(document.getElementById('account-posts').textContent.includes('Three days at the water’s edge'));
+ document.getElementById('account-tab-instagram').click();assert.ok(document.querySelector('#instagram-claim input'));
+ assert.equal(document.querySelector('.account-status'),null,'Member screens finish without a fixture error');
+ installLogbook({shell,getBeaches:()=>beaches,loadJSON:async()=>config,loadClient:async()=>({createLogbookClient:async()=>api})});
+ shell.navigate('logbook',{params:{session:null,profile:null}});await wait(()=>document.querySelectorAll('.session-card').length===3);
+ shell.navigate('logbook',{params:{session:'atelier-session-1'}});await wait(()=>document.querySelector('.session-detail'));assert.ok(document.querySelector('.session-detail').textContent.includes('45 min'));
+ shell.navigate('logbook',{params:{session:null}});await wait(()=>document.querySelectorAll('.session-card').length===3);
+ history.replaceState(null,'',screenURL('new-session'));prepareScreen();await wait(()=>document.querySelector('#logbook-page form'));assert.match(document.querySelector('#logbook-page form').textContent,/private/i);
+ installTripPage({shell,loadJSON:async()=>config});shell.navigate('trip',{params:{trip:TRIP_ID}});await wait(()=>document.querySelector('.trip-report'));assert.equal(document.querySelectorAll('.trip-bar').length,3);assert.equal(document.querySelectorAll('.trip-highlights>div').length,8);
+ // Signing out reveals the real guest form; no authentication is attempted.
+ await api.signOut();shell.navigate('account');await wait(()=>document.querySelector('.signin-form'));click('.signin-card button','Create an account');assert.equal(document.querySelector('[name=name]').parentElement.hidden,false);
+ assert.throws(()=>api.email('not-sent@example.test','not-sent'),/Local design preview/);
+ console.log('Screen previews passed: production member, guest, logbook, session editor and trip UIs; local data and no external auth.');
+}finally{globalThis.fetch=fetchOriginal;await window.happyDOM.close();}

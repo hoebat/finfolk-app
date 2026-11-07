@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "id": "irukandji",
+  "type": "motifs",
+  "name": "Irukandji",
+  "width": 1254,
+  "height": 1254,
+  "source": "web/animal-irukandji-hyper-v1.webp",
+  "sourceSHA256": "d584f90bd3b45d627466c4f88db52fb1a91b06e48b666f999c5ad7633519866d",
+  "algorithm": "srgb-three-ink-projection-v1",
+  "sourceInks": {
+    "paper": "#edff35",
+    "ink": "#1641ff",
+    "accent": "#ff148d"
+  },
+  "masks": {
+    "paper": "paper-mask.png",
+    "ink": "ink-mask.png",
+    "accent": "accent-mask.png"
+  },
+  "maskEncoding": "8-bit grayscale coverage; the three masks sum to 255 at every pixel. Multiply each mask by its palette RGB ink and add the results.",
+  "palettes": {
+    "acid-light": {
+      "paper": "#edff35",
+      "ink": "#1641ff",
+      "accent": "#ff148d",
+      "preview": "web/animal-irukandji-acid-light-v1.webp"
+    },
+    "acid-dark": {
+      "paper": "#1641ff",
+      "ink": "#edff35",
+      "accent": "#ff148d",
+      "preview": "web/animal-irukandji-acid-dark-v1.webp"
+    },
+    "muted-light": {
+      "paper": "#f2e8d6",
+      "ink": "#172440",
+      "accent": "#bc8190",
+      "preview": "web/animal-irukandji-muted-light-v1.webp"
+    },
+    "muted-dark": {
+      "paper": "#172440",
+      "ink": "#f2e8d6",
+      "accent": "#edb2c7",
+      "preview": "web/animal-irukandji-muted-dark-v1.webp"
+    }
+  }
+}

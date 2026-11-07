@@ -43,8 +43,8 @@ try {
   preferences=createPreferences(localStorage);
   const shell={navigate(view){assert.equal(view,'settings');}};
   const settings=installSettings({preferences,shell});
-  assert.equal(document.documentElement.dataset.theme,'night');
-  assert.equal(document.querySelectorAll('[name=theme]').length,3);
+  assert.equal(document.documentElement.dataset.theme,'navy');
+  assert.equal(document.querySelectorAll('[name=theme]').length,4);
   assert.equal($('map-tools-panel').querySelectorAll('input,select').length,1,'Only the published-map selector remains in Map tools');
   for(const id of ['depth-layer','contour-layer','context-layer','pin-layer','coverage-layer','basemap-layer','measurement-layer','interval']) {
     assert.ok($(id).closest('#settings-page'),id+' belongs to global Settings');
@@ -57,9 +57,9 @@ try {
   $('interval').value='2';$('interval').dispatchEvent(new window.Event('change'));
   $('basemap-layer').click();assert.equal(preferences.get().basemap,false);
   assert.equal(createPreferences(localStorage).get().interval,2);
-  const sand=document.querySelector('[name=theme][value=sand]');sand.checked=true;sand.dispatchEvent(new window.Event('change'));
-  assert.equal(localStorage.getItem('finfolk-theme'),'sand');applySavedTheme();assert.equal(document.documentElement.dataset.theme,'sand');
-  localStorage.setItem('finfolk-theme','unknown');applySavedTheme();assert.equal(document.documentElement.dataset.theme,'coastal');
+  const sand=document.querySelector('[name=theme][value=cobalt]');sand.checked=true;sand.dispatchEvent(new window.Event('change'));
+  assert.equal(localStorage.getItem('finfolk-theme'),'cobalt');applySavedTheme();assert.equal(document.documentElement.dataset.theme,'cobalt');
+  localStorage.setItem('finfolk-theme','unknown');applySavedTheme();assert.equal(document.documentElement.dataset.theme,'yellow');
   const values=new Map(),saved={id:'bondi',name:'Bondi',keys:['pinned'],complete:true,version:'one'};
   values.set('saved',[saved]);
   let storeChange,downloadChange,removed=[],cancelled=false;

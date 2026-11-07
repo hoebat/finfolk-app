@@ -109,7 +109,7 @@ export function installCommunity({
     const generation = ++epoch;
     root.replaceChildren(
       el('h1', 'Your FinFolk'),
-      el('p', 'Your spots. Your people. Your kind of water.', 'account-intro'),
+      el('p', 'Manage your logs, check-ins and profile.', 'account-intro'),
     );
     root.append(
       button('How FinFolk works', () => client?.user ? showMemberTour({userId: client.user.uid, shell, force: true}) : showWelcome()),
@@ -126,10 +126,10 @@ export function installCommunity({
         const mark = el('img', undefined, 'signin-mark');
         mark.src = new URL('./finfolk-icon.svg', import.meta.url).href;
         mark.alt = '';
-        box.append(mark, el('span', 'YOUR OCEAN COMMUNITY', 'signin-eyebrow'));
+        box.append(mark, el('span', 'FREEDIVING & TRAINING', 'signin-eyebrow'));
         box.append(
-          el('h2', 'Find your people in the water.'),
-          el('p', 'Save your sessions, discover your regular spots and connect with other divers.', 'signin-description'),
+          el('h2', 'Sign in to FinFolk'),
+          el('p', 'Save your sessions, find freediving locations and connect with other freedivers.', 'signin-description'),
         );
         const name = field(form, 'Display name', 'name'),
           email = field(form, 'Email', 'email', '', 'email'),
@@ -254,7 +254,7 @@ export function installCommunity({
       form.id = 'social-profile';
       const menu = el('section', undefined, 'social-menu');
       menu.setAttribute('aria-label', 'Social menu');
-      menu.append(el('h2', `Welcome${p.displayName ? ', ' + p.displayName : ''}`), el('p', 'Check in, find your people and keep your diving close.'));
+      menu.append(el('h2', `Welcome${p.displayName ? ', ' + p.displayName : ''}`), el('p', 'Manage your check-ins, posts and profile.'));
       const links = el('div', undefined, 'social-menu-actions');
       const jump = id => { selectTab(id === 'social-checkins' ? 'checkin' : id === 'member-actions' ? 'instagram' : 'profile'); document.getElementById(id)?.scrollIntoView?.({behavior: 'smooth', block: 'start'}); };
       links.append(
@@ -279,7 +279,7 @@ export function installCommunity({
       root.append(menu);
       form.append(el('h2', 'Profile & social links'));
       const name = field(form, 'Display name', 'displayName', p.displayName),
-        bio = field(form, 'A little about you', 'bio', p.bio, 'textarea'),
+        bio = field(form, 'About you', 'bio', p.bio, 'textarea'),
         tiktok = field(form, 'TikTok profile link', 'tiktok', p.tiktok, 'url');
       form.append(el('p','Manage your Instagram link in the Instagram tab.'),button('Manage Instagram',()=>selectTab('instagram')));
       name.required = true;
@@ -353,11 +353,7 @@ export function installCommunity({
         form.append(group);
         return () => inputs.filter(([, n]) => n.checked).map(([v]) => v);
       }
-      const activities = checks('Water activities', p.activities, [
-          'freediving',
-          'ocean-swimming',
-          'spearfishing',
-        ]),
+      const activities = () => ['freediving'],
         availability = checks('Usual times (optional)', p.availability, [
           'weekday mornings',
           'weekday afternoons',
@@ -510,8 +506,8 @@ export function installCommunity({
       }
       if (generation !== epoch) return;
       const checkin = el('section', undefined, 'account-card checkin-card');
-      checkin.append(el('span', 'YOUR COASTAL ROUTINE', 'eyebrow'), el('h2', 'Where did you get in today?'),
-        el('p', 'Choose a beach to record today’s visit. Every day in the water counts.' ));
+      checkin.append(el('span', 'CHECK IN', 'eyebrow'), el('h2', 'Check in at a location'),
+        el('p', 'Choose a beach to record today’s visit.' ));
       const checkinForm = el('form'),
         beachSearch = field(checkinForm, 'Find your beach', 'checkin-search', '', 'search'),
         beachSelect = el('select');
@@ -554,14 +550,14 @@ export function installCommunity({
         try {
           await a.call('checkin', { beachId: beach.id });
           await account();
-          const confirmation = el('p', `You’re checked in at ${beach.name}. See you in the water!`, 'checkin-success');
+          const confirmation = el('p', `Check-in saved for ${beach.name}.`, 'checkin-success');
           confirmation.setAttribute('role', 'status');
           if (generation + 1 === epoch) document.querySelector('.checkin-card')?.prepend(confirmation);
         } catch (error) {
           checkinStatus.textContent = error.message;
         } finally { checkinSubmit.disabled = false; }
       };
-      if (!checkins.length) visits.append(el('p', 'Your first visit starts here. Pick a beach above to check in.', 'account-intro'));
+      if (!checkins.length) visits.append(el('p', 'No check-ins yet. Choose a beach above to record a visit.', 'account-intro'));
       for (const row of checkins) {
         const line = el('p', `${row.name} · ${row.day} `);
         line.append(
@@ -689,10 +685,10 @@ export function installCommunity({
     const box = el('section', undefined, 'regulars-panel');
     box.id = 'regulars-panel';
     box.append(
-      el('h3', 'The folk here'),
+      el('h3', 'Regulars & divers'),
       el(
         'p',
-        'Recent faces, shared spots. Regulars are based on the last 30 days.',
+        'Find Regulars and other divers at this location. Regulars have checked in on 10 separate days within the last 30 days.',
       ),
     );
     host.append(box);
@@ -721,7 +717,7 @@ export function installCommunity({
             await beachPanel(beach);
             const status = el(
               'p',
-              `${result.count} of 3 regular visit days this month · self-reported`,
+              `${result.count} of 10 regular visit days this month · self-reported`,
             );
             document.getElementById('regulars-panel')?.prepend(status);
           },
@@ -740,7 +736,7 @@ export function installCommunity({
         el('h4', 'Suggested buddies'),
         suggestedCards,
       );
-      regularCards.append(el('small', 'Three visit days in the last 30 days.'));
+      regularCards.append(el('small', '10 visit days in the last 30 days.'));
       box.append(cards);
       let cursor = null;
       async function page() {
@@ -748,7 +744,7 @@ export function installCommunity({
         if (generation !== beachEpoch) return;
         cursor = data.cursor;
         nextRefresh = data.refreshAt || Infinity;
-        status.textContent = `${data.ownVisits} of 3 regular visit days in the last 30 days`;
+        status.textContent = `${data.ownVisits} of 10 regular visit days in the last 30 days`;
         for (const p of data.people) {
           const card = el('article', undefined, 'buddy-card');
           card.append(

@@ -1,0 +1,23 @@
+{
+  "tool": "ChatGPT native image generation",
+  "purpose": "Locked Slow melt extraction and original freediver stencil masks",
+  "jobs": [
+    {
+      "id": "slow-melt-f-master",
+      "prompt": "Use case: background-extraction. Asset type: exact single-letter brand master on transparent background, 1024x1024.\nEdit target: supplied Slow melt identity board. Extract ONLY the clean thinner RIGHT-HAND lowercase f from the small \"ff\" monogram in the MIDDLE of the board, below the full word finfolk. It is the unpatterned f, not the left f with sucker dots. Faithfully preserve this exact f's external contour, orientation, proportions, top hooked blob, narrow S-curving waist, rounded right crossbar and gently flared base. Do not invent another font or add any cuts. Render the extracted letter alone in a uniform solid midnight navy #172440, centred on transparent canvas with 8% margin, preserving its slenderness. It must be exactly ONE lowercase f. No wordmark, dots, patterns, frames, extra objects, shadows, gradients or background. Clean antialiased silhouette.",
+      "reference": "/Users/chris/Development/greenways/finfolk-moodboard/design-board/assets/logos/club-slow-melt-v1.png"
+    },
+    {
+      "id": "freediver-descending",
+      "prompt": "Use case: illustration-story. Asset type: transparent stencil silhouette for a sophisticated original freediving title-sequence design. One anonymous athletic freediver in a graceful streamlined descent, body diagonal from upper left to lower right, both arms extended ahead of the head with hands together, realistic human proportions, two VERY LONG freediving bi-fins on the feet extending behind. Clear head, torso, arms, legs and two separated fin blades. Simple mask on face, no scuba tank. Completely flat uniform midnight navy silhouette #172440, no internal shading or details, no outline strokes. Entire figure centred inside square 1024x1024 canvas with 8% margin, no clipping. Actual transparent background. Elegant cinematic 1960s/70s screen-print contour, high-fashion poster quality, accurate freediver anatomy. No weapons, lettering, bubbles, sea creatures, scenery, logos or other objects. Only the diver silhouette."
+    },
+    {
+      "id": "freediver-ascending",
+      "prompt": "Use case: illustration-story. Asset type: transparent stencil silhouette for a sophisticated original freediving title-sequence design. One anonymous athletic freediver gliding upward, head and torso angled toward upper right, arms relaxed neatly along the sides, slight natural bend at the hips, two VERY LONG freediving bi-fins trail down toward lower left with distinct separate blade tips. Clear human silhouette with realistic proportions and natural swimming posture. Simple mask on face, no scuba equipment. Completely flat uniform midnight navy #172440 shape, no internal shading/details or outline strokes. Entire figure centred on square 1024x1024 transparent canvas with 8% margin. Graceful sophisticated 1960s/70s cinematic screen-print contour and fashion poster sensibility. No weapons, lettering, bubbles, animals, scenery, logos, accessories or other objects. Only the diver silhouette."
+    },
+    {
+      "id": "freediver-gliding",
+      "prompt": "Use case: illustration-story. Asset type: transparent stencil silhouette for a sophisticated original freediving title-sequence design. One anonymous athletic freediver swimming horizontally from left to right, body elongated, both arms stretched forward ahead of the head, a very gentle bend in one knee and two VERY LONG separated freediving bi-fin blades extending left behind the feet. Natural accurate human anatomy, identifiable head, streamlined arms and hands, torso and two legs and fin tips. Simple mask on face, no scuba equipment. Completely flat uniform midnight navy #172440 silhouette, clean edge, no interior marks, no shading or outline strokes. Full figure fits a square 1024x1024 transparent canvas with 8% margin; horizontal composition with plenty of transparent space above/below. Sophisticated cinematic 1960s/70s screen-print character, original high-fashion freediving illustration. No weapons, text, bubbles, animals, background, logos or other objects."
+    }
+  ]
+}

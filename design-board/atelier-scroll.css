@@ -1,0 +1,16 @@
+.canvas::before{right:0;bottom:0}
+/* Desktop has one scrolling content pane; phones use the document. */
+@media(min-width:761px){
+ body{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh;overflow:hidden}
+ .studio-layout{height:auto;min-height:0}
+ .inspector{min-height:0;overscroll-behavior-y:contain}
+ .canvas{min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-gutter:stable;overscroll-behavior-y:contain}
+ .canvas>section:not(#preview-workspace){flex:none;overflow:visible;max-height:none}
+ .preview-workspace{min-height:480px}
+ .canvas-toolbar,.atelier-navigation,.canvas-status{flex:none}
+}
+@media(max-width:760px){
+ body{height:auto;overflow:visible}
+ .studio-layout{height:auto}
+ .canvas{overflow:visible}
+}

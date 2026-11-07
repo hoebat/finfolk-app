@@ -1,0 +1,48 @@
+{
+  "tool": "ChatGPT native image generation",
+  "purpose": "Fictional adult portraits for local profile prototype",
+  "portraits": [
+    {
+      "id": "alex",
+      "prompt": "Use case: photorealistic-natural. Asset type: a premium editorial profile portrait for a fictional sample member in the FinFolk freediving app. A fictional androgynous adult freediver around 32, short dark curly hair, olive skin, open relaxed expression, wearing a plain midnight navy freediving wetsuit. Quiet pale sandstone and blue ocean out of focus. Vertical 4:5 portrait, waist-up to head with head fully in frame and comfortable breathing room above, looking at camera, natural unposed presence. Sophisticated high-fashion outdoor editorial photography, realistic skin texture and varied ordinary adult body types, understated confidence, natural colour, soft directional daylight. The person is the clear focus, elegant shallow depth of field, clean composition for a large profile card, no other people. Wetsuit covers torso and arms; no scuba tank, no spearfishing gear, no badges, no text, no logos, no watermark, no fashion-brand references. Do not resemble a celebrity or known real person. This is a fictional illustrative portrait, not a claim about a real diver.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-a615d7e3-e853-4452-9f97-a1cacb2733df.png",
+      "master": "assets/people/alex-portrait-v1.png",
+      "asset": "assets/people/alex-portrait-v1.webp"
+    },
+    {
+      "id": "maya",
+      "prompt": "Use case: photorealistic-natural. Asset type: a premium editorial profile portrait for a fictional sample member in the FinFolk freediving app. A fictional adult woman freediver around 30, warm brown skin, dark shoulder-length curly hair tied loosely back with a few damp strands, confident direct gaze, wearing a plain midnight navy freediving wetsuit. Pale Australian sandstone coast and blue ocean out of focus. Vertical 4:5 portrait, waist-up to head with head fully in frame and comfortable breathing room above, looking at camera, natural unposed presence. Sophisticated high-fashion outdoor editorial photography, realistic skin texture and varied ordinary adult body types, understated confidence, natural colour, soft directional daylight. The person is the clear focus, elegant shallow depth of field, clean composition for a large profile card, no other people. Wetsuit covers torso and arms; no scuba tank, no spearfishing gear, no badges, no text, no logos, no watermark, no fashion-brand references. Do not resemble a celebrity or known real person. This is a fictional illustrative portrait, not a claim about a real diver.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-5c82aa1b-b171-4b44-b6e1-5e5fd1d165e8.png",
+      "master": "assets/people/maya-portrait-v1.png",
+      "asset": "assets/people/maya-portrait-v1.webp"
+    },
+    {
+      "id": "kai",
+      "prompt": "Use case: photorealistic-natural. Asset type: a premium editorial profile portrait for a fictional sample member in the FinFolk freediving app. A fictional adult East Asian man freediver around 35, short dark hair and natural tan skin, relaxed direct gaze, wearing a plain black freediving wetsuit. Soft light on a rocky bay, muted blue-green sea out of focus. Vertical 4:5 portrait, waist-up to head with head fully in frame and comfortable breathing room above, looking at camera, natural unposed presence. Sophisticated high-fashion outdoor editorial photography, realistic skin texture and varied ordinary adult body types, understated confidence, natural colour, soft directional daylight. The person is the clear focus, elegant shallow depth of field, clean composition for a large profile card, no other people. Wetsuit covers torso and arms; no scuba tank, no spearfishing gear, no badges, no text, no logos, no watermark, no fashion-brand references. Do not resemble a celebrity or known real person. This is a fictional illustrative portrait, not a claim about a real diver.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-6b630c0f-a7ca-41bb-a94c-493f55206e14.png",
+      "master": "assets/people/kai-portrait-v1.png",
+      "asset": "assets/people/kai-portrait-v1.webp"
+    },
+    {
+      "id": "jules",
+      "prompt": "Use case: photorealistic-natural. Asset type: a premium editorial profile portrait for a fictional sample member in the FinFolk freediving app. A fictional adult woman freediver around 45, fair freckled skin, short wavy red hair, assured relaxed expression, wearing a plain dark olive freediving wetsuit. Soft warm light on a coastal rock platform with ocean out of focus. Vertical 4:5 portrait, waist-up to head with head fully in frame and comfortable breathing room above, looking at camera, natural unposed presence. Sophisticated high-fashion outdoor editorial photography, realistic skin texture and varied ordinary adult body types, understated confidence, natural colour, soft directional daylight. The person is the clear focus, elegant shallow depth of field, clean composition for a large profile card, no other people. Wetsuit covers torso and arms; no scuba tank, no spearfishing gear, no badges, no text, no logos, no watermark, no fashion-brand references. Do not resemble a celebrity or known real person. This is a fictional illustrative portrait, not a claim about a real diver.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-d75af091-f5d3-4239-be0f-a566ac860396.png",
+      "master": "assets/people/jules-portrait-v1.png",
+      "asset": "assets/people/jules-portrait-v1.webp"
+    },
+    {
+      "id": "yara",
+      "prompt": "Use case: photorealistic-natural. Asset type: a premium editorial profile portrait for a fictional sample member in the FinFolk freediving app. A fictional adult woman freediver around 28, dark skin, hair in a close natural crop, calm self-assured expression, wearing a plain cobalt blue freediving wetsuit. Neutral rocky Australian shore and deep ocean blue out of focus. Vertical 4:5 portrait, waist-up to head with head fully in frame and comfortable breathing room above, looking at camera, natural unposed presence. Sophisticated high-fashion outdoor editorial photography, realistic skin texture and varied ordinary adult body types, understated confidence, natural colour, soft directional daylight. The person is the clear focus, elegant shallow depth of field, clean composition for a large profile card, no other people. Wetsuit covers torso and arms; no scuba tank, no spearfishing gear, no badges, no text, no logos, no watermark, no fashion-brand references. Do not resemble a celebrity or known real person. This is a fictional illustrative portrait, not a claim about a real diver.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-b03c0fb7-5a6e-4a18-b087-d9d5425c0f96.png",
+      "master": "assets/people/yara-portrait-v1.png",
+      "asset": "assets/people/yara-portrait-v1.webp"
+    },
+    {
+      "id": "rowan",
+      "prompt": "Use case: photorealistic-natural. Asset type: a premium editorial profile portrait for a fictional sample member in the FinFolk freediving app. A fictional adult man freediver around 50, medium brown skin, salt-and-pepper wavy hair and short beard, friendly confident gaze, wearing a plain midnight navy freediving wetsuit. Soft warm coastal light with a muted sandy bay behind. Vertical 4:5 portrait, waist-up to head with head fully in frame and comfortable breathing room above, looking at camera, natural unposed presence. Sophisticated high-fashion outdoor editorial photography, realistic skin texture and varied ordinary adult body types, understated confidence, natural colour, soft directional daylight. The person is the clear focus, elegant shallow depth of field, clean composition for a large profile card, no other people. Wetsuit covers torso and arms; no scuba tank, no spearfishing gear, no badges, no text, no logos, no watermark, no fashion-brand references. Do not resemble a celebrity or known real person. This is a fictional illustrative portrait, not a claim about a real diver.",
+      "generatedPath": "/Users/chris/.codex/generated_images/01a19454-72ed-7ee1-8c58-c628ae2c29a0/exec-b8d41109-2b21-4340-8737-8e71448a2772.png",
+      "master": "assets/people/rowan-portrait-v1.png",
+      "asset": "assets/people/rowan-portrait-v1.webp"
+    }
+  ]
+}

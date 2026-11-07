@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {Window} from 'happy-dom';
+import {IDBFactory} from 'fake-indexeddb';
+import {PROFILE_ADD_COMMAND,collectProfilePost,profilePostURL,suggestProfile,cleanProfilePosts} from '../design-board/profile-builder.mjs';
+import {initialState,profileDraft,featuredPosts} from '../design-board/profile-model.mjs';
+import {createProfileStore} from '../design-board/profile-store.js';
+import {installProfileShowcase} from '../design-board/profile-showcase.js';
+const input={url:'https://instagram.com/p/Example_1/?igsh=abc',caption:'Shore dives at Bondi Beach.\n'+PROFILE_ADD_COMMAND};
+const post=collectProfilePost(input);
+assert.equal(post.sourceUrl,'https://www.instagram.com/p/Example_1/');assert.deepEqual(post.locations,['bondi']);
+assert.equal(post.caption,'Shore dives at Bondi Beach.');assert.deepEqual(suggestProfile([post]).beaches,['bondi']);
+assert.equal(suggestProfile([post]).bio,post.caption);
+for(const url of ['https://evil.test/p/a/','javascript:alert(1)','https://instagram.com@evil.test/p/a/','https://instagram.com/alex/','https://instagram.com/p/a/other','http://instagram.com/p/a/'])assert.throws(()=>profilePostURL(url));
+for(const caption of ['Just a mention @finfolk.com.au','/profile add @another','/profile remove @finfolk.com.au',PROFILE_ADD_COMMAND,'Hello\n'+PROFILE_ADD_COMMAND+'\n'+PROFILE_ADD_COMMAND,'Hello\n'+PROFILE_ADD_COMMAND+'\n/publish Bondi'])assert.throws(()=>collectProfilePost({...input,caption}));
+assert.throws(()=>collectProfilePost(input,[post]),/already/);
+assert.deepEqual(cleanProfilePosts([post,{sourceUrl:'https://evil.test',caption:'x'}]),[post]);
+const base=initialState().my,next=profileDraft({...base,profilePosts:[post],featuredPosts:[post.id]},base);assert.equal(featuredPosts(next)[0].sourceUrl,post.sourceUrl);assert.equal(next.open,base.open);assert.deepEqual(next.stats,base.stats);
+const win=new Window({url:'http://127.0.0.1:8770/board/profiles.html?screen=edit',settings:{disableJavaScriptFileLoading:true,disableCSSFileLoading:true}});
+win.document.write(await readFile(new URL('../design-board/profiles.html',import.meta.url),'utf8'));
+const store=createProfileStore(new IDBFactory());let app;
+try{
+ const doc=win.document;app=await installProfileShowcase({doc,store});
+ const set=(name,value)=>{doc.querySelector(`[name="${name}"]`).value=value;};
+ set('profilePostURL',input.url);set('profilePostCaption',input.caption);doc.querySelector('[data-profile-collect]').click();
+ assert.equal(doc.querySelectorAll('.profile-builder-source').length,1);assert.equal(app.state.my.profilePosts,undefined,'Collection remains unsaved');
+ doc.querySelector('[data-profile-feature]').click();
+ assert.equal(doc.querySelector(`[name="featuredPosts"][value="${post.id}"]`).checked,true);
+ set('suggestedBio','My reviewed diving story.');[...doc.querySelectorAll('button')].find(b=>b.textContent==='Use reviewed bio').click();
+ assert.equal(doc.querySelector('[name=bio]').value,'My reviewed diving story.');
+ await doc.querySelector('form.profile-editor').onsubmit({preventDefault(){}});
+ assert.equal(app.state.my.profilePosts.length,1);assert.equal(doc.querySelectorAll('.profile-collected-post').length,1);
+ assert.equal((await store.load()).state.my.bio,'My reviewed diving story.');
+ app.navigate({screen:'edit'});doc.querySelector('[data-profile-remove]').click();doc.querySelector('.profile-editor-actions a').click();assert.equal(app.state.my.profilePosts.length,1,'Cancel discards removal');
+ app.navigate({screen:'edit'});doc.querySelector('[data-profile-remove]').click();await doc.querySelector('form.profile-editor').onsubmit({preventDefault(){}});
+ assert.equal(app.state.my.profilePosts.length,0);assert.ok(!app.state.my.featuredPosts.includes(post.id));assert.equal(app.state.my.bio,'My reviewed diving story.');
+ console.log('Profile builder passed: commands, URLs, duplicates, suggestions, featuring, persistence, cancel and removal.');
+}finally{await app?.destroy();await win.happyDOM.close();}

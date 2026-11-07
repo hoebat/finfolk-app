@@ -1,0 +1,59 @@
+{
+  "tool": "Built-in image_gen",
+  "jobs": [
+    {
+      "id": "ningaloo",
+      "name": "Ningaloo Reef",
+      "state": "WA",
+      "section": ".landing-hero",
+      "reference": "https://exploreparks.dbca.wa.gov.au/park/ningaloo-marine-park",
+      "asset": "finfolk-underwater-ningaloo-acid-v1",
+      "prompt": "Use case: illustration-story. Create a new complete underwater landscape inspired by Ningaloo Reef, WA, Australia. A broad fringing reef with a distant whale shark moving through sunlit open water. Match the reference's intricate engraved 1960s/70s woodcut / screenprint style, natural anatomy, coherent underwater perspective, sculptural forms and atmospheric depth. The reference is style only; create this specific different environment. Landscape 4:3, full bleed opaque artwork, richly drawn foreground and receding scenery. Sunlight and flowing currents. Compose for a website background: broad calm water around the middle with detailed landscape framing the edges, important wildlife in the upper middle/right so responsive crops work. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d and their halftones. No people, text, logos, borders, UI, collage, repeated wallpaper or separate cutout composition. Place-inspired illustration, not a literal photographic survey. Deliver one finished image."
+    },
+    {
+      "id": "great-barrier",
+      "name": "Great Barrier Reef",
+      "state": "QLD",
+      "section": ".landing-story",
+      "reference": "https://www.gbrmpa.gov.au/learn/coral",
+      "asset": "finfolk-underwater-great-barrier-acid-v1",
+      "prompt": "Use case: illustration-story. Create a new complete underwater landscape inspired by Great Barrier Reef, QLD, Australia. Rich table and branching coral shelves and shoaling reef fish, a continuous reef slope. Match the reference's intricate engraved 1960s/70s woodcut / screenprint style, natural anatomy, coherent underwater perspective, sculptural forms and atmospheric depth. The reference is style only; create this specific different environment. Landscape 4:3, full bleed opaque artwork, richly drawn foreground and receding scenery. Sunlight and flowing currents. Compose for a website background: broad calm water around the middle with detailed landscape framing the edges, important wildlife in the upper middle/right so responsive crops work. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d and their halftones. No people, text, logos, borders, UI, collage, repeated wallpaper or separate cutout composition. Place-inspired illustration, not a literal photographic survey. Deliver one finished image."
+    },
+    {
+      "id": "julian-rocks",
+      "name": "Julian Rocks",
+      "state": "NSW",
+      "section": ".landing-social-feature",
+      "reference": "https://www.dpird.nsw.gov.au/fishing/marine-protected-areas/marine-parks/cape-byron-marine-park/scuba-diving-and-snorkelling",
+      "asset": "finfolk-underwater-julian-rocks-acid-v1",
+      "prompt": "Use case: illustration-story. Create a new complete underwater landscape inspired by Julian Rocks, NSW, Australia. Rounded boulder reefs, mixed temperate and tropical fish and a small wobbegong resting naturally on the reef. Match the reference's intricate engraved 1960s/70s woodcut / screenprint style, natural anatomy, coherent underwater perspective, sculptural forms and atmospheric depth. The reference is style only; create this specific different environment. Landscape 4:3, full bleed opaque artwork, richly drawn foreground and receding scenery. Sunlight and flowing currents. Compose for a website background: broad calm water around the middle with detailed landscape framing the edges, important wildlife in the upper middle/right so responsive crops work. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d and their halftones. No people, text, logos, borders, UI, collage, repeated wallpaper or separate cutout composition. Place-inspired illustration, not a literal photographic survey. Deliver one finished image."
+    },
+    {
+      "id": "port-phillip",
+      "name": "Port Phillip Heads",
+      "state": "VIC",
+      "section": ".landing-regulars-feature",
+      "reference": "https://www.parks.vic.gov.au/places-to-see/parks/port-phillip-heads-marine-national-park",
+      "asset": "finfolk-underwater-port-phillip-acid-v1",
+      "prompt": "Use case: illustration-story. Create a new complete underwater landscape inspired by Port Phillip Heads, VIC, Australia. Temperate rocky reef and seagrass with one natural small weedy seadragon, no tropical coral. Match the reference's intricate engraved 1960s/70s woodcut / screenprint style, natural anatomy, coherent underwater perspective, sculptural forms and atmospheric depth. The reference is style only; create this specific different environment. Landscape 4:3, full bleed opaque artwork, richly drawn foreground and receding scenery. Sunlight and flowing currents. Compose for a website background: broad calm water around the middle with detailed landscape framing the edges, important wildlife in the upper middle/right so responsive crops work. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d and their halftones. No people, text, logos, borders, UI, collage, repeated wallpaper or separate cutout composition. Place-inspired illustration, not a literal photographic survey. Deliver one finished image."
+    },
+    {
+      "id": "bicheno",
+      "name": "Bicheno",
+      "state": "TAS",
+      "section": ".landing-conditions",
+      "reference": "https://www.discovertasmania.com.au/regions/east-coast/bicheno/",
+      "asset": "finfolk-underwater-bicheno-acid-v1",
+      "prompt": "Use case: illustration-story. Create a new complete underwater landscape inspired by Bicheno, TAS, Australia. Immersive kelp-covered rocky reef and colourful sponge gardens receding into cold clear water. Match the reference's intricate engraved 1960s/70s woodcut / screenprint style, natural anatomy, coherent underwater perspective, sculptural forms and atmospheric depth. The reference is style only; create this specific different environment. Landscape 4:3, full bleed opaque artwork, richly drawn foreground and receding scenery. Sunlight and flowing currents. Compose for a website background: broad calm water around the middle with detailed landscape framing the edges, important wildlife in the upper middle/right so responsive crops work. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d and their halftones. No people, text, logos, borders, UI, collage, repeated wallpaper or separate cutout composition. Place-inspired illustration, not a literal photographic survey. Deliver one finished image."
+    },
+    {
+      "id": "point-lowly",
+      "name": "Point Lowly",
+      "state": "SA",
+      "section": ".landing-last",
+      "reference": "https://www.parks.sa.gov.au/parks/upper-spencer-gulf-marine-park",
+      "asset": "finfolk-underwater-point-lowly-acid-v1",
+      "prompt": "Use case: illustration-story. Create a new complete underwater landscape inspired by Point Lowly, SA, Australia. A few giant Australian cuttlefish moving above a low rocky seabed, seagrass and rippled sandy passages. Match the reference's intricate engraved 1960s/70s woodcut / screenprint style, natural anatomy, coherent underwater perspective, sculptural forms and atmospheric depth. The reference is style only; create this specific different environment. Landscape 4:3, full bleed opaque artwork, richly drawn foreground and receding scenery. Sunlight and flowing currents. Compose for a website background: broad calm water around the middle with detailed landscape framing the edges, important wildlife in the upper middle/right so responsive crops work. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d and their halftones. No people, text, logos, borders, UI, collage, repeated wallpaper or separate cutout composition. Place-inspired illustration, not a literal photographic survey. Deliver one finished image."
+    }
+  ]
+}

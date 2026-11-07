@@ -1,0 +1,25 @@
+{
+  "identity": "slow-melt-f",
+  "motif": "blue-ringed octopus",
+  "method": "Built-in image_gen image edits",
+  "palette": {
+    "yellow": "#edff35",
+    "navy": "#172440",
+    "cobalt": "#1641ff",
+    "pink": "#ff148d"
+  },
+  "outputs": [
+    {
+      "file": "finfolk-social-octopus-acid-yellow-v1.png",
+      "prompt": "Use case: logo-brand / precise-object-edit.\nAsset: one square Finfolk social profile avatar, acid yellow background variant.\nImage 1 is the EDIT TARGET, the existing Slow melt lowercase f with octopus motifs inside it. Image 2 is a COLOUR REFERENCE only, the established acid/hyper octopus print. Preserve the exact f silhouette, proportions, placement, margins, internal negative space and the positions/shapes of the flowing octopus tentacles, spirals, oval suckers and blue-ringed ring markings in image 1. This is a precise colourway change of that avatar, not a new logo design.\nReplace the entire warm ivory background with completely UNIFORM FLAT ACID YELLOW #edff35, including the empty counter of the f. Within the letter, replace the original midnight navy print field with vivid ELECTRIC COBALT #1641ff; replace the original ivory octopus tentacle bodies with vivid HOT PINK #ff148d; replace the original dusty rose circular ring markings with ACID YELLOW #edff35. Make sucker ovals acid yellow with cobalt detail so they stay clear. Retain a slender dark MIDNIGHT NAVY #172440 outer keyline defining the exact letter silhouette against the yellow background. Keep the large fluid octopus spirals clearly recognisable. All print stays entirely inside the original f outline. Consistent flat spot colour throughout, no old ivory or dusty rose patches.\nOnly one lowercase f centered on the square, about 75% of canvas height with generous margins safe for circular profile cropping. No words, no labels, no extra animals, no layout board, no circles or borders outside the letter. No gradients, shadows, lighting, paper grain, faded colour, texture noise or 3D. The background must be solid acid yellow all the way to all four edges. Preserve the editorial lava-lamp 70s letterform and the original octopus composition."
+    },
+    {
+      "file": "finfolk-social-octopus-acid-navy-v1.png",
+      "prompt": "Use case: precise-object-edit / logo-brand.\nEdit the supplied finished Finfolk octopus-filled single lowercase f avatar to create its matching MIDNIGHT NAVY BACKGROUND variant. Change ONLY the background and the thin outer keyline. Replace ALL acid-yellow background OUTSIDE the f, including the entire open inner counter/negative space of the f, with uniform solid midnight navy #172440. Preserve the exact existing octopus print INSIDE the f unchanged: the same hot pink #ff148d tentacles, electric cobalt #1641ff field, acid yellow #edff35 oval suckers, ring markings and spirals, in exactly the same positions, scale and contours. Do not replace any acid yellow INSIDE the letter. Change the existing thin navy exterior keyline of the f to a subtle thin acid yellow #edff35 edge so the complete silhouette reads cleanly against navy. Keep that edge restrained at the same width, not a thick neon border or glow.\nKeep the single f outer silhouette and original internal counter, canvas dimensions, central placement and generous margins exactly identical to the reference. The result must be a matching pair with the acid-yellow background reference: same mark and print, navy ground. All four corners and the entire background must be a perfectly flat uniform #172440, no gradient or mottling. Flat crisp 1970s lava-lamp/octopus print graphic. No labels, words, frame, mockup, second f, extra animals, shadows, shine, lighting, paper texture, noise or 3D. Output ONE finished square profile image only."
+    }
+  ],
+  "referenceImages": [
+    "finfolk-social-octopus-ivory-v1.png",
+    "../../../../web/animal-octopus-hyper-v1.webp"
+  ]
+}

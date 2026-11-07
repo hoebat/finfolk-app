@@ -37,7 +37,7 @@ export function sharePostURL(post) {
   return url.href;
 }
 export async function renderPostFeed({host,beach,config,loadAPI,signIn,isCurrent=()=>true}) {
-  host.replaceChildren(el('h3','From the folk here'),el('p','Public posts from this beach, shared by their creators and reviewed by FinFolk.'));
+  host.replaceChildren(el('h3','Posts from this location'),el('p','Public posts from this beach, shared by their creators and reviewed by FinFolk.'));
   const status = notice(), cards = el('div'); host.append(status,cards);
   if (!config?.apiUrl) { status.textContent = 'Beach posts are opening soon.'; return; }
   let api;
@@ -104,7 +104,7 @@ export async function renderPostFeed({host,beach,config,loadAPI,signIn,isCurrent
 }
 export async function renderPostManager({host,api,beaches,refresh}) {
   const box=el('section',undefined,'account-card post-manager'), status=notice();
-  box.append(el('h2','Share your shores'),el('p','Post on Instagram or TikTok, tag @finfolk.com.au, then submit your link here. Public interactions stay on the original platform.'),status); host.append(box);
+  box.append(el('h2','Share a post'),el('p','Post on Instagram or TikTok, tag @finfolk.com.au, then submit your link here. Public interactions stay on the original platform.'),status); host.append(box);
   try {
     const state=await api.call('postStatus');
     if (!state.enabled) box.append(el('p','Beach post submissions are opening soon.'));
@@ -140,7 +140,7 @@ export async function renderPostManager({host,api,beaches,refresh}) {
     const list=el('section',undefined,'post-history'); box.append(list);
     async function history() {
       const posts=await api.call('myPosts'); list.replaceChildren(el('h3','Your submissions'));
-      if(!posts.length) list.append(el('p','No submissions yet. Your next day by the water is a good place to start.'));
+      if(!posts.length) list.append(el('p','No submissions yet. Submit an Instagram or TikTok post link.'));
       for(const post of posts) {
         const card=el('article',undefined,'beach-social-card');
         card.append(el('strong',`${post.beach_name} · ${post.status === 'pending' && post.public_consent === false ? 'Resubmit to give public-listing permission' : post.status}`),original(post));
@@ -156,7 +156,7 @@ export async function renderPostManager({host,api,beaches,refresh}) {
       const data=await api.call('followedPosts');
       followed.append(el('h3','From beaches you follow'));
       for(const post of data.posts || []) {const card=el('article',undefined,'beach-social-card');card.append(el('strong',post.beach_name),original(post),action('View beach',()=>{location.href=sharePostURL(post);},status));followed.append(card);}
-      if(!data.posts?.length) followed.append(el('p','Follow your beaches and approved posts from those shores will appear here.'));
+      if(!data.posts?.length) followed.append(el('p','Follow a beach to see approved posts from that location.'));
     } catch { followed.append(el('p','Your followed beach feed is unavailable. Try again later.')); }
   }catch(error){status.textContent=error.message;box.append(action('Retry',async()=>{host.replaceChildren();await renderPostManager({host,api,beaches,refresh});},status));}
 }

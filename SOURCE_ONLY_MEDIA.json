@@ -1,0 +1,2780 @@
+{
+  "fullSourceCommit": "faf621571a08464f2c119c637680bbee0266999f",
+  "omittedMedia": [
+    {
+      "path": "design-board/assets/finfolk-nasties-reference.png",
+      "bytes": 2419290,
+      "sha256": "db094f78996bf052e8a56134a96bdbe18e600679c4482608bbeb1d7801f808d3"
+    },
+    {
+      "path": "design-board/assets/habitat/animal-moray-hyper-v1.png",
+      "bytes": 3582526,
+      "sha256": "db52ca335f67cd2b4d0e38bea749c400a363aadec9bc51dfc041bdb4beefbf33"
+    },
+    {
+      "path": "design-board/assets/habitat/animal-moray-v1.png",
+      "bytes": 3429295,
+      "sha256": "254dcbf814680cca485f005b1596e2fbcaf6b2389309de168b333777fd5cf72a"
+    },
+    {
+      "path": "design-board/assets/habitat/animal-seasnake-hyper-v1.png",
+      "bytes": 3623688,
+      "sha256": "1ef230cabddcd193cc9726a86947223399fbab2a5a595ac11e9364526d3d8b41"
+    },
+    {
+      "path": "design-board/assets/habitat/animal-seasnake-v1.png",
+      "bytes": 3718302,
+      "sha256": "a8dbf192b06216e400b99efe7a31f6945c15bc64ec203616acea2c2cdf4acbf9"
+    },
+    {
+      "path": "design-board/assets/habitat/animal-stingray-hyper-v1.png",
+      "bytes": 3312866,
+      "sha256": "a7250502388608885822829067041d6f312c692a929f55d5603618789b67fdbb"
+    },
+    {
+      "path": "design-board/assets/habitat/animal-stingray-v1.png",
+      "bytes": 3017485,
+      "sha256": "f1f547baf9cd911754086ee1783f2ebda49a5a2c69c86b80d4d0bcba8ca6e77f"
+    },
+    {
+      "path": "design-board/assets/habitat/habitat-reef-rocks-v1.png",
+      "bytes": 362689,
+      "sha256": "0979335e7ccca1ceed1d51acd5429d8a775673b4f0b6c51a12e205ca56c83faa"
+    },
+    {
+      "path": "design-board/assets/habitat/habitat-seagrass-v1.png",
+      "bytes": 435704,
+      "sha256": "5c2fcefe8a1a5c4a17826ba3836c4986ae514691d87ec786512556cebe5ec342"
+    },
+    {
+      "path": "design-board/assets/habitat/habitat-stingray-v1.png",
+      "bytes": 423989,
+      "sha256": "335c781fce79a9303c550d9c5995800ecaec04317f6f5f3346ead55417f944d8"
+    },
+    {
+      "path": "design-board/assets/habitat/habitat-turtle-v1.png",
+      "bytes": 570456,
+      "sha256": "03433fd5847593d1aed98c8a06f3d0d36d7937a6a137f068534da1f40d537216"
+    },
+    {
+      "path": "design-board/assets/icons/small-cutout-f-32.png",
+      "bytes": 1633,
+      "sha256": "74cf7ab8508e2d0d60f8a06d091b85460f2269b924af5acf02df1a0b4a314ba8"
+    },
+    {
+      "path": "design-board/assets/icons/small-cutout-f-v1.png",
+      "bytes": 555481,
+      "sha256": "651e9d2c3304378e4576f25f22823e375ae9bffbd282655d153213f6e63410ba"
+    },
+    {
+      "path": "design-board/assets/icons/small-cutout-f-v1.webp",
+      "bytes": 77448,
+      "sha256": "69595371ad8f638af1e428383e6c1e19878d5a4ea087b8b6ecf183e8532acf84"
+    },
+    {
+      "path": "design-board/assets/icons/small-electric-f-32.png",
+      "bytes": 1489,
+      "sha256": "6ed5a41b6351aa3bdf5a1499626713a799fa00df52915029b8e542a4163fd512"
+    },
+    {
+      "path": "design-board/assets/icons/small-electric-f-v1.png",
+      "bytes": 491417,
+      "sha256": "24d6fab8c8c05d05e42cee801832277e9dd6408010714981c96041d189966ffe"
+    },
+    {
+      "path": "design-board/assets/icons/small-electric-f-v1.webp",
+      "bytes": 70836,
+      "sha256": "25ad02bb17c787850f0727aff32d07e27e896b5f9d0d605b6b9ea7be3446eabf"
+    },
+    {
+      "path": "design-board/assets/icons/small-liquid-f-32.png",
+      "bytes": 1361,
+      "sha256": "fef45e7af5485dd1a8f49ed833379504a43defb779ad38d051a0495d9f7fe5b8"
+    },
+    {
+      "path": "design-board/assets/icons/small-liquid-f-v1.png",
+      "bytes": 419268,
+      "sha256": "c3dee81194548d3832e1da72c9ecb1e52c28c735251f6e288cf16a172bbe2287"
+    },
+    {
+      "path": "design-board/assets/icons/small-liquid-f-v1.webp",
+      "bytes": 47900,
+      "sha256": "8aab509a53397431283e726cc1b17a093714d328ec3157eee37cee054a0aa65a"
+    },
+    {
+      "path": "design-board/assets/icons/small-print-f-32.png",
+      "bytes": 1490,
+      "sha256": "04b63c6f650452deab5d1561a70ba55e538b3c91b0f90473552ac70de8229473"
+    },
+    {
+      "path": "design-board/assets/icons/small-print-f-v1.png",
+      "bytes": 585169,
+      "sha256": "7e6fc9e432d4a2587904a3ab748bd83b4dc8e19331fbe9c3dafdeb85298a52d6"
+    },
+    {
+      "path": "design-board/assets/icons/small-print-f-v1.webp",
+      "bytes": 102694,
+      "sha256": "4c09393e04a8a6e659645dbeb7df61f8d428ad55e88d4004a9bedff81b2933f1"
+    },
+    {
+      "path": "design-board/assets/identity/freediver-ascending-source.png",
+      "bytes": 276639,
+      "sha256": "3c6b06efa6d928a6cebc79913d04ea4cd74349afd1adad4c6e8f390a7abcbbc8"
+    },
+    {
+      "path": "design-board/assets/identity/freediver-descending-source.png",
+      "bytes": 295470,
+      "sha256": "6cd5acb09edc99579591b6869d1316a5cb7b7b51a75499d776d315ca3e8fc706"
+    },
+    {
+      "path": "design-board/assets/identity/freediver-gliding-source.png",
+      "bytes": 181107,
+      "sha256": "2ad35153c2c33221df014db768d9fe2ac3e99255f88c347ce595509b65468492"
+    },
+    {
+      "path": "design-board/assets/identity/slow-melt-f-source.png",
+      "bytes": 334656,
+      "sha256": "d1be031dfa5d5d3f0001bbc1ca21026a63b6aaf44b7dee373a707cae3b0cc72b"
+    },
+    {
+      "path": "design-board/assets/identity/slow-melt-wordmark-source.png",
+      "bytes": 848447,
+      "sha256": "d91d3bf23344dc959e78e9e50658703b4ca3424849da64a39804b87012a8aa3d"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluebottle/accent-mask.png",
+      "bytes": 1138569,
+      "sha256": "69cf49851874972abce6c1783f61147e9fcac63b63d506af04bd77863e5e6921"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluebottle/ink-mask.png",
+      "bytes": 1240326,
+      "sha256": "6b1bd9af8da076ac66d52b87f4c530ca56be1afff22f686cd4476f6aa4666bdc"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluebottle/master.zip",
+      "bytes": 4095842,
+      "sha256": "e9cd01aac39668eec44f85ad89b9dba64417964e6e6747795428e74bdb890c54"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluebottle/paper-mask.png",
+      "bytes": 1123916,
+      "sha256": "acc9d8aac9d0e8f7dedef66aaf1fafbce6d9cc133a459d6ffc28bfc08ea525b2"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluedragon/accent-mask.png",
+      "bytes": 872126,
+      "sha256": "bd2663769806d42ee65a5d8459e45b4df5fa2ff6dad3aeca4cca45c6994055d1"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluedragon/ink-mask.png",
+      "bytes": 1138752,
+      "sha256": "a378a7d376af3f541e31641e2c8e1843603dcc69e32ea39f2e248140a52d5a41"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluedragon/master.zip",
+      "bytes": 3748775,
+      "sha256": "522139d587a33ea7bf61ff9582a30b2acf91094625c9a4338a2a230f0e299d2b"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-bluedragon/paper-mask.png",
+      "bytes": 1116162,
+      "sha256": "7f58a69a89420a53f0c1c7793449234db80b2275844f17a558b43c270bc2d574"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-boxjelly/accent-mask.png",
+      "bytes": 1048104,
+      "sha256": "6fc6ababfc2d356102b5f6927931d0399bc656220948d62017519929cf8298ab"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-boxjelly/ink-mask.png",
+      "bytes": 1232622,
+      "sha256": "81f6c2c2c0d91eb555a9f0f7660e10c125e900d1ebfd0bc8b67e2fadb49b3e00"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-boxjelly/master.zip",
+      "bytes": 4020725,
+      "sha256": "08d2f174489c0c7b4c9e563967052b52139b88e88bebd20d4c5889b32825604d"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-boxjelly/paper-mask.png",
+      "bytes": 1145654,
+      "sha256": "9d20934efba0883e697cb8224288751bfe71e60d744cc2228aa649294d306677"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-conesnail/accent-mask.png",
+      "bytes": 918469,
+      "sha256": "86e5b4948278c11703eee6b29215052ed1dcb7b45fb05c6b74adc64a288f154b"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-conesnail/ink-mask.png",
+      "bytes": 1098932,
+      "sha256": "c28f212871c1155417b62e192f172d01733a237c7d48d69b141fd0a9813e15fd"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-conesnail/master.zip",
+      "bytes": 3610758,
+      "sha256": "f697e5d639e76f8950862642997ba8834b8c1ff74480c82bdfa5c50801c9e094"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-conesnail/paper-mask.png",
+      "bytes": 1093035,
+      "sha256": "8600703863e6832d70984e334efc4cc4951f0ad2dceaaaee3ade38e30c880c8a"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-irukandji/accent-mask.png",
+      "bytes": 882431,
+      "sha256": "08df5d59a4fb379a47d84cd211620779c5a740a52840473bc24147f41d8abb0f"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-irukandji/ink-mask.png",
+      "bytes": 1138498,
+      "sha256": "08f0fdb532ed600dd76c7f7dd52408d6878e85603d5aa903e97261c8fd332b1c"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-irukandji/master.zip",
+      "bytes": 3688514,
+      "sha256": "cf702f5e3e37034459737662f7d7c1aac167c5b4f48a0ff5e86e76073b6b0eb1"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-irukandji/paper-mask.png",
+      "bytes": 1119206,
+      "sha256": "2f65ff1b21c5ea87fb65146b266b7bcb47b4a23f22f6a42265e90a9c6597dc04"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-lionfish/accent-mask.png",
+      "bytes": 966591,
+      "sha256": "4677b67347dddae7e041fb80e4dabb91652252c46f11523fa42f946ba7d58f20"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-lionfish/ink-mask.png",
+      "bytes": 1306477,
+      "sha256": "5479785ee7330239f61713c14011f30d27ab3f5116c4ff1fcfb5a6a6a9eda721"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-lionfish/master.zip",
+      "bytes": 4213620,
+      "sha256": "42235e196745860b8a615d9d71f83b8b645915ccb81764890343948d2d3619b3"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-lionfish/paper-mask.png",
+      "bytes": 1276156,
+      "sha256": "43aaa07626ed6f7db7c5e3ceabbc6fa2da534aba79a5c84fec6ed0c4d7c314b5"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-moray/accent-mask.png",
+      "bytes": 1092240,
+      "sha256": "64f2ba18685922a87cc6c63bbb1e125358be77147000d57450376c7070f78260"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-moray/ink-mask.png",
+      "bytes": 1329061,
+      "sha256": "816e197aa7442f21c2208531cc9dc2273fc2dbd78550509417afb86fef2d2033"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-moray/master.zip",
+      "bytes": 4245766,
+      "sha256": "c5a2b40aac065104c177efcf857d272c07667986e2f38f6b75b932d5027b6ea3"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-moray/paper-mask.png",
+      "bytes": 1191364,
+      "sha256": "83e699cf5c38a05a809afe02aa5db48c29a037d2100d76b0d4550044a979fd2e"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-octopus/accent-mask.png",
+      "bytes": 950307,
+      "sha256": "37eea389fee41aec89cc983d906dade1af1ad6563c356ce593e3d7e87cba5e67"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-octopus/ink-mask.png",
+      "bytes": 1094647,
+      "sha256": "f981750a51e69ddf2a3be89df941d8b719678c799690cd52bfd0213b844f6f67"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-octopus/master.zip",
+      "bytes": 3500432,
+      "sha256": "9d7bd0a648e427359b8d8c002671691410428bde38832939f7aac9bca293586f"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-octopus/paper-mask.png",
+      "bytes": 966968,
+      "sha256": "162a3ce3132315c0e07b021e1f4462c70a848aae58ef49a0f80e8c6ffbb6938d"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seasnake/accent-mask.png",
+      "bytes": 1022613,
+      "sha256": "2e8127214afdc2459289825cfea6c349a33a5eae07cae06a56e35e305c8e7032"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seasnake/ink-mask.png",
+      "bytes": 1231087,
+      "sha256": "510c70c78adeb1b2c12b37635e56a74639a0fb8a36375942c7cdb7710a16d370"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seasnake/master.zip",
+      "bytes": 3997794,
+      "sha256": "5aeb3ae65a1585aa8bc7026a46aa8e7b4e885aec24b6d68680122df7667bd5ea"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seasnake/paper-mask.png",
+      "bytes": 1071915,
+      "sha256": "48d6bbc15f7d1c996ec4b101ec157a0445c7880050c27470bd62b2981bfd3a38"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seaurchin/accent-mask.png",
+      "bytes": 1220981,
+      "sha256": "9cbae5ab9381f6fda90880f98e3e6805887deceb32bcd83472909eafb70b34c4"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seaurchin/ink-mask.png",
+      "bytes": 1250976,
+      "sha256": "f57696889fb718e9ba23e497e291a09a4ef60effed70acf2dc1cdd9553f17cf2"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seaurchin/master.zip",
+      "bytes": 4181929,
+      "sha256": "a3df74c69f9d0034826ec6689e7dcce31ca9df9ab5331efce14ed3d50664c2e3"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-seaurchin/paper-mask.png",
+      "bytes": 1004879,
+      "sha256": "0c4042d586228f29e7d3a9cbff2edc47835df71e86475f5d8de59fcd24e52477"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stingray/accent-mask.png",
+      "bytes": 956460,
+      "sha256": "dccdbcad16d8e23aa4a71c2ad7b2c6677c2225e5d6383103478157900224d158"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stingray/ink-mask.png",
+      "bytes": 1153281,
+      "sha256": "02a6104bebb99d8b21f68d87cb0fa973b1bd10f2a8ed1f7f8df0f1cd602fbed4"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stingray/master.zip",
+      "bytes": 3732693,
+      "sha256": "f7a10f7004b3f4894ce9de1695f6d81d072ff036587aa474408b4fa563cd691a"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stingray/paper-mask.png",
+      "bytes": 1054242,
+      "sha256": "8416f0d3f6dd8e2b321c49f18ff42508d1aea1ea2cdd706b939e30445c3dfde5"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stonefish/accent-mask.png",
+      "bytes": 1234470,
+      "sha256": "90eca536f3d67ccb0373071b3b1d52a64d223f221b1cbf9487be1e9c5b56e075"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stonefish/ink-mask.png",
+      "bytes": 1240895,
+      "sha256": "b6dd31d6a728459ed5905970ad78749a8a5c004c309c2819780b8157d43f2164"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stonefish/master.zip",
+      "bytes": 4086006,
+      "sha256": "5bec10d2a1ac04ef9499d3b3df9ee85d198bf1fbf194404c7b3da18d90fb610c"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-stonefish/paper-mask.png",
+      "bytes": 1053589,
+      "sha256": "b08af1a478d1fa198162f5a67399eb750a7271be506661e88d5fe80fb879b379"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-toadfish/accent-mask.png",
+      "bytes": 1109065,
+      "sha256": "2fc8e93ae8dc47aad585374fac9ead847362806818f54d948a7e478ff79b78df"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-toadfish/ink-mask.png",
+      "bytes": 1271670,
+      "sha256": "6621fadee71094a463bb5a1131c0ed638795085f8971489034980d0cb38a5656"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-toadfish/master.zip",
+      "bytes": 4234981,
+      "sha256": "dfdf639c707c6ac8dfb2a91845ba05dd0a5d3fc2b8a92f9a8cbdea63f0d2c147"
+    },
+    {
+      "path": "design-board/assets/ink-masters/motifs/animal-toadfish/paper-mask.png",
+      "bytes": 1256965,
+      "sha256": "c48649152cbc83ec044bbfcc33205dc2068be9796969232291cd5a4ad693f982"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-arctic-ice-acid-v1/accent-mask.png",
+      "bytes": 744861,
+      "sha256": "1ca0d483c0d7b8bb594d986aa0079b9c2d290d2b65674905e9e13c0d9fa02e79"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-arctic-ice-acid-v1/ink-mask.png",
+      "bytes": 1276978,
+      "sha256": "d7149c64caa5c743a98b0b0ccd1d51d7bf79460bd1eb2add4ff7c78f11c79891"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-arctic-ice-acid-v1/master.zip",
+      "bytes": 6867493,
+      "sha256": "fedc7ff12010cecc773cfae922c37608bdc59ce54b61e3ae283426afda28c4ac"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-arctic-ice-acid-v1/paper-mask.png",
+      "bytes": 1145888,
+      "sha256": "8519b53b03997473eb864c460219b94c0f91412c43f04f06d31ec9d5a5cc8e43"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ascent-acid-v1/accent-mask.png",
+      "bytes": 999259,
+      "sha256": "8f9d3590dcf5aac1ce1aded665365e72e891c814144b648c82f2203b3787720c"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ascent-acid-v1/ink-mask.png",
+      "bytes": 1193974,
+      "sha256": "565fef7d967a71f93ce0f932ee70111304f5639d3de9034718eb50e88b525413"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ascent-acid-v1/master.zip",
+      "bytes": 6656375,
+      "sha256": "9135d752ceee662ae43405b9e2c58d171e2c06c8f86eaca7cd64de0b86e067ab"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ascent-acid-v1/paper-mask.png",
+      "bytes": 945000,
+      "sha256": "12fb63881dcae2cb8ab2325b60f062c7166b7cd49c68923abe6223dcced391c3"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-bicheno-acid-v1/accent-mask.png",
+      "bytes": 1095284,
+      "sha256": "46f28a914004b839c4de79d053aa34a13a7a4b3447fa4c36bb30dc5971dc9605"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-bicheno-acid-v1/ink-mask.png",
+      "bytes": 1384374,
+      "sha256": "fdfac72ef078539c79b499706af28f705a738c6cf551f8cccd5a17404c437452"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-bicheno-acid-v1/master.zip",
+      "bytes": 7347661,
+      "sha256": "6764cff1fe070426c78c90b4654f1af97ba666928155d43dfee3ae66d8c0f054"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-bicheno-acid-v1/paper-mask.png",
+      "bytes": 1092048,
+      "sha256": "e571fe2a9934826e20cc5752abf1a7d8b31b13b7bb2d11cb2b4843b4aadd2b00"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-cave-acid-v1/accent-mask.png",
+      "bytes": 835502,
+      "sha256": "cbb38542f1d57b18413c6dafe5aac94aafe0447da8d93c0ca23b651eb1881f27"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-cave-acid-v1/ink-mask.png",
+      "bytes": 1255324,
+      "sha256": "c8702eab15c1ea8f1ce4a6b5cf1140bc5af6e532a3f39f4cc1870af10256c3de"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-cave-acid-v1/master.zip",
+      "bytes": 6851567,
+      "sha256": "8990a4554a185196a692a014b77af0c67a60433904f7f54487e804be008d6a86"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-cave-acid-v1/paper-mask.png",
+      "bytes": 1082704,
+      "sha256": "1f88c51fe1d76f079b527075596fa2ba2705d7543027fbd645e2df3212ef094e"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-coral-reef-acid-v1/accent-mask.png",
+      "bytes": 987296,
+      "sha256": "396cf2275fc01fa0ac1055a217a0882194430009e8f8762ad4da725c7fd39667"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-coral-reef-acid-v1/ink-mask.png",
+      "bytes": 1272320,
+      "sha256": "eee6b272bfd2b3f1148c62e78f1ba81aacde88474dd49ee75ce5bcf2ef3fd7e5"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-coral-reef-acid-v1/master.zip",
+      "bytes": 6893060,
+      "sha256": "6b727b71a1ee7cc5e0275c47876678035c4be669d7151e1a8f34317e097714ad"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-coral-reef-acid-v1/paper-mask.png",
+      "bytes": 996064,
+      "sha256": "6520ca79ffce43d2be13db37cd895165aa6fb28fa3346722a727ed12c3da38ef"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-great-barrier-acid-v1/accent-mask.png",
+      "bytes": 984592,
+      "sha256": "e3f0af5af76fdf9c6bb34a236b7beda43d1894e27b4f6f7f7b97f61c277556ee"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-great-barrier-acid-v1/ink-mask.png",
+      "bytes": 1285642,
+      "sha256": "fd898efa45c7192491b7623acea55a4772947c08d6aa5ba2291856c5b585e79a"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-great-barrier-acid-v1/master.zip",
+      "bytes": 7072773,
+      "sha256": "d3335ba04034d33fd966f7d5c65e995012e9df44d94e4edf089976d04b55116f"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-great-barrier-acid-v1/paper-mask.png",
+      "bytes": 1060773,
+      "sha256": "35462afeddcb6692f55fc0a66f72240988ca940014b8a0cdc2137a61c495701d"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-jelly-drift-acid-v1/accent-mask.png",
+      "bytes": 984026,
+      "sha256": "144bbbde6570237171903e0ce991452e52104fbc5510993e7dca68df061be454"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-jelly-drift-acid-v1/ink-mask.png",
+      "bytes": 1325497,
+      "sha256": "66caa62744bacc0819504cc2f5a226e7a238a350f7b798bc8202759adf3c72ce"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-jelly-drift-acid-v1/master.zip",
+      "bytes": 7181401,
+      "sha256": "d1cf0fe617ce29246161844d5e3d33065c62d22d451ccb4fc4335adefe2aed80"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-jelly-drift-acid-v1/paper-mask.png",
+      "bytes": 1325199,
+      "sha256": "e1454a67062b5355efd2d5ec13af19fedb9f45fe75e3e60c15b2f77ea300bee0"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-julian-rocks-acid-v1/accent-mask.png",
+      "bytes": 1099922,
+      "sha256": "51ad6cc719eb2865058b79cc097b8ba173b9496f9f9c44eb1efeefadc5d09bce"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-julian-rocks-acid-v1/ink-mask.png",
+      "bytes": 1319815,
+      "sha256": "7289c6077378263f64ae89d657f20342e462b15c9cb8921298c60dd3eb47f7d6"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-julian-rocks-acid-v1/master.zip",
+      "bytes": 7245728,
+      "sha256": "4b34dd39c711e1354156e78403bd4cfab6276bbd4a6a603721b28e248ad47f95"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-julian-rocks-acid-v1/paper-mask.png",
+      "bytes": 1047907,
+      "sha256": "98ecea62c45fced8e84d97c713977c5220e7ebcaa9d41224d77c023dc9862f96"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ningaloo-acid-v1/accent-mask.png",
+      "bytes": 855000,
+      "sha256": "2fd3d3e9cc384ff2c1807f3430679e5d9227c33f16a4e6ffda30330338ca4aae"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ningaloo-acid-v1/ink-mask.png",
+      "bytes": 1227313,
+      "sha256": "f617bfbb9d5816c327ac8b61e16cf2e2b3a20b423ed9b06323e32bb9c97250ba"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ningaloo-acid-v1/master.zip",
+      "bytes": 6829262,
+      "sha256": "67c754b75acc1fcfcce9759cdcf0c3a77c052476e0462c191e81ca98ab98fb08"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-ningaloo-acid-v1/paper-mask.png",
+      "bytes": 1070050,
+      "sha256": "0be585e6404128397c018d4d16c427e291e76846be87c4a6775a8a6f2cc59927"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-point-lowly-acid-v1/accent-mask.png",
+      "bytes": 991042,
+      "sha256": "8e09b04cfe3d496eeaccda7f2bfb894b32fddc37a21bf7a42e0e11387b4e5b88"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-point-lowly-acid-v1/ink-mask.png",
+      "bytes": 1349738,
+      "sha256": "6bbdeaffa394825c77b7604bbd2e678ad16617dd0ffecd0c8ff47e527a7a13db"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-point-lowly-acid-v1/master.zip",
+      "bytes": 7275645,
+      "sha256": "6637b627e6375e70385753237a850e46f3336fabebf59919e3bbde415724c019"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-point-lowly-acid-v1/paper-mask.png",
+      "bytes": 1177568,
+      "sha256": "a55adb129b25a759d8f760ee93d11d9262af22ff03c7b638417bb1dc5a9609a0"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-port-phillip-acid-v1/accent-mask.png",
+      "bytes": 983406,
+      "sha256": "31dc8cbb601fc546378325977ef741dc27b663b4c815b33c2485581b93a48263"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-port-phillip-acid-v1/ink-mask.png",
+      "bytes": 1299331,
+      "sha256": "142f285ac7e0b964c7ba3749cbbdc5b71058d952b1150e905a1cedb0753e9fad"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-port-phillip-acid-v1/master.zip",
+      "bytes": 7080377,
+      "sha256": "4d406bd88d65d026cc911e9d3276bed9d6511d5c5706edcce2a0d65b99f9f427"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-port-phillip-acid-v1/paper-mask.png",
+      "bytes": 1101399,
+      "sha256": "7806e96f3d491170ed5d8780172f14b2ae74ff6cfc1eca77fc3190694adf2799"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-reef-glide-acid-v1/accent-mask.png",
+      "bytes": 1173346,
+      "sha256": "b93292bc61384ee5523aa106e415ca732d6f94442edb5ea34d5679a7cd867ed6"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-reef-glide-acid-v1/ink-mask.png",
+      "bytes": 1359554,
+      "sha256": "0a9fd2cf3db59619f855f162bb9f34ed8a52d32fbfb4accfe8c343cc7d834e99"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-reef-glide-acid-v1/master.zip",
+      "bytes": 7673648,
+      "sha256": "81f40faffc6558050feb394017aec3d06ba1f6f8527d4c8336ee85a1c682f669"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-reef-glide-acid-v1/paper-mask.png",
+      "bytes": 1337511,
+      "sha256": "03bf68c07aee09279310cdf499398cb6394abdbbdd6200e9c8fd578b21b0af47"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-shipwreck-acid-v1/accent-mask.png",
+      "bytes": 1031953,
+      "sha256": "1395996b2a27eaf9c72fe183a5e80bf06398b14cde74ad0490be2102af64a031"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-shipwreck-acid-v1/ink-mask.png",
+      "bytes": 1274683,
+      "sha256": "b5bf41c2122a58ed596d00c2feaea41e7b23842333e54f548c450155bc56807f"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-shipwreck-acid-v1/master.zip",
+      "bytes": 7160856,
+      "sha256": "3720f5d9fdef7b8c4855bbe473ab3ab65b77a270065251455b4e59566899ae65"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-shipwreck-acid-v1/paper-mask.png",
+      "bytes": 1083879,
+      "sha256": "e2f41e6ce263b82d73b9086fd359d9d298e899293f441d6363d869e6b45d63eb"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-sunken-city-acid-v1/accent-mask.png",
+      "bytes": 1140229,
+      "sha256": "238327f4718db88095de1e52169eb704904ee6bca7484fe73bff710e1e8e6553"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-sunken-city-acid-v1/ink-mask.png",
+      "bytes": 1376208,
+      "sha256": "2515f6ca42de33ed9463f23fe045da54745fcc45d15b0c2a70f318d56a4d0c2a"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-sunken-city-acid-v1/master.zip",
+      "bytes": 7414653,
+      "sha256": "5a07f35207c8c78bece6f0f35fd522ed0cf429cab16817c652db743fe6ab2ac4"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-sunken-city-acid-v1/paper-mask.png",
+      "bytes": 1070338,
+      "sha256": "558aeeabd903fae257fd145de43447c40808257087afe00bf3007c3d2b511ae8"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-tropical-lagoon-acid-v1/accent-mask.png",
+      "bytes": 1047673,
+      "sha256": "d09867dca502fe8b3fb261a7a0efb537fe802a83af602d2dcb3741aae9cb6de6"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-tropical-lagoon-acid-v1/ink-mask.png",
+      "bytes": 1374543,
+      "sha256": "64805604992f96b0008d56250baf17a28d25ced9439b48fe9738fe1d679bd14a"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-tropical-lagoon-acid-v1/master.zip",
+      "bytes": 7530378,
+      "sha256": "a5a776044a4ac274a439826eaddbcd252cc655c8c4b98ff692f2d0cf774ab72a"
+    },
+    {
+      "path": "design-board/assets/ink-masters/scenes/finfolk-underwater-tropical-lagoon-acid-v1/paper-mask.png",
+      "bytes": 1212498,
+      "sha256": "e2d1be1c3f2d6207f16e7a212acd56aa36b988a50efa90c2b9ad97205cafde2d"
+    },
+    {
+      "path": "design-board/assets/logos/buddy-loop-v1.png",
+      "bytes": 1356071,
+      "sha256": "016e6b20e3aadb18d0665b8f87b23d6a902b7e2151df41cb32cdf7671480b05d"
+    },
+    {
+      "path": "design-board/assets/logos/buddy-loop-v1.webp",
+      "bytes": 66242,
+      "sha256": "3ecb3e7dd022cf065349513d129afdbfa20dd0cf9f5b3b57c384acf8921f7568"
+    },
+    {
+      "path": "design-board/assets/logos/club-after-hours-v1.png",
+      "bytes": 1399108,
+      "sha256": "58fa5241f01834edf8aad2b4c4cc29f78887e1e11569c1ee08e23c5cd5c3d3d2"
+    },
+    {
+      "path": "design-board/assets/logos/club-after-hours-v1.webp",
+      "bytes": 85108,
+      "sha256": "d9fc7a14f62c099cf889606d26c5fac9ee5ce0547b93f031b19d44849a185efb"
+    },
+    {
+      "path": "design-board/assets/logos/club-hidden-nasties-v1.png",
+      "bytes": 1466954,
+      "sha256": "0a97d06959390c17b24314ea36a55fbbe662a530762238191de5a499d0479606"
+    },
+    {
+      "path": "design-board/assets/logos/club-hidden-nasties-v1.webp",
+      "bytes": 102136,
+      "sha256": "6574b5755fe6338a4c3004d30a794ec2513d7b2f070c3960aea822c86fe47b3c"
+    },
+    {
+      "path": "design-board/assets/logos/club-interlocking-alphabet-v1.png",
+      "bytes": 1413085,
+      "sha256": "074de89585a88e7fdc2f193143b57c3f9336c38c0eff3f15c111ed0531e738ca"
+    },
+    {
+      "path": "design-board/assets/logos/club-interlocking-alphabet-v1.webp",
+      "bytes": 88980,
+      "sha256": "04d333139bc2b17acc90861f5cabd4c6e37fd6239374054d3efd7c868c02ec4a"
+    },
+    {
+      "path": "design-board/assets/logos/club-liquid-ligatures-v1.png",
+      "bytes": 1561250,
+      "sha256": "17c30bfc3d38a22ec4c203b8a9c6fc5de875a5a7780f99feb809927890a56469"
+    },
+    {
+      "path": "design-board/assets/logos/club-liquid-ligatures-v1.webp",
+      "bytes": 109998,
+      "sha256": "9de1d8fbb72f44aaf458acd0755ae3c7c293a6f6bf965c3ff9f1a9683289f670"
+    },
+    {
+      "path": "design-board/assets/logos/club-slow-melt-v1.png",
+      "bytes": 1380672,
+      "sha256": "6e671371d13794923327e9f18af024e21e4fdb108b348245cec37420b3f364ca"
+    },
+    {
+      "path": "design-board/assets/logos/club-slow-melt-v1.webp",
+      "bytes": 78600,
+      "sha256": "c0e1eb219e2ab1789e9fc5fe48a3c88e8ec2cf53688f0a3230b66286ac9abc4c"
+    },
+    {
+      "path": "design-board/assets/logos/club-tentacle-type-v1.png",
+      "bytes": 1579442,
+      "sha256": "6ab50018fea95fbf7d348b326f9eb442d4e79a0b93d298cf0055d50929fb55b3"
+    },
+    {
+      "path": "design-board/assets/logos/club-tentacle-type-v1.webp",
+      "bytes": 124824,
+      "sha256": "3251cabb219d8e316b42b591da057a430c2b7222abbf5ff59c2a856d2b9e75d3"
+    },
+    {
+      "path": "design-board/assets/logos/club-textile-letters-v1.png",
+      "bytes": 1762893,
+      "sha256": "27b3372f5c797dc0511b7c4b544f9647b22af22b427879f7575c2c99a46de5e3"
+    },
+    {
+      "path": "design-board/assets/logos/club-textile-letters-v1.webp",
+      "bytes": 172434,
+      "sha256": "a8b97c9323d4b86f275a0497be9f2bc659280ba1e371d70254e49703dbd6f2e3"
+    },
+    {
+      "path": "design-board/assets/logos/curious-f-v1.png",
+      "bytes": 1271611,
+      "sha256": "2c1972cd186a9e7eb473a11ef854515583f75ef6c41ce42bb9621ed76ac6eacd"
+    },
+    {
+      "path": "design-board/assets/logos/curious-f-v1.webp",
+      "bytes": 63812,
+      "sha256": "390d1e66673f081fce37a022428982862e6a020c7ab3f918f064e638aee35b84"
+    },
+    {
+      "path": "design-board/assets/logos/depth-dot-v1.png",
+      "bytes": 1232150,
+      "sha256": "0cb32fb0efb605be2753f2dd6d513e21d6ad18c5d1c3e9203db09080f0ff4117"
+    },
+    {
+      "path": "design-board/assets/logos/depth-dot-v1.webp",
+      "bytes": 53192,
+      "sha256": "9d55516f3523542e0935bdacf7f975d585a823304450e131cbe29037b487fd51"
+    },
+    {
+      "path": "design-board/assets/logos/fin-ligature-v1.png",
+      "bytes": 1307670,
+      "sha256": "404e6f2207f433a3dca08d9d72bf91b3d94a6fe53c8ca0a39b26d0a84145b13a"
+    },
+    {
+      "path": "design-board/assets/logos/fin-ligature-v1.webp",
+      "bytes": 69968,
+      "sha256": "76a3a7a35846b5f1a4e0c3494b4d8489db404d0e7421aac61f542e881d871c6d"
+    },
+    {
+      "path": "design-board/assets/logos/fins-long-line-v1.png",
+      "bytes": 1327344,
+      "sha256": "826ac32d271779da01fd4d0b9f984421562bbc50cfda74d58294d4ee23be1896"
+    },
+    {
+      "path": "design-board/assets/logos/fins-long-line-v1.webp",
+      "bytes": 74338,
+      "sha256": "318d34557fa336d2e3f465cdf774febb97713a23fe71022e09f1020aba0de362"
+    },
+    {
+      "path": "design-board/assets/logos/fins-revealed-f-v1.png",
+      "bytes": 1448047,
+      "sha256": "7f8a19ecad901891d6e8d84356ce8c6b0c3a3260f5c1fed0876dd19dfdeaf6a9"
+    },
+    {
+      "path": "design-board/assets/logos/fins-revealed-f-v1.webp",
+      "bytes": 79710,
+      "sha256": "22c7f4c36e25bc525c6e65407e637d68e1dd955ec50dafb22cd53c64b644288b"
+    },
+    {
+      "path": "design-board/assets/logos/fins-shared-edge-v1.png",
+      "bytes": 1350697,
+      "sha256": "918b59ad4065572c873bfe9ba51e9158c67fe52610c21cf36a076863923ac127"
+    },
+    {
+      "path": "design-board/assets/logos/fins-shared-edge-v1.webp",
+      "bytes": 72378,
+      "sha256": "5f4f5468d4f680e891ec17743e58844623fdf3fab8e406f7130286cfbb08c525"
+    },
+    {
+      "path": "design-board/assets/logos/folk-wordmark-v1.png",
+      "bytes": 1302433,
+      "sha256": "079fdad666a32f3fff88c999b18c0b412c04644cded5d3bbce4d2012843b6c41"
+    },
+    {
+      "path": "design-board/assets/logos/folk-wordmark-v1.webp",
+      "bytes": 71470,
+      "sha256": "9d09e384df6f1e8ec3b9fe20f897afb5be98377386e0172ee47ab76f35f2a457"
+    },
+    {
+      "path": "design-board/assets/logos/tessellated-fins-v1.png",
+      "bytes": 1302364,
+      "sha256": "b05ceb9d51875ee620b37a2b571a3ab71c1bb4555fff12f3ffdb6157008be3f3"
+    },
+    {
+      "path": "design-board/assets/logos/tessellated-fins-v1.webp",
+      "bytes": 63770,
+      "sha256": "1bd9fdb706da3f16b3849cbfae1be81b2c027481a1c7c3cb36ab3521833052a1"
+    },
+    {
+      "path": "design-board/assets/pages/acid-social-v1.png",
+      "bytes": 2544121,
+      "sha256": "4aee990f279da3fc714f7b01b1c573dfe3dc68cdb859e236c1ef7c74b04b345a"
+    },
+    {
+      "path": "design-board/assets/pages/acid-social-v1.webp",
+      "bytes": 441220,
+      "sha256": "e8fc9a9b35a4c78fc3760ca9f562059cb4014076fcd93a116403cd8ac4effa77"
+    },
+    {
+      "path": "design-board/assets/pages/midnight-current-v1.png",
+      "bytes": 2121321,
+      "sha256": "6154a420cc45f7762dced4afbc5ee58a136fd865d2db491f51acc45db506f6e2"
+    },
+    {
+      "path": "design-board/assets/pages/midnight-current-v1.webp",
+      "bytes": 312696,
+      "sha256": "b51491aed54a5801395ba200234e4578f777708b37ebceab34d282c67dc1c982"
+    },
+    {
+      "path": "design-board/assets/pages/print-house-v1.png",
+      "bytes": 2388830,
+      "sha256": "2f9c1313e01c8a9505a42f31964f4f7b31cdd7645da5b777f69c61149a93df68"
+    },
+    {
+      "path": "design-board/assets/pages/print-house-v1.webp",
+      "bytes": 372376,
+      "sha256": "bc0c62ef50ce95d92e03a4fb081de8b2c277a18e4b49e592125e7b8bd5d10a58"
+    },
+    {
+      "path": "design-board/assets/people/alex-portrait-sketch-v2.png",
+      "bytes": 3593885,
+      "sha256": "9ec9b45decc655effeefbed3cf1d8cf441a8b28f0b438a124587168a1437163d"
+    },
+    {
+      "path": "design-board/assets/people/alex-portrait-sketch-v2.webp",
+      "bytes": 490146,
+      "sha256": "85673df422c4109402472acd17ed4be9f5f25cb481e682926ac6f4d9796fb04b"
+    },
+    {
+      "path": "design-board/assets/people/alex-portrait-v1.png",
+      "bytes": 2099585,
+      "sha256": "a7f7e8a4bec0469b61613958e9f2c14f55cb277dc08c1d2fa340dc2270f306fb"
+    },
+    {
+      "path": "design-board/assets/people/alex-portrait-v1.webp",
+      "bytes": 64710,
+      "sha256": "93fcebf4ae46e56d6cd88ccd90323a26aa452f4b85c4c1014fb96051fb817e8d"
+    },
+    {
+      "path": "design-board/assets/people/jules-portrait-sketch-v2.png",
+      "bytes": 3580128,
+      "sha256": "727ea537e1067f79a3be561cb005eb0803f421cf05733894b66b07fc206ea945"
+    },
+    {
+      "path": "design-board/assets/people/jules-portrait-sketch-v2.webp",
+      "bytes": 487338,
+      "sha256": "c960c950d0405fcb37e08da5c789311f99a3551ed919a952606cd7e508bd4bc3"
+    },
+    {
+      "path": "design-board/assets/people/jules-portrait-v1.png",
+      "bytes": 2081947,
+      "sha256": "774bfdc3aa7f94bbea88d1ba44c3ce5950b7fa6f3c8c2277e906ea9c850a7e6e"
+    },
+    {
+      "path": "design-board/assets/people/jules-portrait-v1.webp",
+      "bytes": 75096,
+      "sha256": "7e6f54872258827a97afd7196bc125258ce24826bd8110e29ef7ed749fc51726"
+    },
+    {
+      "path": "design-board/assets/people/kai-portrait-sketch-v2.png",
+      "bytes": 3547585,
+      "sha256": "c8cdf8a26be0d0031e0040861e18b4c1d5a21c31bfb9889331893bd10e43c78c"
+    },
+    {
+      "path": "design-board/assets/people/kai-portrait-sketch-v2.webp",
+      "bytes": 482896,
+      "sha256": "30c8074bfd8b129455cb171549fe88709c8354f06698ada37d60ec7b0d8bb9ac"
+    },
+    {
+      "path": "design-board/assets/people/kai-portrait-v1.png",
+      "bytes": 2171076,
+      "sha256": "94ecaf8bd43cc463ef54977316fc582294347330e7207aef043eafd23a81183a"
+    },
+    {
+      "path": "design-board/assets/people/kai-portrait-v1.webp",
+      "bytes": 76142,
+      "sha256": "f56cc1c9d96a2bcc3aed665ffd7b1c2c1fd8c57b348d9bf6c8a1e5390448bd24"
+    },
+    {
+      "path": "design-board/assets/people/maya-portrait-sketch-v2.png",
+      "bytes": 3693764,
+      "sha256": "2cc9ddae56ade7521d41fe27095edabd1afd04ac715b20794886732840c53f63"
+    },
+    {
+      "path": "design-board/assets/people/maya-portrait-sketch-v2.webp",
+      "bytes": 502598,
+      "sha256": "a1218fde68652af75b225a0f574ecdbd989cc7aa5fa30a4a0efe36ca1d888a3e"
+    },
+    {
+      "path": "design-board/assets/people/maya-portrait-v1.png",
+      "bytes": 2182156,
+      "sha256": "287ca26739f323f303e8f93160a490622e394f7e654f686aceac967f66c42ba2"
+    },
+    {
+      "path": "design-board/assets/people/maya-portrait-v1.webp",
+      "bytes": 82566,
+      "sha256": "17e7d6b92df81e1e4de363e48591e866023d50f33c58a90ed58f5686ef272c3d"
+    },
+    {
+      "path": "design-board/assets/people/pool-training-post-v1.png",
+      "bytes": 2495341,
+      "sha256": "c677f894ed806ffd0d72c72e7d61d0ec9b6f333b9413576847c350284ba2313a"
+    },
+    {
+      "path": "design-board/assets/people/pool-training-post-v1.webp",
+      "bytes": 133240,
+      "sha256": "d25ff49e1266cf37b710648c5717e3da40194395153177150621def6d12fbde3"
+    },
+    {
+      "path": "design-board/assets/people/pool-training-sketch-v2.png",
+      "bytes": 3850151,
+      "sha256": "98cb2530c07ba332cbc87a40ff1b2d731052afc11631868a5069efb5912b2672"
+    },
+    {
+      "path": "design-board/assets/people/pool-training-sketch-v2.webp",
+      "bytes": 571082,
+      "sha256": "f4e5fb66235b7780b8e2782d93f169a7914fcafa26299ee4fb9cf1e9103e9f69"
+    },
+    {
+      "path": "design-board/assets/people/rowan-portrait-sketch-v2.png",
+      "bytes": 3656335,
+      "sha256": "9d28f5c289d168d72f82995727e903aa7a20a9e1dc62e945123af6fa3eba6053"
+    },
+    {
+      "path": "design-board/assets/people/rowan-portrait-sketch-v2.webp",
+      "bytes": 495926,
+      "sha256": "ef0a5c0e5f7ef22983473f9b3f6aa9885f87d0813f8c823345b98574057bd459"
+    },
+    {
+      "path": "design-board/assets/people/rowan-portrait-v1.png",
+      "bytes": 2112399,
+      "sha256": "2f2e65f1ddd5b27ba5501288902fbf193f81e2bb87307486fcf36af14b5461ae"
+    },
+    {
+      "path": "design-board/assets/people/rowan-portrait-v1.webp",
+      "bytes": 77178,
+      "sha256": "33ee124b82ebce292a1dcd04910905b2a4417ee83b66a33a3960a0fe2e279f3c"
+    },
+    {
+      "path": "design-board/assets/people/shore-session-post-v1.png",
+      "bytes": 2823430,
+      "sha256": "4fe0c7d475c03cb86083e8642cdfbbfa7a33db992ebfc82a5f62138f525927dd"
+    },
+    {
+      "path": "design-board/assets/people/shore-session-post-v1.webp",
+      "bytes": 160882,
+      "sha256": "71a8012e9587e4a23d920bf609652d51887879ec35e4ddb0e366150ba0ce6cbe"
+    },
+    {
+      "path": "design-board/assets/people/shore-session-sketch-v2.webp",
+      "bytes": 928010,
+      "sha256": "aa8e2127dad45687c63163429edce9e0fd30d77e0bf2a9272aa5b77631874346"
+    },
+    {
+      "path": "design-board/assets/people/yara-portrait-sketch-v2.png",
+      "bytes": 3533717,
+      "sha256": "db94f8b013b27e08ec51b3b40f2eac14a7148b0f668feec0e2302d8f732788ea"
+    },
+    {
+      "path": "design-board/assets/people/yara-portrait-sketch-v2.webp",
+      "bytes": 476340,
+      "sha256": "f0afa192a416d5e9a0ed942869b17aac2c22bb9919aa9a14f0a91fedc12e64a8"
+    },
+    {
+      "path": "design-board/assets/people/yara-portrait-v1.png",
+      "bytes": 2208455,
+      "sha256": "dc2f1e59e4bab2e857318b04fd98f38aa496fbee51187520453c3015aa9ed557"
+    },
+    {
+      "path": "design-board/assets/people/yara-portrait-v1.webp",
+      "bytes": 70976,
+      "sha256": "95a9e146194c19929a9ee2ce6eee8484aa25cfc22fb8f13bca6c7db573c43b68"
+    },
+    {
+      "path": "design-board/assets/regional/animal-bluedragon-hyper-v1.png",
+      "bytes": 3612126,
+      "sha256": "29dea6d134d2c7727305e1f6e88ee9d3736679fee95f7571a347f723cef8fa42"
+    },
+    {
+      "path": "design-board/assets/regional/animal-bluedragon-v1.png",
+      "bytes": 3290348,
+      "sha256": "ebc1922d26886b880633bfe81e3959d4d67f6f6a536c0e1241779096546f2ecc"
+    },
+    {
+      "path": "design-board/assets/regional/animal-irukandji-hyper-v1.png",
+      "bytes": 3272649,
+      "sha256": "76c260f511e34422934ad1010898a0e5c11ee336461e944f3d457d4edbd16ff9"
+    },
+    {
+      "path": "design-board/assets/regional/animal-irukandji-v1.png",
+      "bytes": 3269360,
+      "sha256": "a84524f8e94044dc60b8009934bcb8754693fca18951696eff4e4590c9c8b770"
+    },
+    {
+      "path": "design-board/assets/regional/animal-seaurchin-hyper-v1.png",
+      "bytes": 3768547,
+      "sha256": "6051238a040b44b2064dda82ca349d5a9c00543d608b09cd54416df0e01ca574"
+    },
+    {
+      "path": "design-board/assets/regional/animal-seaurchin-v1.png",
+      "bytes": 3466524,
+      "sha256": "70b62442deb0046da90807966541630a254ca2682f43926905296d8637ce9222"
+    },
+    {
+      "path": "design-board/assets/regional/animal-toadfish-hyper-v1.png",
+      "bytes": 3481540,
+      "sha256": "0e8f90850de04e783e9414a8025eb2ded6ca496aae1c2354df57ceff0d6348db"
+    },
+    {
+      "path": "design-board/assets/regional/animal-toadfish-v1.png",
+      "bytes": 3217959,
+      "sha256": "47d0c4f6583c2964404eae4f812fa2ff30b5e07b8604d9e392dc9e2a0011a6f2"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-arctic-ice-acid-v1.png",
+      "bytes": 3757237,
+      "sha256": "f3670d7cff006795edf4287ac65d1b281e7df33ef514e647da595d5e28bfb8b4"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-arctic-ice-acid-v1.webp",
+      "bytes": 875160,
+      "sha256": "e5930304a02c505b7626ceee8ba429ca1c14b1e34b5bec9789def62a17bf1808"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ascent-acid-v1.png",
+      "bytes": 3557326,
+      "sha256": "f90edbfd5e48788323b02ec1fa43830d3924088c4c6af2d62e42bc3b2cbdd204"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ascent-acid-v1.webp",
+      "bytes": 858690,
+      "sha256": "08651d009236aac1532fbb1bc9e84a40da85f84f2db64f1bf834a02734d87964"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ascent-muted-v1.png",
+      "bytes": 4847267,
+      "sha256": "ecb3ca3a7a6cad2f2f3c9b96c053da9e37ca918531a5b9ff1530863ecf790e77"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ascent-natural-v2.png",
+      "bytes": 2793649,
+      "sha256": "cc83a0ccf9bc7dab10f24cb07391ea2d2bdbc185a6001d9eb9cb38de126f361b"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ascent-natural-v2.webp",
+      "bytes": 465756,
+      "sha256": "ec9ee4b3cb4fc473f3cecda59d196e056cfadc9b54f728ee8193bd7b6d17a38a"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ascent-stylised-v2.png",
+      "bytes": 3969514,
+      "sha256": "bf841808321fe0173e7641cc0b9cb62a1632e6a59ef10fa1c7e70e386bd7b5d2"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ascent-stylised-v2.webp",
+      "bytes": 818024,
+      "sha256": "f55c43d9493c09687aa0ffbe4ca1d88bc565ab463bcd5fca2f56d4423cabd954"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-bicheno-acid-v1.png",
+      "bytes": 3839246,
+      "sha256": "4e66664ace2eafd2d085007dc9685ebb3fbff1838dc25edcf3a4e95c7480520d"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-cave-acid-v1.png",
+      "bytes": 3729436,
+      "sha256": "22e58cf36a838b7f0bf6ff9961dabe4c17fc8dcc2c1efb8814b2bf5cde4160d4"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-cave-acid-v1.webp",
+      "bytes": 897678,
+      "sha256": "7628cc32cfe2356956027deb0c0790baad262015a71ea4586e016a2e9b184830"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-coral-reef-acid-v1.png",
+      "bytes": 3689300,
+      "sha256": "d6edf5fa9de2b53ae0b86858ecba9742c3c283fb6b15cb8c1d9b44510ffb5a83"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-coral-reef-acid-v1.webp",
+      "bytes": 875548,
+      "sha256": "d4a9f6a4b2a0df1011a6eedb4ab939c8dcc51050cb667d5924b771879660cee2"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-great-barrier-acid-v1.png",
+      "bytes": 3807864,
+      "sha256": "a3afa1eaefed6253c382f5bccba3777f72b81cdc5f07a68a9b78046d0076503a"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-jelly-drift-acid-v1.png",
+      "bytes": 3593619,
+      "sha256": "592ffe8405f8f0619fc1a1ddd4a6ad095efe26f68e0927245ff18b98de29d2a3"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-jelly-drift-acid-v1.webp",
+      "bytes": 811578,
+      "sha256": "7f93c241aa22fef09630bf515b1217ed10cadb302b7bacf182445ba639d1af35"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-julian-rocks-acid-v1.png",
+      "bytes": 3848538,
+      "sha256": "ef08e8904510e58b9cf2a96f8ea1dff5124454f12eb752971123164886a90251"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-ningaloo-acid-v1.png",
+      "bytes": 3737141,
+      "sha256": "0270fe6788dcb2256b62d066044490881abd0d379fecaf18081604dcd473b0b7"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-point-lowly-acid-v1.png",
+      "bytes": 3825361,
+      "sha256": "56c8d114e6d2c38f90834f2442bdd39ce7a86fadf982828706a958c9634af647"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-port-phillip-acid-v1.png",
+      "bytes": 3754453,
+      "sha256": "60e5b8d0f6ef676ef9a3c75e607408ceacb90d94697d367ce56b0734135fc74f"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-reef-glide-acid-v1.png",
+      "bytes": 3870811,
+      "sha256": "ff836a6e0ae35a60ff3e44431713f189f538aa5184602c658e7b4a94830c74ec"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-reef-glide-acid-v1.webp",
+      "bytes": 928010,
+      "sha256": "aa8e2127dad45687c63163429edce9e0fd30d77e0bf2a9272aa5b77631874346"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-shipwreck-acid-v1.png",
+      "bytes": 3831177,
+      "sha256": "aed8df382bf7a083909e3697be9b849dae47760e7992b18a6666c528769a250b"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-shipwreck-acid-v1.webp",
+      "bytes": 932500,
+      "sha256": "34efaa2942d16bac80f4512106098bb30dff8df76b0ee4c238858dfd29dda072"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-sunken-city-acid-v1.png",
+      "bytes": 3898519,
+      "sha256": "3a0b027764090d71fe8b710ae2a488b6aab40e0f428cdfda8d89d6c76f737cee"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-sunken-city-acid-v1.webp",
+      "bytes": 940750,
+      "sha256": "a37b4da99faf951bd732c71a83fd023de2a50539c991e94132c47d661028a871"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-tropical-lagoon-acid-v1.png",
+      "bytes": 3975118,
+      "sha256": "9cf240f9bd1240dfeef9b6a7df94c468643a0ad2b7bdbe45a718cabe7478c7ec"
+    },
+    {
+      "path": "design-board/assets/scenes/finfolk-underwater-tropical-lagoon-acid-v1.webp",
+      "bytes": 950484,
+      "sha256": "c33f627748f5b53df21597c6877866f36538db30bdcf86dc700f60e41f5d12e2"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/acid-dark.png",
+      "bytes": 3037033,
+      "sha256": "977e068e3968a9f9f0f6f48b62ee36a1e3a2c7daa159303e2fcea6e1a313b548"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/acid-dark.webp",
+      "bytes": 692140,
+      "sha256": "9adae1877b85c4665f72ea7e7099ad93d1d4ca404c9e94d29debb756862550db"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/acid-light.png",
+      "bytes": 3051584,
+      "sha256": "ed4a45a759a4cbcf0d8b1f0678764a44bf6aef3ecb41732e603925ae00d84d16"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/acid-light.webp",
+      "bytes": 687418,
+      "sha256": "d1ddadb03ad82c600a7cca66c5decc5ef538338cad27816e3923aa9c3e4148a9"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/muted-dark.png",
+      "bytes": 2750368,
+      "sha256": "872ceaed2670d833219dfdd34daf3988f4f9effc59ac7d0c1de3d3dc1efff86e"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/muted-dark.webp",
+      "bytes": 607360,
+      "sha256": "1e96a5418beff89e1c882af5ad98002ed7e6236622471c1f014264db5877c772"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/muted-light.png",
+      "bytes": 2874305,
+      "sha256": "a3ef10c425cc569fcbbfba9c5b8fd32ca39427c9489d3fb63cfa91556cc91492"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-arctic-ice-acid-v1/muted-light.webp",
+      "bytes": 630814,
+      "sha256": "29fc019e50e3218f1174ad9f1f863d21a5187659d7ddbf4599cc23f7e3ff20bb"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/acid-dark.png",
+      "bytes": 2966835,
+      "sha256": "d92eb73f685e3ead370c39ff8453726569aefe45d8b1f6e0fe926f2deb6a2e19"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/acid-dark.webp",
+      "bytes": 731204,
+      "sha256": "d9c5cd7311226383e25633ed8c64405a292e32307315dc97e8add4cd686a74d8"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/acid-light.png",
+      "bytes": 3025771,
+      "sha256": "0fedb50bc61b97dde86ea77b6a0b7633374eb861d1a0e5693f4bf811223c4533"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/acid-light.webp",
+      "bytes": 710510,
+      "sha256": "5d041daa3a621388535d1c5208a1d935673ed4cce00b81d341b45bed596d4b65"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/muted-dark.png",
+      "bytes": 2567136,
+      "sha256": "2764740e3c33c8c9f6199e48caf4d8ebfcb4c0faf075df557128f2ab3c14f939"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/muted-dark.webp",
+      "bytes": 586236,
+      "sha256": "5bfa7b9a116dcb2d6e023bfabaf80409057ba419fee965ff48000762157d4f7a"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/muted-light.png",
+      "bytes": 2794474,
+      "sha256": "e93ffc11e197589af05845ee7aa9cdb6dee09f8891392d5216c62c2382713a69"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ascent-acid-v1/muted-light.webp",
+      "bytes": 632088,
+      "sha256": "32c203ae3a0fe3ef52f41a86561698118ac1cdb4f86882127aeaf4375695864a"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/acid-dark.png",
+      "bytes": 3370846,
+      "sha256": "00ee2d1fc7a375245e662995a2005c055078719b0a2d8e192841a5c45ce38252"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/acid-dark.webp",
+      "bytes": 791730,
+      "sha256": "ac2cc7a48a32fcf95dc731383e2292b420791b4b2604ae38481abcbf3c4045a0"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/acid-light.png",
+      "bytes": 3426385,
+      "sha256": "691d04ae0cbcbb8c340dadea0aad2dbc743ee5131a49c55746ceb296648bee54"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/acid-light.webp",
+      "bytes": 774728,
+      "sha256": "84b9dcbc781bd19274f1385fd63d96dde4f4697db4de9ff1a3770576ca1795ac"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/muted-dark.png",
+      "bytes": 2923511,
+      "sha256": "5346a4447f80a67b4e00a8fb56501aaac9bf9275f0b177734d99e9743b37daa9"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/muted-dark.webp",
+      "bytes": 655494,
+      "sha256": "1ef83972652cc28d9e4128b43e8f1a561b31e794da7dac66fb375e88226343e5"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/muted-light.png",
+      "bytes": 3202968,
+      "sha256": "bb01f4a88ed0d7c3593285f6ff32f69106d16581652a380c7f862851ea4ae2b7"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-bicheno-acid-v1/muted-light.webp",
+      "bytes": 698112,
+      "sha256": "caeea6c3fdb4bb2c0b76c0bf3d1bcfbc2d954d1c6f486c24bbc5dabb6a2a0e4a"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/acid-dark.png",
+      "bytes": 3063826,
+      "sha256": "ed263754e5754c650d94e5acea004bf29810c07517f0a4f5e1d5a13d49c08234"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/acid-dark.webp",
+      "bytes": 771192,
+      "sha256": "ba77f541f211f2c2c5817214e896021d7d1cbdb75c3c2562254708a78dea6ffb"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/acid-light.png",
+      "bytes": 3114648,
+      "sha256": "e8263ee50333581fdeee50ce7a531de14260cf87e2488214ed73f6d1f747e8b3"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/acid-light.webp",
+      "bytes": 747576,
+      "sha256": "5ef6c6a9bc814c32f0b142b11a08cf8c5ef1cb93d83b34fa377772ca3ab266bf"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/muted-dark.png",
+      "bytes": 2752728,
+      "sha256": "e046f3ffc4ab5df628aba6e8662b9eb7c632a3bda68c5f9f8ade57285fd0f284"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/muted-dark.webp",
+      "bytes": 642960,
+      "sha256": "9f2ed680cc9a48a31a2fdd42a6901b92de6856613505c973987fd8a51391c75a"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/muted-light.png",
+      "bytes": 2933647,
+      "sha256": "08f3abb7dfa03f9314be2e38784162351985d68dd68b12bb9352c9fe0f7be33e"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-cave-acid-v1/muted-light.webp",
+      "bytes": 677934,
+      "sha256": "70a08b6d6c06890d3255ae099cf1d38a8ed17c1936647fea90ad36c86d7a936b"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/acid-dark.png",
+      "bytes": 3117501,
+      "sha256": "2aeea5983395325dbaa0d5f4c28ad9fdda186cfac867e4345448a18ebe145fcf"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/acid-dark.webp",
+      "bytes": 740752,
+      "sha256": "37f3345bb2c5af9f5d7c1e37d83c73b3b6f578094aa5279f5a0baab76f23dae8"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/acid-light.png",
+      "bytes": 3196916,
+      "sha256": "0edc0b39553315d69bd52b608ca694cfe931dcaa409e65ec6934b7e895eb2042"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/acid-light.webp",
+      "bytes": 726302,
+      "sha256": "0ab564ccccfb4105b04d3b7b64a0b7970b38e815f01976f4566116be6ed9a343"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/muted-dark.png",
+      "bytes": 2702467,
+      "sha256": "f4596b14cfee16db7bf951a120ba8791028b7308811976e5b469ae366c228905"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/muted-dark.webp",
+      "bytes": 613166,
+      "sha256": "d7a4cc8b0d659a6cfb2f4ceb842dbcc4ac2e13455431aae1893424a62e9cbfc8"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/muted-light.png",
+      "bytes": 2966542,
+      "sha256": "c0766a5044b43b30a524a52859351f0249ae4faa235c81aeb91896a38e96b49c"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-coral-reef-acid-v1/muted-light.webp",
+      "bytes": 656878,
+      "sha256": "4e1e36b305ea5ae51689dae71a3c3a122ab3aaac97bbe245a5bfdc6d06632225"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/acid-dark.png",
+      "bytes": 3188202,
+      "sha256": "5ed0ba9b7f7d9d61059ab26a607f28e75564ba7aa67e5f3bf98472f301ad29b5"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/acid-dark.webp",
+      "bytes": 754528,
+      "sha256": "ecfeba51d5a17a0caab31ec1f2e9bace013fea2c92a00fc31accbd0098fb6bd7"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/acid-light.png",
+      "bytes": 3244710,
+      "sha256": "9a2e71e3cb73f0081079e524d0daa9f16417efd6fb76514a4a7e013a3fad405b"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/acid-light.webp",
+      "bytes": 764734,
+      "sha256": "7d5ba48b04fa65ab767e2d326495288e0527a4498e1ed71048eb6bf750211e20"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/muted-dark.png",
+      "bytes": 2808289,
+      "sha256": "b16afadbbbca7e74046dfa2c5694af15986f5c196f826b9df15018ca34ea3bdf"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/muted-dark.webp",
+      "bytes": 651990,
+      "sha256": "f56751c768ffa5a697c91e1bb78d7d2e8ffee49155c231f3ac21fa0617260bbc"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/muted-light.png",
+      "bytes": 3033891,
+      "sha256": "4c255a3701920775c9cfb225b4b7113889937fbd61ae010f0c900e22aa943ffa"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-great-barrier-acid-v1/muted-light.webp",
+      "bytes": 670088,
+      "sha256": "c08dfa78b420db766bbc19031a854ea2b4fdb3b46706636a9a91ff3bbfcac146"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/acid-dark.png",
+      "bytes": 3519123,
+      "sha256": "64ca2897835ac5988a09456dd7d2d22d6de248e3eccd82cbda396ec15bf5f669"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/acid-dark.webp",
+      "bytes": 663328,
+      "sha256": "35cae7c015029662639badad906c203dceb92a5a64588b2efe49515b46141f64"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/acid-light.png",
+      "bytes": 3501020,
+      "sha256": "5aa3b784ab4e67b302ee9d4e2a0c551c99d7140269e5aa10410db9628d628833"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/acid-light.webp",
+      "bytes": 680180,
+      "sha256": "88a811e2f0e39e28ba928f57e6fa2b3091ce5040bd5374f16013d1abba526d77"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/muted-dark.png",
+      "bytes": 3155731,
+      "sha256": "4590dcabe85c195c941cd3da75b06dafd369efe4656d8c4876a822d534251a6b"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/muted-dark.webp",
+      "bytes": 601546,
+      "sha256": "44f9804725cb7d75c97175c562b6758af0f31513cfb9adb88cda7d44c7f526e4"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/muted-light.png",
+      "bytes": 3162849,
+      "sha256": "bee145e0954a3981d1fb641812597540c05b503399af824916b4cebf7446feea"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-jelly-drift-acid-v1/muted-light.webp",
+      "bytes": 603182,
+      "sha256": "1cc73a6e15563a5dde01b99c8e9119622acb4f3fe7be61d8c546958fc0b5dc44"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/acid-dark.png",
+      "bytes": 3285048,
+      "sha256": "db4f3e4e1c77f61f9b019a56c5751355cd6a7adc11b2f7250805e7cae9ef1fe3"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/acid-dark.webp",
+      "bytes": 794240,
+      "sha256": "d1d032b8471030aad05bf280b119a83392d7db4bbad4a0e50b52d7bdf6106035"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/acid-light.png",
+      "bytes": 3347102,
+      "sha256": "377465bae049a630c2db8c9dca6979369a37376ecadc70d4b4fad37eccfa290f"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/acid-light.webp",
+      "bytes": 793012,
+      "sha256": "8b8730576d2bf57d744d10bffad1f9343fcb07d3cf015e0c2c0af23e8615a6be"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/muted-dark.png",
+      "bytes": 2886593,
+      "sha256": "3215fb08249075fcf091009f32590521583e593a50039dd55e8679b884383dd2"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/muted-dark.webp",
+      "bytes": 699850,
+      "sha256": "c6e76c05cd7199f9acbdff52fd8d5324515745482946d6987bab9740e886a11a"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/muted-light.png",
+      "bytes": 3138712,
+      "sha256": "00117f53801e1dcf2638d84a8234cf20a040ca3df2cd35a3395a44156b5f4b3d"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-julian-rocks-acid-v1/muted-light.webp",
+      "bytes": 719588,
+      "sha256": "db9c603836784eba9c4175107ac103afc59d28c2b0575621ecc39860c796ba96"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-dark.png",
+      "bytes": 2991216,
+      "sha256": "fb9b013f4b9293d413f23c3090f571f7591b3443965539d56fc45dadec4f5b54"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-dark.webp",
+      "bytes": 753442,
+      "sha256": "1a065b5803ffce6b56d7cbd024bc620bbd879438d89c5c1f9b527163bd7a2d80"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-light.png",
+      "bytes": 3022349,
+      "sha256": "23f060ef063677b158aed98e9b7252497b243a23d65d6534bd443fa6f7c09a08"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/acid-light.webp",
+      "bytes": 763798,
+      "sha256": "e662368d2532b8cc276d3a05afeb0f36fb842a4a9e10d8b11ce348925d45b958"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-dark.png",
+      "bytes": 2678045,
+      "sha256": "ceae83895dcfe941b80f46cce3eb10f022e4ac0b356823b413410c72eb0c8c72"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-dark.webp",
+      "bytes": 663528,
+      "sha256": "1fa77a13c59650c648bf44983576fe7875d1ae01e31ebdff1b47be8b27433982"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-light.png",
+      "bytes": 2844335,
+      "sha256": "86cdb1ae6087d773a77568e1467e938946548936b2439b0854df6fe2daf0e888"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-ningaloo-acid-v1/muted-light.webp",
+      "bytes": 672650,
+      "sha256": "1b414d181fed8536ec08055256a258e7f6b8883c48188c45aa8bc95d875e045b"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/acid-dark.png",
+      "bytes": 3366084,
+      "sha256": "dbcb1c3b5ccfcb9306a7078b34a078fbf1c28a03d4893b746921d933804bb07b"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/acid-dark.webp",
+      "bytes": 754318,
+      "sha256": "149ef17a0a8cf3096b3943123558d9aee84cc22464921f3d27b23038bc507497"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/acid-light.png",
+      "bytes": 3406123,
+      "sha256": "da4db2c0aa17f002abb9255d59c17a4719b6722ed047dff9a0d60b58de3eee5d"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/acid-light.webp",
+      "bytes": 758550,
+      "sha256": "e3d63757bec42df347b0ec720472e6f6d673280b88e6421084acf191eb0e2cf5"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/muted-dark.png",
+      "bytes": 2993281,
+      "sha256": "58e13d931faaa1cf5fda87cb4613d8c40da89d5abd723ce00ddf62155ef97fc0"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/muted-dark.webp",
+      "bytes": 649928,
+      "sha256": "0227776ecb4c14d9144655895b48b484aaf6e727b92e20fce63155c0445c321b"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/muted-light.png",
+      "bytes": 3166626,
+      "sha256": "58f23646e5ad251bb7412688d6f8e1c8d2b3a79b4ef174de6ac3f8f91ab6c4a5"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-point-lowly-acid-v1/muted-light.webp",
+      "bytes": 671558,
+      "sha256": "5532946c8ef29824d88092c175ea95958d261d9e38b3c0cb4b3b7074b5024cb8"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/acid-dark.png",
+      "bytes": 3238011,
+      "sha256": "f63a4d26e29d10647aedb7fdde8f6c8bf5c11b9355a8bed3bea0b421be7508bf"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/acid-dark.webp",
+      "bytes": 770106,
+      "sha256": "e367deb3dd6f5ad7e0a4793ec7bb9728336a75058286dcdd8f51eb44174148ef"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/acid-light.png",
+      "bytes": 3290616,
+      "sha256": "fabf68183c7d46b0d7723ec7cc348ce3d991e3e2bc0e0858e6bc2e4259badbef"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/acid-light.webp",
+      "bytes": 759186,
+      "sha256": "2ee683c2a10579b60afa1debcabf521fede14f75091fe0f4596a56b445d57864"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/muted-dark.png",
+      "bytes": 2853248,
+      "sha256": "e97d730bf2b3daa530e29fe8bf0174ab2c696a52c6eeffbbf8d5603c3587cfb0"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/muted-dark.webp",
+      "bytes": 635890,
+      "sha256": "d400f21b65089a9565a6c79249b31567924cbd87c06052612c90b88f31278353"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/muted-light.png",
+      "bytes": 3055814,
+      "sha256": "825ea5a72599dcac664d84b9a542874cf80879f1d9d17592fda13bea20263798"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-port-phillip-acid-v1/muted-light.webp",
+      "bytes": 681754,
+      "sha256": "4211c0fc3b15b3dac6d202b9488908eb05d472798c590df1ac521ec5c0365815"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/acid-dark.png",
+      "bytes": 3805961,
+      "sha256": "7413270b2682d78605e68edcc02d634a98640dde811502a149250619f91c7595"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/acid-dark.webp",
+      "bytes": 780244,
+      "sha256": "daa63d60e4da35cffcb639161180c834994ea5df302e7594f01953f672a0c8c4"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/acid-light.png",
+      "bytes": 3802763,
+      "sha256": "df7bbf101d2150ca732f5c253d91968c2c7dee810e9c2118b42bc0b1ed65e10d"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/acid-light.webp",
+      "bytes": 792138,
+      "sha256": "42b9ae745a645f2fb902f1351876aa572f1de588a5ae90ec0edfdae265a5c947"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/muted-dark.png",
+      "bytes": 3381875,
+      "sha256": "405ea202a6e80051300c6fcb8338b76044d2f0ea3a8f5a4b658bcf87f8b893da"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/muted-dark.webp",
+      "bytes": 699348,
+      "sha256": "c48d5f68d99f0580bfdf2a5160c6436188a9f08ad1a65b2b086a5e3c774c4209"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/muted-light.png",
+      "bytes": 3401891,
+      "sha256": "fbd5de613c9ab130b173b53dfc34506e6468f9e1ad23036e78e18e78a3a06e28"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-reef-glide-acid-v1/muted-light.webp",
+      "bytes": 704662,
+      "sha256": "3358ebcde566ac6782bc3aad51d47c0ee15cd05e01cbb93e46a9eaadce8617ee"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/acid-dark.png",
+      "bytes": 3269078,
+      "sha256": "7ca69b2849cb1f5cb8d561887e4c32cf85053efe08925d21cb4ed54c3f254d55"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/acid-dark.webp",
+      "bytes": 761116,
+      "sha256": "a38e78f54e4814c07ea8e6f205e85a762486be1911377cdc0e02bf28c7142925"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/acid-light.png",
+      "bytes": 3304365,
+      "sha256": "730260b89971171ef45198ebe4e9acd24d19b9fa86b1dcb8e4d9146e8f004de8"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/acid-light.webp",
+      "bytes": 761704,
+      "sha256": "3bcef5495bb9398331f2c46b9651518b875d33a26e857bc4ce89f8a0aa079ed2"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/muted-dark.png",
+      "bytes": 2887372,
+      "sha256": "103b832cd836b75b00afdd5598193efda03fd008bc97a058784808bba836b5a0"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/muted-dark.webp",
+      "bytes": 652892,
+      "sha256": "22f89d1175378466e46d0e19eff312e7c4cdc31dca3b59a8e7d1f8822882b001"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/muted-light.png",
+      "bytes": 3083782,
+      "sha256": "cefae4cdc40e847f4c178497cd333431a4fc0d0c887c04dfc7ac8a1ac41e2311"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-shipwreck-acid-v1/muted-light.webp",
+      "bytes": 679568,
+      "sha256": "584eebcd03cbabb0528ec90bbd6f643eeacc1d54d357c85942e4892878529092"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/acid-dark.png",
+      "bytes": 3441602,
+      "sha256": "8ba4f71356d081bf43508bbf63a13f8d83e55fcb8b62d2ad5c92c5739a602a98"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/acid-dark.webp",
+      "bytes": 778890,
+      "sha256": "a71dccc6262544dcff55c67c2cde3a088a4fa08f61519bdb964f125f1443da00"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/acid-light.png",
+      "bytes": 3523296,
+      "sha256": "37a8e7ce9f072d55c44ef412f191a8a02c2ed968d5dc74fc2f246ba94be79434"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/acid-light.webp",
+      "bytes": 759590,
+      "sha256": "8a0611960127c621f2d14c6f6bd5b9efefa6ad58e2d0141aa16920eba769abf3"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/muted-dark.png",
+      "bytes": 2987949,
+      "sha256": "44cd8df9cc47a39b2dc5db58f9f089ace5f830de418c278e6532143b3e88eaee"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/muted-dark.webp",
+      "bytes": 637080,
+      "sha256": "d56f5ff68a444d522c1b43373c23bbdad456e1c16a39521301a469a8fe8619fe"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/muted-light.png",
+      "bytes": 3278065,
+      "sha256": "6efaabe612cb8c5aaeb35335083649d74890cf8c1e96fd99c27bc055e667866a"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-sunken-city-acid-v1/muted-light.webp",
+      "bytes": 681954,
+      "sha256": "403d79be68cdbc84016b46130eeeccea0d6a0ec42dc81513fe06f22ea250ad6f"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/acid-dark.png",
+      "bytes": 3489106,
+      "sha256": "427377f3f66cf9d2ae4a5450b475176b66c3d5a6ba613432bc5b02adc441fdc3"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/acid-dark.webp",
+      "bytes": 799956,
+      "sha256": "c862739ca0cca5e162e35f12e94848f32a21c75e7723c543ba61ad4bd866d5e9"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/acid-light.png",
+      "bytes": 3516407,
+      "sha256": "27461d70f094c1033965146282a82632ae337b55d234cd81a2a91fbea5844ef2"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/acid-light.webp",
+      "bytes": 812768,
+      "sha256": "9b19f385665069c26bb54e5237091ce5788e9f7b93834bf66ee8e8c78da8a5a0"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/muted-dark.png",
+      "bytes": 3091315,
+      "sha256": "25519aa9e504a384f5b7b4bffd56381e97c3a4091f9df889202f7b51990a0b7e"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/muted-dark.webp",
+      "bytes": 716836,
+      "sha256": "ae1c1e74ed1c530d03a3eff15f7701570c53abdf4a9a0e146585dfa4f6ec9e52"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/muted-light.png",
+      "bytes": 3264128,
+      "sha256": "0c5b6623b18b4c236378b14fc00320663c3d81e53870c6b8dc6cd39a964cd04a"
+    },
+    {
+      "path": "design-board/assets/scenes/palettes/finfolk-underwater-tropical-lagoon-acid-v1/muted-light.webp",
+      "bytes": 723496,
+      "sha256": "cfa88ee38dbf8675994c1bc9927944e2be3447f431360cb43dd62d32531af9ce"
+    },
+    {
+      "path": "design-board/assets/schools/apnea-australia-foundations.webp",
+      "bytes": 150310,
+      "sha256": "c6bd0db6c36b5d54cc9a0ed4b48c2ef2b7d2df2f483125bba7d5e760d8772c4e"
+    },
+    {
+      "path": "design-board/assets/schools/apnea-australia-training.webp",
+      "bytes": 88252,
+      "sha256": "0dd12170417b8aaa7aa82c82a33c36e0a3862af487975a1e60ac4796eaaea93d"
+    },
+    {
+      "path": "design-board/assets/schools/freedive-tasmania-freediving.webp",
+      "bytes": 30070,
+      "sha256": "47cfb0719578dbfa34cbcb8430488bad1bea21b03aba34681df0809f7fbac76f"
+    },
+    {
+      "path": "design-board/assets/schools/freedive-tasmania-kelp.webp",
+      "bytes": 60486,
+      "sha256": "6acf51eeacfe1cf74c86b40542ba926637b31cc6c5fba5d4f4ab08ee5cc96cdc"
+    },
+    {
+      "path": "design-board/assets/schools/freediving-australia-community.webp",
+      "bytes": 98078,
+      "sha256": "bbe089a200cf7d51dfcfb2c8c84b86b5f92900ec2298127643fb38b97e61e24e"
+    },
+    {
+      "path": "design-board/assets/schools/freediving-australia-courses.webp",
+      "bytes": 82198,
+      "sha256": "4a630efed66bbb18e0eb23e6a5e27dab239911934f14bc292ffa33269f4cc807"
+    },
+    {
+      "path": "design-board/assets/schools/freediving-central-community.webp",
+      "bytes": 273304,
+      "sha256": "2f6067edb8a9e2700b0af2ade6963f791e35c6b876f5a89de9ff723d16570085"
+    },
+    {
+      "path": "design-board/assets/schools/freediving-central-courses.webp",
+      "bytes": 189768,
+      "sha256": "a47ec47cfd82290d3a97006ed9287511f9a0229e55744fff1f4ea9011582c416"
+    },
+    {
+      "path": "design-board/assets/schools/oceansense-courses.webp",
+      "bytes": 136472,
+      "sha256": "e771f6da216593cabb8eb15e0d3572a89b3b1601272845ba4597fedee5b5874a"
+    },
+    {
+      "path": "design-board/assets/schools/oceansense-retreats.webp",
+      "bytes": 188668,
+      "sha256": "9208edaf86e41750a5cfb9f558dd4437d4fdb6f5bd3abfb4e029eabcbd7b75c9"
+    },
+    {
+      "path": "design-board/assets/schools/rusty-freediving-coaching.webp",
+      "bytes": 175064,
+      "sha256": "09209ac71a2a46cc773716a58a5cfa6e0781bf9226bcd11d91fc918d0ae723ba"
+    },
+    {
+      "path": "design-board/assets/schools/rusty-freediving-courses.webp",
+      "bytes": 182716,
+      "sha256": "ea1d2332534abdd0ed393869ac267516a26527118bdbbb9d2dffcf2b10c2d366"
+    },
+    {
+      "path": "design-board/assets/silhouettes/habitat-fan-coral-v1.png",
+      "bytes": 620198,
+      "sha256": "78a69b461321e1c4d57de2068decf845cff064a52136d12a120d765e06b277c1"
+    },
+    {
+      "path": "design-board/assets/silhouettes/habitat-kelp-v1.png",
+      "bytes": 491825,
+      "sha256": "26399edaeb1b8005fd65400d5e8b062887cb6b947b3c83443c188d0f6cd9bb31"
+    },
+    {
+      "path": "design-board/assets/silhouettes/habitat-reef-arch-v1.png",
+      "bytes": 416711,
+      "sha256": "c5d872f777dce0086abcdb46d7d1a36eefc7ab1bafc827f696e183856e44098a"
+    },
+    {
+      "path": "design-board/assets/silhouettes/habitat-schooling-fish-v1.png",
+      "bytes": 247840,
+      "sha256": "71d6ffe789812af8a2fd7850b378f863cc3962912b1ef362840e6c1e7d3f7002"
+    },
+    {
+      "path": "design-board/assets/silhouettes/swimmer-back-float-v1.png",
+      "bytes": 365181,
+      "sha256": "162700d0af4437e82c008c3f524a264257efacccaa4a18ea1be44b1c76b1b093"
+    },
+    {
+      "path": "design-board/assets/silhouettes/swimmer-breaststroke-v1.png",
+      "bytes": 339493,
+      "sha256": "5cb26afe8a2d4bef321d6bd64141057652013c4cf5e6ae0ed66456376e1927ca"
+    },
+    {
+      "path": "design-board/assets/silhouettes/swimmer-duck-dive-v1.png",
+      "bytes": 254505,
+      "sha256": "e03b28bc10424b5bfc49a28c1a7490ffec99f56f06f42caeed568e924067cf08"
+    },
+    {
+      "path": "design-board/assets/silhouettes/swimmer-freestyle-v1.png",
+      "bytes": 213854,
+      "sha256": "ca2431e3ac6973eade841b5c9b993624543444b6aa2078c5e1d0ceccf013ac3a"
+    },
+    {
+      "path": "design-board/assets/social/finfolk-social-avatar-hyper-v1.png",
+      "bytes": 1237315,
+      "sha256": "21e50c92f8c499585fdd3d58bf61957d4a17c1d7622fa5e2fa9fc866b49fb489"
+    },
+    {
+      "path": "design-board/assets/social/finfolk-social-avatar-ivory-v1.png",
+      "bytes": 1199452,
+      "sha256": "e13124839e475fffb7866dae9114524faa89c98da845bba4cc0eb4b1f6ca9fe2"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-approved-acid-logos-v1.zip",
+      "bytes": 2947563,
+      "sha256": "05694da3d329fb3bf4114440add0954eb28bed310ad0492209fdae1648665d7e"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-cobalt-v2.png",
+      "bytes": 44797,
+      "sha256": "23ec5aea07da433899ae402210298e1178848939f0f774401c1bba9df3058887"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-ivory-v2.png",
+      "bytes": 45503,
+      "sha256": "9e97d101032d4dd26d3af65de2eaec6a8e459e1db0c65a6406f96e44cbab7576"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-logos-v2-preview.png",
+      "bytes": 114911,
+      "sha256": "affd9ead9854a355eac14436bb39aff327c96da5b2dd82aa95e447d78953630c"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-logos-v2.zip",
+      "bytes": 221905,
+      "sha256": "38c2449b139f1c566b85b8b81659b70acb370070b0550807495a0f9b3ea30d26"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-navy-v2.png",
+      "bytes": 45410,
+      "sha256": "0db98e659ac3775c7fe3093eb845f8a74e92e7b2b3b793524a8fc94d2a4bf181"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-octopus-acid-navy-v1.png",
+      "bytes": 1482567,
+      "sha256": "78fa2927cf8157bf5b481ac6a30a462955b24bb55bee196eb7a06f5ffa1b67ba"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-octopus-acid-navy-v2.png",
+      "bytes": 1436129,
+      "sha256": "e22145d13ac48b6e692f38eca0b13cce69050abe8909b1d8e3aef7e9d24a2feb"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-octopus-acid-yellow-v1.png",
+      "bytes": 1460045,
+      "sha256": "0f8e186bb06f1cf73104bcab86fbfa39bf1c8205e0549cdeac9e3ea0b7414e8a"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-octopus-acid-yellow-v2.png",
+      "bytes": 1427675,
+      "sha256": "9001be584c147831904d3c5afcd6d772252f1029f510f65fb752d30b0859bdf2"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-octopus-ivory-v1.png",
+      "bytes": 1440613,
+      "sha256": "fd3accc07977995b3543202e74cd06f88f773ff856cc2ab2e67fe6d5db6ef47c"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-social-yellow-v2.png",
+      "bytes": 44549,
+      "sha256": "697d524a0696019d8a611786eca169ef57de29a5ecc62ccd12c2139b77609b29"
+    },
+    {
+      "path": "design-board/assets/social/slow-melt-v2/finfolk-wordmark-octopus-acid-yellow-v1.png",
+      "bytes": 1811659,
+      "sha256": "4b72e145a7a1d3fa33fee94757cb7edf3b2512aa068cc7406d1c5b500ff47244"
+    },
+    {
+      "path": "docs/previews/finnie-symbol.png",
+      "bytes": 10095,
+      "sha256": "6179c56490d3a4bdac72b9d7f9230fed608c9fff594df704202757888bcc1548"
+    },
+    {
+      "path": "web/animal-bluebottle-acid-dark-v1.webp",
+      "bytes": 548274,
+      "sha256": "3bc9312ddbef131b200f4462e249bbfedc33da72265e427eb5d6703e83152749"
+    },
+    {
+      "path": "web/animal-bluebottle-acid-light-v1.webp",
+      "bytes": 547212,
+      "sha256": "9929e4c3c5cbc6271bb8b056348a4909984a2febb4ae8d822c83dd33a3d7ee9a"
+    },
+    {
+      "path": "web/animal-bluebottle-hyper-v1.webp",
+      "bytes": 590760,
+      "sha256": "f6d4890c31429face3b69caf27a7ce4d5866a304b82c12644fd1198e065c0868"
+    },
+    {
+      "path": "web/animal-bluebottle-muted-dark-v1.webp",
+      "bytes": 457218,
+      "sha256": "d48106c94f3885875e81effedbbebe9199694835647709f65d433aeda5b402ec"
+    },
+    {
+      "path": "web/animal-bluebottle-muted-light-v1.webp",
+      "bytes": 472648,
+      "sha256": "30f974d2b8973f9cb6679a2c9b5039018f9184c4dc32df5fd2308bc24619685c"
+    },
+    {
+      "path": "web/animal-bluebottle-v1.webp",
+      "bytes": 581580,
+      "sha256": "f4e9cdd81748164393483bec9f6bb8268e40e9d9621b076b5e1fa8bf7aa9e9a7"
+    },
+    {
+      "path": "web/animal-bluedragon-acid-dark-v1.webp",
+      "bytes": 610324,
+      "sha256": "d1ea76924ffff5148df8450dfb449efae751c49378a7824f22528f8ef5ee8c56"
+    },
+    {
+      "path": "web/animal-bluedragon-acid-light-v1.webp",
+      "bytes": 616690,
+      "sha256": "63c668718d72e1ab96540a09047cc6964ed228865633144d28f81d0f97876d72"
+    },
+    {
+      "path": "web/animal-bluedragon-hyper-v1.webp",
+      "bytes": 619572,
+      "sha256": "a51b5c8ccc1f1dc48aa42f557ea456960b7b5e39166359d293000430825b69a4"
+    },
+    {
+      "path": "web/animal-bluedragon-muted-dark-v1.webp",
+      "bytes": 554126,
+      "sha256": "bafe83e762204ce808188f558c58fabaed9ae3693469280db3e01420e9fb27a9"
+    },
+    {
+      "path": "web/animal-bluedragon-muted-light-v1.webp",
+      "bytes": 536590,
+      "sha256": "74aeee7310a59b313f0ce652e023bbfd286231fe39f958c621d5e3daecd6db44"
+    },
+    {
+      "path": "web/animal-bluedragon-v1.webp",
+      "bytes": 449280,
+      "sha256": "8d968e8d363fe43933c48507649b5fad249089029c811d7ab1f75b0fb89d702a"
+    },
+    {
+      "path": "web/animal-boxjelly-acid-dark-v1.webp",
+      "bytes": 550888,
+      "sha256": "b79fd8a4c83bba05751ee66617304bb204d74da3a3031af5be171ed8f841ee73"
+    },
+    {
+      "path": "web/animal-boxjelly-acid-light-v1.webp",
+      "bytes": 549360,
+      "sha256": "2407ea41d9fb351b4dc6efe7a4460ff53308bd305e41c2e85ec935c2c7d05248"
+    },
+    {
+      "path": "web/animal-boxjelly-hyper-v1.webp",
+      "bytes": 592104,
+      "sha256": "02238835a7ef89a5fc78efc5e1857b085477cbc50b1485efba2d6ea5f6b71ea1"
+    },
+    {
+      "path": "web/animal-boxjelly-muted-dark-v1.webp",
+      "bytes": 472704,
+      "sha256": "5575590999990e033aab1101a0d327aa93f7271eddeba25ed928512fdddc27ac"
+    },
+    {
+      "path": "web/animal-boxjelly-muted-light-v1.webp",
+      "bytes": 482970,
+      "sha256": "706a569ad21ffec538fb03e38e958ce3a79c9cae43e79876f92d9df5b815e714"
+    },
+    {
+      "path": "web/animal-boxjelly-v1.webp",
+      "bytes": 542024,
+      "sha256": "933df2d6074b1ee0fb45de71d847a4c79dc9a02506a382f896e3d8c4ee7ccd22"
+    },
+    {
+      "path": "web/animal-conesnail-acid-dark-v1.webp",
+      "bytes": 454296,
+      "sha256": "38e8e6e4147efe7e4f7681bbadb8a5bbef783ae87736b22d290aaf9c11267511"
+    },
+    {
+      "path": "web/animal-conesnail-acid-light-v1.webp",
+      "bytes": 463538,
+      "sha256": "9029275fc0aeea44c5cb480f9af1cdf6a9051390c2207cb0a763d74e95f673ec"
+    },
+    {
+      "path": "web/animal-conesnail-hyper-v1.webp",
+      "bytes": 498204,
+      "sha256": "263b53f70502e468df89361a2f7e25056c2b62621957aa6d89760acf46ca5f34"
+    },
+    {
+      "path": "web/animal-conesnail-muted-dark-v1.webp",
+      "bytes": 393980,
+      "sha256": "ba3d94eef1d28ffc587455c226b5ab4b8024d397b799a95b54264f16d7f74afa"
+    },
+    {
+      "path": "web/animal-conesnail-muted-light-v1.webp",
+      "bytes": 395206,
+      "sha256": "9480ba3b76145d4c2eeae0d2ab0f88b517cc759a320f2ae4ac7e356cea359c0c"
+    },
+    {
+      "path": "web/animal-conesnail-v1.webp",
+      "bytes": 510494,
+      "sha256": "caed054c16acf85bfec61fb144871c4bbfe8e29c0bbe7aea1907a199f41242ee"
+    },
+    {
+      "path": "web/animal-irukandji-acid-dark-v1.webp",
+      "bytes": 550362,
+      "sha256": "ff680180a5f940eedb6ea310664cffd658bb27edd3ff5bbf5027fed7c1a6e4df"
+    },
+    {
+      "path": "web/animal-irukandji-acid-light-v1.webp",
+      "bytes": 571046,
+      "sha256": "8f875af493c69b47f0803154c84d66c56173629be2cabe955b65e9aa1d3adde5"
+    },
+    {
+      "path": "web/animal-irukandji-hyper-v1.webp",
+      "bytes": 546232,
+      "sha256": "d584f90bd3b45d627466c4f88db52fb1a91b06e48b666f999c5ad7633519866d"
+    },
+    {
+      "path": "web/animal-irukandji-muted-dark-v1.webp",
+      "bytes": 519070,
+      "sha256": "7bb1d06c31c8cfb9b268fde1cff88746f084df3df08c674e1385f7f4f07acb0d"
+    },
+    {
+      "path": "web/animal-irukandji-muted-light-v1.webp",
+      "bytes": 474388,
+      "sha256": "36f22b67523e66fad6c42dfda55923ff2ac17fbb3d3303e7a0a4c61afe3ff76c"
+    },
+    {
+      "path": "web/animal-irukandji-v1.webp",
+      "bytes": 427192,
+      "sha256": "7d341693e94b334ce1c9b7346c8174cd54ef4c40a229195e965e02bb09d6c5b2"
+    },
+    {
+      "path": "web/animal-lionfish-acid-dark-v1.webp",
+      "bytes": 605494,
+      "sha256": "f06a10b2d31548e819f97535a8a04478e640d6e656d39180b374d51f5ae2aad4"
+    },
+    {
+      "path": "web/animal-lionfish-acid-light-v1.webp",
+      "bytes": 609966,
+      "sha256": "c6277a807c3f337b9f1d055821781f0fa9e8a7b556f03e0e84a3bd050c2b7704"
+    },
+    {
+      "path": "web/animal-lionfish-hyper-v1.webp",
+      "bytes": 662096,
+      "sha256": "8faa89f24f9f8c31c6f9d0a7e62950b067af1e03064e25847faeeba4b8e38993"
+    },
+    {
+      "path": "web/animal-lionfish-muted-dark-v1.webp",
+      "bytes": 544750,
+      "sha256": "2a4e5661c05b14c42ec5becc500518f3fb0b4b49f324ee725228ca72c0b7fc99"
+    },
+    {
+      "path": "web/animal-lionfish-muted-light-v1.webp",
+      "bytes": 520018,
+      "sha256": "ce758eed327d735b384f0ff2bb0756362f44e2f5f77670fc191c96343a152139"
+    },
+    {
+      "path": "web/animal-lionfish-v1.webp",
+      "bytes": 537942,
+      "sha256": "2970bc7bf4852b3b01c5c7d1c0ad751dd68afcab8007f2f1c05c2a3cd0a46e4d"
+    },
+    {
+      "path": "web/animal-moray-acid-dark-v1.webp",
+      "bytes": 650424,
+      "sha256": "7ede876a6c871e9b3761cf4d56a627501368e54e9ac73e9eb7d3d8b7c4d37793"
+    },
+    {
+      "path": "web/animal-moray-acid-light-v1.webp",
+      "bytes": 647716,
+      "sha256": "20a357fba9a7e87f328d2a5fd8d42c692cbacb11e14068461c86858db9a057ec"
+    },
+    {
+      "path": "web/animal-moray-hyper-v1.webp",
+      "bytes": 630790,
+      "sha256": "46935de68db8f4be9f6a99b78f7a08d2f7c5637cda579937f55cf89f101a3e22"
+    },
+    {
+      "path": "web/animal-moray-muted-dark-v1.webp",
+      "bytes": 563942,
+      "sha256": "a46026e6e26fb7f11171b9eee7ddd4ff57944b4cda7fbdbe584e3cfe2c765fdc"
+    },
+    {
+      "path": "web/animal-moray-muted-light-v1.webp",
+      "bytes": 560384,
+      "sha256": "c8f99904240672cd09a2985d631da8fad10eb9814cba0e75d91b1bf6ff5fa044"
+    },
+    {
+      "path": "web/animal-moray-v1.webp",
+      "bytes": 592766,
+      "sha256": "03ace3c2bd502ff2d05f40c4717d8edde6ee85398b305a35d938f40250785a71"
+    },
+    {
+      "path": "web/animal-octopus-acid-dark-v1.webp",
+      "bytes": 464486,
+      "sha256": "af657fea5db0497bb73d6dec323335d0139df095ff2e5b3904bfe1125f9056e6"
+    },
+    {
+      "path": "web/animal-octopus-acid-light-v1.webp",
+      "bytes": 451278,
+      "sha256": "d7dc322c4ca7ed0c89593b1451012e9adcb2d6c219872fa1c67e95f9418a0253"
+    },
+    {
+      "path": "web/animal-octopus-hyper-v1.webp",
+      "bytes": 486424,
+      "sha256": "9e6060d23fdd978853c4cbd00977e8a88a789d3889df1af90f1cde621f35743b"
+    },
+    {
+      "path": "web/animal-octopus-muted-dark-v1.webp",
+      "bytes": 394102,
+      "sha256": "9ed7aeb1a7b601f71af73f4cf2cdfa8dcabff42819b8c4cbd9cb31df22e6b525"
+    },
+    {
+      "path": "web/animal-octopus-muted-light-v1.webp",
+      "bytes": 404402,
+      "sha256": "663e5fdf38ffbf4f3ac5342221f4f3961d79c8e94ee7b2ea8c5aa9173486d235"
+    },
+    {
+      "path": "web/animal-octopus-v1.webp",
+      "bytes": 462392,
+      "sha256": "3a974462e44d0cd70fb8786cd06f078419d909348dd2706a2d969a8dfad9d128"
+    },
+    {
+      "path": "web/animal-seasnake-acid-dark-v1.webp",
+      "bytes": 625136,
+      "sha256": "b9d4ddc63add635afd4b159c2ddf74d2bb7a75a8402bd97e71a75a1958a74caa"
+    },
+    {
+      "path": "web/animal-seasnake-acid-light-v1.webp",
+      "bytes": 678688,
+      "sha256": "1a01d8f205de7ed0fe37a8990bf38de17e5a24e5ecb988a356f162bdf7c6d3f0"
+    },
+    {
+      "path": "web/animal-seasnake-hyper-v1.webp",
+      "bytes": 669944,
+      "sha256": "3ffe13576dc839f1bffceae44fa15f0744cb9040e0c041bf58bf45442c53caf6"
+    },
+    {
+      "path": "web/animal-seasnake-muted-dark-v1.webp",
+      "bytes": 610860,
+      "sha256": "4a0ec3a1ab3c1eb68da8652c1519527c09f0fd939b84c969bafe511b6bc802ae"
+    },
+    {
+      "path": "web/animal-seasnake-muted-light-v1.webp",
+      "bytes": 556412,
+      "sha256": "ac32ae434a92a0e68d1ea6d19a0c5ee45c639c473580e0518c0e93008b334517"
+    },
+    {
+      "path": "web/animal-seasnake-v1.webp",
+      "bytes": 636402,
+      "sha256": "ccbb52c16a6f7b211f09a3b5155263a8403474baefd9bfb1b13354fa9b8a2447"
+    },
+    {
+      "path": "web/animal-seaurchin-acid-dark-v1.webp",
+      "bytes": 666938,
+      "sha256": "9a2ce505e71a3d6888c8db725ded543e75269488cff6d1bf2a498463e64afdc8"
+    },
+    {
+      "path": "web/animal-seaurchin-acid-light-v1.webp",
+      "bytes": 679774,
+      "sha256": "f36c1f196cf199171c9c2b7ed23d4e7cdeb1d19a25e37a1e9afb5baac835f7bb"
+    },
+    {
+      "path": "web/animal-seaurchin-hyper-v1.webp",
+      "bytes": 702790,
+      "sha256": "1473880ffb9400159295ce6fa5dfda75a51d74bd487627c1ac2846f6d8c12c60"
+    },
+    {
+      "path": "web/animal-seaurchin-muted-dark-v1.webp",
+      "bytes": 592508,
+      "sha256": "9a4e57a279f491ec87fd9cee4fab27e84fa17e738f9f79ea35cb370d58c3d644"
+    },
+    {
+      "path": "web/animal-seaurchin-muted-light-v1.webp",
+      "bytes": 579502,
+      "sha256": "6b79fe5951e196f47b374afc9e08ef30042f3654c7cd7b1a249e603472924a44"
+    },
+    {
+      "path": "web/animal-seaurchin-v1.webp",
+      "bytes": 498622,
+      "sha256": "32cb3e10f195be60c6145bf49fe83d64eb117a4c0107ec9d648a3a1fb913ae43"
+    },
+    {
+      "path": "web/animal-stingray-acid-dark-v1.webp",
+      "bytes": 557562,
+      "sha256": "1334346b3d5d0692dc92a7c5d213294ef2ae07196738b06def5240693c5ab5d0"
+    },
+    {
+      "path": "web/animal-stingray-acid-light-v1.webp",
+      "bytes": 582504,
+      "sha256": "a8374facd7db0517f2b82964cf95684ccb63c911ba7ee7cedfce05203f7c6ee4"
+    },
+    {
+      "path": "web/animal-stingray-hyper-v1.webp",
+      "bytes": 566550,
+      "sha256": "db75d521d34731c865d632f1a9ad4921ff9dfa16a22398fe6a3c01a6414b8b07"
+    },
+    {
+      "path": "web/animal-stingray-muted-dark-v1.webp",
+      "bytes": 528512,
+      "sha256": "01fb676302eac4fd537f955a536a4e202f8c5e043774616ed0384ecf924dd4ed"
+    },
+    {
+      "path": "web/animal-stingray-muted-light-v1.webp",
+      "bytes": 483330,
+      "sha256": "ef5bfccc483bdd3140ac9463a5a30633927cffaabe47fd9f278fbb14b465dc31"
+    },
+    {
+      "path": "web/animal-stingray-v1.webp",
+      "bytes": 483298,
+      "sha256": "b89d9cca5821c48da0673b852ff9ad052b8e2dd38447bcfcd8413ecf69f736b9"
+    },
+    {
+      "path": "web/animal-stonefish-acid-dark-v1.webp",
+      "bytes": 495362,
+      "sha256": "1d259f35d3b5e60b8419abfca8e1ac12129e46a4ae71ac36cc135979dc91b401"
+    },
+    {
+      "path": "web/animal-stonefish-acid-light-v1.webp",
+      "bytes": 505570,
+      "sha256": "9c57c89edf5906553e62b31e5df5b62cc8539bc024c79e6f2568422e6b017302"
+    },
+    {
+      "path": "web/animal-stonefish-hyper-v1.webp",
+      "bytes": 554794,
+      "sha256": "961a4fc9864d0352dd8b6b43231eabd26a33b701105f7fb95801a635544f55d4"
+    },
+    {
+      "path": "web/animal-stonefish-muted-dark-v1.webp",
+      "bytes": 428126,
+      "sha256": "0991c1f73e7e018b400ad929e83aa5f8f38b8897d0abc16abf3d1aa3bd2f6ab9"
+    },
+    {
+      "path": "web/animal-stonefish-muted-light-v1.webp",
+      "bytes": 431630,
+      "sha256": "d06c3084647d92c642275307b995935d98be4410a977004d9c5a6dcf4b205962"
+    },
+    {
+      "path": "web/animal-stonefish-v1.webp",
+      "bytes": 663654,
+      "sha256": "f117687957cf74a84d9aecbe505c358b4bab2ff01878a1d4ed1bdf1b80d3a633"
+    },
+    {
+      "path": "web/animal-toadfish-acid-dark-v1.webp",
+      "bytes": 588914,
+      "sha256": "62e8ed00dfab569292ad3c9d7aa4385fda1892da17b4ebc2fa6c469b00d09976"
+    },
+    {
+      "path": "web/animal-toadfish-acid-light-v1.webp",
+      "bytes": 608756,
+      "sha256": "00434a2691e2ebd085e006a20fe0debb2119aef19549dcebfed71840cdd659c4"
+    },
+    {
+      "path": "web/animal-toadfish-hyper-v1.webp",
+      "bytes": 594966,
+      "sha256": "5622f49ac9669b322a646c3fc70cd57ae4fa24a3ceb7064f8250fb1413a963f4"
+    },
+    {
+      "path": "web/animal-toadfish-muted-dark-v1.webp",
+      "bytes": 546508,
+      "sha256": "f6bf8fcc3e1068754d9e5d812be68b2f7411a40f0270b1ba618ddbfdd2aed3c9"
+    },
+    {
+      "path": "web/animal-toadfish-muted-light-v1.webp",
+      "bytes": 508224,
+      "sha256": "231823882c184da7e7632722e8150f2e9299b8bfc7accc4231c05e3a96200fef"
+    },
+    {
+      "path": "web/animal-toadfish-v1.webp",
+      "bytes": 441972,
+      "sha256": "ade779c87e7f2a54a48d53b040e31c97c43e21107e6bdbf58a79f677dc18b48f"
+    },
+    {
+      "path": "web/demo-alex-sketch-v2.webp",
+      "bytes": 490146,
+      "sha256": "85673df422c4109402472acd17ed4be9f5f25cb481e682926ac6f4d9796fb04b"
+    },
+    {
+      "path": "web/demo-alex.webp",
+      "bytes": 228298,
+      "sha256": "a97508834f7b2383ac5c4494ef79f8df5de46766810dc70554b83044da23947f"
+    },
+    {
+      "path": "web/demo-kai-sketch-v2.webp",
+      "bytes": 482896,
+      "sha256": "30c8074bfd8b129455cb171549fe88709c8354f06698ada37d60ec7b0d8bb9ac"
+    },
+    {
+      "path": "web/demo-kai.webp",
+      "bytes": 266960,
+      "sha256": "47dbb22fcdb5e1f51daa821c9c8e474e069cfe4fcadb6755b63c7714b3b2d3b1"
+    },
+    {
+      "path": "web/demo-maya-sketch-v2.webp",
+      "bytes": 502598,
+      "sha256": "a1218fde68652af75b225a0f574ecdbd989cc7aa5fa30a4a0efe36ca1d888a3e"
+    },
+    {
+      "path": "web/demo-maya.webp",
+      "bytes": 243822,
+      "sha256": "940c04d1baef8c61dbe2cd01f4610b10e26118cab22112a44e673e0da750870c"
+    },
+    {
+      "path": "web/demo-shore-sketch-v2.webp",
+      "bytes": 928010,
+      "sha256": "aa8e2127dad45687c63163429edce9e0fd30d77e0bf2a9272aa5b77631874346"
+    },
+    {
+      "path": "web/demo-shore.webp",
+      "bytes": 160882,
+      "sha256": "71a8012e9587e4a23d920bf609652d51887879ec35e4ddb0e366150ba0ce6cbe"
+    },
+    {
+      "path": "web/finfolk-favicon.png",
+      "bytes": 639,
+      "sha256": "9cc30fc3832d518767c2dc17e7d89a25d121f07e8fbc5bcc7f4eff9c359423d6"
+    },
+    {
+      "path": "web/finfolk-mark.png",
+      "bytes": 11436,
+      "sha256": "acc7f4a09ae3e63c51b20875af69b4db1840f01ba33e6c213a9587c78d28fd29"
+    },
+    {
+      "path": "web/finfolk-touch.png",
+      "bytes": 4981,
+      "sha256": "2d9d4ea67a35a2f1d74a7bdbb21bf8073ec0c7ca7550d81acb7c03ee1cb62413"
+    },
+    {
+      "path": "web/finfolk-wordmark.png",
+      "bytes": 75652,
+      "sha256": "45921a18023a6118da082e46839a17cdda06d5f1de715e67234364d630ddca10"
+    },
+    {
+      "path": "web/freediver-ascending-v1.webp",
+      "bytes": 150572,
+      "sha256": "53ec52cd332ab484fe81257dfe12db53aa04b6ed6c069f32144831d857f8ba31"
+    },
+    {
+      "path": "web/freediver-descending-v1.webp",
+      "bytes": 143846,
+      "sha256": "c6fca13d75a3ac0a5a79231f7462979557ee60fe09d0a85b82972b7d7652f436"
+    },
+    {
+      "path": "web/freediver-gliding-v1.webp",
+      "bytes": 93036,
+      "sha256": "17d8c7ea83cb4d54c8e85c0dd79563f8e6d13fc90cbb71a25d4d2e52653bcff5"
+    },
+    {
+      "path": "web/habitat-fan-coral-v1.webp",
+      "bytes": 273934,
+      "sha256": "a9d4c8d85bbae0124a222f3be718f6f9fa7ad19684ec0794e8f873586bf7e2e3"
+    },
+    {
+      "path": "web/habitat-kelp-v1.webp",
+      "bytes": 214850,
+      "sha256": "038b0f647e2866994c605343a7b4b383eb6aba1104d7b5604da072440dc4bb38"
+    },
+    {
+      "path": "web/habitat-reef-arch-v1.webp",
+      "bytes": 157128,
+      "sha256": "472633a924b3db3c2261b637e60214a726984a76d3f5023e509bebe20cdacc53"
+    },
+    {
+      "path": "web/habitat-reef-rocks-v1.webp",
+      "bytes": 195680,
+      "sha256": "c4499dc69c2526db4085873ef1d4a367b32716f0f6e46bd2b30497877aa78773"
+    },
+    {
+      "path": "web/habitat-schooling-fish-v1.webp",
+      "bytes": 97526,
+      "sha256": "97542a703367519e0485ea2bba04d456f95461f8e88e132fdefce74a50bdee15"
+    },
+    {
+      "path": "web/habitat-seagrass-v1.webp",
+      "bytes": 274358,
+      "sha256": "19a81910f64498bd98544a9dae5940690eda855777d8aa1f3c5f3f6bd66e91af"
+    },
+    {
+      "path": "web/habitat-stingray-v1.webp",
+      "bytes": 206746,
+      "sha256": "a551ac05f251d354234245fb3dd9c701598d5379aae17085cba1f7bb1363727c"
+    },
+    {
+      "path": "web/habitat-turtle-v1.webp",
+      "bytes": 293136,
+      "sha256": "cc80d8e0191f110a47cf2820e1e770547496e299e81da9e4078b1ebd24be721a"
+    },
+    {
+      "path": "web/scene-bicheno-acid-dark-mobile-v1.webp",
+      "bytes": 214354,
+      "sha256": "36ba6276860f53fe0155d09cb0b334729173d347fc4d9cd6fa334413dbf7c67b"
+    },
+    {
+      "path": "web/scene-bicheno-acid-dark-v1.webp",
+      "bytes": 471314,
+      "sha256": "e8363857c7157fd1548b4df9a909edc5129c0d91555c8ab8a53a5e2f43545aac"
+    },
+    {
+      "path": "web/scene-bicheno-acid-light-mobile-v1.webp",
+      "bytes": 203332,
+      "sha256": "2d13c5adb72a827d8b5b60eb3aec302fa55446c980b437eb85ee17aa25ba4a5d"
+    },
+    {
+      "path": "web/scene-bicheno-acid-light-v1.webp",
+      "bytes": 454592,
+      "sha256": "508d85400eaf9610ec063a2776424571300e9401edc6dde06c0e77e81ba29ad4"
+    },
+    {
+      "path": "web/scene-bicheno-muted-dark-mobile-v1.webp",
+      "bytes": 171054,
+      "sha256": "970604f42b322f526dcf112dd54ac2beea91f28d1d6b525be028c3b222377f09"
+    },
+    {
+      "path": "web/scene-bicheno-muted-dark-v1.webp",
+      "bytes": 370978,
+      "sha256": "611f59f3a7f1a7fb0845bbeb581a0fc49b67026b7cc13415288e93c07c91a720"
+    },
+    {
+      "path": "web/scene-bicheno-muted-light-mobile-v1.webp",
+      "bytes": 184696,
+      "sha256": "d6cb7f1a5e060cda6e28b24dab7f57d04cb4dce5191aa10989881ed170db31a3"
+    },
+    {
+      "path": "web/scene-bicheno-muted-light-v1.webp",
+      "bytes": 393756,
+      "sha256": "f80274081d044c8a5d99c11277edf654dbb09f9b365697b0cf54842a7d18d260"
+    },
+    {
+      "path": "web/scene-great-barrier-acid-dark-mobile-v1.webp",
+      "bytes": 209916,
+      "sha256": "b11529cde50e835060a7be347ac5ff5cee0fa5a468d238b80ef1edbfc6e96978"
+    },
+    {
+      "path": "web/scene-great-barrier-acid-dark-v1.webp",
+      "bytes": 450314,
+      "sha256": "68b1eaa48fa8703be2cbf730182a928419a43fe62aec5080580decdc17e4948e"
+    },
+    {
+      "path": "web/scene-great-barrier-acid-light-mobile-v1.webp",
+      "bytes": 205460,
+      "sha256": "a36ebc4890a30244413848bf55278689a9dab2c927ea72848aa400aa508274ff"
+    },
+    {
+      "path": "web/scene-great-barrier-acid-light-v1.webp",
+      "bytes": 454152,
+      "sha256": "fad6129a32471a664f0c5b5f01409050faa66d2769f42695ae492aebf7e13564"
+    },
+    {
+      "path": "web/scene-great-barrier-muted-dark-mobile-v1.webp",
+      "bytes": 171136,
+      "sha256": "bb89850f65b966111c29674c74a900af06a9f09622ecfa604466f55472fcf23c"
+    },
+    {
+      "path": "web/scene-great-barrier-muted-dark-v1.webp",
+      "bytes": 369218,
+      "sha256": "2b62a7de26792775fb9b64278e2fbdeca6a10bc903ad6a51e538452fb1d66f26"
+    },
+    {
+      "path": "web/scene-great-barrier-muted-light-mobile-v1.webp",
+      "bytes": 181352,
+      "sha256": "fa6c0cfc7c44390fe150c7a1084a7444ee3be942db8e09d809f666eda81ff83a"
+    },
+    {
+      "path": "web/scene-great-barrier-muted-light-v1.webp",
+      "bytes": 375812,
+      "sha256": "69479c47a0b5c6089b3ca785674067fc7344119441f4979189ce9c9e178b45d4"
+    },
+    {
+      "path": "web/scene-julian-rocks-acid-dark-mobile-v1.webp",
+      "bytes": 217764,
+      "sha256": "eae1b8ef4dd2f32368aac4d200b9b98355517c1231743acb3162dcfc1930a63e"
+    },
+    {
+      "path": "web/scene-julian-rocks-acid-dark-v1.webp",
+      "bytes": 476110,
+      "sha256": "b7dbb4b459e47b172ada72624fa4b68987d170db622a7b6271fb371cc660ade8"
+    },
+    {
+      "path": "web/scene-julian-rocks-acid-light-mobile-v1.webp",
+      "bytes": 211860,
+      "sha256": "b4a448ee3c19dc3f2fa4b4c41b61685b75fe3af9ec25d35ec770d9a847c97399"
+    },
+    {
+      "path": "web/scene-julian-rocks-acid-light-v1.webp",
+      "bytes": 479676,
+      "sha256": "3e2a9dcb794592f77c9c65f8d95e7a7e2b96add49347d097854a40a9a7a7e849"
+    },
+    {
+      "path": "web/scene-julian-rocks-muted-dark-mobile-v1.webp",
+      "bytes": 179214,
+      "sha256": "eddc963754de025cf3ccc44f6b1990ae924dbe650e0bd707c0f895e161509fb4"
+    },
+    {
+      "path": "web/scene-julian-rocks-muted-dark-v1.webp",
+      "bytes": 383456,
+      "sha256": "b0069dff9e699e7a09085479035732f5d1921d5b48e57d39d53de36ff821cc6e"
+    },
+    {
+      "path": "web/scene-julian-rocks-muted-light-mobile-v1.webp",
+      "bytes": 188528,
+      "sha256": "a8add3a66466033299127bbb974840e76bc43ed578e16bfc921c7b0a28548d08"
+    },
+    {
+      "path": "web/scene-julian-rocks-muted-light-v1.webp",
+      "bytes": 402886,
+      "sha256": "b008f9d8251a51e86f63c8470ece154833a9813eea81b4c91ebd48961fcc3af6"
+    },
+    {
+      "path": "web/scene-ningaloo-acid-dark-mobile-v1.webp",
+      "bytes": 203490,
+      "sha256": "da68ecb92220ffdbd48f1d261559f61d06ba9eefd21208597c099064790a85f6"
+    },
+    {
+      "path": "web/scene-ningaloo-acid-dark-v1.webp",
+      "bytes": 448144,
+      "sha256": "65b28522e261c984faede78d26875cfb00f27571750da2846ad3e40f6bf7f99b"
+    },
+    {
+      "path": "web/scene-ningaloo-acid-light-mobile-v1.webp",
+      "bytes": 202960,
+      "sha256": "5ba99e4cd9b367dcaeafdf54f2413e6575df78f5ba1c030fb798a96812b532c1"
+    },
+    {
+      "path": "web/scene-ningaloo-acid-light-v1.webp",
+      "bytes": 454716,
+      "sha256": "b6b3a0e1cfe7f5f485cc041c29e78343d9321f428bc987512b1d5bd732c4ab02"
+    },
+    {
+      "path": "web/scene-ningaloo-muted-dark-mobile-v1.webp",
+      "bytes": 173354,
+      "sha256": "4127b5fe1171ba69a62af10b939a233d69f40f18297e1799a6fc4fc353d6ce86"
+    },
+    {
+      "path": "web/scene-ningaloo-muted-dark-v1.webp",
+      "bytes": 373044,
+      "sha256": "e6242785e2f02e54498c3d86eb9d9b9021961259994068946cb97155d2c99407"
+    },
+    {
+      "path": "web/scene-ningaloo-muted-light-mobile-v1.webp",
+      "bytes": 177682,
+      "sha256": "8da7d7a4196c71ef9f1a5850a5f277e5ee3a16e993035c3b4ff66e678bd2ddb0"
+    },
+    {
+      "path": "web/scene-ningaloo-muted-light-v1.webp",
+      "bytes": 380364,
+      "sha256": "985d138c2f8c41722f0a8299562b3cdf0e78317d1d1d548db5609c7a19b8aed6"
+    },
+    {
+      "path": "web/scene-point-lowly-acid-dark-mobile-v1.webp",
+      "bytes": 204344,
+      "sha256": "587c59a74aefece543f0517b4ddf3a575080ab265472808882e054c4765b2eed"
+    },
+    {
+      "path": "web/scene-point-lowly-acid-dark-v1.webp",
+      "bytes": 446300,
+      "sha256": "e6956fa108887190331050b61b26b2776d91f728c5e53607b4dc320351b5fcf1"
+    },
+    {
+      "path": "web/scene-point-lowly-acid-light-mobile-v1.webp",
+      "bytes": 197570,
+      "sha256": "49fb4cfd0163efc93ca9d1276a41e7a991b82a8f9cfa235b5a30b791424b83c6"
+    },
+    {
+      "path": "web/scene-point-lowly-acid-light-v1.webp",
+      "bytes": 442492,
+      "sha256": "5a7606f2622665ef629d7a572f4cfbaefa0b36329aff552cc267d4ff4ec3db24"
+    },
+    {
+      "path": "web/scene-point-lowly-muted-dark-mobile-v1.webp",
+      "bytes": 166234,
+      "sha256": "d31053230a3d50138cf183c7c328e4bb329d24430a6834d70f198f58e8f69de9"
+    },
+    {
+      "path": "web/scene-point-lowly-muted-dark-v1.webp",
+      "bytes": 357958,
+      "sha256": "7492a33b942ecfe0585f02aad84a55fcc3155cd3a16032db9c16ca89cc91879f"
+    },
+    {
+      "path": "web/scene-point-lowly-muted-light-mobile-v1.webp",
+      "bytes": 177916,
+      "sha256": "bc8a1ac36a37e4bb56807e8f41d7d13273a3a69fa546a300b36b847bf2f351fa"
+    },
+    {
+      "path": "web/scene-point-lowly-muted-light-v1.webp",
+      "bytes": 378270,
+      "sha256": "f6caef5097bba0ed4f73a2547f03e9737e418591abacf7f0272b939d6dcb6448"
+    },
+    {
+      "path": "web/scene-port-phillip-acid-dark-mobile-v1.webp",
+      "bytes": 207282,
+      "sha256": "3ea9b5f45403196079ec22659614436205f920f5aabf625fda6181aadf303177"
+    },
+    {
+      "path": "web/scene-port-phillip-acid-dark-v1.webp",
+      "bytes": 459090,
+      "sha256": "dc498967e307a9b63b872a8d0ae9e7315021e128365992419e577c80b8cb605b"
+    },
+    {
+      "path": "web/scene-port-phillip-acid-light-mobile-v1.webp",
+      "bytes": 196864,
+      "sha256": "2f3880030341f20385f9bf335c58b2011d5157fc08b334a0c6fae2b749f37228"
+    },
+    {
+      "path": "web/scene-port-phillip-acid-light-v1.webp",
+      "bytes": 444926,
+      "sha256": "defa92adbbaa0ba4771909d0f90dbcfea196b78c8811d097e4f5254bacd476d1"
+    },
+    {
+      "path": "web/scene-port-phillip-muted-dark-mobile-v1.webp",
+      "bytes": 164228,
+      "sha256": "c77385e9c257e063d620fb1e69775359c5ee58b9e328715a9adc7e64ed091fcc"
+    },
+    {
+      "path": "web/scene-port-phillip-muted-dark-v1.webp",
+      "bytes": 358774,
+      "sha256": "913f6ce500ca1954fd8e12e2d70e1590cf992262181c290e0753ea4d540a6c7a"
+    },
+    {
+      "path": "web/scene-port-phillip-muted-light-mobile-v1.webp",
+      "bytes": 180580,
+      "sha256": "869b4b4923717fa83e5f7a6b59497224dd4aeefd08b502860a9b6ee122ed9000"
+    },
+    {
+      "path": "web/scene-port-phillip-muted-light-v1.webp",
+      "bytes": 387558,
+      "sha256": "9aaa6c07be3055b89964963f39c274401263b29727ee907f004a19cc4fc74c83"
+    },
+    {
+      "path": "web/swimmer-back-float-v1.webp",
+      "bytes": 147840,
+      "sha256": "18dcf3e282efd91d8fea323f29f845c11092c37fbfe01478c7a94edee8b81a26"
+    },
+    {
+      "path": "web/swimmer-breaststroke-v1.webp",
+      "bytes": 139510,
+      "sha256": "aad51afc7674e627beb96f6bd653740f9b4f6e9b39da00dc7fb646c23f834780"
+    },
+    {
+      "path": "web/swimmer-duck-dive-v1.webp",
+      "bytes": 96586,
+      "sha256": "ce5d628a6b0e7a793254363779ed49b379fabfbff650ebc52d5f5822137bf4f6"
+    },
+    {
+      "path": "web/swimmer-freestyle-v1.webp",
+      "bytes": 85530,
+      "sha256": "671cdcb9ed50f16ce7fbfca8060e25cc7a35dc271ccde4498f0a5cb3d777bb93"
+    }
+  ]
+}

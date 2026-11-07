@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-theme="navy-light"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow"><title>Map · FinFolk Atelier</title>
+  <link rel="icon" href="/preview/finfolk-favicon.png">
+  <link rel="stylesheet" href="/preview/visual-language.css">
+  <link rel="stylesheet" href="/board/vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="/board/map-explore.css">
+  <link rel="stylesheet" href="/board/site-notes.css">
+</head>
+<body>
+  <a class="skip-link" href="#results">Skip to map results</a>
+  <aside class="profile-rail map-rail"><a class="profile-home" href="/#preview/map-explore">FinFolk</a><nav class="profile-nav" aria-label="Main navigation"></nav></aside>
+  <main class="map-workspace">
+    <section class="map-region" aria-label="Explore the coast">
+      <div id="map" aria-label="Interactive map of Sydney dive spots and sample community listings"></div>
+      <div class="map-search">
+        <form id="search-form" role="search"><label class="sr-only" for="map-query">Search spots, businesses and people</label><span aria-hidden="true">⌕</span><input id="map-query" type="search" placeholder="Spots, businesses, people…" autocomplete="off"><button aria-label="Search" type="submit">↗</button></form>
+        <div class="category-chips" role="group" aria-label="Map categories">
+          <button data-category="all" aria-pressed="true">All</button>
+          <button data-category="spot" aria-pressed="false">≈ <span>Dive spots</span></button>
+          <button data-category="business" aria-pressed="false">▥ <span>Businesses</span></button>
+          <button data-category="people" aria-pressed="false">♧ <span>People</span></button>
+          <button data-category="event" aria-pressed="false">▦ <span>Events</span></button>
+        </div>
+      </div>
+      <button id="search-area" class="search-area" hidden>⌕ Search this area</button>
+      <div class="map-actions"><button id="reset-view" aria-label="Show all Sydney sample locations" title="Show all sample locations">⌖</button><button id="layers-toggle" aria-expanded="false" aria-controls="map-layers">▱ <span>Layers</span></button></div>
+      <section id="map-layers" class="layers-panel" aria-label="Map appearance" hidden><h2>Map appearance</h2><label><input type="radio" name="basemap" value="coast" checked> Coastal</label><label><input type="radio" name="basemap" value="street"> Street detail</label><p>Depth and survey tools stay in the existing Coastal map study.</p></section>
+      <p id="map-status" class="map-status" role="status">Loading the coast…</p>
+    </section>
+    <aside class="results-panel" aria-label="Map results">
+      <button id="sheet-toggle" class="sheet-toggle" aria-expanded="false" aria-controls="result-content"><span class="sheet-grip"></span><span id="sheet-label">Explore results</span><span aria-hidden="true">⌃</span></button>
+      <div id="result-content">
+        <header class="results-heading"><p class="eyebrow">FIND YOUR KIND OF WATER</p><h1>Around Sydney</h1><p id="result-summary" role="status"></p><div class="results-tools"><button id="clear-filters" hidden>Clear filters ×</button><label class="sr-only" for="map-theme">Theme</label><select id="map-theme" aria-label="Theme"><option value="navy-light">Salt Paper</option><option value="yellow">Acid Club</option><option value="cobalt">Blue Hour</option><option value="navy">Night Swim</option></select></div></header>
+        <section id="detail" aria-label="Selected map result" hidden></section>
+        <div id="results" tabindex="-1"></div>
+        <footer class="sample-note">Atelier study · Real place references. Fictional businesses, members and events. People are linked to shared spots, not live positions.</footer>
+      </div>
+    </aside>
+  </main>
+  <script src="/board/vendor/maplibre-gl.js"></script>
+  <script type="module" src="/board/map-explore.js"></script>
+</body></html>

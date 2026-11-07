@@ -1,4 +1,5 @@
 import {STATE_OUTLINES, OUTLINE_SOURCE} from './state-outlines.js';
+import {decorateStateThumbnail} from './animal-decoration.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const prepared = new Map();
@@ -69,11 +70,13 @@ export function beachThumbnail(beach, {compact = false} = {}) {
     `${beach.name} · ${name}. ${path ? 'Location unavailable' : 'Location map unavailable'}`;
   const svg = svgElement('svg', {viewBox: `0 0 ${width} ${height}`, width, height,
     class: 'beach-thumbnail' + (compact ? ' beach-thumbnail--compact' : ''), role: 'img', 'aria-label': description});
+  svg.dataset.stateId=label;
   svg.append(svgElement('title', {}, description), svgElement('desc', {},
     `${OUTLINE_SOURCE.attribution}. ${OUTLINE_SOURCE.licence}. Approximate geographic context.`));
   if (path) svg.append(svgElement('path', {d: path, class: 'beach-thumbnail-land', 'fill-rule': 'evenodd'}));
   if (dot) svg.append(svgElement('circle', {cx: dot[0], cy: dot[1], r: compact ? 4 : 4.5, class: 'beach-thumbnail-dot'}));
   svg.append(svgElement('text', {x: width / 2, y: height - (compact ? 7 : 9),
     'text-anchor': 'middle', class: 'beach-thumbnail-label'}, label));
+  decorateStateThumbnail(svg);
   return svg;
 }

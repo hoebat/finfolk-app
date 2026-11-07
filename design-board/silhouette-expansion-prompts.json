@@ -1,0 +1,54 @@
+{
+  "tool": "Built-in image_gen",
+  "purpose": "Four swimmer silhouettes and four underwater cutouts for the underwater ascent scene",
+  "jobs": [
+    {
+      "id": "swimmer-freestyle-v1",
+      "kind": "swimmer",
+      "name": "Freestyle",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: one adult swimmer in a plain close-fitting swimsuit and swim cap, side view, horizontal facing right. Freestyle crawl stroke: one arm extended forward, the other elbow lifted in a high bent recovery above the back, both legs long and slightly separated in a flutter kick. Natural human proportions, exactly two arms and two legs, small head. No fins or equipment. Strong readable silhouette with space inside the bent arm."
+    },
+    {
+      "id": "swimmer-breaststroke-v1",
+      "kind": "swimmer",
+      "name": "Breaststroke",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: one adult swimmer in plain close-fitting swimwear, seen from above swimming toward the upper right. A relaxed breaststroke pose, both arms sweeping out and forward in a wide symmetrical soft Y, both legs bent at the knees in the frog kick with feet turned out. Anatomically natural, exactly two arms and two legs, simple hands and feet. No fins or equipment. Clear gaps between limbs."
+    },
+    {
+      "id": "swimmer-duck-dive-v1",
+      "kind": "swimmer",
+      "name": "Duck dive",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: one adult freediver in a plain close-fitting wetsuit, side profile, performing a smooth duck dive. Torso and outstretched joined arms angle downward toward the lower right, hips folded, two long straight legs trail upward left, feet wearing two long freediving fins clearly separated. Natural human anatomy, exactly two arms and two legs. Small simple mask on head, no air tank, no bubbles, no rope. Beautiful curved inverted J composition."
+    },
+    {
+      "id": "swimmer-back-float-v1",
+      "kind": "swimmer",
+      "name": "Back float",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: one adult swimmer in a simple close-fitting swimsuit floating peacefully on their back, seen from above at a gentle diagonal. Head at upper right, relaxed arms extended outward loosely in a soft T, two long legs slightly separated, small feet. Natural human proportions, exactly two arms and two legs. No fins or equipment. Calm graceful asymmetrical silhouette with clean open spaces between arms and torso."
+    },
+    {
+      "id": "habitat-kelp-v1",
+      "kind": "habitat",
+      "name": "Kelp forest",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: a single loose cluster of three giant-kelp fronds rising from a compact organic holdfast. Tall sinuous stems with broad wavy leaf blades and a few round air bladders. Fronds curl rightward with the current, staggered heights, clear generous negative-space gaps. Bold broad leaves, sparse sculptural composition that reads at small sizes. No grass blades, no straight baseline."
+    },
+    {
+      "id": "habitat-fan-coral-v1",
+      "kind": "habitat",
+      "name": "Fan coral",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: one elegant broad sea-fan coral anchored by a short curving trunk to a tiny irregular rock. Asymmetrical fan-shaped crown with roughly twelve substantial branching fingers, a few cross connections and generous open gaps. Thick sculptural branches, restrained natural branching not lace mesh. Broad enough to hold a printed texture. No surrounding objects, no rectangular base."
+    },
+    {
+      "id": "habitat-reef-arch-v1",
+      "kind": "habitat",
+      "name": "Reef arch",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: one broad underwater weathered limestone reef arch, low wide rock formation with an off-center large open arch passage. Two irregular rocky feet, sloping craggy top with a few soft rounded ledges, beautiful substantial stone silhouette. Arch opening fully transparent, clear uneven bottom, left foot taller than right. No plants or animals, no rectangular base."
+    },
+    {
+      "id": "habitat-schooling-fish-v1",
+      "kind": "habitat",
+      "name": "Schooling fish",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine silhouette stencil for the FinFolk freediving design collection, square 1024x1024. Flat solid midnight navy #172440, smooth crisp contour, elegant cinematic 1960s/70s screenprint style. Transparent background with real alpha. Entire subject fits with 10% clear margin on all sides. Clear simple negative spaces and recognisable anatomy. No shading, no gradients, no outlines, no inner textures, no text, no border, no water, no scenery, no shadow, no ground rectangle. Subject: one cohesive school of nine small reef fish swimming toward the upper right in a loose flowing crescent formation, each fish a separate flat silhouette with a plump streamlined oval body, pointed head, small triangular dorsal fin and clearly forked tail. Three larger fish in front and six smaller fish trailing, generous transparent gaps between all bodies. Nine fish only, no bubbles or other objects."
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "tool": "built-in image_gen",
+  "styleReference": "design-board/assets/scenes/finfolk-underwater-ascent-acid-v1.webp",
+  "assets": [
+    {
+      "id": "maya",
+      "source": "/Users/chris/.codex/generated_images/01a1a057-4a20-79e0-8bf9-35008aaa17ae/exec-d4f48f50-7ca9-41c3-bb8d-74b346d08b98.png",
+      "prompt": "Use case: stylized-concept. Asset: fictional adult freediver Maya, a warm, approachable female cartoon portrait for the FinFolk app. Reference 1 is STYLE ONLY: match its bold acid-ocean hand-drawn screenprint and loose ink crosshatching, electric cobalt, acid chartreuse, hot pink, warm ivory paper. Reference 2 is CHARACTER ONLY: retain curly tied-back dark hair, warm brown skin translated into limited ink, plain wetsuit, relaxed confident expression. Completely redraw as an expressive editorial comic/linocut sketch, clearly hand illustrated, simplified graphic shapes and lively imperfect contour lines, NOT a photograph or photographic filter. Head and upper torso centered, full head with breathing room, portrait 4:5 composition. Abstract sketchy waves and kelp behind her, readable at avatar size, no text, no logos, no watermarks. Original fictional character.",
+      "master": "design-board/assets/people/maya-portrait-sketch-v2.png",
+      "asset": "design-board/assets/people/maya-portrait-sketch-v2.webp"
+    },
+    {
+      "id": "alex",
+      "source": "/Users/chris/.codex/generated_images/01a1a057-4a20-79e0-8bf9-35008aaa17ae/exec-38f4d96e-94cd-44fd-aee7-a2e62b5c00c8.png",
+      "prompt": "Use case: stylized-concept. Create a NEW original fictional diver portrait in exactly the illustrated style of the reference image: loose hand-drawn comic/linocut screenprint, energetic imperfect ink crosshatching, acid yellow, electric cobalt, hot pink, warm ivory paper. Subject is an androgynous adult around 32, short dark curly hair, olive complexion translated into peach and pink inks, relaxed open expression, wearing a plain wetsuit. Head and upper torso centred, full head with breathing room, 4:5 portrait composition. Simple sketched ocean waves and kelp behind, friendly but mature adult, clearly a cartoon sketch NOT a photograph or photo filter. Match the graphic ink style of the reference, but make a distinct character. No text, logos, signatures or watermark.",
+      "master": "design-board/assets/people/alex-portrait-sketch-v2.png",
+      "asset": "design-board/assets/people/alex-portrait-sketch-v2.webp"
+    },
+    {
+      "id": "kai",
+      "source": "/Users/chris/.codex/generated_images/01a1a057-4a20-79e0-8bf9-35008aaa17ae/exec-4f1f5d74-d85e-46cd-84c6-201ade267bb8.png",
+      "prompt": "Use case: stylized-concept. Create a NEW original fictional diver portrait in exactly the illustrated style of the reference image: loose hand-drawn comic/linocut screenprint, energetic imperfect ink crosshatching, acid yellow, electric cobalt, hot pink, warm ivory paper. Subject is an East Asian adult man around 35, short straight dark hair, natural tan complexion translated into limited inks, relaxed friendly expression, wearing a plain wetsuit. Head and upper torso centred, full head with breathing room, 4:5 portrait composition. Simple sketched ocean waves and kelp behind, friendly but mature adult, clearly a cartoon sketch NOT a photograph or photo filter. Match the graphic ink style of the reference, but make a distinct character. No text, logos, signatures or watermark.",
+      "master": "design-board/assets/people/kai-portrait-sketch-v2.png",
+      "asset": "design-board/assets/people/kai-portrait-sketch-v2.webp"
+    },
+    {
+      "id": "jules",
+      "source": "/Users/chris/.codex/generated_images/01a1a057-4a20-79e0-8bf9-35008aaa17ae/exec-44e1f646-490a-4c03-98ff-e8d28ddb45c7.png",
+      "prompt": "Use case: stylized-concept. Create a NEW original fictional diver portrait in exactly the illustrated style of the reference image: loose hand-drawn comic/linocut screenprint, energetic imperfect ink crosshatching, acid yellow, electric cobalt, hot pink, warm ivory paper. Subject is an adult woman around 45, short wavy red hair rendered in pink ink, fair freckles, assured relaxed expression, wearing a plain wetsuit. Head and upper torso centred, full head with breathing room, 4:5 portrait composition. Simple sketched ocean waves and kelp behind, friendly but mature adult, clearly a cartoon sketch NOT a photograph or photo filter. Match the graphic ink style of the reference, but make a distinct character. No text, logos, signatures or watermark.",
+      "master": "design-board/assets/people/jules-portrait-sketch-v2.png",
+      "asset": "design-board/assets/people/jules-portrait-sketch-v2.webp"
+    },
+    {
+      "id": "yara",
+      "source": "/Users/chris/.codex/generated_images/01a1a057-4a20-79e0-8bf9-35008aaa17ae/exec-b6e6f0ed-f9b5-465e-b140-b62ff3bcecc0.png",
+      "prompt": "Use case: stylized-concept. Create a NEW original fictional diver portrait in exactly the illustrated style of the reference image: loose hand-drawn comic/linocut screenprint, energetic imperfect ink crosshatching, acid yellow, electric cobalt, hot pink, warm ivory paper. Subject is an adult woman around 28, dark complexion rendered with deep navy and warm pink ink planes, closely cropped natural hair, calm self-assured expression, wearing a plain wetsuit. Head and upper torso centred, full head with breathing room, 4:5 portrait composition. Simple sketched ocean waves and kelp behind, friendly but mature adult, clearly a cartoon sketch NOT a photograph or photo filter. Match the graphic ink style of the reference, but make a distinct character. No text, logos, signatures or watermark.",
+      "master": "design-board/assets/people/yara-portrait-sketch-v2.png",
+      "asset": "design-board/assets/people/yara-portrait-sketch-v2.webp"
+    },
+    {
+      "id": "rowan",
+      "source": "/Users/chris/.codex/generated_images/01a1a057-4a20-79e0-8bf9-35008aaa17ae/exec-6879bbc9-c3b8-48e2-b63b-ee0c6cf763d4.png",
+      "prompt": "Use case: stylized-concept. Create a NEW original fictional diver portrait in exactly the illustrated style of the reference image: loose hand-drawn comic/linocut screenprint, energetic imperfect ink crosshatching, acid yellow, electric cobalt, hot pink, warm ivory paper. Subject is an adult man around 50, wavy salt-and-pepper hair and short beard, medium brown complexion rendered in limited inks, friendly confident expression, wearing a plain wetsuit. Head and upper torso centred, full head with breathing room, 4:5 portrait composition. Simple sketched ocean waves and kelp behind, friendly but mature adult, clearly a cartoon sketch NOT a photograph or photo filter. Match the graphic ink style of the reference, but make a distinct character. No text, logos, signatures or watermark.",
+      "master": "design-board/assets/people/rowan-portrait-sketch-v2.png",
+      "asset": "design-board/assets/people/rowan-portrait-sketch-v2.webp"
+    },
+    {
+      "id": "pool",
+      "source": "/Users/chris/.codex/generated_images/01a1a057-4a20-79e0-8bf9-35008aaa17ae/exec-0c54c73f-3f01-4910-ac40-eb5316b792fe.png",
+      "prompt": "Use case: stylized-concept. Wide 4:3 editorial illustration for a freediving pool-training post in the FinFolk app, match the reference's acid ocean sketch-screenprint style. Two adult freedivers in wetsuits at a pool: one relaxed diver swimming underwater with long fins along a clear pool lane, a buddy observing from the pool edge. Clearly drawn cartoon/linocut, simplified expressive shapes and lively ink crosshatching, electric cobalt water, acid chartreuse light, hot pink reflections, warm ivory paper. A peaceful ordinary training moment, no competition, no numbers or text, no photography or photographic filter, no watermark. Landscape composition, strong readable silhouette at card size.",
+      "master": "design-board/assets/people/pool-training-sketch-v2.png",
+      "asset": "design-board/assets/people/pool-training-sketch-v2.webp"
+    }
+  ],
+  "reusedScene": {
+    "source": "design-board/assets/scenes/finfolk-underwater-reef-glide-acid-v1.webp",
+    "asset": "design-board/assets/people/shore-session-sketch-v2.webp"
+  }
+}
