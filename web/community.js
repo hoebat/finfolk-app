@@ -1,5 +1,7 @@
 import { readResource } from './activity.js';
 import { showWelcome } from './welcome.js';
+import { applySavedTheme, themeSettings } from './theme.js';
+applySavedTheme();
 const el = (tag, text, cls) => {
   const n = document.createElement(tag);
   if (text !== undefined) n.textContent = text;
@@ -31,7 +33,8 @@ export function installCommunity({
     epoch = 0,
     beachEpoch = 0,
     nextRefresh = Infinity,
-    observedUser;
+    observedUser,
+    accountTab = 'checkin';
   async function api() {
     if (!pending)
       pending = (async () => {
@@ -108,27 +111,66 @@ export function installCommunity({
       const a = await api();
       if (generation !== epoch) return;
       if (!a.user) {
-        const box = el('section', undefined, 'account-card'),
+        const layout = el('div', undefined, 'account-welcome'),
+          intro = el('section', undefined, 'checkin-intro'),
+          box = el('section', undefined, 'account-card account-auth'),
           form = el('form');
-        box.append(
-          el('h2', 'Join the folk'),
-          el('p', 'Explore freely. Sign in to check in and meet divers.'),
+        intro.append(
+          el('span', 'A LITTLE MORE CONNECTED', 'eyebrow'),
+          el('h2', 'Find your people.\nShare your shores.'),
+          el('p', 'Check in at the beaches you visit and get to know the folk who share your favourite stretch of coast.'),
         );
+        const steps = el('ol', undefined, 'checkin-steps');
+        for (const [title, copy] of [
+          ['Make yourself at home', 'Create a profile. Choose what you share.'],
+          ['Choose your beach', 'Record today’s visit with a quick check-in.'],
+          ['Meet the regulars', 'Discover divers who keep coming back, too.'],
+        ]) {
+          const item = el('li');
+          item.append(el('strong', title), el('span', copy));
+          steps.append(item);
+        }
+        intro.append(steps, button('Explore beaches first', () => shell.navigate('discover'), 'text-button'));
+        const title = el('h2', 'Welcome back'),
+          description = el('p', 'Sign in to check in at your favourite beach.', 'account-intro');
+        box.append(title, description);
         const name = field(form, 'Display name', 'name'),
-          email = field(form, 'Email', 'email', '', 'email'),
+          email = field(form, 'Email address', 'email', '', 'email'),
           password = field(form, 'Password', 'password', '', 'password');
+        name.autocomplete = 'nickname';
+        name.maxLength = 80;
+        name.parentElement.hidden = true;
         email.autocomplete = 'email';
         password.autocomplete = 'current-password';
-        password.minLength = 8;
         email.required = password.required = true;
-        const submit = el('button', 'Sign in', 'primary');
+        const submit = el('button', 'Sign in', 'primary'),
+          status = el('p', '', 'auth-status');
+        status.setAttribute('role', 'status');
         submit.type = 'submit';
+        let creating = false;
+        const switchMode = button('Create an account', () => {
+          creating = !creating;
+          title.textContent = creating ? 'Join the folk' : 'Welcome back';
+          description.textContent = creating ? 'A few details and you’re ready to find your folk.' : 'Sign in to check in at your favourite beach.';
+          name.parentElement.hidden = !creating;
+          password.autocomplete = creating ? 'new-password' : 'current-password';
+          if (creating) password.minLength = 8;
+          else password.removeAttribute('minlength');
+          submit.textContent = creating ? 'Create account' : 'Sign in';
+          switchMode.textContent = creating ? 'Already a member? Sign in' : 'Create an account';
+          status.textContent = '';
+        }, 'text-button');
         form.append(submit);
         form.onsubmit = async (e) => {
           e.preventDefault();
           submit.disabled = true;
+          status.textContent = creating ? 'Creating your account…' : 'Signing you in…';
           try {
-            await a.email(email.value, password.value);
+            if (creating) {
+              const result = await a.auth.signUp.email({ email: email.value.trim(), password: password.value, name: name.value.trim() || 'Diver' });
+              if (result.error) throw Error(result.error.message);
+              await a.refresh();
+            } else await a.email(email.value.trim(), password.value);
             await account();
           } catch (error) {
             status.textContent = error.message;
@@ -136,32 +178,19 @@ export function installCommunity({
             submit.disabled = false;
           }
         };
-        const status = el('p');
-        status.setAttribute('role', 'status');
-        box.append(
-          form,
-          button('Create account', async () => {
-            if (!form.reportValidity()) return;
-            const result = await a.auth.signUp.email({
-              email: email.value,
-              password: password.value,
-              name: name.value.trim() || 'Diver',
-            });
-            if (result.error) throw Error(result.error.message);
-            await a.refresh();
-            await account();
-          }),
-          button('Reset password', async () => {
-            if (!email.value || !email.reportValidity()) return;
-            await a.reset(email.value);
-            status.textContent =
-              'Check your email for password reset instructions.';
-          }),
-          status,
+        box.append(form,
+          button('Forgot password?', async () => {
+            if (!email.reportValidity()) { email.focus(); return; }
+            await a.reset(email.value.trim());
+            status.textContent = 'Check your email for password reset instructions.';
+          }, 'text-button'),
+          switchMode, status,
+          el('small', 'Your profile starts Closed. You choose when to appear to other divers.'),
         );
         if (config.googleEnabled)
           box.append(button('Continue with Google', () => a.google()));
-        root.append(box);
+        layout.append(intro, box);
+        root.append(layout);
         const token = new URL(location.href).searchParams.get('token');
         if (token) {
           const reset = el('section', undefined, 'account-card'),
@@ -178,6 +207,44 @@ export function installCommunity({
         }
         return;
       }
+      const tabs = el('div', undefined, 'account-tabs');
+      tabs.setAttribute('role', 'tablist');
+      tabs.setAttribute('aria-label', 'Your account');
+      const panels = {};
+      function selectTab(key) {
+        accountTab = key;
+        for (const tab of tabs.children) {
+          const active = tab.dataset.tab === key;
+          tab.setAttribute('aria-selected', String(active));
+          tab.tabIndex = active ? 0 : -1;
+        }
+        for (const [name, panel] of Object.entries(panels)) panel.hidden = name !== key;
+      }
+      for (const [key, label] of [['checkin', 'Check in'], ['profile', 'Profile & buddies'], ['settings', 'Settings']]) {
+        const panel = el('div');
+        panel.id = 'account-' + key;
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', 'account-tab-' + key);
+        const tab = button(label, () => selectTab(key), 'account-tab');
+        tab.id = 'account-tab-' + key;
+        tab.dataset.tab = key;
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-controls', panel.id);
+        tabs.append(tab);
+        panels[key] = panel;
+      }
+      tabs.onkeydown = (e) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+        e.preventDefault();
+        const items = [...tabs.children], current = items.indexOf(document.activeElement);
+        const i = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (current + (e.key === 'ArrowRight' ? 1 : -1) + items.length) % items.length;
+        selectTab(items[i].dataset.tab);
+        items[i].focus();
+      };
+      root.append(tabs, ...Object.values(panels));
+      panels.settings.append(themeSettings());
+      selectTab(accountTab);
+      const profileStart = root.children.length;
       const me = await a.call('me');
       if (generation !== epoch) return;
       const p = me.profile,
@@ -417,9 +484,59 @@ export function installCommunity({
         );
         buddies.append(card);
       }
-      const visits = el('details');
-      visits.append(el('summary', 'Your check-ins'));
-      for (const row of await a.call('myCheckins')) {
+      const checkin = el('section', undefined, 'account-card checkin-card');
+      checkin.append(el('span', 'YOUR COASTAL ROUTINE', 'eyebrow'), el('h2', 'Where did you get in today?'),
+        el('p', 'Choose a beach to record today’s visit. Every day in the water counts.' ));
+      const checkinForm = el('form'),
+        beachSearch = field(checkinForm, 'Find your beach', 'checkin-search', '', 'search'),
+        beachSelect = el('select');
+      beachSearch.placeholder = 'Beach name or region';
+      beachSelect.setAttribute('aria-label', 'Beach to check in at');
+      beachSelect.required = true;
+      function beachOptions() {
+        const previous = beachSelect.value || getSelectedBeach()?.id;
+        beachSelect.replaceChildren();
+        const placeholder = el('option', 'Choose a beach');
+        placeholder.value = '';
+        beachSelect.append(placeholder);
+        for (const beach of getBeaches().filter(b => `${b.name} ${b.area_name || ''} ${b.state || ''}`.toLowerCase().includes(beachSearch.value.trim().toLowerCase())).slice(0, 150)) {
+          const option = el('option', `${beach.name} · ${beach.area_name || beach.state || ''}`);
+          option.value = beach.id;
+          beachSelect.append(option);
+        }
+        if ([...beachSelect.options].some(o => o.value === previous)) beachSelect.value = previous;
+      }
+      beachSearch.oninput = beachOptions;
+      beachOptions();
+      const checkinSubmit = el('button', 'Check in today', 'primary'), checkinStatus = el('p');
+      checkinSubmit.type = 'submit';
+      checkinStatus.setAttribute('role', 'status');
+      checkinForm.append(beachSelect, checkinSubmit, checkinStatus);
+      checkin.append(checkinForm, el('small', 'Self-reported visits, once per beach per day. Your profile and sharing preferences control what other divers see.'));
+      panels.checkin.append(checkin);
+      const visits = el('section', undefined, 'account-card checkin-history');
+      visits.append(el('h2', 'Your recent check-ins'));
+      const checkins = await a.call('myCheckins');
+      if (generation !== epoch) return;
+      checkinForm.onsubmit = async (e) => {
+        e.preventDefault();
+        if (!beachSelect.value) return;
+        const beach = getBeaches().find(b => b.id === beachSelect.value);
+        if (!beach) return;
+        checkinSubmit.disabled = true;
+        checkinStatus.textContent = 'Recording your visit…';
+        try {
+          await a.call('checkin', { beachId: beach.id });
+          await account();
+          const confirmation = el('p', `You’re checked in at ${beach.name}. See you in the water!`, 'checkin-success');
+          confirmation.setAttribute('role', 'status');
+          if (generation + 1 === epoch) document.querySelector('.checkin-card')?.prepend(confirmation);
+        } catch (error) {
+          checkinStatus.textContent = error.message;
+        } finally { checkinSubmit.disabled = false; }
+      };
+      if (!checkins.length) visits.append(el('p', 'Your first visit starts here. Pick a beach above to check in.', 'account-intro'));
+      for (const row of checkins) {
         const line = el('p', `${row.name} · ${row.day} `);
         line.append(
           button('Remove', async () => {
@@ -432,7 +549,7 @@ export function installCommunity({
         );
         visits.append(line);
       }
-      root.append(visits);
+      panels.checkin.append(visits);
       const blocks = el('details');
       blocks.append(el('summary', 'Blocked profiles'));
       for (const row of await a.call('blocks')) {
@@ -476,6 +593,7 @@ export function installCommunity({
         }),
       );
       root.append(deletion);
+      for (const child of [...root.children].slice(profileStart)) panels.profile.append(child);
     } catch (error) {
       if (generation === epoch) {
         root.append(
