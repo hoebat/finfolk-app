@@ -1,0 +1,5 @@
+import assert from 'node:assert/strict';
+import {parseRounds,createPracticeClock} from '../design-board/practice-model.mjs';
+let now=0;const c=createPracticeClock({kind:'holds',rounds:parseRounds('5, 10\n6, 12'),now:()=>now});c.start();assert.equal(c.phase,'hold');now=5500;c.tick();assert.equal(c.phase,'hold','No target-driven hold transitions');c.endHold();now=17000;c.tick();assert.equal(c.phase,'waiting');now=30000;c.tick();assert.equal(c.phase,'waiting','No automatic next hold');c.start();now=32000;c.stop(true);assert.equal(c.phase,'finished');assert.equal(c.rows[1].actualHold,2);assert.equal(c.rows[1].interrupted,true);
+now=0;const r=createPracticeClock({kind:'relaxation',seconds:120,now:()=>now});r.start();now=30000;r.pause();now=90000;r.resume();now=120000;assert.equal(r.elapsed,60);now=180000;r.tick();assert.equal(r.phase,'finished');assert.equal(r.total,120);
+for(const t of ['', '0,20','5,-1','5','abc,5','4000,5'])assert.throws(()=>parseRounds(t));assert.throws(()=>createPracticeClock({kind:'log',now:()=>0}).start());console.log('Practice clocks: delayed ticks, pause accounting, manual holds, interruption and input validation passed.');

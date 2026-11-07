@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {
+  isRegular,
   windowFor,
   localDay,
   visitCount,
@@ -14,6 +15,14 @@ const now = new Date('2026-10-31T00:00:00Z'),
   viewer = { open: true },
   owner = { open: true },
   days = ['2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31'];
+assert.equal(isRegular(3), false);
+assert.equal(isRegular(9), false);
+assert.equal(isRegular(10), true);
+assert.equal(isRegular(11), true);
+const tenDays = Array.from({length:10}, (_, i) => `2026-10-${String(i+2).padStart(2,'0')}`);
+assert.equal(isRegular(visitCount([...tenDays, tenDays[0]], now, zone)), true);
+assert.equal(isRegular(visitCount(tenDays, new Date('2026-11-01T00:00:00Z'), zone)), false);
+assert.equal(isRegular(visitCount([...tenDays.slice(1), tenDays[1]], now, zone)), false);
 assert.deepEqual(windowFor(now, zone), {
   today: '2026-10-31',
   start: '2026-10-02',
@@ -83,3 +92,5 @@ assert.equal(compatibility(p, p).reasons.length, 5);
 console.log(
   'Regulars rules passed: rolling 30 days, 3/5 gates, timezone/DST, reciprocity, expiry, accepted buddies, blocks and opt-in fields.',
 );
+
+assert.deepEqual(preferences({activities:['freediving','spearfishing','ocean-swimming']}).activities,['freediving'],'FinFolk activity preferences are limited to freediving');

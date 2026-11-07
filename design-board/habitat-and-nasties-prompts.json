@@ -1,0 +1,56 @@
+{
+  "tool": "ChatGPT native image generation",
+  "purpose": "Marine habitat silhouettes and three additional dangerous-animal tessellations",
+  "jobs": [
+    {
+      "id": "animal-seasnake-v1",
+      "kind": "print",
+      "prompt": "Use case: illustration-story. Asset type: seamless-looking square luxury marine-animal textile swatch for Finfolk, 1024x1024. Image 1 is the established muted octopus print, image 2 is its hyper fashion-print family. Create an ORIGINAL addition featuring elegant banded sea snakes with ribbon-like looping bodies, small recognisable snake heads and flattened paddle tails, the S curves tessellate in alternating directions. These are the new Nasties, with whimsical natural-history character, clever Escher-like positive and negative space, richly drawn fine engraved anatomy, sophisticated high-fashion surface design. Dense medium-scale all-over composition, cropped animals crossing every edge so the swatch looks continuous. Use ONLY midnight navy #172440, warm ivory #eee5d3 and muted dusty rose #bc8190. Navy and ivory animals alternate as in reference 1. No isolated mascot, no human, no weapons, no text, no frame, no paper texture, no gradients, no 3D. The species should be recognisable and the drawing quality should match the references."
+    },
+    {
+      "id": "animal-seasnake-hyper-v1",
+      "kind": "print",
+      "prompt": "Use case: illustration-story. Asset type: seamless-looking square luxury marine-animal textile swatch for Finfolk, 1024x1024. Image 1 is the established muted octopus print, image 2 is its hyper fashion-print family. Create an ORIGINAL addition featuring elegant banded sea snakes with ribbon-like looping bodies, small recognisable snake heads and flattened paddle tails, the S curves tessellate in alternating directions. These are the new Nasties, with whimsical natural-history character, clever Escher-like positive and negative space, richly drawn fine engraved anatomy, sophisticated high-fashion surface design. Dense medium-scale all-over composition, cropped animals crossing every edge so the swatch looks continuous. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d, with the energy of reference 2 and acid-yellow ground. No isolated mascot, no human, no weapons, no text, no frame, no paper texture, no gradients, no 3D. The species should be recognisable and the drawing quality should match the references."
+    },
+    {
+      "id": "animal-stingray-v1",
+      "kind": "print",
+      "prompt": "Use case: illustration-story. Asset type: seamless-looking square luxury marine-animal textile swatch for Finfolk, 1024x1024. Image 1 is the established muted octopus print, image 2 is its hyper fashion-print family. Create an ORIGINAL addition featuring spotted stingrays with broad diamond-shaped wings, gently curled wing tips and long whip tails, the wings and tails fit into each other like a precise optical tessellation. These are the new Nasties, with whimsical natural-history character, clever Escher-like positive and negative space, richly drawn fine engraved anatomy, sophisticated high-fashion surface design. Dense medium-scale all-over composition, cropped animals crossing every edge so the swatch looks continuous. Use ONLY midnight navy #172440, warm ivory #eee5d3 and muted dusty rose #bc8190. Navy and ivory animals alternate as in reference 1. No isolated mascot, no human, no weapons, no text, no frame, no paper texture, no gradients, no 3D. The species should be recognisable and the drawing quality should match the references."
+    },
+    {
+      "id": "animal-stingray-hyper-v1",
+      "kind": "print",
+      "prompt": "Use case: illustration-story. Asset type: seamless-looking square luxury marine-animal textile swatch for Finfolk, 1024x1024. Image 1 is the established muted octopus print, image 2 is its hyper fashion-print family. Create an ORIGINAL addition featuring spotted stingrays with broad diamond-shaped wings, gently curled wing tips and long whip tails, the wings and tails fit into each other like a precise optical tessellation. These are the new Nasties, with whimsical natural-history character, clever Escher-like positive and negative space, richly drawn fine engraved anatomy, sophisticated high-fashion surface design. Dense medium-scale all-over composition, cropped animals crossing every edge so the swatch looks continuous. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d, with the energy of reference 2 and acid-yellow ground. No isolated mascot, no human, no weapons, no text, no frame, no paper texture, no gradients, no 3D. The species should be recognisable and the drawing quality should match the references."
+    },
+    {
+      "id": "animal-moray-v1",
+      "kind": "print",
+      "prompt": "Use case: illustration-story. Asset type: seamless-looking square luxury marine-animal textile swatch for Finfolk, 1024x1024. Image 1 is the established muted octopus print, image 2 is its hyper fashion-print family. Create an ORIGINAL addition featuring spotted moray eels with sculptural winding bodies, recognisable slightly open eel jaws and continuous low dorsal fins, their sinuous shapes interlock in a witty geometric tessellation. These are the new Nasties, with whimsical natural-history character, clever Escher-like positive and negative space, richly drawn fine engraved anatomy, sophisticated high-fashion surface design. Dense medium-scale all-over composition, cropped animals crossing every edge so the swatch looks continuous. Use ONLY midnight navy #172440, warm ivory #eee5d3 and muted dusty rose #bc8190. Navy and ivory animals alternate as in reference 1. No isolated mascot, no human, no weapons, no text, no frame, no paper texture, no gradients, no 3D. The species should be recognisable and the drawing quality should match the references."
+    },
+    {
+      "id": "animal-moray-hyper-v1",
+      "kind": "print",
+      "prompt": "Use case: illustration-story. Asset type: seamless-looking square luxury marine-animal textile swatch for Finfolk, 1024x1024. Image 1 is the established muted octopus print, image 2 is its hyper fashion-print family. Create an ORIGINAL addition featuring spotted moray eels with sculptural winding bodies, recognisable slightly open eel jaws and continuous low dorsal fins, their sinuous shapes interlock in a witty geometric tessellation. These are the new Nasties, with whimsical natural-history character, clever Escher-like positive and negative space, richly drawn fine engraved anatomy, sophisticated high-fashion surface design. Dense medium-scale all-over composition, cropped animals crossing every edge so the swatch looks continuous. Use ONLY acid yellow #edff35, electric cobalt #1641ff and hot pink #ff148d, with the energy of reference 2 and acid-yellow ground. No isolated mascot, no human, no weapons, no text, no frame, no paper texture, no gradients, no 3D. The species should be recognisable and the drawing quality should match the references."
+    },
+    {
+      "id": "habitat-seagrass-v1",
+      "kind": "silhouette",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine stencil mask, 1024x1024. Subject: one elegant loose cluster of long ribbon-like seagrass blades growing from a small uneven root base, varying blade lengths and widths, several curving to either side as if in a gentle current, airy clear gaps between the blades; organically irregular, no straight baseline. Completely flat solid midnight navy #172440 shape, crisp clean outline, elegant cinematic 1960s/70s screenprint sensibility suitable for a high-fashion freediving identity. The whole shape fits inside the canvas with 8% margin. Actual transparent background, absolutely no rectangular backdrop, no scenery outside the subject, no shadows, no shading, no gradients, no letters, no frame, no other objects. The shape will be used as an organic stencil revealing a fine animal print, so its silhouette must read instantly."
+    },
+    {
+      "id": "habitat-reef-rocks-v1",
+      "kind": "silhouette",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine stencil mask, 1024x1024. Subject: one low irregular coastal reef-rock formation made of three adjoining rounded angular weathered rocks, one small arch-like opening and jagged natural ridges, a wide low silhouette with varied height and an uneven bottom, no straight rectangular base. Completely flat solid midnight navy #172440 shape, crisp clean outline, elegant cinematic 1960s/70s screenprint sensibility suitable for a high-fashion freediving identity. The whole shape fits inside the canvas with 8% margin. Actual transparent background, absolutely no rectangular backdrop, no scenery outside the subject, no shadows, no shading, no gradients, no letters, no frame, no other objects. The shape will be used as an organic stencil revealing a fine animal print, so its silhouette must read instantly."
+    },
+    {
+      "id": "habitat-stingray-v1",
+      "kind": "silhouette",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine stencil mask, 1024x1024. Subject: one graceful spotted-stingray body silhouette seen from above, broad diamond-shaped wing fins swept naturally back, very long thin curving whip tail, realistic ray proportions, generous space around all tips; no inner spots or details. Completely flat solid midnight navy #172440 shape, crisp clean outline, elegant cinematic 1960s/70s screenprint sensibility suitable for a high-fashion freediving identity. The whole shape fits inside the canvas with 8% margin. Actual transparent background, absolutely no rectangular backdrop, no scenery outside the subject, no shadows, no shading, no gradients, no letters, no frame, no other objects. The shape will be used as an organic stencil revealing a fine animal print, so its silhouette must read instantly."
+    },
+    {
+      "id": "habitat-turtle-v1",
+      "kind": "silhouette",
+      "prompt": "Use case: illustration-story. Asset type: transparent marine stencil mask, 1024x1024. Subject: one sea turtle swimming at a diagonal viewed from above, oval shell contour, small recognisable head, two large front flippers sweeping outward and two smaller rear flippers, accurate natural anatomy, no inner shell markings or details. Completely flat solid midnight navy #172440 shape, crisp clean outline, elegant cinematic 1960s/70s screenprint sensibility suitable for a high-fashion freediving identity. The whole shape fits inside the canvas with 8% margin. Actual transparent background, absolutely no rectangular backdrop, no scenery outside the subject, no shadows, no shading, no gradients, no letters, no frame, no other objects. The shape will be used as an organic stencil revealing a fine animal print, so its silhouette must read instantly."
+    }
+  ]
+}

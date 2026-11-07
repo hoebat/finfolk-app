@@ -299,3 +299,37 @@ dialog {
   background: url("./finfolk-icon.svg") center/contain no-repeat;
   vertical-align: -5px;
 }
+
+/* Personal animal choice is independent of palette and map colours. */
+.settings-page .animal-settings { margin-top: 20px; }
+.animal-settings > p { color: var(--account-muted, #58767c); font-size: 13px; line-height: 1.6; }
+.account-card .animal-choices { border: 0; margin: 0; padding: 10px 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+.animal-choices legend { font-size: 13px; padding-bottom: 10px; }
+.account-card .animal-choice { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 6px 8px; margin: 0; padding: 14px 12px; min-height: 66px; min-width: 0; border: 1px solid var(--account-line, #d9e8e4); border-radius: 12px; cursor: pointer; align-items: center; }
+.animal-choice:has(input:checked) { border-color: var(--account-accent, #007e90); background: color-mix(in srgb,var(--account-accent, #007e90) 8%,var(--account-surface, #fffef8)); }
+.account-card .animal-choice input[type='radio'] { margin: 0; padding: 0; width: 16px; height: 16px; accent-color: var(--account-accent, #007e90); }
+.animal-choice strong { font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.animal-choice small { grid-column: 2; color: var(--account-muted, #58767c); font-size: 11px; }
+:root[data-animal-art='ready'] .discover-header { position: relative; padding-bottom: 110px; }
+:root[data-animal-art='ready'] .discover-header::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background-image: var(--finfolk-animal-print); background-size: 240px 240px; background-repeat: repeat; opacity: .14; pointer-events: none; }
+@media(max-width:400px) { .account-card .animal-choices { grid-template-columns: minmax(0,1fr); } }
+
+.animal-choice img { width: 100%; height: 80px; object-fit: cover; grid-column: 1/-1; border-radius: 8px; }
+.beach-thumbnail[data-animal-print] .beach-thumbnail-land { fill: var(--beach-state-fill); stroke: var(--account-ink, #173f49); stroke-width: 1; }
+.beach-thumbnail[data-animal-print] .beach-thumbnail-dot { stroke: var(--account-surface, #fffef8); stroke-width: 3; filter: drop-shadow(0 0 1px #172440); }
+.beach-animal-pattern image { filter: var(--finfolk-motif-filter, none); }
+:root[data-theme='acid']{--account-bg:#ecff8c;--account-surface:#fbffdf;--account-ink:#172884;--account-accent:#2248ff;--account-muted:#3c4c66;--account-line:#9bab9a;--finfolk-cream:#ecff8c;--finfolk-ink:#172884;--finfolk-teal:#2248ff;--finfolk-print-collection:hyper;--finfolk-collection-animal:octopus;}
+:root[data-theme='pink']{--account-bg:#ffd7e9;--account-surface:#fff1f6;--account-ink:#402052;--account-accent:#ac005a;--account-muted:#754463;--account-line:#d5afc1;--finfolk-cream:#ffd7e9;--finfolk-ink:#402052;--finfolk-teal:#ac005a;--finfolk-print-collection:hyper;--finfolk-collection-animal:boxjelly;}
+:root[data-theme='cobalt']{--account-bg:#142fc2;--account-surface:#2037a8;--account-ink:#fff5ce;--account-accent:#ff9bcf;--account-muted:#d6dcff;--account-line:#6070c3;--finfolk-cream:#142fc2;--finfolk-ink:#fff5ce;--finfolk-teal:#ff9bcf;--finfolk-print-collection:hyper;--finfolk-collection-animal:lionfish;}
+@media(max-width:600px){
+ .account-page,.logbook-page,.trip-page{padding:24px 16px calc(var(--nav-height,68px) + 24px);}
+ .account-tabs{max-width:100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin;}
+ .account-tabs .account-tab{flex:0 0 auto;min-height:44px;white-space:nowrap;}
+ :is(.account-page,.logbook-page,.settings-page) :is(input:not([type='checkbox']):not([type='radio']),select,textarea){font-size:16px;max-width:100%;}
+ :is(.account-page,.logbook-page,.settings-page) button{min-height:44px;}
+ .logbook-header{flex-direction:column;align-items:flex-start;}
+ .session-grid{grid-template-columns:minmax(0,1fr);}
+ .trip-highlights{grid-template-columns:repeat(2,minmax(0,1fr));}
+ .trip-table-wrap{overflow-x:auto;max-width:100%;}
+ .settings-grid>*,.account-card,.logbook-card,.session-card{min-width:0;}
+}

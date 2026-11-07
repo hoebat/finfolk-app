@@ -4,6 +4,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {StaticData,cellFor,profileCoordinates,profileCSV,contourLines} from '../web/data-client.js';
+import {ANIMALS,animalPrint} from '../web/animal-prints.js';
 
 // End-to-end: Python prepares known native cells; the browser client reads the
 // resulting Pages artifact through mocked static HTTP under a repository prefix.
@@ -24,10 +25,17 @@ build(store,root/'site',max_zoom=5)
   execFileSync(process.env.PYTHON||'python3',['-c',code,temp],{cwd:new URL('..',import.meta.url),stdio:'pipe'});
   const report=JSON.parse(await readFile(join(temp,'site/build-report.json'),'utf8'));
   const worker=await readFile(join(temp,'site/sw.js'),'utf8');
-  for(const asset of ['beach-thumbnail.js','state-outlines.js','preferences.js','settings.js']) {
+  for(const animal of ANIMALS){
+    for(const collection of ['muted','hyper']){const filename=animalPrint(animal.id,'light',collection);assert.ok(worker.includes('./'+filename),'Generated print remains available offline');
+    assert.ok((await readFile(join(temp,'site',filename))).equals(await readFile(new URL('../web/'+filename,import.meta.url))),'Build preserves generated artwork');}
+  }
+  for(const name of ['finfolk-mark.svg','finfolk-icon.svg','finfolk-mark-navy.svg','finfolk-mark-ivory.svg','finfolk-mark-cobalt.svg','finfolk-mark-pink.svg','finfolk-touch.png','finfolk-favicon.png','freediver-ascending-v1.webp','freediver-descending-v1.webp','freediver-gliding-v1.webp','habitat-seagrass-v1.webp','habitat-reef-rocks-v1.webp','habitat-stingray-v1.webp','habitat-turtle-v1.webp'])assert.ok(worker.includes('./'+name),name+' remains available offline');
+  const landing=await readFile(join(temp,'site/landing.html'),'utf8');assert.ok(landing.includes(report.assets['landing.js']));assert.ok(landing.includes(report.assets['landing.css']));assert.ok(worker.includes('./landing.html'));for(const name of ['finfolk-wordmark.svg','finfolk-wordmark.png','demo-maya.webp','demo-kai.webp','demo-alex.webp','demo-shore.webp'])assert.ok(worker.includes('./'+name));
+  for(const asset of ['beach-thumbnail.js','state-outlines.js','preferences.js','settings.js','animal-prints.js','animal-theme.js','animal-decoration.js','state-motifs.js','coastal-conditions.js','coastal-conditions.css','feature-demos.js','feature-demos.css']) {
     assert.ok(report.assets[asset],`${asset} has a fingerprinted build asset`);
     assert.ok(worker.includes('./'+report.assets[asset]),`${asset} is included in the offline shell`);
   }
+  assert.equal(report.assets['profile-showcase.js'],undefined,'Local profile prototype is excluded from production output');assert.ok(!(await readFile(join(temp,'site','index.html'),'utf8')).includes('/board/profiles.html'));
   const thumbnailModule=await readFile(join(temp,'site',report.assets['beach-thumbnail.js']),'utf8');
   assert.ok(thumbnailModule.includes('./'+report.assets['state-outlines.js']),'Thumbnail imports use the fingerprinted outline asset');
   let requests=0;const urls=[];

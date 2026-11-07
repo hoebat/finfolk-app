@@ -1,0 +1,35 @@
+{
+  "tool": "ChatGPT native image generation",
+  "focus": "One psychedelic lowercase f; small-mark family",
+  "transparent_background": true,
+  "studies": [
+    {
+      "id": "small-print-f",
+      "name": "Print f",
+      "note": "A single swollen f carrying large fragments of the octopus print.",
+      "brief": "One oversized molten lowercase f, with bulbous upper hook, pinched waist and soft flared foot. Deep navy silhouette with broad ivory and dusty-rose octopus tentacle fragments CLIPPED INSIDE the f. Keep the outer letter edge navy and crisp. Simplify textile to 3 to 5 large flowing areas, not dense detail. This is the small companion to Letters in print.",
+      "prompt": "Use case: logo-brand. Asset type: production-quality raster single-letter icon exploration, 1024x1024 transparent PNG. Primary request: a small psychedelic lava-lamp FinFolk icon, EXACTLY ONE lowercase \"f\", never \"ff\", no full wordmark. References: image 1 provides printed-letter identity; image 2 provides molten 70s letter proportions. Redraw one independent f for a favicon and navigation mark. Centre the icon with equal 10 percent empty margins and use about 80 percent of canvas height. Actual transparent background, no opaque tile except the single blob explicitly requested. Crisp flat vector-like edges. Not a board, no labels, no samples, no mockups, no shadows, no gradients, no 3D. Preserve a strong readable f silhouette. Specific variant: One oversized molten lowercase f, with bulbous upper hook, pinched waist and soft flared foot. Deep navy silhouette with broad ivory and dusty-rose octopus tentacle fragments CLIPPED INSIDE the f. Keep the outer letter edge navy and crisp. Simplify textile to 3 to 5 large flowing areas, not dense detail. This is the small companion to Letters in print."
+    },
+    {
+      "id": "small-liquid-f",
+      "name": "Liquid f",
+      "note": "A simpler molten silhouette with one curling cut, built for the smallest sizes.",
+      "brief": "One oversized lowercase f with a huge drooping soft bulbous hook, clearly visible short right crossbar, pinched fluid waist, and flared rounded foot. Solid midnight navy silhouette with just ONE broad ivory curling tentacle-shaped negative cut separating hook and crossbar. This needs to work as a 16 px favicon. Absolutely no small sucker dots, no patterns, no extra bubble or other separate object.",
+      "prompt": "Use case: logo-brand. Asset type: production-quality raster single-letter icon exploration, 1024x1024 transparent PNG. Primary request: a small psychedelic lava-lamp FinFolk icon, EXACTLY ONE lowercase \"f\", never \"ff\", no full wordmark. References: image 1 provides printed-letter identity; image 2 provides molten 70s letter proportions. Redraw one independent f for a favicon and navigation mark. Centre the icon with equal 10 percent empty margins and use about 80 percent of canvas height. Actual transparent background, no opaque tile except the single blob explicitly requested. Crisp flat vector-like edges. Not a board, no labels, no samples, no mockups, no shadows, no gradients, no 3D. Preserve a strong readable f silhouette. Specific variant: One oversized lowercase f with a huge drooping soft bulbous hook, clearly visible short right crossbar, pinched fluid waist, and flared rounded foot. Solid midnight navy silhouette with just ONE broad ivory curling tentacle-shaped negative cut separating hook and crossbar. This needs to work as a 16 px favicon. Absolutely no small sucker dots, no patterns, no extra bubble or other separate object."
+    },
+    {
+      "id": "small-cutout-f",
+      "name": "Bubble cut-out",
+      "note": "A lowercase f carved from a soft psychedelic blob, for an app tile or avatar.",
+      "brief": "One compact irregular cobalt lava blob, rounded and fluid, with a single large lowercase f cleanly cut out of its centre as TRANSPARENT negative space. The f has a big bulbous hook and a clear short crossbar. One simple form, almost a rounded app tile but organically asymmetrical. Tiny hot pink curved inset area at one edge only. No separate dots. Preserve an obvious legible f shape at 16 px.",
+      "prompt": "Use case: logo-brand. Asset type: production-quality raster single-letter icon exploration, 1024x1024 transparent PNG. Primary request: a small psychedelic lava-lamp FinFolk icon, EXACTLY ONE lowercase \"f\", never \"ff\", no full wordmark. References: image 1 provides printed-letter identity; image 2 provides molten 70s letter proportions. Redraw one independent f for a favicon and navigation mark. Centre the icon with equal 10 percent empty margins and use about 80 percent of canvas height. Actual transparent background, no opaque tile except the single blob explicitly requested. Crisp flat vector-like edges. Not a board, no labels, no samples, no mockups, no shadows, no gradients, no 3D. Preserve a strong readable f silhouette. Specific variant: One compact irregular cobalt lava blob, rounded and fluid, with a single large lowercase f cleanly cut out of its centre as TRANSPARENT negative space. The f has a big bulbous hook and a clear short crossbar. One simple form, almost a rounded app tile but organically asymmetrical. Tiny hot pink curved inset area at one edge only. No separate dots. Preserve an obvious legible f shape at 16 px."
+    },
+    {
+      "id": "small-electric-f",
+      "name": "Electric f",
+      "note": "A hot-pink and cobalt single f with broad acid-yellow motif cuts.",
+      "brief": "One oversized thick puffy lowercase f with a big flowing upper hook and obvious short crossbar, molten 70s lava-lamp silhouette. Hot pink body with one broad cobalt curved tentacle-like panel flowing down inside the stem and two large acid-yellow oval cuts INSIDE the hook. High-fashion psychedelic graphic, not shiny, not 3D. Broad flat colour areas readable at small size. One f only, no separate floating bubbles.",
+      "prompt": "Use case: logo-brand. Asset type: production-quality raster single-letter icon exploration, 1024x1024 transparent PNG. Primary request: a small psychedelic lava-lamp FinFolk icon, EXACTLY ONE lowercase \"f\", never \"ff\", no full wordmark. References: image 1 provides printed-letter identity; image 2 provides molten 70s letter proportions. Redraw one independent f for a favicon and navigation mark. Centre the icon with equal 10 percent empty margins and use about 80 percent of canvas height. Actual transparent background, no opaque tile except the single blob explicitly requested. Crisp flat vector-like edges. Not a board, no labels, no samples, no mockups, no shadows, no gradients, no 3D. Preserve a strong readable f silhouette. Specific variant: One oversized thick puffy lowercase f with a big flowing upper hook and obvious short crossbar, molten 70s lava-lamp silhouette. Hot pink body with one broad cobalt curved tentacle-like panel flowing down inside the stem and two large acid-yellow oval cuts INSIDE the hook. High-fashion psychedelic graphic, not shiny, not 3D. Broad flat colour areas readable at small size. One f only, no separate floating bubbles."
+    }
+  ]
+}

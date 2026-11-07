@@ -1,4 +1,8 @@
 # Source survey files belong in Git LFS. Pages publishes materialized build outputs.
+# Keep the consolidated Atelier's source raster artwork portable in LFS.
+design-board/assets/**/*.png filter=lfs diff=lfs merge=lfs -text
+design-board/assets/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+design-board/assets/**/*.webp filter=lfs diff=lfs merge=lfs -text
 * text=auto
 *.tif filter=lfs diff=lfs merge=lfs -text
 *.tiff filter=lfs diff=lfs merge=lfs -text

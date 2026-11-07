@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "id": "boxjelly",
+  "type": "motifs",
+  "name": "Box jelly",
+  "width": 1254,
+  "height": 1254,
+  "source": "web/animal-boxjelly-hyper-v1.webp",
+  "sourceSHA256": "02238835a7ef89a5fc78efc5e1857b085477cbc50b1485efba2d6ea5f6b71ea1",
+  "algorithm": "srgb-three-ink-projection-v1",
+  "sourceInks": {
+    "paper": "#edff35",
+    "ink": "#1641ff",
+    "accent": "#ff148d"
+  },
+  "masks": {
+    "paper": "paper-mask.png",
+    "ink": "ink-mask.png",
+    "accent": "accent-mask.png"
+  },
+  "maskEncoding": "8-bit grayscale coverage; the three masks sum to 255 at every pixel. Multiply each mask by its palette RGB ink and add the results.",
+  "palettes": {
+    "acid-light": {
+      "paper": "#edff35",
+      "ink": "#1641ff",
+      "accent": "#ff148d",
+      "preview": "web/animal-boxjelly-acid-light-v1.webp"
+    },
+    "acid-dark": {
+      "paper": "#1641ff",
+      "ink": "#edff35",
+      "accent": "#ff148d",
+      "preview": "web/animal-boxjelly-acid-dark-v1.webp"
+    },
+    "muted-light": {
+      "paper": "#f2e8d6",
+      "ink": "#172440",
+      "accent": "#bc8190",
+      "preview": "web/animal-boxjelly-muted-light-v1.webp"
+    },
+    "muted-dark": {
+      "paper": "#172440",
+      "ink": "#f2e8d6",
+      "accent": "#edb2c7",
+      "preview": "web/animal-boxjelly-muted-dark-v1.webp"
+    }
+  }
+}

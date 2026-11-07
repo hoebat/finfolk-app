@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "id": "seaurchin",
+  "type": "motifs",
+  "name": "Shortspined urchin",
+  "width": 1254,
+  "height": 1254,
+  "source": "web/animal-seaurchin-hyper-v1.webp",
+  "sourceSHA256": "1473880ffb9400159295ce6fa5dfda75a51d74bd487627c1ac2846f6d8c12c60",
+  "algorithm": "srgb-three-ink-projection-v1",
+  "sourceInks": {
+    "paper": "#edff35",
+    "ink": "#1641ff",
+    "accent": "#ff148d"
+  },
+  "masks": {
+    "paper": "paper-mask.png",
+    "ink": "ink-mask.png",
+    "accent": "accent-mask.png"
+  },
+  "maskEncoding": "8-bit grayscale coverage; the three masks sum to 255 at every pixel. Multiply each mask by its palette RGB ink and add the results.",
+  "palettes": {
+    "acid-light": {
+      "paper": "#edff35",
+      "ink": "#1641ff",
+      "accent": "#ff148d",
+      "preview": "web/animal-seaurchin-acid-light-v1.webp"
+    },
+    "acid-dark": {
+      "paper": "#1641ff",
+      "ink": "#edff35",
+      "accent": "#ff148d",
+      "preview": "web/animal-seaurchin-acid-dark-v1.webp"
+    },
+    "muted-light": {
+      "paper": "#f2e8d6",
+      "ink": "#172440",
+      "accent": "#bc8190",
+      "preview": "web/animal-seaurchin-muted-light-v1.webp"
+    },
+    "muted-dark": {
+      "paper": "#172440",
+      "ink": "#f2e8d6",
+      "accent": "#edb2c7",
+      "preview": "web/animal-seaurchin-muted-dark-v1.webp"
+    }
+  }
+}

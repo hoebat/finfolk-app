@@ -11,6 +11,7 @@ import { Hono } from 'hono';
 import { publicPage } from './public-pages.mjs';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import {
+  isRegular,
   preferences,
   compatibility,
   windowFor,
@@ -332,7 +333,7 @@ export function createAPI({
           people: page
             .map((m) => ({
               ...basic(m),
-              regular: m.visits >= 3,
+              regular: isRegular(m.visits),
               connection: m.connection,
               ...(me.profile.open
                 ? compatibility(

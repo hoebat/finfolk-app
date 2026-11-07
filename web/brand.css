@@ -1,0 +1,23 @@
+/* One master contour. Detail appears only when the rendered mark is >=128 px. */
+.brand-wordmark{display:inline-block;position:relative;width:min(var(--wordmark-width,400px),100%);aspect-ratio:1024/429;vertical-align:middle;container:brand-wordmark / inline-size;color:inherit;line-height:0}
+.brand-wordmark__fill{position:absolute;inset:0;background:currentColor;-webkit-mask:url('./finfolk-wordmark.svg') center/contain no-repeat;mask:url('./finfolk-wordmark.svg') center/contain no-repeat}
+@container brand-wordmark (min-width:320px){.brand-wordmark[data-brand-print]>.brand-wordmark__fill{background-image:var(--finfolk-animal-print,var(--finfolk-collection-print,none));background-size:60px 60px;background-repeat:repeat}}
+.brand-mark{display:inline-block;position:relative;width:var(--brand-size,48px);height:auto;aspect-ratio:1;flex:none;vertical-align:middle;container:brand-mark / inline-size;color:inherit;background:none;border:0;border-radius:0;box-shadow:none;line-height:0}
+.brand-mark__fill{position:absolute;inset:0;background-color:currentColor;-webkit-mask:url('./finfolk-mark.svg') center/contain no-repeat;mask:url('./finfolk-mark.svg') center/contain no-repeat}
+@container brand-mark (min-width:128px){.brand-mark[data-brand-print]>.brand-mark__fill{background-image:var(--finfolk-animal-print,var(--finfolk-collection-print,none));background-size:25% 25%;background-repeat:repeat}}
+.diver-stencil{position:relative;isolation:isolate;aspect-ratio:1;overflow:hidden;min-width:0;background:var(--stencil-paper,var(--account-surface,#eee5d3));color:var(--stencil-ink,var(--account-ink,#172440));border-radius:45% 43% 40% 46%}
+.diver-stencil::before{content:'';position:absolute;inset:0;background-image:var(--finfolk-animal-print,var(--finfolk-collection-print,none));background-size:var(--stencil-tile,110px);background-repeat:repeat}
+.diver-stencil__figure{position:absolute;inset:4%;background:currentColor;-webkit-mask:var(--diver-mask) center/contain no-repeat;mask:var(--diver-mask) center/contain no-repeat;filter:drop-shadow(0 0 1px #fff8);}
+.diver-stencil[data-pose=ascending]{--diver-mask:url('./freediver-ascending-v1.webp')}
+.diver-stencil[data-pose=descending]{--diver-mask:url('./freediver-descending-v1.webp')}
+.diver-stencil[data-pose=descending]>.diver-stencil__figure{transform:rotate(180deg)}
+.diver-stencil[data-pose=gliding]{--diver-mask:url('./freediver-gliding-v1.webp')}
+.diver-stencil[data-stencil=inside]::before{display:none}
+.diver-stencil[data-stencil=inside]>.diver-stencil__figure{background-image:var(--finfolk-animal-print,var(--finfolk-collection-print,none));background-size:var(--stencil-tile,110px);background-repeat:repeat}
+.diver-stencil[data-stencil=inside]>.diver-stencil__figure::after{content:'';position:absolute;inset:0;background:#07152b;opacity:var(--stencil-darkness,.65)}
+.diver-stencil[data-stencil=behind]::before{opacity:.42}
+.diver-stencil[data-stencil=behind]>.diver-stencil__figure{background:var(--stencil-ink,#111d36)}
+.app-rail .brand{display:flex;align-items:center;justify-content:center;gap:5px;color:var(--account-ink,#172440);text-decoration:none;padding:8px 0}
+.app-rail .brand>.brand-mark{--brand-size:54px}
+@media(max-width:760px){.app-rail .brand>.brand-mark{--brand-size:36px}}
+@media(max-width:900px){.app-rail>.brand{display:none}}

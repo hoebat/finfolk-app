@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "id": "lionfish",
+  "type": "motifs",
+  "name": "Lionfish",
+  "width": 1254,
+  "height": 1254,
+  "source": "web/animal-lionfish-hyper-v1.webp",
+  "sourceSHA256": "8faa89f24f9f8c31c6f9d0a7e62950b067af1e03064e25847faeeba4b8e38993",
+  "algorithm": "srgb-three-ink-projection-v1",
+  "sourceInks": {
+    "paper": "#edff35",
+    "ink": "#1641ff",
+    "accent": "#ff148d"
+  },
+  "masks": {
+    "paper": "paper-mask.png",
+    "ink": "ink-mask.png",
+    "accent": "accent-mask.png"
+  },
+  "maskEncoding": "8-bit grayscale coverage; the three masks sum to 255 at every pixel. Multiply each mask by its palette RGB ink and add the results.",
+  "palettes": {
+    "acid-light": {
+      "paper": "#edff35",
+      "ink": "#1641ff",
+      "accent": "#ff148d",
+      "preview": "web/animal-lionfish-acid-light-v1.webp"
+    },
+    "acid-dark": {
+      "paper": "#1641ff",
+      "ink": "#edff35",
+      "accent": "#ff148d",
+      "preview": "web/animal-lionfish-acid-dark-v1.webp"
+    },
+    "muted-light": {
+      "paper": "#f2e8d6",
+      "ink": "#172440",
+      "accent": "#bc8190",
+      "preview": "web/animal-lionfish-muted-light-v1.webp"
+    },
+    "muted-dark": {
+      "paper": "#172440",
+      "ink": "#f2e8d6",
+      "accent": "#edb2c7",
+      "preview": "web/animal-lionfish-muted-dark-v1.webp"
+    }
+  }
+}

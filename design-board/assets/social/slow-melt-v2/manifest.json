@@ -1,0 +1,50 @@
+{
+  "identity": "slow-melt-f",
+  "version": 2,
+  "usage": "Instagram and TikTok profile photos",
+  "method": "Deterministic SVG export from the locked single-f master; no AI redrawing.",
+  "source": "../../../../web/finfolk-mark.svg",
+  "dimensions": {
+    "width": 1080,
+    "height": 1080
+  },
+  "circleCrop": {
+    "artworkMaximumRadius": 0.402751702008207,
+    "minimumRadialPadding": 0.09724829799179302
+  },
+  "variants": [
+    {
+      "id": "ivory",
+      "name": "Warm ivory",
+      "background": "#eee5d3",
+      "foreground": "#172440",
+      "png": "finfolk-social-ivory-v2.png",
+      "svg": "finfolk-social-ivory-v2.svg"
+    },
+    {
+      "id": "yellow",
+      "name": "Yellow",
+      "background": "#edff35",
+      "foreground": "#172440",
+      "png": "finfolk-social-yellow-v2.png",
+      "svg": "finfolk-social-yellow-v2.svg"
+    },
+    {
+      "id": "cobalt",
+      "name": "Cobalt",
+      "background": "#1641ff",
+      "foreground": "#fff4d8",
+      "png": "finfolk-social-cobalt-v2.png",
+      "svg": "finfolk-social-cobalt-v2.svg"
+    },
+    {
+      "id": "navy",
+      "name": "Muted navy",
+      "background": "#172440",
+      "foreground": "#f2e8d6",
+      "png": "finfolk-social-navy-v2.png",
+      "svg": "finfolk-social-navy-v2.svg"
+    }
+  ],
+  "preview": "finfolk-social-logos-v2-preview.png"
+}

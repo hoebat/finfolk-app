@@ -70,7 +70,7 @@ export function openInstagramConnect({ owner, api, onConnected, onDone = () => {
     if (completed) Promise.resolve(onDone()).catch(() => {});
   }
   const top = node('div', undefined, 'connect-dialog-top');
-  top.append(node('small', 'YOUR INSTAGRAM · YOUR FINFOLK'), button('Close', close));
+  top.append(node('small', 'YOUR INSTAGRAM · YOUR FinFolk'), button('Close', close));
   const open = node('a', 'Open Instagram ↗', 'primary connect-open');
   open.href = 'https://www.instagram.com/finfolk.com.au/'; open.target = '_blank'; open.rel = 'noopener noreferrer';
   const actions = node('div', undefined, 'connect-dialog-actions');

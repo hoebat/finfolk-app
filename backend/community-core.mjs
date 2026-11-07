@@ -1,5 +1,7 @@
+export const REGULAR_VISIT_DAYS = 10;
+export const isRegular = count => count >= REGULAR_VISIT_DAYS;
 export const SHARING = ['visits', 'months', 'dives', 'time', 'depth'];
-export const ACTIVITIES = ['freediving', 'ocean-swimming', 'spearfishing'];
+export const ACTIVITIES = ['freediving'];
 export function localDay(now, zone) {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: zone,
@@ -129,7 +131,7 @@ export function compatibility(a, b) {
   }
   if (same('activities')) {
     score += 4;
-    reasons.push('Shared water activities');
+    reasons.push('Shared freediving focus');
   }
   if (same('availability')) {
     score += 3;

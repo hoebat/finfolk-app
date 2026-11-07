@@ -39,15 +39,15 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
     const press = (b, text) => { add(() => aim(b, text)); add(() => { b?.click(); pointer.classList.remove('tour-click'); void pointer.offsetWidth; pointer.classList.add('tour-click'); }, 650); };
     const type = (input, value, text) => { input.value = ''; add(() => aim(input, text)); for (let i = 1; i <= value.length; i++) add(() => { input.value = value.slice(0, i); input.dispatchEvent(new window.Event('input', {bubbles:true})); }, 65); };
     if (step === 1) { type(inputs[0], 'Bondi', 'Search for a beach or coastal region.'); press(buttons[0], 'Open the beach to inspect depth references and community details.'); }
-    else if (step === 2) { press(buttons[0], 'Choose a beach you return to.'); press(buttons[1], 'Add another favourite. Save these choices in Profile & privacy.'); }
-    else if (step === 3) { type(inputs[0], 'Bondi Beach', 'Choose your session location.'); type(inputs[2], 'Easy session with my buddy', 'Add notes to remember the session.'); type(inputs[3], '30', 'Record time in the water.'); type(inputs[4], '8', 'Record your maximum depth.'); press(buttons[0], 'Save the session. It starts private.'); }
+    else if (step === 2) { press(buttons[0], 'Select a favourite beach.'); press(buttons[1], 'Select another favourite. Save your choices in Profile & buddies.'); }
+    else if (step === 3) { type(inputs[0], 'Bondi Beach', 'Choose your session location.'); type(inputs[2], 'Easy session with my buddy', 'Enter session notes.'); type(inputs[3], '30', 'Record time in the water.'); type(inputs[4], '8', 'Record your maximum depth.'); press(buttons[0], 'Save the session. It starts private.'); }
     else if (step === 4) { for (let i = 1; i <= 3; i++) press(buttons[0], `Example visit day ${i}: each visit must be on a different day.`); }
     else if (step === 5) press(buttons[0], 'Send a request. The other diver decides whether to accept.');
     else if (step === 6) { press(inputs[0], 'Open enables discovery. You still control each shared statistic.'); press(inputs[0], 'Switch back to Closed to pause discovery.'); }
     else if (step === 7) { press(buttons[0], 'Send /connect in Instagram to receive a connection code.'); press(buttons[1], 'Follow @finfolk.com.au, send /connect, then enter the reply code on FinFolk.'); }
     else if (step === 8) press(buttons[0], 'Confirm only your own dive. FinFolk keeps the draft private.');
     else if (step === 9) press(buttons[0], 'Share your real invite link with friends. Points follow verified joins.');
-    else add(() => { caption.textContent = step === 0 ? 'Watch the controls move, or pause and try them yourself.' : 'Use the shortcuts below to start with your real account.'; });
+    else add(() => { caption.textContent = step === 0 ? 'Watch the controls move, or pause and try them yourself.' : 'Choose a shortcut below to open your account.'; });
     add(() => { caption.textContent = 'Demonstration complete. Continue when you’re ready, or replay this step.'; playing = false; playButton.textContent = 'Play demonstration'; pointer.hidden = true; });
     scheduleFrame();
   }
@@ -60,24 +60,24 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
     if (destination) shell?.navigate(destination);
   }
   const steps = [
-    ['Welcome to your water community', 'FinFolk brings your beach research, dive log and local diving community together. Try these interface examples, then use the shortcuts at the end.'],
-    ['Find a beach worth returning to', 'Open Discover to search beaches and regions, or use search at the top of Map. Open a beach for depth references, access notes, nearby stays and the folk there. Survey coverage varies; the map is a research tool, not live conditions.'],
-    ['Pick your favourite spots', 'Open Check In → Profile & privacy. Under “Beaches you’re interested in”, search and select up to 20 beaches, then Save profile. These choices help buddy compatibility; they do not count as visits.'],
-    ['Save a session', 'Open My sessions, then the new-session form. Choose the beach or location, date, duration, maximum depth and notes, then save. Sessions start private. A saved session and a beach check-in are separate records.'],
-    ['Check in and become a regular', 'At the beach, open its details and “The folk here”, then Check in. Visits are self-reported. Three distinct visit days in the last 30 days make you a regular. The window keeps moving, so regular status expires when visits fall outside it.'],
-    ['Meet people at your spots', 'Open “The folk here” for regulars and suggested buddies. Suggestions use shared interests and preferences, not a safety qualification. Send a buddy request; they choose whether to accept. Manage requests in Your buddies.'],
+    ['How to use FinFolk', 'Pick your spot. Post your logs. Discover your FinFolk. Use these examples to learn the controls. Nothing in the examples is saved.'],
+    ['Pick your spot', 'Open Discover to search beaches and regions, or use Map search. Open a beach for depth references, access information, weather forecasts and Regulars & divers. Survey coverage varies. Surveyed depths are reference data, not current water depths.'],
+    ['Save favourite locations', 'Open Check in → Profile & buddies. Under “Beaches you’re interested in”, select up to 20 beaches, then Save profile. These choices help suggest buddies. They do not count as visits.'],
+    ['Log a dive', 'Open Logbook, then Log a session. Enter the location, date, duration, maximum depth and notes. Save the session. It starts private; you can choose to publish it. Saving a session does not create a beach check-in.'],
+    ['Become a Regular', 'Open a beach and find Regulars & divers, then Check in. Visits are self-reported. 10 distinct visit days within the last 30 days make you a Regular at that location. Status expires when fewer than 10 visit days remain in that window.'],
+    ['Discover your FinFolk', 'Open Regulars & divers to see Regulars and suggested buddies. Suggestions use shared interests and preferences, not safety qualifications. Send a buddy request. The other diver chooses whether to accept. Manage requests in Your buddies.'],
     ['Choose what you share', 'Profiles start Closed. Open lets you appear in discovery. Activity stats require both Open divers to have 3 recent visit days; dive summaries require 5. Accepted buddies bypass visit gates, but only see statistics you permit. Closed pauses discovery; it does not revoke accepted buddies.'],
-    ['Connect Instagram', 'Follow @finfolk.com.au and send /connect in Instagram. Enter the code from its reply in Your FinFolk → Instagram. Codes expire after ten minutes.'],
-    ['Turn mentions into actions', 'On a public Instagram post, mention @finfolk.com.au with a request such as log Bondi Beach depth 8m duration 30min. FinFolk prepares an action. Confirm your own dive details or exact public stats reply in My actions. Administrators review replies and awards. Private-post mentions are unavailable.'],
-    ['Invite your people', 'Open Invite friends to copy your invite link and see joins and verified connections. A new member can accept your invitation and verify Instagram to unlock a referral point for you. These are FinFolk referrals, not verified Instagram mutuals. Public points are opt-in.'],
-    ['Take it into the water', 'Your setup is yours to control. Keep photos and videos on Instagram or TikTok and add profile links in Profile & privacy. Those links do not verify ownership or grant follower-only access. Ready to make FinFolk yours?'],
+    ['Connect Instagram', 'Follow @finfolk.com.au and send /connect in Instagram. Enter the reply code in Check in → Instagram. Codes expire after ten minutes.'],
+    ['Use Instagram commands', 'On a public Instagram post, mention @finfolk.com.au with a supported request, such as log Bondi Beach depth 8m duration 30min. Confirm your dive details or exact public stats reply in My actions. Administrators review replies and awards. Private-post mentions are unavailable.'],
+    ['Invite friends', 'Open Invite friends to copy your invite link and view joins and verified connections. A new member who accepts your invitation and verifies Instagram can earn you a referral point. These are FinFolk referrals, not verified Instagram mutuals. Public points are opt-in.'],
+    ['Use your account', 'Find locations, log dives and check in. Keep photos and videos on Instagram or TikTok and add profile links in Profile & buddies. Profile links do not verify ownership or grant follower-only access.'],
   ];
   function demo(host) {
     const label = node('small', 'INTERACTIVE EXAMPLE · nothing here is saved', 'tour-demo-label'); host.append(label);
     if (step === 1) {
       const input = node('input'); input.type = 'search'; input.placeholder = 'Search beaches or regions'; input.setAttribute('aria-label', 'Example beach search');
       const result = action('Bondi Beach · Eastern Beaches', () => { details.hidden = !details.hidden; });
-      const details = node('p', 'Depth references · Access & sources · Camping & stays · The folk here'); details.hidden = true;
+      const details = node('p', 'Depth references · Access & sources · Camping & stays · Regulars & divers'); details.hidden = true;
       input.oninput = () => { result.hidden = !'bondi beach eastern beaches'.includes(input.value.toLowerCase()); }; host.append(input, result, details);
     } else if (step === 2) {
       const selection = node('p', 'No example spots selected');
@@ -87,11 +87,11 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
     } else if (step === 3) {
       const form = node('form');
       for (const [title, type, value] of [['Location', 'text', 'Bondi Beach'], ['Date', 'date', new Date().toISOString().slice(0, 10)], ['Notes', 'text', 'Easy session with my buddy'], ['Duration (minutes)', 'number', '30'], ['Maximum depth (metres)', 'number', '8']]) { const l = node('label', title), input = node('input'); input.type = type; input.value = value; l.append(input); form.append(l); }
-      const save = node('button', 'Save example session', 'primary'); save.type = 'submit'; const status = node('p'); status.setAttribute('role','status'); form.onsubmit = e => { e.preventDefault(); status.textContent = 'Example saved · Private. Your real sessions live in My sessions.'; }; form.append(save, status); host.append(form);
+      const save = node('button', 'Save example session', 'primary'); save.type = 'submit'; const status = node('p'); status.setAttribute('role','status'); form.onsubmit = e => { e.preventDefault(); status.textContent = 'Example saved · Private. View saved sessions in Logbook.'; }; form.append(save, status); host.append(form);
     } else if (step === 4) {
       let visits = 0; const progress = node('p', '0 / 3 example visit days'); const b = action('Add an example visit day', () => { visits = Math.min(3, visits + 1); progress.textContent = `${visits} / 3 example visit days${visits === 3 ? ' · Regular' : ''}`; b.disabled = visits === 3; }); host.append(progress, b);
     } else if (step === 5) {
-      host.append(node('strong', 'Example diver · shared beach and ocean swimming'));
+      host.append(node('strong', 'Example diver · shared location and freediving'));
       const status = node('p'); status.setAttribute('role','status'); host.append(action('Send example buddy request', () => { status.textContent = 'Request sent · Waiting for them to accept. This is a demonstration.'; }), status);
     } else if (step === 6) {
       const toggle = node('label', 'Open profile '), input = node('input'); input.type = 'checkbox'; toggle.append(input); const status = node('p', 'Closed · discovery paused'); input.onchange = () => { status.textContent = input.checked ? 'Open · discovery enabled; field-level sharing still applies' : 'Closed · discovery paused'; }; host.append(toggle, status);
@@ -102,15 +102,15 @@ export function showMemberTour({ userId, shell, force = false } = {}) {
       const status=node('p');status.setAttribute('role','status');host.append(action('Confirm example action',()=>{status.textContent='Example confirmed · Waiting for administrator review. No real session saved.';}),status);
     } else if (step === 9) {
       host.append(node('strong','Invitation statistics · Example'),node('p','3 joins · 1 verified Instagram connection · 1 referral point'));
-      const status=node('p');status.setAttribute('role','status');host.append(action('Show example invite link',()=>{status.textContent='Your real invite link is available in Instagram & actions → Invite friends.';}),status);
-    } else host.append(node('p', step === 0 ? 'Discover → Pick spots → Log sessions → Check in → Meet regulars' : 'Explore freely. Choose your spots. Share on your terms.'));
+      const status=node('p');status.setAttribute('role','status');host.append(action('Show example invite link',()=>{status.textContent='Your real invite link is available in Check in → Instagram → Invite friends.';}),status);
+    } else host.append(node('p', step === 0 ? 'Find locations → Save favourites → Log dives → Check in → Meet Regulars' : 'Pick your spot. Log a dive. Check in.'));
   }
   function draw() {
-    stop(); dialog.replaceChildren(); const top = node('div', undefined, 'tour-top'); top.append(node('small', `HOW FINFOLK WORKS · ${step + 1} / ${steps.length}`), action('Close walkthrough', () => close()));
+    stop(); dialog.replaceChildren(); const top = node('div', undefined, 'tour-top'); top.append(node('small', `HOW FinFolk WORKS · ${step + 1} / ${steps.length}`), action('Close walkthrough', () => close()));
     const title = node('h2', steps[step][0]); title.id = 'member-tour-title'; title.tabIndex = -1;
-    preview = node('section', undefined, 'tour-demo'); preview.setAttribute('aria-label', 'FinFolk interface example'); preview.dataset.screen = ['Welcome', 'Discover · Beach search', 'Check In · Profile & privacy', 'My sessions · New session', 'Beach · The folk here', 'Beach · Suggested buddies', 'Check In · Sharing', 'Instagram · Claim account', 'My actions · Confirm', 'Invite friends · Statistics', 'Your FinFolk'][step]; demo(preview);
+    preview = node('section', undefined, 'tour-demo'); preview.setAttribute('aria-label', 'FinFolk interface example'); preview.dataset.screen = ['Welcome', 'Discover · Beach search', 'Account · Profile & buddies', 'My sessions · New session', 'Beach · Regulars & divers', 'Beach · Suggested buddies', 'Account · Sharing', 'Instagram · Claim account', 'My actions · Confirm', 'Invite friends · Statistics', 'Your FinFolk'][step]; demo(preview);
     const controls = node('div', undefined, 'tour-controls'); if (step) controls.append(action('Back', () => { step--; playing = !reduced; draw(); }));
-    if (step === steps.length - 1) controls.append(action('Choose favourite spots', () => { close('account'); document.getElementById('account-tab-profile')?.click(); document.getElementById('social-profile')?.scrollIntoView?.(); }, 'primary'), action('Log a session', () => close('logbook')), action('Explore beaches', () => close('discover')));
+    if (step === steps.length - 1) controls.append(action('Choose favourite locations', () => { close('account'); document.getElementById('account-tab-profile')?.click(); document.getElementById('social-profile')?.scrollIntoView?.(); }, 'primary'), action('Log a session', () => close('logbook')), action('Pick your spot', () => close('discover')));
     else controls.append(action('Next', () => { step++; playing = !reduced; draw(); }, 'primary'));
     pointer = node('span', '↖', 'tour-pointer'); pointer.setAttribute('aria-hidden', 'true'); pointer.hidden = true; preview.append(pointer);
     caption = node('p', 'Press Play to watch, or try the controls yourself.', 'tour-caption');

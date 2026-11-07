@@ -1,0 +1,122 @@
+[
+  {
+    "school": "freediving-australia",
+    "name": "community",
+    "originalURL": "https://images.squarespace-cdn.com/content/v1/65977b7988956573c153ce80/ab8fb472-9c58-44f1-a7a8-7f425eadc77f/group.jpg",
+    "sourcePage": "https://www.freedivingaustralia.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/freediving-australia-community.webp",
+    "width": 1200,
+    "height": 679
+  },
+  {
+    "school": "freediving-australia",
+    "name": "courses",
+    "originalURL": "https://images.squarespace-cdn.com/content/v1/65977b7988956573c153ce80/fca41459-a7b2-416b-babf-81e2b7fbb6ab/Sydney%2BCourses%2BPhoto-min.webp",
+    "sourcePage": "https://www.freedivingaustralia.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/freediving-australia-courses.webp",
+    "width": 1200,
+    "height": 801
+  },
+  {
+    "school": "apnea-australia",
+    "name": "foundations",
+    "originalURL": "https://apneaaustralia.com.au/wp-content/uploads/2019/01/GOPR7671.jpg",
+    "sourcePage": "https://apneaaustralia.com.au/freediving/stage-a/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/apnea-australia-foundations.webp",
+    "width": 1200,
+    "height": 900
+  },
+  {
+    "school": "apnea-australia",
+    "name": "training",
+    "originalURL": "https://apneaaustralia.com.au/wp-content/uploads/2019/01/P3086354.jpg",
+    "sourcePage": "https://apneaaustralia.com.au/freediving/stage-a/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/apnea-australia-training.webp",
+    "width": 960,
+    "height": 720
+  },
+  {
+    "school": "freediving-central",
+    "name": "courses",
+    "originalURL": "https://cdn.freedivingcentral.com/wp-content/uploads/2021/06/PB220347-2-POPULAR-sized.jpg",
+    "sourcePage": "https://freedivingcentral.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/freediving-central-courses.webp",
+    "width": 1200,
+    "height": 829
+  },
+  {
+    "school": "freediving-central",
+    "name": "community",
+    "originalURL": "https://cdn.freedivingcentral.com/wp-content/uploads/2022/01/Freediving-Central-Coast.jpg",
+    "sourcePage": "https://freedivingcentral.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/freediving-central-community.webp",
+    "width": 1200,
+    "height": 800
+  },
+  {
+    "school": "oceansense",
+    "name": "courses",
+    "originalURL": "https://oceansense.com.au/wp-content/uploads/2022/07/Freediving-Courses.jpg",
+    "sourcePage": "https://oceansense.com.au/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/oceansense-courses.webp",
+    "width": 800,
+    "height": 450
+  },
+  {
+    "school": "oceansense",
+    "name": "retreats",
+    "originalURL": "https://oceansense.com.au/wp-content/uploads/2024/11/IMG_6595-scaled-e1730767461725-1024x769.jpg",
+    "sourcePage": "https://oceansense.com.au/freediving-retreats/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/oceansense-retreats.webp",
+    "width": 1024,
+    "height": 769
+  },
+  {
+    "school": "rusty-freediving",
+    "name": "courses",
+    "originalURL": "https://rustyfreediving.com/cdn/shop/files/E1AFA650-0D77-4670-8D12-905E201EFDF6.jpg?v=1714839331&width=1100",
+    "sourcePage": "https://rustyfreediving.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/rusty-freediving-courses.webp",
+    "width": 1100,
+    "height": 699
+  },
+  {
+    "school": "rusty-freediving",
+    "name": "coaching",
+    "originalURL": "https://rustyfreediving.com/cdn/shop/products/28DA2424-45BB-4D15-B366-4CD3EB81F888_697.jpg?v=1674206964&width=1100",
+    "sourcePage": "https://rustyfreediving.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/rusty-freediving-coaching.webp",
+    "width": 1100,
+    "height": 725
+  },
+  {
+    "school": "freedive-tasmania",
+    "name": "kelp",
+    "originalURL": "https://static.wixstatic.com/media/1d206c_c161b38d7076428dabb5852c7b9bafed~mv2.jpg",
+    "sourcePage": "https://www.freedivetasmania.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/freedive-tasmania-kelp.webp",
+    "width": 1200,
+    "height": 793
+  },
+  {
+    "school": "freedive-tasmania",
+    "name": "freediving",
+    "originalURL": "https://static.wixstatic.com/media/1d206c_56e5febe7c374e01ad738df741741f1f~mv2.jpg",
+    "sourcePage": "https://www.freedivetasmania.com/",
+    "retrieved": "2026-11-04",
+    "local": "/board/assets/schools/freedive-tasmania-freediving.webp",
+    "width": 1200,
+    "height": 1800
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "generator": "Built-in image_gen",
+  "purpose": "Finfolk Instagram and TikTok profile images",
+  "reference": "../logos/club-slow-melt-v1.png",
+  "assets": [
+    {
+      "file": "finfolk-social-avatar-ivory-v1.png",
+      "role": "Primary profile image, navy on warm ivory",
+      "prompt": "Use case: logo-brand.\nAsset type: Finished square Finfolk social profile logo for Instagram and TikTok, one upload-ready image, 2048x2048 if available.\nInput image 1: Existing Finfolk 'Slow melt' logo study, brand identity reference and source of the two lowercase f letterforms. Adapt the small ff stamp in its center into a polished standalone social avatar. Preserve its distinctive brand personality.\nPrimary request: One exceptionally clear, bold lowercase 'ff' monogram in the molten 1970s lava-lamp lettering of the reference. Two distinct but closely spaced f forms, with bulbous drooping hooks, soft pinched stems and broad rounded/flared bases. The first f has a single broad tentacle-shaped ivory channel with just three generous oval sucker cutouts; the second f has the elegant inward curl shown in the reference. Make the contours deliberate, smooth and optically balanced. Maintain lowercase f legibility and avoid reading as SS.\nPalette: Solid midnight navy #172440 mark on a uniform flat warm ivory #eee5d3 background. Exactly two flat colors; no paper texture, gradients or lighting.\nComposition: ONLY the large ff symbol, centered both optically and geometrically; compact approximately square footprint, occupying about 65 percent of the square's width and height, all ink well within a centered circular crop. Even comfortable empty margins. Fill the entire square with ivory; do not draw a circular border. No full wordmark below, no labels, no additional marks, no sample row, no mockups or presentation board.\nConstraints: Clean crisp vector-like edges, simplified bold silhouette readable as a tiny social avatar. Preserve the organic letterforms from the existing reference, not a stock font. No actual lava lamp object, fish, mascots, equipment, shadows, 3D, frame, watermark, platform icons or any text other than the two lowercase letters 'ff'."
+    },
+    {
+      "file": "finfolk-social-avatar-hyper-v1.png",
+      "role": "Alternate profile image, pink and cobalt on acid yellow",
+      "prompt": "Use case: logo-brand / precise-object-edit.\nAsset type: Finfolk square social profile avatar, alternate brand colorway for Instagram and TikTok.\nInput image 1 is the APPROVED composition and exact letterform geometry to preserve. Change ONLY the palette. Preserve the two lowercase ff shapes exactly: same contours, soft lava-lamp hooks, spacing, scale, warm organic negative space, and the same four oval holes in the first f. Keep the mark centered and the same generous margins for a circular profile crop.\nRecolor the first (left) f solid hot pink #ff009d, the second (right) f solid electric cobalt #173cff. Replace all ivory background and negative space with uniform vivid acid yellow #ecff00. Three flat colors only, crisp vector-like edge quality. No gradients, texture, shadows, blur, 3D, extra text, borders, platform icons, sample panels or new elements. Output one finished square avatar, not a presentation board."
+    }
+  ]
+}

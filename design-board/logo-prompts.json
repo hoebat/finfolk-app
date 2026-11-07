@@ -1,0 +1,67 @@
+{
+  "generator": "ChatGPT native image generation (built-in image_gen)",
+  "purpose": "Logo ideation for Finfolk: freedivers and freediving training",
+  "reference": "../web/finfolk-logo.jpeg",
+  "directions": [
+    {
+      "id": "fin-ligature",
+      "name": "Fin ligature",
+      "fit": "Fashion first",
+      "note": "A refined fashion mark, with long-fin shapes hidden inside the letterforms.",
+      "prompt": "Use case: logo-brand. Asset type: one original logo ideation presentation tile for Finfolk, a community and logbook strictly for freedivers and freediving training. The existing logo in input image 1 is a brand reference only; create a new direction, not a redraw. The overall taste is whimsical high fashion, natural-history strangeness and clever Escher-like geometry. Be disciplined: a strong, beautifully balanced flat logo that can become a practical vector mark later, with no intricate illustration. The main artwork uses midnight navy #172440 on warm ivory #eee5d3. The exact wordmark text is lowercase \"finfolk\", spelled f-i-n-f-o-l-k, with no slogan or other text. Square 1024x1024 presentation, generous empty ivory margin, the large standalone symbol centered in the upper half and its readable finfolk wordmark centered below. At the bottom, a restrained row of three small applications of the SAME proposed mark: small navy mark on ivory, ivory mark on a solid navy square, and cobalt mark on a solid acid-yellow square with one hot-pink accent. No mockup photography, no fabric, no shadows, no 3D, no gradients, no watermark, no technical annotations or labels, no text other than finfolk. The mark must work in a single flat colour, and its miniature versions must match the main symbol. No scuba tanks, spears, anchors, nautical stripes, generic stock wave logos or copying any fashion brand logo.\nSpecific direction: An elegant interlocking lowercase ff monogram made from two long freediving fin blades. Controlled curved negative space and a slight Escher-like shared edge. Both letters remain legible; simple enough for an app icon. Pair with a distinctive high-contrast lowercase serif wordmark with a subtle f-to-i ligature.",
+      "refine": "Simplify the blade seams for the smallest app-icon sizes.",
+      "image": "/board/assets/logos/fin-ligature-v1.webp",
+      "original": "/board/assets/logos/fin-ligature-v1.png"
+    },
+    {
+      "id": "buddy-loop",
+      "name": "Buddy loop",
+      "fit": "Community first",
+      "note": "Two freedivers share one form: a symbol for training and belonging.",
+      "prompt": "Use case: logo-brand. Asset type: one original logo ideation presentation tile for Finfolk, a community and logbook strictly for freedivers and freediving training. The existing logo in input image 1 is a brand reference only; create a new direction, not a redraw. The overall taste is whimsical high fashion, natural-history strangeness and clever Escher-like geometry. Be disciplined: a strong, beautifully balanced flat logo that can become a practical vector mark later, with no intricate illustration. The main artwork uses midnight navy #172440 on warm ivory #eee5d3. The exact wordmark text is lowercase \"finfolk\", spelled f-i-n-f-o-l-k, with no slogan or other text. Square 1024x1024 presentation, generous empty ivory margin, the large standalone symbol centered in the upper half and its readable finfolk wordmark centered below. At the bottom, a restrained row of three small applications of the SAME proposed mark: small navy mark on ivory, ivory mark on a solid navy square, and cobalt mark on a solid acid-yellow square with one hot-pink accent. No mockup photography, no fabric, no shadows, no 3D, no gradients, no watermark, no technical annotations or labels, no text other than finfolk. The mark must work in a single flat colour, and its miniature versions must match the main symbol. No scuba tanks, spears, anchors, nautical stripes, generic stock wave logos or copying any fashion brand logo.\nSpecific direction: Two very simplified freediver silhouettes with long bifins, descending headfirst in opposite-facing curves to form one open oval loop. Their bodies use just a few bold flowing shapes, no detailed anatomy, no tanks or equipment. Negative space feels like a shared breath or infinity. Pair with an elegant warm serif lowercase wordmark, clearly reading finfolk.",
+      "refine": "Keep the long-fin silhouettes clear; avoid a mermaid reading.",
+      "image": "/board/assets/logos/buddy-loop-v1.webp",
+      "original": "/board/assets/logos/buddy-loop-v1.png"
+    },
+    {
+      "id": "curious-f",
+      "name": "Curious creature",
+      "fit": "Whimsy first",
+      "note": "A quirky creature gives the identity a recognisable connection to the Nasties.",
+      "prompt": "Use case: logo-brand. Asset type: one original logo ideation presentation tile for Finfolk, a community and logbook strictly for freedivers and freediving training. The existing logo in input image 1 is a brand reference only; create a new direction, not a redraw. The overall taste is whimsical high fashion, natural-history strangeness and clever Escher-like geometry. Be disciplined: a strong, beautifully balanced flat logo that can become a practical vector mark later, with no intricate illustration. The main artwork uses midnight navy #172440 on warm ivory #eee5d3. The exact wordmark text is lowercase \"finfolk\", spelled f-i-n-f-o-l-k, with no slogan or other text. Square 1024x1024 presentation, generous empty ivory margin, the large standalone symbol centered in the upper half and its readable finfolk wordmark centered below. At the bottom, a restrained row of three small applications of the SAME proposed mark: small navy mark on ivory, ivory mark on a solid navy square, and cobalt mark on a solid acid-yellow square with one hot-pink accent. No mockup photography, no fabric, no shadows, no 3D, no gradients, no watermark, no technical annotations or labels, no text other than finfolk. The mark must work in a single flat colour, and its miniature versions must match the main symbol. No scuba tanks, spears, anchors, nautical stripes, generic stock wave logos or copying any fashion brand logo.\nSpecific direction: An original compact abstract octopus / letter f hybrid. Two or three carefully controlled curled arms create a recognisable lowercase f. A tiny offset eye gives it an eccentric, sly personality, not cute or smiling. Flat bold memorable silhouette; no many fine tentacles. Pair with a dramatic couture serif lowercase wordmark with strong contrast and generous space.",
+      "refine": "Test the balance between a recognisable f and a quirky creature.",
+      "image": "/board/assets/logos/curious-f-v1.webp",
+      "original": "/board/assets/logos/curious-f-v1.png"
+    },
+    {
+      "id": "depth-dot",
+      "name": "Depth punctuation",
+      "fit": "Editorial first",
+      "note": "A quiet fin-shaped f and a breath-like dot for the editorial direction.",
+      "prompt": "Use case: logo-brand. Asset type: one original logo ideation presentation tile for Finfolk, a community and logbook strictly for freedivers and freediving training. The existing logo in input image 1 is a brand reference only; create a new direction, not a redraw. The overall taste is whimsical high fashion, natural-history strangeness and clever Escher-like geometry. Be disciplined: a strong, beautifully balanced flat logo that can become a practical vector mark later, with no intricate illustration. The main artwork uses midnight navy #172440 on warm ivory #eee5d3. The exact wordmark text is lowercase \"finfolk\", spelled f-i-n-f-o-l-k, with no slogan or other text. Square 1024x1024 presentation, generous empty ivory margin, the large standalone symbol centered in the upper half and its readable finfolk wordmark centered below. At the bottom, a restrained row of three small applications of the SAME proposed mark: small navy mark on ivory, ivory mark on a solid navy square, and cobalt mark on a solid acid-yellow square with one hot-pink accent. No mockup photography, no fabric, no shadows, no 3D, no gradients, no watermark, no technical annotations or labels, no text other than finfolk. The mark must work in a single flat colour, and its miniature versions must match the main symbol. No scuba tanks, spears, anchors, nautical stripes, generic stock wave logos or copying any fashion brand logo.\nSpecific direction: An exceptionally refined lowercase italic f with a single detached dot. The long descending stem ends in a flared freediving fin shape; the dot can read as a bubble. Restrained optical balance and beautiful negative space. Pair with a custom editorial serif lowercase finfolk wordmark; the f descender repeats the fin gesture. Quietly strange, sophisticated and unmistakably a personal brand.",
+      "refine": "Resolve the f / j ambiguity before drawing final artwork.",
+      "image": "/board/assets/logos/depth-dot-v1.webp",
+      "original": "/board/assets/logos/depth-dot-v1.png"
+    },
+    {
+      "id": "tessellated-fins",
+      "name": "Tessellated fins",
+      "fit": "Geometry first",
+      "note": "Two interlocking fins carry the geometric idea into a compact symbol.",
+      "prompt": "Use case: logo-brand. Asset type: one original logo ideation presentation tile for Finfolk, a community and logbook strictly for freedivers and freediving training. The existing logo in input image 1 is a brand reference only; create a new direction, not a redraw. The overall taste is whimsical high fashion, natural-history strangeness and clever Escher-like geometry. Be disciplined: a strong, beautifully balanced flat logo that can become a practical vector mark later, with no intricate illustration. The main artwork uses midnight navy #172440 on warm ivory #eee5d3. The exact wordmark text is lowercase \"finfolk\", spelled f-i-n-f-o-l-k, with no slogan or other text. Square 1024x1024 presentation, generous empty ivory margin, the large standalone symbol centered in the upper half and its readable finfolk wordmark centered below. At the bottom, a restrained row of three small applications of the SAME proposed mark: small navy mark on ivory, ivory mark on a solid navy square, and cobalt mark on a solid acid-yellow square with one hot-pink accent. No mockup photography, no fabric, no shadows, no 3D, no gradients, no watermark, no technical annotations or labels, no text other than finfolk. The mark must work in a single flat colour, and its miniature versions must match the main symbol. No scuba tanks, spears, anchors, nautical stripes, generic stock wave logos or copying any fashion brand logo.\nSpecific direction: An abstract Escher-like tessellation of exactly two long curved freediving fin blades. A clever shared edge allows two opposing forms to nest into an asymmetric compact diamond, and the negative space hints at an F. Avoid fish, flowers, generic waves or a conventional sports swoosh. Pair with a striking, slightly condensed modern serif lowercase finfolk wordmark.",
+      "refine": "Sharpen the shared edge so the fins do not read as a flame.",
+      "image": "/board/assets/logos/tessellated-fins-v1.webp",
+      "original": "/board/assets/logos/tessellated-fins-v1.png"
+    },
+    {
+      "id": "folk-wordmark",
+      "name": "Odd little club",
+      "fit": "Energy first",
+      "note": "An expressive wordmark that gives the hyper collection its own confidence.",
+      "prompt": "Use case: logo-brand. Create a square 1024x1024 original typographic logo exploration board for the freediving brand \"finfolk\". This direction is strictly TYPOGRAPHY ONLY: the wordmark is the entire hero, with NO animal symbol, NO human figure, NO mermaid, NO circular icon, NO fins drawing above it. Design the exact lowercase word \"finfolk\" as bespoke sculptural chunky letterforms: confident fashion resort-club energy, playful bends, one unusually tall f, elegant fin-shaped cuts in the f stems. Very readable, precisely spelled f-i-n-f-o-l-k. Sophisticated but cheeky, not a children's bubble font, not a stock rounded font. Main wordmark very large, midnight navy #172440 on warm ivory #eee5d3, across the central upper half with a lot of negative space. Below the main wordmark place a compact typographic \"ff\" stamp made from the exact same letterforms. Bottom row: repeat the SAME finfolk wordmark three times, small navy on ivory, ivory on a navy square, and cobalt blue on an acid-yellow square with one hot-pink f. Only the texts \"finfolk\" and \"ff\" are allowed. Flat precise logo graphics; no gradients, 3D, paper texture, mockups, shadows, border or extra copy.",
+      "refine": "Simplify the fin-shaped cuts when the wordmark is very small.",
+      "image": "/board/assets/logos/folk-wordmark-v1.webp",
+      "original": "/board/assets/logos/folk-wordmark-v1.png"
+    }
+  ]
+}

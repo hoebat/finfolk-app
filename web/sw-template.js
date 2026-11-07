@@ -18,7 +18,8 @@ self.addEventListener('fetch', (event) => {
         try {
           return await fetch(request, { signal: AbortSignal.timeout(5000) });
         } catch {
-          return (await caches.open(CACHE)).match('./index.html');
+          const cache = await caches.open(CACHE);
+          return (await cache.match(request, {ignoreSearch: true})) || cache.match('./index.html');
         }
       })(),
     );

@@ -161,7 +161,7 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
                     text = text.replace("./" + original, "./" + versioned)
                 rendered = text.encode()
             # Keep source URLs for compatibility, but the page loads a versioned module graph.
-            write(name, rendered if name == "index.html" else data)
+            write(name, rendered if Path(name).suffix == ".html" else data)
             if name in assets:
                 write(assets[name], rendered)
         write(".nojekyll", b"")
@@ -240,7 +240,8 @@ def build(store, output, max_zoom=None, budget_mb=850, vendor=None):
             packages[region["id"]] = {"name": region["name"], "files": paths, "bytes": sum(files[path]["bytes"] for path in paths)}
         revision = hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()
         write("data/downloads.json", json.dumps({"version": 1, "revision": revision, "files": files, "regions": packages}, separators=(",", ":")).encode())
-        shell = ["./", "./index.html"] + ["./" + name for name in assets.values()] + ["./" + name for name in ("finfolk-logo.jpeg", "finfolk-icon.svg", "neon-config.json") if (stage / name).exists()]
+        animal_prints = sorted(name for name in web_files if name.startswith("animal-") and Path(name).suffix in (".webp", ".png", ".jpg"))
+        shell = ["./", "./index.html"] + ["./" + name for name in assets.values()] + ["./" + name for name in ("landing.html", "demo-maya-sketch-v2.webp", "demo-kai-sketch-v2.webp", "demo-alex-sketch-v2.webp", "demo-shore-sketch-v2.webp", "demo-maya.webp", "demo-kai.webp", "demo-alex.webp", "demo-shore.webp", "finfolk-logo.jpeg", "finfolk-icon.svg", "finfolk-mark.svg", "finfolk-mark-navy.svg", "finfolk-mark-ivory.svg", "finfolk-mark-cobalt.svg", "finfolk-mark-pink.svg", "finfolk-mark.png", "finfolk-wordmark.svg", "finfolk-wordmark.png", "finfolk-favicon.png", "finfolk-touch.png", "freediver-descending-v1.webp", "freediver-ascending-v1.webp", "freediver-gliding-v1.webp", "habitat-seagrass-v1.webp", "habitat-reef-rocks-v1.webp", "habitat-stingray-v1.webp", "habitat-turtle-v1.webp", "swimmer-freestyle-v1.webp", "swimmer-breaststroke-v1.webp", "swimmer-duck-dive-v1.webp", "swimmer-back-float-v1.webp", "habitat-kelp-v1.webp", "habitat-fan-coral-v1.webp", "habitat-reef-arch-v1.webp", "habitat-schooling-fish-v1.webp", "neon-config.json", *animal_prints) if (stage / name).exists()]
         worker = (PROJECT / "web/sw-template.js").read_text().replace("__SHELL__", json.dumps(shell)).replace("__VERSION__", digest)
         write("sw.js", worker.encode())
         report = {"bytes": total, "assets": assets, "regions": {r["id"]: {"rasters": len(r["rasters"]), "tiles": len(r["tiles"]), "status": r["status"]} for r in catalog["regions"]}, "built_at": catalog["built_at"]}

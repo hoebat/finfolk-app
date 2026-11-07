@@ -248,7 +248,7 @@ export function installLogbook({
             "p",
             publicOnly
               ? "No published sessions yet."
-              : "Your first session starts here. Save a beach, a few notes and the moments you want to remember.",
+              : "No sessions yet. Log your first dive.",
             "logbook-empty",
           ),
         );
@@ -258,7 +258,7 @@ export function installLogbook({
   function login() {
     const box = el("section", undefined, "logbook-card auth-card");
     box.append(
-      el("h2", "Keep your time in the water"),
+      el("h2", "Log your dives"),
       el("p", "Save private sessions and choose what to share."),
     );
     box.append(action("Continue with Google", () => api.google(), "primary"));
@@ -460,7 +460,7 @@ export function installLogbook({
             edit(s);
           }),
           action(
-            s.visibility === "public" ? "Unpublish" : "Publish",
+            s.visibility === "public" ? "Unpublish" : globalThis.__finfolkSandbox ? "Post to mates" : "Publish",
             async () => {
               if (s.visibility === "public") {
                 await api.visibility(id, "private");
@@ -490,6 +490,7 @@ export function installLogbook({
     }
   }
   function publish(s) {
+    if (globalThis.__finfolkSandbox) { globalThis.__finfolkSandbox.navigate("dives-home", "compose="+encodeURIComponent(s.id)); return; }
     if (!api.user.emailVerified) {
       message("Verify your email in Account before publishing.");
       return;
@@ -543,7 +544,7 @@ export function installLogbook({
     date.required = true;
     const place = field(
       form,
-      "Beach or location",
+      "Beach or training location",
       "locationName",
       "text",
       session?.locationName || beach?.name || "",
