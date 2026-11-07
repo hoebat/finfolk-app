@@ -17,3 +17,8 @@ design-board/assets/**/*.webp filter=lfs diff=lfs merge=lfs -text
 *.bin filter=lfs diff=lfs merge=lfs -text
 datasets/raw/**/original.geojson filter=lfs diff=lfs merge=lfs -text
 datasets/processed/**/*.geojson filter=lfs diff=lfs merge=lfs -text
+
+# Dataset catalogue snapshots and derived geometry remain authoritative in LFS.
+design-board/assets/datasets/**/*.json filter=lfs diff=lfs merge=lfs -text
+design-board/assets/datasets/*.json filter=lfs diff=lfs merge=lfs -text
+design-board/assets/bondi-surveys/*.geojson filter=lfs diff=lfs merge=lfs -text
