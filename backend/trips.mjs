@@ -4,7 +4,7 @@ import {
   normalizeDiveRecord,
   aggregateDives,
 } from "../web/trip-model.js";
-import { socialPostURL } from "../web/media.js";
+import { socialPostURL } from "../web/social-url.js";
 import { isInstagramAdmin } from "./instagram-actions.mjs";
 const fail = (m, status = 400) => {
   throw Object.assign(Error(m), { status });

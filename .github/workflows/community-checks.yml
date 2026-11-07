@@ -2,7 +2,7 @@ name: Check FinFolk community and storage
 on:
   push:
     branches: [main]
-    paths: ['backend/**', 'web/**', 'docs/openapi/**', 'scripts/*neon*', 'scripts/migrate*', 'tests/**', 'package*.json', 'neon.ts', 'wrangler.jsonc', '.github/workflows/community-checks.yml']
+    paths: ['backend/**', 'web/**', 'client/**', 'vendor/xtalk/**', 'db/**', 'docs/openapi/**', 'scripts/*neon*', 'scripts/migrate*', 'scripts/*backbone*', 'tests/**', 'package*.json', 'neon.ts', 'wrangler*.jsonc', 'next.environment.json', '.github/workflows/community-checks.yml']
   pull_request:
 permissions:
   contents: read
@@ -19,5 +19,7 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
-      - run: node tests/test_regulars.mjs && node tests/test_offline.mjs && node tests/test_account.mjs && node tests/test_posts.mjs && node tests/test_trips.mjs && node tests/test_trips_ui.mjs && node tests/test_instagram_dm.mjs && node tests/test_instagram_claim_ui.mjs && node tests/test_instagram_commands.mjs && node tests/test_instagram_commands_ui.mjs && node tests/test_messaging_api.mjs && node tests/test_messaging_settings.mjs && node tests/test_messaging_worker.mjs && node tests/test_instagram_eligibility.mjs && node tests/test_messaging_health.mjs && node tests/test_instagram_unified.mjs
+      - run: node tests/test_regulars.mjs && node tests/test_offline.mjs && node tests/test_account.mjs && node tests/test_posts.mjs && node tests/test_trips.mjs && node tests/test_trips_ui.mjs && node tests/test_instagram_dm.mjs && node tests/test_instagram_connect.mjs && node tests/test_instagram_claim_ui.mjs && node tests/test_instagram_commands.mjs && node tests/test_instagram_commands_ui.mjs && node tests/test_messaging_api.mjs && node tests/test_messaging_settings.mjs && node tests/test_messaging_worker.mjs && node tests/test_instagram_eligibility.mjs && node tests/test_messaging_health.mjs && node tests/test_instagram_unified.mjs
       - run: npx wrangler deploy --dry-run --outdir .cache/worker
+      - run: npm run test:backbone
+      - run: npx wrangler deploy --config wrangler.next-api.jsonc --dry-run --outdir .cache/next-worker

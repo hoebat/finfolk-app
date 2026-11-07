@@ -24,3 +24,7 @@ functions/.secret*
 .env
 .env.*
 !.env.example
+
+# Clojure database build output
+db/target/
+db/.lein-*

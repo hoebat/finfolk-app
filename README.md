@@ -1,5 +1,7 @@
 # FinFolk
 
+Next development has moved to [hoebat/finfolk-next](https://github.com/hoebat/finfolk-next), deployed at [next.finfolk.com.au](https://next.finfolk.com.au). The Next implementation retained here is a frozen legacy copy; make new Next changes in the separate repository.
+
 A coastal atlas and social companion for Australian divers. Beaches, depth charts and nearby stays run on GitHub Pages. IndexedDB saves map regions on-device; Neon Auth and Postgres power opt-in profiles, recent Regulars and buddy connections. Photos and videos stay on Instagram or TikTok.
 
 **Discover** offers Suggested places and an All beaches index, sorted by state/territory → coastal region → beach. **Map** has independent beach/region search and an on-demand Place / Layers sidebar. Existing beach links such as `?site=edithvale`, `?site=maroubra` and `?site=hyams-beach` remain supported. Legacy `view=areas` links open All beaches; `view=guides` links open Suggested. Official activity and fisheries links remain in each beach’s sourced details.
@@ -159,3 +161,43 @@ The active backend is Neon, replacing the disabled Firebase implementation. Prod
 The root `CNAME` declares `finfolk.com.au` and is copied into the Pages artifact. GitHub Actions deployments require the domain to be configured separately in repository Settings → Pages; the CNAME file alone does not activate it. See [custom domain setup](docs/CUSTOM_DOMAIN.md) for DNS and HTTPS settings.
 
 Instagram onboarding and automatic public tag indexing are implemented behind disabled feature switches. Members opt in, verify Instagram ownership and following, then tag FinFolk. The server holds ambiguous authors for review; private sessions stay separate. See [Instagram setup, pilot and administration](docs/INSTAGRAM_SETUP.md).
+
+## Database backbone rebuild: first release
+
+The independent `db/` Clojure project pins Foundation/Postgres 4.1.8 and requires Leiningen and JDK 27 for the locally published Foundation artifacts. Run `JAVA_HOME=/opt/homebrew/opt/openjdk@27/libexec/openjdk.jdk/Contents/Home npm run db:generate` to compile the PostgreSQL declarations and operation contracts. `npm run db:check` verifies both checked-in publications without changing them. A fresh machine also needs the pinned Foundation artifacts available in its Maven repository. `npm run test:backbone` executes the generated functions in isolated PostgreSQL/WASM and tests the actual bundled XTalk runtime; it does not require Java.
+
+`0017_backbone_pilot.sql` through `0019_backbone_identity_access.sql` are immutable migrations. With `DB_BACKBONE_ENABLED=true`, profile reads, profile saves and check-in writes run through generated PostgreSQL functions. Actor context is transaction-local, including rollback cleanup. Narrow identity helpers use a fixed search path and revoke public execution. The flag defaults off in the existing production API.
+
+The preview browser uses actual xt.substrate models and an xt.db memory cache across the existing browser routes: navigation, public feeds, member/community actions, logbook, posts, trips, Instagram and messaging administration. The explicit browser operation registry is separate from the generated SQL contracts. Reads are keyed by their arguments and deduplicate concurrent requests; writes invalidate related reads and refresh mounted subscriptions. Sign-out clears the actor's models and cache and rejects late responses. A committed write whose refresh fails is reported as saved and blocks further writes in its domain until reload. See [substrate route coverage and verification](docs/SUBSTRATE_ROUTES.md). The upstream runtime is vendored with its license and source hashes under `vendor/xtalk/`; ordinary builds do not depend on the sibling StatsTrade checkout. Shared chat, declarative plugin installation and the remaining database domains are later milestones. Existing Instagram connection-code work is preserved.
+
+## Independent Next preview site
+
+[next.finfolk.com.au](https://next.finfolk.com.au) is live with a separate Cloudflare site Worker (`finfolk-next-site`) and API Worker (`finfolk-next-api`). The site forwards `/api` and `/v1/*` through a service binding. `/_next/health` reports database release readiness. The preview includes a visible DSL / Substrate label and no-index headers.
+
+The dedicated Neon branch `finfolk-next` (`br-sparkling-sun-a7dpot05`) contains the preview database `finfolk_next`, its own managed Neon Auth service and a dedicated Hyperdrive connection. Email/password login is enabled; Google login is disabled for this first release. The branch started without production member data. A synthetic account was used for live sign-in, profile persistence, duplicate-safe check-in and sign-out checks. The production GitHub Pages site, community Worker, database and auth service remain separate and were not redeployed.
+
+Public environment identifiers and the SQL release hash live in `next.environment.json`; credentials stay in ignored local files and Cloudflare bindings. The API refuses requests if the database release hash differs from its configured hash. The build verifies the generated SQL and contracts and their release hash before producing the preview.
+
+To publish another preview version from this checkout:
+
+1. Change the Clojure declarations, run `npm run db:generate` with JDK 27, and copy the generated SQL into a **new** immutable backbone migration when it changes. Update the SQL hash in `next.environment.json` and `wrangler.next-api.jsonc` together.
+2. Run `npm test` and `npm run build:next` with JDK 27 and the existing Python virtual environment.
+3. For database changes, run `npm run db:release:next` with the dedicated admin `DATABASE_URL_UNPOOLED` in the ignored `.env.next.local`. The command refuses another endpoint or database, applies the migrations and records the release hash. The preview runtime role and Auth service are already provisioned.
+4. Run `npm run deploy:next:api`, then `npm run deploy:next` with the existing Wrangler login. These commands use `wrangler.next-api.jsonc` and `wrangler.next.jsonc`, independently of production.
+5. Check `https://next.finfolk.com.au/_next/health` and verify account sign-in, profile save/reload, check-in and sign-out in the browser.
+
+Large public survey files are precompressed under the deployment-only `__compressed` directory to fit Cloudflare's per-asset size limit. The preview Worker serves them with gzip encoding at their original URLs, preserving the browser's decoded data and download checksums. No survey requests are proxied to production. The source survey files and production build remain unchanged.
+
+### Finfolkdb source layout
+
+`db/src/finfolkdb/common/type_*.clj` groups the 41 current tables by member, community, content, Instagram, logbook, messaging, rewards and trip domains, following StatsTrade's `statsdb.common.type-*` layout. Physical table and column names are preserved. Existing SQL defaults and constraints are retained as explicit `:finfolk/default-sql` and `:finfolk/constraints` metadata; this metadata is inventory for the compiler migration, not yet an executable replacement for historical migrations.
+
+Shared identity helpers live in `common/fn_system_auth.clj`, member operations in `fn/member/member_profile.clj`, operation publication in `rpc/api_group_member.clj`, and the function scaffold in `main/scaffold_000_dev.clj`. Existing migration files remain immutable. Table declarations are not automatically deployed.
+
+The table metadata remains an inventory of the existing schema. Only the member profile/check-in function slice is compiled and deployed in this release; the complete 41-table schema and chat/plugin rebuild are not yet generated replacements for the historical migrations.
+
+## Beach location thumbnails
+
+Suggested cards, All beaches cards and directory rows, and selected beach headers show an approximate state silhouette with a dot projected dynamically from the beach's existing `[longitude, latitude]`. The outline and dot share a latitude-corrected equirectangular projection. Coordinates outside the outline remain at their actual position; missing coordinates omit the dot. Jervis Bay is separate, and recognised external territories use their nearby island group. Unmatched or unverified external-territory coordinates show no island map. Thumbnails use the directory state assignment and do not establish legal jurisdiction or an entry point.
+
+The bundled outlines are simplified from the Australian Bureau of Statistics [States and Territories 2021 boundaries](https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs/edition-3-july-2021-june-2026/access-and-downloads/digital-boundary-files), © ABS, CC BY 4.0. Source URL, CRS and archive SHA-256 are retained in `web/state-outlines.js`. Regenerate with `python -m scripts.build_state_outlines` (or `--source /path/to/STE_2021_AUST_SHP_GDA94.zip`). Normal builds and browser rendering use the committed asset without downloads; both thumbnail modules are fingerprinted and included in the offline shell.

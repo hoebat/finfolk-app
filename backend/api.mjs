@@ -1,3 +1,4 @@
+import { memberProfile, saveMemberProfile, recordMemberCheckin, lookupIdentity } from './backbone.mjs';
 import { registerMessagingAPI,messagingProblem,messagingMemberAction,isMessagingMemberAction } from './messaging-api.mjs';
 import { randomUUID } from 'node:crypto';
 import {tripActions,tripAction,publicTrip,publicTrips} from './trips.mjs';
@@ -135,7 +136,7 @@ export function createAPI({
       fail(401, 'Your sign-in expired. Please sign in again.');
     }
     const uid = id(claims.sub),
-      identity = (
+      identity = c.env?.DB_BACKBONE_ENABLED==='true' ? await lookupIdentity(q,uid) : (
         await q(
           'SELECT id::text, name, "emailVerified" AS verified FROM neon_auth."user" WHERE id::text=$1 AND coalesce(banned,false)=false',
           [uid],
@@ -262,7 +263,7 @@ export function createAPI({
         break;
       }
       case 'me':
-        result = { id: uid, profile: me.profile, verified: identity.verified };
+        result = { id: uid, profile: c.env?.DB_BACKBONE_ENABLED === 'true' ? await memberProfile(db,uid) : me.profile, verified: identity.verified };
         break;
       case 'preferences': {
         let p;
@@ -273,7 +274,8 @@ export function createAPI({
         }
         if (p.open) verified();
         for (const b of p.beaches) await beach(b);
-        await q(
+        if(c.env?.DB_BACKBONE_ENABLED==='true')p=await saveMemberProfile(db,uid,p);
+        else await q(
           'UPDATE finfolk.members SET profile=$2::jsonb,updated_at=now() WHERE user_id=$1',
           [uid, JSON.stringify(p)],
         );
@@ -282,6 +284,7 @@ export function createAPI({
       }
       case 'checkin': {
         verified();
+        if(c.env?.DB_BACKBONE_ENABLED==='true'){result=await recordMemberCheckin(db,uid,v.beachId);break;}
         const b = await beach(v.beachId),
           { today } = windowFor(now(), b.timezone);
         await q(

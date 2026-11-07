@@ -1,3 +1,4 @@
+import {publicOperation} from './app-backbone.js';
 import { socialGallery } from "./media.js";
 import { tripURL } from "./trip-model.js";
 const el = (tag, text, cls) => {
@@ -173,12 +174,10 @@ export async function tripCards(
   const u = new URL("trips", apiUrl.endsWith("/") ? apiUrl : apiUrl + "/");
   if (beachId) u.searchParams.set("beachId", beachId);
   if (ownerId) u.searchParams.set("ownerId", ownerId);
-  const response = await fetch(u, {
-    cache: "no-store",
-    signal: AbortSignal.timeout(12000),
-  });
-  if (!response.ok) throw Error("Trip reports are unavailable.");
-  const data = await response.json();
+  const data = await publicOperation('publicTrips',{...(beachId?{beachId}:{}),...(ownerId?{ownerId}:{})},apiUrl,async()=>{
+    const response=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+    if(!response.ok)throw Error('Trip reports are unavailable.');return response.json();
+  },{signal:AbortSignal.timeout(12000)});
   if (!host.isConnected || !isCurrent()) return;
   if (data.trips?.length) {
     const section = el("section", undefined, "trip-cards");
@@ -207,14 +206,12 @@ export function installTripPage({ shell, loadJSON }) {
       const id = new URL(location.href).searchParams.get("trip");
       if (!/^[a-f0-9-]{36}$/.test(id || ""))
         throw Error("Choose a valid trip report.");
-      const config = await loadJSON("neon-config.json"),
-        r = await fetch(new URL("trips/" + id, config.apiUrl), {
-          cache: "no-store",
-          signal: AbortSignal.timeout(12000),
-        }),
-        report = await r.json();
-      if (request !== sequence) return;
-      if (!r.ok) throw Error(report.error || "Trip report unavailable.");
+      const config = await loadJSON('neon-config.json');
+      const report=await publicOperation('publicTrip',{id},config.apiUrl,async()=>{
+        const response=await fetch(new URL('trips/'+id,config.apiUrl),{cache:'no-store',signal:AbortSignal.timeout(12000)});
+        const body=await response.json();if(!response.ok)throw Error(body.error||'Trip report unavailable.');return body;
+      },{signal:AbortSignal.timeout(12000)});
+      if(request!==sequence)return;
       const back = el("button", "Explore this beach", "secondary");
       back.onclick = () =>
         shell.navigate("maps", {

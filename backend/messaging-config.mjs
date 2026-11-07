@@ -16,6 +16,11 @@ export const commands = Object.freeze({
     description: "See available commands.",
     claimed: false,
   },
+  connect: {
+    syntax: "/connect",
+    description: "Get a code to connect your Instagram account to FinFolk.",
+    claimed: false,
+  },
   claim: {
     syntax: "/claim <CODE>",
     description: "Verify your Instagram account.",

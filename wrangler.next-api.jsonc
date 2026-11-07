@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "finfolk-next-api",
+  "main": "backend/next-api-worker.mjs",
+  "compatibility_date": "2026-10-30",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "account_id": "b048221dbe18365ea667373f6fda1f73",
+  "workers_dev": true,
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "46cea2fc114e4e269ce51d37e1ff2f16"
+    }
+  ],
+  "vars": {
+    "NEON_AUTH_BASE_URL": "https://ep-spring-recipe-a74ty1t5.neonauth.ap-southeast-2.aws.neon.tech/finfolk_next/auth",
+    "NEON_AUTH_JWKS_URL": "https://ep-spring-recipe-a74ty1t5.neonauth.ap-southeast-2.aws.neon.tech/finfolk_next/auth/.well-known/jwks.json",
+    "DB_BACKBONE_ENABLED": "true",
+    "DB_SQL_SHA": "3e5358d7d01aad17b2eaa95344a9a6fa8701550e7c88ee83fe0db13887f32a0a",
+    "ENVIRONMENT": "next"
+  }
+}

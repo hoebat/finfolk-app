@@ -24,6 +24,7 @@ const ctx=new Proxy({measureText:text=>({width:text.length*7})},{get:(target,key
 const originalFetch=globalThis.fetch;let contourRequests=0,areaRequests=0,holdArea='',releaseArea;
 globalThis.fetch=async url=>{
  const path=new URL(url).pathname;
+ if(process.env.SUBSTRATE_TEST && path.endsWith('/neon-config.json'))return Response.json({enabled:false,backbone:true,apiUrl:'https://example.test/shore-depth-explorer/',authUrl:''});
  if(path.endsWith('/beaches.json'))return new Response(JSON.stringify(directory));
  if(path.endsWith('/guides.json'))return new Response(guides);
  if(path.endsWith('/social.json'))return new Response(social);

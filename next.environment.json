@@ -1,0 +1,10 @@
+{
+  "environment": "next",
+  "projectId": "odd-voice-85400108",
+  "branchId": "br-sparkling-sun-a7dpot05",
+  "database": "finfolk_next",
+  "authUrl": "https://ep-spring-recipe-a74ty1t5.neonauth.ap-southeast-2.aws.neon.tech/finfolk_next/auth",
+  "jwksUrl": "https://ep-spring-recipe-a74ty1t5.neonauth.ap-southeast-2.aws.neon.tech/finfolk_next/auth/.well-known/jwks.json",
+  "sqlSha": "3e5358d7d01aad17b2eaa95344a9a6fa8701550e7c88ee83fe0db13887f32a0a",
+  "hyperdriveId": "46cea2fc114e4e269ce51d37e1ff2f16"
+}

@@ -9,6 +9,7 @@ for (const key of [
   'window',
   'document',
   'location',
+  'history',
   'localStorage',
   'navigator',
 ])
@@ -37,7 +38,13 @@ const client = {
     return [];
   },
 };
-const shell = { route: { view: 'account' }, subscribe() {}, navigate() {} };
+let shell = { route: { view: 'account' }, subscribe() {}, navigate() {} };
+if(process.env.SUBSTRATE_TEST){
+  globalThis.addEventListener=window.addEventListener.bind(window);globalThis.innerHeight=844;
+  const {createApplicationBackbone}=await import('../web/next-backbone.js');const app=createApplicationBackbone({apiUrl:'https://account.substrate.test/'});
+  const transport=client.call,models=app.member('alice',transport);client.call=(...args)=>models.call(...args);client.subscribe=(...args)=>models.subscribe(...args);
+  shell=(await import('../web/mobile-shell.js')).installAppShell({backbone:app});
+}
 installCommunity({
   shell,
   getBeaches: () => [
@@ -63,6 +70,7 @@ assert.ok(document.getElementById('account-instagram').textContent.includes('Lin
 document.getElementById('account-tab-profile').click();
 assert.equal(document.querySelector('#account-profile [name=instagram]'),null,'Instagram is managed in its own tab');
 assert.equal(document.querySelector('[name=open]').checked, false);
+if(process.env.SUBSTRATE_TEST)assert.equal(calls.filter(c=>c.action==='me').length,1,'Changing account tabs does not reload all account sections');
 document.querySelector('[name=open]').checked = true;
 document.querySelector('[name=visits]').checked = true;
 document.getElementById('account-tab-profile').click();
@@ -108,6 +116,11 @@ await new Promise(r => setTimeout(r, 30));
 assert.equal(calls.find(c => c.action === 'checkin').beachId, 'bondi');
 assert.ok(document.querySelector('.checkin-success').textContent.includes('Bondi Beach'));
 document.querySelector('.member-tour')?.dispatchEvent(new window.Event('cancel', {cancelable:true}));
+if(process.env.SUBSTRATE_TEST){
+  history.replaceState(null,'','?view=account&tab=profile');window.dispatchEvent(new window.PopStateEvent('popstate'));
+  await new Promise(r=>setTimeout(r,30));assert.equal(document.getElementById('account-profile').hidden,false,'History restoration selects the tab from its URL');
+  assert.equal(shell.backbone.state('navigation').tab,'profile');
+}
 window.happyDOM.abort();
 console.log(
   'Account UI passed: Closed default, beach selection, field-level sharing, save and existing session entry point.',

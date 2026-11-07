@@ -508,3 +508,33 @@
 .messaging-settings > button { margin: 8px 8px 8px 0; }
 .messaging-settings details { margin: 16px 0; }
 .messaging-settings .buddy-card { min-width: 0; }
+
+/* A short, illustrative DM exchange; the actual code always comes from Instagram. */
+.instagram-connect-dialog { box-sizing:border-box; width:min(500px,calc(100vw - 24px)); max-height:calc(100dvh - 24px); overflow:auto; border:1px solid var(--account-line,#cce4df); border-radius:26px; padding:26px; background:var(--account-surface,#fffefa); color:var(--account-ink,#173e48); box-shadow:0 30px 100px #003e5055; }
+.instagram-connect-dialog::backdrop { background:#0c344980; backdrop-filter:blur(6px); }
+.connect-dialog-top,.connect-dialog-actions,.connect-demo-heading { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.connect-dialog-top { justify-content:space-between; }
+.connect-dialog-top small { font-size:10px; letter-spacing:.08em; }
+.instagram-connect-dialog h2 { font-size:30px; letter-spacing:-.03em; margin:18px 0 10px; }
+.instagram-connect-dialog p { line-height:1.55; }
+.instagram-connect-dialog button,.connect-open { min-height:42px; padding:10px 14px; border-radius:12px; cursor:pointer; }
+.connect-open { display:inline-flex; align-items:center; box-sizing:border-box; text-decoration:none; background:#007f8e; color:white; }
+.connect-demo { border:1px solid var(--account-line,#cce4df); border-radius:18px; padding:18px; background:var(--account-bg,#eef8f3); min-height:218px; }
+.connect-demo-heading { border-bottom:1px solid var(--account-line,#cce4df); padding-bottom:12px; margin-bottom:14px; }
+.connect-demo-heading small { margin-left:auto; font-size:9px; letter-spacing:.08em; }
+.connect-avatar { display:grid; place-items:center; border-radius:50%; background:#007f8e; color:white; font-size:22px; font-weight:800; width:32px; height:32px; }
+.connect-demo-follow { font-size:12px; color:var(--account-accent,#007f8e); margin-bottom:12px; }
+.connect-bubble { white-space:pre-line; font-size:14px; line-height:1.5; padding:12px; border-radius:16px; width:fit-content; max-width:85%; opacity:0; transform:translateY(8px); transition:opacity .35s,transform .35s; }
+.connect-sent { margin:0 0 12px auto; background:#007f8e; color:white; border-bottom-right-radius:4px; font-family:ui-monospace,monospace; }
+.connect-received { background:var(--account-surface,#fffefa); border-bottom-left-radius:4px; }
+.connect-demo[data-stage='1'] .connect-demo-follow::after,.connect-demo[data-stage='2'] .connect-demo-follow::after,.connect-demo[data-stage='3'] .connect-demo-follow::after { content:' ✓'; }
+.connect-demo[data-stage='2'] .connect-sent,.connect-demo[data-stage='3'] .connect-bubble { opacity:1; transform:none; }
+.connect-caption { min-height:3em; font-size:13px; color:var(--account-muted,#56777d); }
+.instagram-connect-dialog label { display:block; font-size:14px; font-weight:650; margin-top:22px; }
+.instagram-connect-dialog input { display:block; box-sizing:border-box; width:100%; margin-top:8px; min-height:54px; border:1px solid var(--account-line,#adcecb); border-radius:12px; padding:12px; font:600 22px ui-monospace,monospace; letter-spacing:.15em; text-transform:uppercase; background:var(--account-bg,#eef8f3); color:inherit; }
+.instagram-connect-dialog input:focus-visible { outline:3px solid #58c9cd77; border-color:#007f8e; }
+.instagram-connect-dialog input[aria-invalid='true'] { border-color:#b9364c; }
+.connect-code-help,.connect-feedback { font-size:13px; }
+.connect-feedback:empty { display:none; }
+@media(prefers-reduced-motion:reduce) { .connect-bubble { transition:none; } }
+@media(max-width:480px) { .instagram-connect-dialog { padding:20px; } .connect-dialog-actions { gap:6px; } }

@@ -5,6 +5,8 @@ import {
   runtimeEnv,
   digest,
   requiresFollower,
+  seal,
+  unseal,
 } from "./messaging-config.mjs";
 import {
   InstagramProvider,
@@ -203,7 +205,7 @@ export async function processInstagramDM(
       await db.query(
         "UPDATE finfolk.messaging_accounts SET checks=checks || '{\"followLookup\":true}'::jsonb WHERE id='instagram'",
       );
-      if (!identity.follows)
+      if (!identity.follows && event.command !== "connect")
         return await markBlocked(db.query, event, "not_following", identity);
     }
     await db.transaction(async (q) => {
@@ -238,13 +240,16 @@ export async function processInstagramDM(
       );
       if (reply) {
         await q(
-          `INSERT INTO finfolk.messaging_outbox(event_id,body,correlation_id,deadline)
-    VALUES($1,$2,$3,$4) ON CONFLICT(event_id) DO NOTHING`,
+          `INSERT INTO finfolk.messaging_outbox(event_id,body,correlation_id,deadline,reply_kind,body_ciphertext,connect_code_id)
+    VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(event_id) DO NOTHING`,
           [
             id,
-            reply.slice(0, 2000),
+            reply.kind === 'connect_code' ? '' : (reply.body || reply).slice(0, 2000),
             event.correlation_id,
             new Date(Date.parse(event.message_at) + 86400000),
+            reply.kind || 'text',
+            reply.kind === 'connect_code' ? seal({body:reply.body},env,'connect:'+id) : null,
+            reply.id || null,
           ],
         );
       }
@@ -388,7 +393,7 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
         new Date(config.token_expires_at) <= new Date())
     )
       return set("failed", "authorization_unavailable");
-    if (requiresFollower(event.command)) {
+    if (requiresFollower(event.command) && !(event.command === 'connect' && row.reply_kind === 'connect_guidance')) {
       const identity = await provider.profile(event.sender_id);
       if (!identity.follows) return set("cancelled", "not_following");
     }
@@ -404,8 +409,14 @@ export async function sendOutbox(id, env, db, { fetcher = fetch } = {}) {
     if (!canRun(current, event)) return set("cancelled", "rollout_changed");
     if (new Date(row.deadline) <= new Date())
       return set("expired", "reply_window_expired");
+    let text = row.body;
+    if(row.reply_kind === 'connect_code') {
+      const activeCode=(await db.query(`SELECT 1 FROM finfolk.instagram_connect_codes WHERE id=$1 AND NOT invalidated AND consumed_by IS NULL AND expires_at>now() AND provider_scope=$2 AND generation=$3`,[row.connect_code_id,config.scope,config.generation])).length;
+      if(!activeCode)return set('cancelled','connect_code_expired');
+      text=unseal(row.body_ciphertext,env,'connect:'+event.id).body;
+    }
     beganSend = true;
-    const messageId = await provider.sendText(event.sender_id, row.body);
+    const messageId = await provider.sendText(event.sender_id, text);
     await db.query(
       "UPDATE finfolk.messaging_outbox SET state='provider_accepted',provider_message_id=$3,error_code=null,updated_at=now() WHERE id=$1 AND lease=$2 AND state='sending'",
       [id, lease, messageId],
@@ -490,5 +501,7 @@ export async function reconcileInstagramDM(env, q) {
   await q(
     "DELETE FROM finfolk.instagram_dm_limits WHERE minute<now()-interval '30 days'",
   );
+  await q("DELETE FROM finfolk.instagram_connect_codes WHERE created_at<now()-interval '1 day'");
+  await q("DELETE FROM finfolk.instagram_connect_limits WHERE resets_at<now()-interval '1 day'");
   await refreshAuthorization(q, env);
 }

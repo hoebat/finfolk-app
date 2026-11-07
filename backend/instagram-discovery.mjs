@@ -4,7 +4,7 @@ import {
 } from "./instagram-eligibility.mjs";
 import places from "./instagram-places.json" with { type: "json" };
 import { isInstagramAdmin } from "./instagram-actions.mjs";
-import { socialPostURL } from "../web/media.js";
+import { socialPostURL } from "../web/social-url.js";
 const fail = (message, status = 400) => {
   throw Object.assign(Error(message), { status });
 };

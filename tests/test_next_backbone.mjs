@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {createBackbone} from '../web/next-backbone.js';
+const calls=[];let reject=false;
+const b=createBackbone('alice',async(action,v)=>{calls.push(action);if(reject)throw Error('transport failed');return {action,v};});
+assert.equal((await b.call('me')).action,'me');assert.equal(b.read('me').action,'me');
+await b.call('preferences',{profile:{displayName:'Alice'}});assert.deepEqual(calls.slice(-2),['preferences','me']);
+await b.call('checkin',{beachId:'bondi'});assert.deepEqual(calls.slice(-2),['checkin','myCheckins']);
+reject=true;await assert.rejects(()=>b.call('me'),/transport failed/);reject=false;
+assert.equal((await b.call('me')).action,'me','A failed request cannot poison later requests');
+b.close();assert.deepEqual(b.cache.rows,{});assert.deepEqual(b.node.spaces,{});await assert.rejects(()=>b.call('me'),/closed/);
+let release;const pending=createBackbone('bob',()=>new Promise(resolve=>{release=resolve;}));const request=pending.call('me');await new Promise(resolve=>setTimeout(resolve,0));pending.close();release({private:'bob'});await assert.rejects(()=>request,/closed/);assert.deepEqual(pending.cache.rows,{});
+const mutationCalls=[];const partial=createBackbone('carol',async action=>{mutationCalls.push(action);if(action==='me')throw Error('refresh failed');return {saved:true};});
+await assert.rejects(()=>partial.call('preferences',{}),error=>error.mutationCommitted===true && error.result.saved===true);
+await assert.rejects(()=>partial.call('preferences',{}),/Reload before/);
+assert.deepEqual(mutationCalls,['preferences','me'],'A successful write must not be replayed after its refresh fails');partial.close();
+console.log('NEXT_SUBSTRATE_PASS: actual substrate models, xt.db cache, dependent refresh, errors, sign-out and stale responses.');

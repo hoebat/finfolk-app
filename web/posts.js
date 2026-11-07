@@ -1,3 +1,4 @@
+import {publicOperation} from './app-backbone.js';
 const el = (tag, text, cls) => {
   const node = document.createElement(tag);
   if (text !== undefined) node.textContent = text;
@@ -26,7 +27,7 @@ const original = (post, config) => {
   link.href = post.url; link.referrerPolicy = 'no-referrer'; link.target = '_blank'; link.rel = 'noopener noreferrer';
   link.onclick = () => {
     // Aggregate clicks only; no visitor ID, handle, beach history or referrer is sent.
-    if (config?.apiUrl) fetch(endpoint(config,'community/referral'), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({postId:post.id}),cache:'no-store',keepalive:true,referrerPolicy:'no-referrer'}).catch(()=>{});
+    if (config?.apiUrl) publicOperation('publicReferral',{postId:post.id},config.apiUrl,()=>fetch(endpoint(config,'community/referral'), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({postId:post.id}),cache:'no-store',keepalive:true,referrerPolicy:'no-referrer'})).catch(()=>{});
   };
   return link;
 };
@@ -55,9 +56,10 @@ export async function renderPostFeed({host,beach,config,loadAPI,signIn,isCurrent
       const url = endpoint(config,'community/posts'); url.searchParams.set('beachId',beach.id);
       if (cursor) url.searchParams.set('cursor',cursor);
       if (requested) url.searchParams.set('postId',requested);
-      const response = await fetch(url,{cache:'no-store',referrerPolicy:'no-referrer'});
-      data = await response.json();
-      if (!response.ok) throw Error(data.error || 'Beach posts could not load.');
+      data=await publicOperation('publicPosts',{beachId:beach.id,...(cursor?{cursor}:{}),...(requested?{postId:requested}:{})},config.apiUrl,async()=>{
+        const response=await fetch(url,{cache:'no-store',referrerPolicy:'no-referrer'});const body=await response.json();
+        if(!response.ok)throw Error(body.error||'Beach posts could not load.');return body;
+      });
     }
     if (!isCurrent()) return;
     enabled = !!data.enabled;

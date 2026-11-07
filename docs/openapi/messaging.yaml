@@ -132,6 +132,77 @@ paths:
           $ref: '#/components/responses/Error429'
         '503':
           $ref: '#/components/responses/Error503'
+  /v1/me/instagram/connect:
+    post:
+      operationId: connectInstagramWithDMCode
+      summary: Connect the signed-in member using a follower's DM-issued code
+      tags: [Members]
+      security:
+        - memberJWT: []
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]+$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              additionalProperties: false
+              properties:
+                code:
+                  type: string
+                  maxLength: 32
+                  description: Eight characters received by DM; spaces, hyphens and lowercase are accepted.
+      responses:
+        '200':
+          description: Connected, or a successful retry by the same member
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, requestId]
+                additionalProperties: false
+                properties:
+                  data:
+                    type: object
+                    required: [state, handle, profileUrl]
+                    additionalProperties: false
+                    properties:
+                      state:
+                        type: string
+                        enum: [claimed]
+                      handle:
+                        type: string
+                      profileUrl:
+                        type: string
+                        format: uri
+                  requestId:
+                    type: string
+                    format: uuid
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
   /v1/me/instagram/profile:
     put:
       operationId: saveInstagramProfile
@@ -642,6 +713,7 @@ paths:
             enum:
               - ping
               - help
+              - connect
               - claim
               - status
               - checkin
@@ -1349,12 +1421,15 @@ components:
           properties:
             profileLink:
               type: boolean
+            connect:
+              type: boolean
             claims:
               type: boolean
             messaging:
               type: boolean
           required:
             - profileLink
+            - connect
             - claims
             - messaging
           additionalProperties: false
@@ -1414,6 +1489,7 @@ components:
             enum:
               - ping
               - help
+              - connect
               - claim
               - status
               - checkin
@@ -1458,6 +1534,7 @@ components:
             enum:
               - ping
               - help
+              - connect
               - claim
               - status
               - checkin

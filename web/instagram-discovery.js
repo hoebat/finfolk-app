@@ -1,3 +1,4 @@
+import {publicOperation} from './app-backbone.js';
 import { activity } from "./activity.js";
 const el = (tag, text) => {
   const n = document.createElement(tag);
@@ -17,12 +18,10 @@ export async function getInstagramFeed(apiUrl, beachId, cursor = null) {
     url: u.href,
   });
   try {
-    const r = await fetch(u, {
-      cache: "no-store",
-      signal: AbortSignal.timeout(12000),
-    });
-    if (!r.ok) throw Error("Instagram posts are unavailable.");
-    const result = await r.json();
+    const result = await publicOperation('publicInstagram',{beachId,...(cursor?{cursor}:{})},apiUrl,async()=>{
+      const r=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+      if(!r.ok)throw Error('Instagram posts are unavailable.');return r.json();
+    },{signal:AbortSignal.timeout(12000)});
     task.finish();
     if (result.activity) {
       const panel = document.getElementById("system-panel");

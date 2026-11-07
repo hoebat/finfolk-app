@@ -1,0 +1,1 @@
+{"member-profile":{"function":"finfolkdb.fn.member.member-profile/member-profile","input":[],"return":"jsonb"},"profile-save":{"function":"finfolkdb.fn.member.member-profile/profile-save","input":["jsonb"],"return":"jsonb"},"checkin-record":{"function":"finfolkdb.fn.member.member-profile/checkin-record","input":["text"],"return":"jsonb"}}

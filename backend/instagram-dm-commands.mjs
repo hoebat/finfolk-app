@@ -1,3 +1,4 @@
+import { issueConnectCode } from './instagram-connect.mjs';
 import {
   hashClaim,
   claimsEnabled,
@@ -9,7 +10,7 @@ const accountURL = "https://finfolk.com.au/?view=account&tab=instagram";
 export const helpText = (enabled = Object.keys(commands)) =>
   "Hey! Welcome to FinFolk 🌊\nYour coastal companion for finding beaches, exploring depths and keeping your dive memories together.\n\nAvailable here:\n" +
   Object.entries(commands)
-    .filter(([name]) => enabled.includes(name))
+    .filter(([name]) => name !== "claim" && enabled.includes(name))
     .map(([, c]) => c.syntax + " — " + c.description)
     .join("\n") +
   "\n\nGet started: https://finfolk.com.au\nExplore the map or sign in to start your logbook.\n\nYou don’t need to follow or connect your account to ask for help.";
@@ -46,6 +47,7 @@ async function claimedMember(q, sender, scope) {
   )[0];
 }
 export async function commandResult(q, event, env, identity, identityError) {
+  if (event.command === "connect") return issueConnectCode(q, event, env, identity);
   if (event.command === "ping")
     return "Pong. Reference: " + event.correlation_id;
   if (event.command === "prompt") {
@@ -131,7 +133,7 @@ export async function commandResult(q, event, env, identity, identityError) {
   );
   if (!owner)
     return (
-      "This Instagram account is not claimed yet. Follow @finfolk.com.au, then copy and send your /claim command from " +
+      "This Instagram account is not connected yet. Follow @finfolk.com.au, send /connect, then enter the code at " +
       accountURL
     );
   if (event.command === "status")

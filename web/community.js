@@ -42,6 +42,13 @@ export function installCommunity({
     nextRefresh = Infinity,
     observedUser,
     accountTab = requestedAccountTab();
+  let accountSubscriptions=[],updateAccountTab=null;
+  function clearAccountSubscriptions(){for(const dispose of accountSubscriptions)dispose();accountSubscriptions=[];}
+  async function watchAccount(api,action,values,callback,generation){
+    if(!shell.backbone || !api.subscribe)return;
+    const dispose=await api.subscribe(action,values,state=>{if(generation===epoch && shell.route.view==='account')callback(state);});
+    if(generation!==epoch)dispose();else accountSubscriptions.push(dispose);
+  }
   async function api() {
     if (!pending)
       pending = (async () => {
@@ -61,6 +68,7 @@ export function installCommunity({
             document.querySelectorAll('.beach-post-feed').forEach(n=>n.remove());
             accountTab=requestedAccountTab();
             if (!user && shell.route.view === 'account') queueMicrotask(() => account());
+            clearAccountSubscriptions();
             epoch++;
             beachEpoch++;
           }
@@ -108,7 +116,10 @@ export function installCommunity({
   };
   async function account() {
     if (shell.route.view !== 'account') return;
+    if(shell.backbone)accountTab=requestedAccountTab();
     const generation = ++epoch;
+    clearAccountSubscriptions();
+    updateAccountTab=null;
     root.replaceChildren(
       el('h1', 'Your FinFolk'),
       el('p', 'Your spots. Your people. Your kind of water.', 'account-intro'),
@@ -214,7 +225,7 @@ export function installCommunity({
       const panels = {};
       function selectTab(key) {
         accountTab = key;
-        if (shell.route.view==='account') { const url=new URL(location.href);url.searchParams.set('tab',key);globalThis.history?.replaceState?.(globalThis.history.state,'',url.href); }
+        if (shell.route.view==='account') {if(shell.backbone)shell.setParams({tab:key});else {const url=new URL(location.href);url.searchParams.set('tab',key);globalThis.history?.replaceState?.(globalThis.history.state,'',url.href);}}
         for (const tab of tabs.children) {
           const active = tab.dataset.tab === key;
           tab.setAttribute('aria-selected', String(active));
@@ -222,6 +233,7 @@ export function installCommunity({
         }
         for (const [name, panel] of Object.entries(panels)) panel.hidden = name !== key;
       }
+      updateAccountTab=selectTab;
       for (const [key, label] of [['checkin', 'Check in'], ['posts', 'Your posts'], ['instagram','Instagram'], ['profile', 'Profile & buddies'], ['settings', 'Settings']]) {
         const panel = el('div');
         panel.id = 'account-' + key;
@@ -267,6 +279,7 @@ export function installCommunity({
         button('My sessions', () => shell.navigate('logbook'), 'social-menu-action'),
         button('Profile & privacy', () => jump('social-profile'), 'social-menu-action'),
       );
+      await watchAccount(a,'me',{},state=>{if(state.status==='ready' && state.data?.profile){const profile=state.data.profile;menu.querySelector('h2').textContent='Welcome'+(profile.displayName?', '+profile.displayName:'');}},generation);
       menu.append(links);
       const instagramSummary = el('div');
       function showInstagram(value) {
@@ -563,8 +576,9 @@ export function installCommunity({
           checkinStatus.textContent = error.message;
         } finally { checkinSubmit.disabled = false; }
       };
-      if (!checkins.length) visits.append(el('p', 'Your first visit starts here. Pick a beach above to check in.', 'account-intro'));
-      for (const row of checkins) {
+      function drawVisits(rows){visits.replaceChildren(el('h2','Your recent check-ins'));
+      if (!rows.length) visits.append(el('p', 'Your first visit starts here. Pick a beach above to check in.', 'account-intro'));
+      for (const row of rows) {
         const line = el('p', `${row.name} · ${row.day} `);
         line.append(
           button('Remove', async () => {
@@ -577,6 +591,9 @@ export function installCommunity({
         );
         visits.append(line);
       }
+      }
+      drawVisits(checkins);
+      await watchAccount(a,'myCheckins',{},state=>{if(state.status==='ready')drawVisits(state.data);},generation);
       panels.checkin.append(visits);
       const blocks = el('details');
       blocks.append(el('summary', 'Blocked profiles'));
@@ -864,7 +881,9 @@ export function installCommunity({
     if (shell.route.view === 'account') account();
     else if (getSelectedBeach()) beachPanel(getSelectedBeach());
   }
-  shell.subscribe(() => {
+  shell.subscribe(route => {
+    if(route.reason==='params' && route.view==='account' && updateAccountTab){updateAccountTab(requestedAccountTab());return;}
+    clearAccountSubscriptions();
     epoch++;
     beachEpoch++;
     document.querySelectorAll('.buddy-stats').forEach((n) => n.remove());

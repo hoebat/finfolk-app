@@ -1,3 +1,6 @@
+import {lookupIdentity} from './backbone.mjs';
+export const messagingReturnURL=env=>(env.ENVIRONMENT==='next'?'https://next.finfolk.com.au':'https://finfolk.com.au')+'/?view=account&tab=settings&messaging=connected';
+import { connectEnabled, prepareConnect, redeemConnect } from './instagram-connect.mjs';
 import {
   stageMessagingAuthorization,
   completeMessagingAuthorization,
@@ -115,6 +118,7 @@ export async function messagingMemberAction({
       capabilities: {
         profileLink: true,
         claims: data.enabled,
+        connect: connectEnabled(config, env),
         messaging: effective.INSTAGRAM_DM_ENABLED === "true",
       },
     };
@@ -200,7 +204,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
       !/^[A-Za-z0-9_-]{1,128}$/.test(claims.sub)
     )
       fail("unauthenticated", "Account unavailable.", 401);
-    const identity = (
+    const identity = c.env?.DB_BACKBONE_ENABLED==='true' ? await lookupIdentity(db.query,claims.sub) : (
       await db.query(
         'SELECT id::text,name,"emailVerified" AS verified FROM neon_auth."user" WHERE id::text=$1 AND NOT coalesce(banned,false)',
         [claims.sub],
@@ -278,6 +282,17 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
   app.get("/v1/me/instagram", async (c) =>
     respond(c, await act(context(c), "instagramClaimStatus")),
   );
+  app.post("/v1/me/instagram/connect", async c => {
+    const input=await bodyJSON(c), ctx=context(c);
+    only(input,["code"]);
+    // The Cloudflare runtime supplies this header; never trust X-Forwarded-For.
+    const clientIP=c.env?.HYPERDRIVE ? c.req.header("CF-Connecting-IP") : undefined;
+    const proof=await prepareConnect({...ctx,code:input.code,clientIP,fetcher});
+    const result=await idempotent({db,uid:ctx.uid,key:c.req.header("Idempotency-Key"),method:"POST",path:c.req.path,body:input,env:ctx.env},
+      async tx => ({data:await redeemConnect(tx.query,{uid:ctx.uid,env:ctx.env,proof})}));
+    if(result.replayed)c.header("Idempotency-Replayed","true");
+    return respond(c,result.data);
+  });
   app.put("/v1/me/instagram/profile", (c) =>
     mutation(c, async (input, ctx) => {
       only(input, ["handle"]);
@@ -764,7 +779,9 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
       fail("invalid_oauth_state", "Authorization state is invalid or expired.");
     const active = (
       await db.query(
-        'SELECT 1 FROM neon_auth."user" u JOIN finfolk.members m ON m.user_id=u.id::text WHERE m.user_id=$1 AND u."emailVerified" AND NOT coalesce(u.banned,false) AND NOT m.deleted',
+        env.DB_BACKBONE_ENABLED==='true'
+          ? "SELECT 1 FROM finfolk.members m WHERE m.user_id=$1 AND NOT m.deleted AND (finfolk_rpc.auth_identity($1)->>'verified')::boolean"
+          : 'SELECT 1 FROM neon_auth."user" u JOIN finfolk.members m ON m.user_id=u.id::text WHERE m.user_id=$1 AND u."emailVerified" AND NOT coalesce(u.banned,false) AND NOT m.deleted',
         [intent.user_id],
       )
     ).length;
@@ -794,7 +811,7 @@ export function registerMessagingAPI(app, { db, verify, fetcher = fetch }) {
     );
     c.header("Referrer-Policy", "no-referrer");
     return c.redirect(
-      "https://finfolk.com.au/?view=account&tab=settings&messaging=connected",
+      messagingReturnURL(env),
       303,
     );
   });
